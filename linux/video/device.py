@@ -22,8 +22,8 @@ from collections import UserDict
 
 from linux.io import IO
 from linux.ioctl import ioctl
-
-from . import core as raw
+from linux.ctypes import cenum
+from . import raw
 
 log = logging.getLogger(__name__)
 log_ioctl = log.getChild("ioctl")
@@ -45,35 +45,12 @@ def _enum(name, prefix, klass=enum.IntEnum):
     )
 
 
-Capability = _enum("Capability", "V4L2_CAP_", klass=enum.IntFlag)
-PixelFormat = _enum("PixelFormat", "V4L2_PIX_FMT_")
-BufferType = _enum("BufferType", "V4L2_BUF_TYPE_")
-BufferFlag = _enum("BufferFlag", "V4L2_BUF_FLAG_", klass=enum.IntFlag)
-Memory = _enum("Memory", "V4L2_MEMORY_")
-ImageFormatFlag = _enum("ImageFormatFlag", "V4L2_FMT_FLAG_", klass=enum.IntFlag)
-Field = _enum("Field", "V4L2_FIELD_")
-FrameSizeType = _enum("FrameSizeType", "V4L2_FRMSIZE_TYPE_")
-FrameIntervalType = _enum("FrameIntervalType", "V4L2_FRMIVAL_TYPE_")
-IOC = _enum("IOC", "VIDIOC_", klass=enum.Enum)
-InputStatus = _enum("InputStatus", "V4L2_IN_ST_", klass=enum.IntFlag)
-InputType = _enum("InputType", "V4L2_INPUT_TYPE_")
-InputCapabilities = _enum("InputCapabilities", "V4L2_IN_CAP_", klass=enum.IntFlag)
-ControlClass = _enum("ControlClass", "V4L2_CTRL_CLASS_")
-ControlType = _enum("ControlType", "V4L2_CTRL_TYPE_")
-ControlID = _enum("ControlID", "V4L2_CID_")
-ControlFlag = _enum("ControlFlag", "V4L2_CTRL_FLAG_")
-
-SelectionTarget = _enum("SelectionTarget", "V4L2_SEL_TGT_")
-Priority = _enum("Priority", "V4L2_PRIORITY_")
-TimeCode = _enum("TimeCode", "V4L2_TC_TYPE_")
-TimeFlag = _enum("TimeFlag", "V4L2_TC_FLAG_", klass=enum.IntFlag)
-EventType = _enum("EventType", "V4L2_EVENT_")
-
-EventSubscriptionFlag = _enum(
-    "EventSubscriptionFlag", "V4L2_EVENT_SUB_FL_", klass=enum.IntFlag
-)
-
+FrameSizeType = raw.Frmsizetypes
+FrameIntervalType = raw.Frmivaltypes
+Field = raw.Field
+ImageFormatFlag = raw.ImageFormatFlag
 Capability = raw.Capability
+ControlID = raw.ControlID
 ControlFlag = raw.ControlFlag
 ControlType = raw.CtrlType
 ControlClass = raw.ControlClass
@@ -81,10 +58,18 @@ SelectionTarget = raw.SelectionTarget
 EventType = raw.EventType
 IOC = raw.IOC
 BufferType = raw.BufType
+BufferFlag = raw.BufferFlag
 InputType = raw.InputType
 PixelFormat = raw.PixelFormat
 FrameSizeType = raw.Frmsizetypes
 Memory = raw.Memory
+InputStatus = raw.InputStatus
+InputType = raw.InputType
+InputCapabilities = raw.InputCapabilities
+Priority = raw.Priority
+TimeCode = raw.TimeCodeType
+TimeFlag = raw.TimeCodeFlag
+EventSubscriptionFlag = raw.EventSubscriptionFlag
 
 
 def V4L2_CTRL_ID2CLASS(id_):
@@ -521,12 +506,12 @@ def get_fps(fd, buffer_type):
 
 
 def stream_on(fd, buffer_type):
-    btype = raw.v4l2_buf_type(buffer_type)
+    btype = cenum(buffer_type)
     return ioctl(fd, IOC.STREAMON, btype)
 
 
 def stream_off(fd, buffer_type):
-    btype = raw.v4l2_buf_type(buffer_type)
+    btype = cenum(buffer_type)
     return ioctl(fd, IOC.STREAMOFF, btype)
 
 
@@ -1463,12 +1448,12 @@ class Frame:
     @property
     def time_type(self):
         if BufferFlag.TIMECODE in self.flags:
-            return TimeCode(self.buff.timecode.type)
+            return TimeCodeType(self.buff.timecode.type)
 
     @property
     def time_flags(self):
         if BufferFlag.TIMECODE in self.flags:
-            return TimeFlag(self.buff.timecode.flags)
+            return TimeCodeFlag(self.buff.timecode.flags)
 
     @property
     def time_frame(self):

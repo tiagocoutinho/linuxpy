@@ -11,7 +11,7 @@
 
 import flask
 
-from linux.media.video.device import Device, VideoCapture
+from linux.video.device import Device, VideoCapture
 
 app = flask.Flask("basic-web-cam")
 

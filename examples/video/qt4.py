@@ -7,7 +7,7 @@
 import cv2
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from linux.media.video.device import Device, VideoCapture
+from linux.video.device import Device, VideoCapture
 
 
 def update():

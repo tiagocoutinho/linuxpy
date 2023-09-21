@@ -12,7 +12,7 @@ import numpy
 import pyqtgraph as pg
 from PyQt6 import QtCore
 
-from linux.media.video.device import Device, VideoCapture
+from linux.video.device import Device, VideoCapture
 
 pg.setConfigOption("imageAxisOrder", "row-major")
 

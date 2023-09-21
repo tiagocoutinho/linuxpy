@@ -9,7 +9,7 @@ import time
 
 import gevent
 
-from linux.media.video.device import Device
+from linux.video.device import Device
 from linux.io import GeventIO
 
 

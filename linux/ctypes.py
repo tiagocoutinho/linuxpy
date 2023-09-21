@@ -23,6 +23,8 @@ cint = ctypes.c_int
 cuint = ctypes.c_uint
 cchar = ctypes.c_char
 
+cenum = cuint
+
 sizeof = ctypes.sizeof
 
 calcsize = struct.calcsize
@@ -35,9 +37,9 @@ POINTER = ctypes.POINTER
 class Struct(ctypes.Structure):
     def __repr__(self):
         name = type(self).__name__
-        fields = ', '.join(('{{}}={{}}'.format(field[0], getattr(self, field[0]))
+        fields = ', '.join(('{}={}'.format(field[0], getattr(self, field[0]))
                             for field in self._fields_))
-        return '{{}}({{}})'.format(name, fields)
+        return f'{name}()'
 
     def __iter__(self):
         for fname, _ in self._fields_:

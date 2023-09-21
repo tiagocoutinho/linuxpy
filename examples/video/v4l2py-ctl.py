@@ -6,7 +6,7 @@
 
 import argparse
 
-from linux.media.video.device import Device, MenuControl, LegacyControl
+from linux.video.device import Device, MenuControl, LegacyControl
 
 
 def _get_ctrl(cam, control):

@@ -16,7 +16,7 @@ import mediapipe
 import PIL
 from utimer import timer
 
-from linux.media.video.device import Device, PixelFormat, VideoCapture
+from linux.video.device import Device, PixelFormat, VideoCapture
 
 app = flask.Flask("basic-web-cam")
 
