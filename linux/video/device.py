@@ -23,7 +23,7 @@ from collections import UserDict
 from linux.io import IO
 from linux.ioctl import ioctl
 from linux.ctypes import cenum
-from linux.device import ReentrantContextManager, iter_device_files, device_number
+from linux.device import BaseDevice, ReentrantContextManager, iter_device_files, device_number
 from . import raw
 
 log = logging.getLogger(__name__)
@@ -650,34 +650,10 @@ def enqueue_buffers(
     return [enqueue_buffer(fd, buffer_type, memory, index) for index in range(count)]
 
 
-class Device(ReentrantContextManager):
-    def __init__(self, name_or_file, read_write=True, io=IO, legacy_controls=False):
-        super().__init__()
+class Device(BaseDevice):
+    def __init__(self, name_or_file, read_write=True, io=IO):
         self.info = None
-        self.controls = None
-        self.io = io
-        if isinstance(name_or_file, (str, pathlib.Path)):
-            filename = pathlib.Path(name_or_file)
-            self._read_write = read_write
-            self._fobj = None
-        elif isinstance(name_or_file, IOBase):
-            filename = pathlib.Path(name_or_file.name)
-            self._read_write = "+" in name_or_file.mode
-            self._fobj = name_or_file
-            # this object context manager won't close the file anymore
-            self._context_level += 1
-            self._init()
-        else:
-            raise TypeError(
-                f"name_or_file must be str or a file-like object, not {name_or_file.__class__.__name__}"
-            )
-        self.log = log.getChild(filename.stem)
-        self.filename = filename
-        self.index = device_number(filename)
-        self.legacy_controls = legacy_controls
-
-    def __repr__(self):
-        return f"<{type(self).__name__} name={self.filename}, closed={self.closed}>"
+        super().__init__(name_or_file, read_write=read_write, io=io)
 
     def __iter__(self):
         with VideoCapture(self) as stream:
@@ -688,41 +664,13 @@ class Device(ReentrantContextManager):
             async for frame in stream:
                 yield frame
 
+    def _init(self):
+        self.info = read_info(self.fileno())
+        self.controls = Controls.from_device(self)
+
     @classmethod
     def from_id(cls, did: int, **kwargs):
         return cls("/dev/video{}".format(did), **kwargs)
-
-    def _init(self):
-        self.info = read_info(self.fileno())
-        if self.legacy_controls:
-            self.controls = LegacyControls.from_device(self)
-        else:
-            self.controls = Controls.from_device(self)
-
-    def open(self):
-        if not self._fobj:
-            self.log.info("opening %s", self.filename)
-            self._fobj = self.io.open(self.filename, self._read_write)
-            self._init()
-            self.log.info("opened %s (%s)", self.filename, self.info.card)
-
-    def close(self):
-        if not self.closed:
-            self.log.info("closing %s (%s)", self.filename, self.info.card)
-            self._fobj.close()
-            self._fobj = None
-            self.log.info("closed %s (%s)", self.filename, self.info.card)
-
-    def fileno(self):
-        return self._fobj.fileno()
-
-    @property
-    def closed(self):
-        return self._fobj is None or self._fobj.closed
-
-    @property
-    def is_blocking(self):
-        return os.get_blocking(self.fileno())
 
     def query_buffer(self, buffer_type, memory, index):
         return query_buffer(self.fileno(), buffer_type, memory, index)
@@ -893,15 +841,6 @@ class Controls(dict):
         for v in self.values():
             if isinstance(v, BaseNumericControl):
                 v.clipping = clipping
-
-
-class LegacyControls(Controls):
-    @classmethod
-    def from_device(cls, device):
-        ctrl_dict = dict()
-        for ctrl in device.info.controls:
-            ctrl_dict[ctrl.id] = LegacyControl(device, ctrl)
-        return cls(ctrl_dict)
 
 
 class BaseControl:
@@ -1233,61 +1172,6 @@ class ButtonControl(BaseControl):
 class BaseCompoundControl(BaseControl):
     def __init__(self, device, info):
         raise NotImplementedError()
-
-
-class LegacyMenuItem:
-    def __init__(self, item: raw.v4l2_querymenu):
-        self.item = item
-        self.index = item.index
-        self.name = item.name.decode()
-
-    def __repr__(self) -> str:
-        return f"<{type(self).__name__} index={self.index} name={self.name}>"
-
-
-class LegacyControl(BaseNumericControl):
-    def __init__(self, device, info):
-        super().__init__(device, info)
-
-        self.info = self._info
-        if self.type == ControlType.MENU:
-            self.menu = {
-                menu.index: LegacyMenuItem(menu)
-                for menu in iter_read_menu(self.device._fobj, self)
-            }
-        else:
-            self.menu = {}
-
-    def _get_repr(self) -> str:
-        repr = f"type={self.type.name.lower()}"
-        repr += super()._get_repr()
-        return repr
-
-    @property
-    def is_writeonly(self) -> bool:
-        return self.is_flagged_write_only
-
-    @property
-    def is_readonly(self) -> bool:
-        return self.is_flagged_read_only
-
-    @property
-    def is_inactive(self) -> bool:
-        return self.is_flagged_inactive
-
-    @property
-    def is_grabbed(self) -> bool:
-        return self.is_flagged_grabbed
-
-    @property
-    def is_disabled(self) -> bool:
-        return self.is_flagged_disabled
-
-    def increase(self, steps: int = 1):
-        self.value += steps * self.step
-
-    def decrease(self, steps: int = 1):
-        self.value -= steps * self.step
 
 
 class DeviceHelper:

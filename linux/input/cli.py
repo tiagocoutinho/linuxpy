@@ -10,7 +10,7 @@ import shutil
 import beautifultable
 import typer
 
-from .device import EventType, InputDevice, async_event_stream, iter_input_files
+from .device import EventType, Device, async_event_stream, iter_input_files
 
 app = typer.Typer()
 
@@ -62,8 +62,8 @@ def create_state_template(state):
 def table():
     table = beautifultable.BeautifulTable()
     table.maxwidth = shutil.get_terminal_size().columns
-    for path in iter_input_files():
-        with InputDevice(path) as dev:
+    for path in sorted(iter_input_files()):
+        with Device(path) as dev:
             caps = ", ".join(name(cap) for cap in dev.capabilities)
             table.rows.append((dev.name, path, caps))
     typer.echo(table)
@@ -88,7 +88,7 @@ def listen(path: str):
                 continue
             print(template.format(**state), end="\n", flush=True)
 
-    with InputDevice(path) as device:
+    with Device(path) as device:
         state = create_state(device)
         template = create_state_template(state)
         asyncio.run(event_loop())
@@ -96,7 +96,7 @@ def listen(path: str):
 
 @app.command()
 def info(path: str):
-    with InputDevice(path) as dev:
+    with Device(path) as dev:
         typer.echo(dev.name)
         for cap, items in dev.capabilities.items():
             items = ", ".join(item.name.rsplit("_", 1)[-1] for item in items)

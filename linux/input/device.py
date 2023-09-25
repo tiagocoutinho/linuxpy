@@ -9,11 +9,10 @@ import collections
 import enum
 import functools
 import select
-import stat
 import os
 
 from linux.ctypes import cint, cuint, i32, cvoidp, sizeof, create_string_buffer, cast
-from linux.device import iter_device_files, ReentrantContextManager
+from linux.device import iter_device_files, BaseDevice
 from linux.ioctl import ioctl, IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR
 from .raw import Bus, Key, Led, Sound, Switch, Synchronization, Relative, Absolute, Miscelaneous, AutoRepeat, ForceFeedback
 from .raw import EventType
@@ -265,30 +264,6 @@ InputEvent = _build_struct_type(
 )
 
 
-class InputFile(object):
-    def __init__(self, path):
-        self.path = path
-        self._fd = None
-
-    def open(self):
-        self.close()
-        self._fd = os.open(self.path, flags=os.O_RDWR | os.O_NONBLOCK)
-
-    def close(self):
-        if self._fd is not None:
-            os.close(self._fd)
-            self._fd = None
-
-    def fileno(self):
-        return self._fd
-
-    def read(self, n):
-        return os.read(self._fd, n)
-
-    def write(self, data):
-        return os.write(self._fd, data)
-
-
 class _Type:
     _event_type = None
 
@@ -341,62 +316,49 @@ class _Keys(_Type):
             return super().__getattr__(name)
 
 
-class InputDevice(object):
+class Device(BaseDevice):
     absolute = _Abs()
     keys = _Keys()
 
-    def __init__(self, path):
+    def __init__(self, *args, **kwargs):
         self._caps = None
-        self._fileobj = InputFile(path)
+        super().__init__(*args, **kwargs)
 
-    def __enter__(self):
-        self._fileobj.open()
-        return self
-
-    def __exit__(self, *_):
-        self.close()
-
-    def fileno(self):
-        return self._fileobj.fileno()
-
-    def open(self):
-        self._fileobj.open()
-
-    def close(self):
-        self._fileobj.close()
+    def _init(self):
+        pass
 
     @property
     def uid(self):
-        return uid(self._fileobj)
+        return uid(self.fileno())
 
     @property
     def name(self):
-        return name(self._fileobj)
+        return name(self.fileno())
 
     @property
     def version(self):
-        return version(self._fileobj)
+        return version(self.fileno())
 
     @property
     def physical_location(self):
-        return physical_location(self._fileobj)
+        return physical_location(self.fileno())
 
     @property
     def device_id(self):
-        return device_id(self._fileobj)
+        return device_id(self.fileno())
 
     @property
     def capabilities(self):
         if self._caps is None:
-            self._caps = capabilities(self._fileobj)
+            self._caps = capabilities(self.fileno())
         return self._caps
 
     @property
     def active_keys(self):
-        return active_keys(self._fileobj)
+        return active_keys(self.fileno())
 
     def get_abs_info(self, abs_code):
-        return abs_info(self._fileobj, abs_code)
+        return abs_info(self.fileno(), abs_code)
 
     @property
     def x(self):
@@ -427,11 +389,7 @@ class InputDevice(object):
         Read event.
         Event must be available to read or otherwise will raise an error
         """
-        return InputEvent.from_struct(read_event(self._fileobj.fileno()))
-
-
-class Device(ReentrantContextManager):
-    pass
+        return InputEvent.from_struct(read_event(self.fileno()))
 
 
 def event_stream(fd):
@@ -453,7 +411,7 @@ async def async_event_stream(fd, maxsize=1000):
 
 def find_gamepads():
     for path in iter_input_files():
-        with InputDevice(path) as dev:
+        with Device(path) as dev:
             caps = dev.capabilities
         if EventType.ABS in caps and Key.BTN_GAMEPAD in caps.get(
             EventType.KEY, ()
@@ -463,7 +421,7 @@ def find_gamepads():
 
 def find_keyboards():
     for path in iter_input_files():
-        with InputDevice(path) as dev:
+        with Device(path) as dev:
             caps = dev.capabilities
         key_caps = caps.get(EventType.KEY, ())
         if Key.KEY_A in key_caps and Key.KEY_CAPSLOCK in key_caps:
@@ -473,7 +431,7 @@ def find_keyboards():
 def main():
     import sys
 
-    with InputDevice(sys.argv[1]) as dev:
+    with Device(sys.argv[1]) as dev:
         print("version:", version(dev))
         print(
             "ID: bus={0.bustype} vendor={0.vendor} product={0.product} "
