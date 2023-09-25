@@ -42,9 +42,13 @@ cast = ctypes.cast
 class Struct(ctypes.Structure):
     def __repr__(self):
         name = type(self).__name__
-        fields = ', '.join(('{}={}'.format(field[0], getattr(self, field[0]))
-                            for field in self._fields_))
-        return f'{name}()'
+        fields = ", ".join(
+            (
+                "{}={}".format(field[0], getattr(self, field[0]))
+                for field in self._fields_
+            )
+        )
+        return f"{name}()"
 
     def __iter__(self):
         for fname, _ in self._fields_:

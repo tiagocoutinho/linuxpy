@@ -1042,4 +1042,3 @@ ff_effect._fields_ = [
     ("replay", ff_replay),
     ("u", ff_effect.M1),
 ]
-

@@ -3433,4 +3433,3 @@ class IOC(enum.IntEnum):
     SUBDEV_ENUM_DV_TIMINGS = _IOWR("V", 98, v4l2_enum_dv_timings)
     SUBDEV_QUERY_DV_TIMINGS = _IOR("V", 99, v4l2_dv_timings)
     SUBDEV_DV_TIMINGS_CAP = _IOWR("V", 100, v4l2_dv_timings_cap)
-

@@ -29,13 +29,13 @@ class ReentrantContextManager:
 
     def open(self):
         raise NotImplementedError
-    
+
     def close(self):
         raise NotImplementedError
 
 
 def device_number(path: PathType):
-    """Retrieves device """
+    """Retrieves device"""
     num = ""
     for c in str(path)[::-1]:
         if c.isdigit():
@@ -56,7 +56,9 @@ def is_device_file(path: PathType, read_write: bool = True):
     return True
 
 
-def iter_device_files(path: PathType = "/dev", pattern: str = "*") -> list[pathlib.Path]:
+def iter_device_files(
+    path: PathType = "/dev", pattern: str = "*"
+) -> list[pathlib.Path]:
     path = pathlib.Path(path)
     items = path.glob(pattern)
 
@@ -64,7 +66,6 @@ def iter_device_files(path: PathType = "/dev", pattern: str = "*") -> list[pathl
 
 
 class BaseDevice(ReentrantContextManager):
-
     def __init__(self, name_or_file, read_write=True, io=IO):
         super().__init__()
         self.controls = None
@@ -90,7 +91,7 @@ class BaseDevice(ReentrantContextManager):
 
     def __repr__(self):
         return f"<{type(self).__name__} name={self.filename}, closed={self.closed}>"
-    
+
     def _init(self):
         raise NotImplementedError
 
@@ -110,7 +111,7 @@ class BaseDevice(ReentrantContextManager):
 
     def fileno(self):
         return self._fobj.fileno()
-    
+
     @property
     def closed(self):
         return self._fobj is None or self._fobj.closed

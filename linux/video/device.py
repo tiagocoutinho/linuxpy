@@ -23,7 +23,12 @@ from collections import UserDict
 from linux.io import IO
 from linux.ioctl import ioctl
 from linux.ctypes import cenum
-from linux.device import BaseDevice, ReentrantContextManager, iter_device_files, device_number
+from linux.device import (
+    BaseDevice,
+    ReentrantContextManager,
+    iter_device_files,
+    device_number,
+)
 from . import raw
 
 log = logging.getLogger(__name__)

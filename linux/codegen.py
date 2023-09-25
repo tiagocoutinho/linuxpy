@@ -36,13 +36,17 @@ MACRO_RE = re.compile(r"#define[ \t]+(?P<name>[\w]+)[ \t]+(?P<value>.+)\s*")
 
 
 class CEnum:
-    def __init__(self, name, prefixes, klass=None, with_prefix=False, filter=lambda _: True):
+    def __init__(
+        self, name, prefixes, klass=None, with_prefix=False, filter=lambda _: True
+    ):
         self.name = name
         if isinstance(prefixes, str):
             prefixes = [prefixes]
         self.prefixes = prefixes
         if klass is None:
-            klass = "IntFlag" if any("FLAG" in prefix for prefix in prefixes) else "IntEnum"
+            klass = (
+                "IntFlag" if any("FLAG" in prefix for prefix in prefixes) else "IntEnum"
+            )
         self.klass = klass
         self.with_prefix = with_prefix
         self.values = None
@@ -67,8 +71,8 @@ class {self.name}(enum.{self.klass}):
 {fields}
 """
 
-class CStruct:
 
+class CStruct:
     def __init__(self, node, node_members, pack=False):
         self.node = node
         self.node_members = node_members
@@ -83,11 +87,11 @@ class CStruct:
     @property
     def type(self):
         return self.node.tag
-    
+
     @property
     def id(self):
         return self.node.get("id")
-    
+
     @property
     def member_ids(self):
         return self.node.get("members").split()
@@ -104,7 +108,7 @@ class CStruct:
             text += "    _pack_ = True\n"
         if self.children:
             children = "\n".join(str(child) for child in self.children.values())
-            text += textwrap.indent(children, 4*" ")
+            text += textwrap.indent(children, 4 * " ")
             text += "\n"
         if self.anonymous_fields:
             text += f"    _anonymous_ = {tuple(self.anonymous_fields)}\n"
@@ -132,9 +136,9 @@ def macro_lines(filename):
 def decode_macro_value(value, context, name_map):
     value = value.replace("*/", "")
     value = value.replace("/*", "#")
-    value = value.replace("struct " , "")
+    value = value.replace("struct ", "")
     value = value.strip()
-    for dtype in 'ui':
+    for dtype in "ui":
         for size in (8, 16, 32, 64):
             typ = f"{dtype}{size}"
             value = value.replace(f"__{typ}", typ)
@@ -170,7 +174,7 @@ def fill_macros(filename, name_map, enums):
         if not cenum.filter(cname):
             continue
         py_value = decode_macro_value(cvalue, cenum, name_map)
-        py_name = cname[0 if cenum.with_prefix else len(prefix):]
+        py_name = cname[0 if cenum.with_prefix else len(prefix) :]
         if py_name[0].isdigit():
             py_name = f"_{py_name}"
         cenum.add_item(py_name, py_value)
@@ -251,13 +255,17 @@ def get_structs(header_filename, xml_filename):
     return structs
 
 
-def cname_to_pyname(name: str, capitalize=True, splitby="_",):
+def cname_to_pyname(
+    name: str,
+    capitalize=True,
+    splitby="_",
+):
     if name.startswith("v4l2_"):
         name = name[5:]
     if capitalize:
         name = name.capitalize()
     return "".join(map(str.capitalize, name.split(splitby)))
-    
+
 
 def get_enums(header_filename, xml_filename, enums):
     etree = xml.etree.ElementTree.parse(xml_filename)
@@ -305,11 +313,12 @@ def run(name, headers, template, macro_enums):
 
         get_enums(header, xml_filename, macro_enums)
 
-
-    structs_body = "\n\n".join(str(struct) for struct in structs.values() if struct.parent is None)
+    structs_body = "\n\n".join(
+        str(struct) for struct in structs.values() if struct.parent is None
+    )
     enums_body = "\n\n".join(str(enum) for enum in macro_enums if enum.name != "IOC")
     iocs_body = "\n\n".join(str(enum) for enum in macro_enums if enum.name == "IOC")
-    
+
     fields = {
         "name": name,
         "date": datetime.datetime.now(),

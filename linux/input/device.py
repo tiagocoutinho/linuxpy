@@ -14,7 +14,19 @@ import os
 from linux.ctypes import cint, cuint, i32, cvoidp, sizeof, create_string_buffer, cast
 from linux.device import iter_device_files, BaseDevice
 from linux.ioctl import ioctl, IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR
-from .raw import Bus, Key, Led, Sound, Switch, Synchronization, Relative, Absolute, Miscelaneous, AutoRepeat, ForceFeedback
+from .raw import (
+    Bus,
+    Key,
+    Led,
+    Sound,
+    Switch,
+    Synchronization,
+    Relative,
+    Absolute,
+    Miscelaneous,
+    AutoRepeat,
+    ForceFeedback,
+)
 from .raw import EventType
 from .raw import input_id, input_absinfo, input_mask, input_event
 from .raw import ff_effect
@@ -31,6 +43,7 @@ IOWR = functools.partial(_IOWR, EVDEV_MAGIC)
 
 
 _S_BUFF = 512
+
 
 def _enum_max(enu):
     # danger: assuming last enum element is _MAX (ex: Key is KEY_MAX)
@@ -413,9 +426,7 @@ def find_gamepads():
     for path in iter_input_files():
         with Device(path) as dev:
             caps = dev.capabilities
-        if EventType.ABS in caps and Key.BTN_GAMEPAD in caps.get(
-            EventType.KEY, ()
-        ):
+        if EventType.ABS in caps and Key.BTN_GAMEPAD in caps.get(EventType.KEY, ()):
             yield dev
 
 
@@ -450,4 +461,3 @@ def main():
 
 if __name__ == "__main__":
     dev = main()
-

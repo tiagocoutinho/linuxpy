@@ -19,7 +19,7 @@ def fopen(path, rw=False, binary=True, blocking=False):
         kwargs["opener"] = opener
     flags = "rb" if binary else "r"
     if rw:
-        flags += "+" 
+        flags += "+"
     return open(path, flags, **kwargs)
 
 
