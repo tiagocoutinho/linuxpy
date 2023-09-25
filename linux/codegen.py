@@ -36,7 +36,7 @@ MACRO_RE = re.compile(r"#define[ \t]+(?P<name>[\w]+)[ \t]+(?P<value>.+)\s*")
 
 
 class CEnum:
-    def __init__(self, name, prefixes, klass=None, with_prefix=False):
+    def __init__(self, name, prefixes, klass=None, with_prefix=False, filter=lambda _: True):
         self.name = name
         if isinstance(prefixes, str):
             prefixes = [prefixes]
@@ -46,6 +46,7 @@ class CEnum:
         self.klass = klass
         self.with_prefix = with_prefix
         self.values = None
+        self.filter = filter
 
     def add_item(self, name, value):
         if self.empty:
@@ -166,6 +167,8 @@ def fill_macros(filename, name_map, enums):
         if cenum is None:
             continue
         cenum, prefix = cenum
+        if not cenum.filter(cname):
+            continue
         py_value = decode_macro_value(cvalue, cenum, name_map)
         py_name = cname[0 if cenum.with_prefix else len(prefix):]
         if py_name[0].isdigit():

@@ -66,7 +66,7 @@ MACRO_ENUMS = [
     CEnum("TimeCodeFlag", "V4L2_TC_FLAG_", "IntFlag"),
     CEnum("EventType", "V4L2_EVENT_"),
     CEnum("EventSubscriptionFlag", "V4L2_EVENT_SUB_FL_", "IntFlag"),
-    CEnum("IOC", "VIDIOC_", "Enum"),
+    CEnum("IOC", "VIDIOC_"),
 ]
 
 

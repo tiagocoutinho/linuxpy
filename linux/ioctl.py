@@ -64,5 +64,5 @@ def IOWR(magic, number, size):
 
 
 def ioctl(fd, request, arg):
-    log.debug("%s, request=%s, arg=%s", fd, request.name, arg)
-    return fcntl.ioctl(fd, request.value, arg)
+    log.debug("%s, request=%s, arg=%s", fd, request, arg)
+    return fcntl.ioctl(fd, request, arg)

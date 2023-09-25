@@ -19,11 +19,13 @@ u16 = ctypes.c_uint16
 u32 = ctypes.c_uint32
 u64 = ctypes.c_uint64
 
+
 cint = ctypes.c_int
 cuint = ctypes.c_uint
 cchar = ctypes.c_char
 
 cenum = cuint
+cvoidp = ctypes.c_void_p
 
 sizeof = ctypes.sizeof
 
@@ -32,6 +34,9 @@ calcsize = struct.calcsize
 Union = ctypes.Union
 
 POINTER = ctypes.POINTER
+
+create_string_buffer = ctypes.create_string_buffer
+cast = ctypes.cast
 
 
 class Struct(ctypes.Structure):

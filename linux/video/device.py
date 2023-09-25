@@ -23,10 +23,10 @@ from collections import UserDict
 from linux.io import IO
 from linux.ioctl import ioctl
 from linux.ctypes import cenum
+from linux.device import ReentrantContextManager, iter_device_files, device_number
 from . import raw
 
 log = logging.getLogger(__name__)
-log_ioctl = log.getChild("ioctl")
 log_mmap = log.getChild("mmap")
 
 
@@ -67,8 +67,8 @@ InputStatus = raw.InputStatus
 InputType = raw.InputType
 InputCapabilities = raw.InputCapabilities
 Priority = raw.Priority
-TimeCode = raw.TimeCodeType
-TimeFlag = raw.TimeCodeFlag
+TimeCodeType = raw.TimeCodeType
+TimeCodeFlag = raw.TimeCodeFlag
 EventSubscriptionFlag = raw.EventSubscriptionFlag
 
 
@@ -518,7 +518,7 @@ def stream_off(fd, buffer_type):
 def set_selection(fd, buffer_type, rectangles):
     sel = raw.v4l2_selection()
     sel.type = buffer_type
-    sel.target = raw.V4L2_SEL_TGT_CROP
+    sel.target = SelectionTarget.CROP
     sel.rectangles = len(rectangles)
     rects = (raw.v4l2_ext_rect * sel.rectangles)()
 
@@ -573,13 +573,13 @@ def set_control(fd, id, value):
 
 
 def get_priority(fd) -> Priority:
-    priority = raw.enum()
+    priority = ctypes.c_uint()
     ioctl(fd, IOC.G_PRIORITY, priority)
     return Priority(priority.value)
 
 
 def set_priority(fd, priority: Priority):
-    priority = raw.enum(priority.value)
+    priority = ctypes.c_uint(priority.value)
     ioctl(fd, IOC.S_PRIORITY, priority)
 
 
@@ -648,22 +648,6 @@ def enqueue_buffers(
     fd, buffer_type: BufferType, memory: Memory, count: int
 ) -> typing.List[raw.v4l2_buffer]:
     return [enqueue_buffer(fd, buffer_type, memory, index) for index in range(count)]
-
-
-class ReentrantContextManager:
-    def __init__(self):
-        self._context_level = 0
-
-    def __enter__(self):
-        if not self._context_level:
-            self.open()
-        self._context_level += 1
-        return self
-
-    def __exit__(self, *exc):
-        self._context_level -= 1
-        if not self._context_level:
-            self.close()
 
 
 class Device(ReentrantContextManager):
@@ -1718,19 +1702,8 @@ class VideoOutput(BufferManager):
         self.buffer = None
 
 
-def device_number(path):
-    num = ""
-    for c in str(path)[::-1]:
-        if c.isdigit():
-            num = c + num
-        else:
-            break
-    return int(num) if num else None
-
-
 def iter_video_files(path="/dev"):
-    path = pathlib.Path(path)
-    return sorted(path.glob("video*"))
+    return iter_device_files(path=path, pattern="video*")
 
 
 def iter_devices(path="/dev", **kwargs):

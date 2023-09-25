@@ -45,7 +45,7 @@ from linux.ctypes import Struct, Union, POINTER, timeval
 # macros from #define statements
 MACRO_ENUMS = [
     CEnum("Property", "INPUT_PROP_"),
-    CEnum("EventType", "EV_"),
+    CEnum("EventType", "EV_", filter=lambda name: name != "EV_VERSION"),
     CEnum("Key", ["KEY_", "BTN_"], with_prefix=True),
     CEnum("Relative", "REL_"),
     CEnum("Absolute", "ABS_"),
@@ -61,7 +61,8 @@ MACRO_ENUMS = [
     CEnum("Sound", "SND_"),
     CEnum("Switch", "SW_"),
     CEnum("AutoRepeat", "REP_"),
-    CEnum("IOC", "EVIOC")
+    # IOC values are too complex to generate for now
+    # CEnum("IOC", "EVIOC")
 ]
 
 
