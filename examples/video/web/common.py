@@ -11,7 +11,7 @@ import io
 import cv2
 import PIL.Image
 
-from linux.video.device import Device, PixelFormat, VideoCapture
+from linuxpy.video.device import Device, PixelFormat, VideoCapture
 
 BOUNDARY = "frame"
 HEADER = (

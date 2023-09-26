@@ -13,7 +13,7 @@
 import cv2
 from qtpy import QtCore, QtGui, QtWidgets
 
-from linux.video.device import Device, PixelFormat, VideoCapture
+from linuxpy.video.device import Device, PixelFormat, VideoCapture
 
 
 class QVideo(QtWidgets.QWidget):

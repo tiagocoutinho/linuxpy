@@ -20,10 +20,10 @@ import typing
 from io import IOBase
 from collections import UserDict
 
-from linux.io import IO
-from linux.ioctl import ioctl
-from linux.ctypes import cenum
-from linux.device import (
+from linuxpy.io import IO
+from linuxpy.ioctl import ioctl
+from linuxpy.ctypes import cenum
+from linuxpy.device import (
     BaseDevice,
     ReentrantContextManager,
     iter_device_files,

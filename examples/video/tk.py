@@ -10,7 +10,7 @@ from tkinter import READABLE, Canvas, Tk
 
 from PIL import Image, ImageTk
 
-from linux.video.device import Device, VideoCapture
+from linuxpy.video.device import Device, VideoCapture
 
 fmt = "%(threadName)-10s %(asctime)-15s %(levelname)-5s %(name)s: %(message)s"
 logging.basicConfig(level="INFO", format=fmt)

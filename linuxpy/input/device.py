@@ -11,9 +11,9 @@ import functools
 import select
 import os
 
-from linux.ctypes import cint, cuint, i32, cvoidp, sizeof, create_string_buffer, cast
-from linux.device import iter_device_files, BaseDevice
-from linux.ioctl import ioctl, IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR
+from linuxpy.ctypes import cint, cuint, i32, cvoidp, sizeof, create_string_buffer, cast
+from linuxpy.device import iter_device_files, BaseDevice
+from linuxpy.ioctl import ioctl, IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR
 from .raw import (
     Bus,
     Key,

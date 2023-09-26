@@ -12,9 +12,9 @@
 
 import enum
 
-from linux.ioctl import IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR
-from linux.ctypes import u8, i8, u16, i16, u32, i32, u64, i64, cuint, cint, cchar
-from linux.ctypes import Struct, Union, POINTER, timeval
+from linuxpy.ioctl import IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR
+from linuxpy.ctypes import u8, i8, u16, i16, u32, i32, u64, i64, cuint, cint, cchar
+from linuxpy.ctypes import Struct, Union, POINTER, timeval
 
 
 class Property(enum.IntEnum):

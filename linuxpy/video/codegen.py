@@ -4,7 +4,7 @@
 # Copyright (c) 2023 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
-from linux.codegen import CEnum, run
+from linuxpy.codegen import CEnum, run
 
 
 HEADERS = [
@@ -32,10 +32,10 @@ TEMPLATE = """\
 
 import enum
 
-from linux.ioctl import IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR 
-from linux.ctypes import u8, i8, u16, i16, u32, i32, u64, i64, cuint, cint, cchar
-from linux.ctypes import Struct, Union, POINTER, timeval, timespec
-from linux.video.util import v4l2_fourcc, v4l2_fourcc_be
+from linuxpy.ioctl import IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR 
+from linuxpy.ctypes import u8, i8, u16, i16, u32, i32, u64, i64, cuint, cint, cchar
+from linuxpy.ctypes import Struct, Union, POINTER, timeval, timespec
+from linuxpy.video.util import v4l2_fourcc, v4l2_fourcc_be
 
 v4l2_std_id = u64
 

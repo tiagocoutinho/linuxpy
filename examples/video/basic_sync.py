@@ -7,7 +7,7 @@
 import logging
 import time
 
-from linux.video.device import Device
+from linuxpy.video.device import Device
 
 
 def main():

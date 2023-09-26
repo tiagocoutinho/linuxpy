@@ -8,7 +8,7 @@ import asyncio
 import logging
 import time
 
-from linux.video.device import Device, VideoCapture
+from linuxpy.video.device import Device, VideoCapture
 
 
 async def loop(variable):

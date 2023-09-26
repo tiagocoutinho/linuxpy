@@ -1,5 +1,5 @@
 [project]
-name = "python-linux"
+name = "linuxpy"
 description = "Human friendly interface to linux subsystems using python"
 license = {text = "GPL-3.0-or-later"}
 authors = [
@@ -29,9 +29,9 @@ dynamic = ["version", "readme"]
 
 [project.urls]
 #Changelog = "https://github.com/encode/httpx/blob/master/CHANGELOG.md"
-Documentation = "https://github.com/tiagocoutinho/python-linux"
-Homepage = "https://github.com/tiagocoutinho/python-linux"
-Source = "https://github.com/tiagocoutinho/python-linux"
+Documentation = "https://github.com/tiagocoutinho/linuxpy"
+Homepage = "https://github.com/tiagocoutinho/linuxpy"
+Source = "https://github.com/tiagocoutinho/linuxpy"
 
 [project.optional-dependencies]
 build = [
@@ -56,10 +56,10 @@ requires = ["setuptools >= 40.9.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["linux"]
+packages = ["linuxpy"]
 
 [tool.setuptools.dynamic]
-version = {attr = "linux.__version__"}
+version = {attr = "linuxpy.__version__"}
 readme = {file = ["README.md"], content-type = "text/markdown"}
 
 [tool.ward]

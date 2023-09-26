@@ -16,7 +16,7 @@ import logging
 
 import fastapi.responses
 
-from linux.video.device import Device, VideoCapture
+from linuxpy.video.device import Device, VideoCapture
 
 PREFIX = b"--frame\r\nContent-Type: image/jpeg\r\n\r\n"
 SUFFIX = b"\r\n"

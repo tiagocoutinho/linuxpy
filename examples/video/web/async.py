@@ -23,7 +23,7 @@ from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from linux.video.device import ControlType, Device, iter_video_capture_devices
+from linuxpy.video.device import ControlType, Device, iter_video_capture_devices
 
 logging.basicConfig(
     level="INFO",

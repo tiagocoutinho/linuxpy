@@ -7,7 +7,7 @@
 import cv2
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from linux.video.device import Device, VideoCapture, ControlType
+from linuxpy.video.device import Device, VideoCapture, ControlType
 
 
 class QVideo(QtWidgets.QWidget):
