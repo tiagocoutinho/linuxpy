@@ -1,5 +1,10 @@
 # linuxpy
 
+[![linuxpy][pypi-version]](https://pypi.python.org/pypi/linuxpy)
+[![Python Versions][pypi-python-versions]](https://pypi.python.org/pypi/linuxpy)
+![License][license]
+[![CI][CI]](https://github.com/tiagocoutinho/linuxpy/actions/workflows/ci.yml)
+
 Human friendly interface to linux subsystems using python.
 
 A two purpose API:
@@ -15,7 +20,7 @@ Only works on python >= 3.7.
 From within your favorite python environment:
 
 ```bash
-$ pip install v4l2py
+$ pip install linuxpy
 ```
 
 ## Subsystems
@@ -182,3 +187,20 @@ $ FLASK_APP=web flask run -h 0.0.0.0
 
 Point your browser to [127.0.0.1:5000](http://127.0.0.1:5000) and you should see
 your camera rolling!
+
+### Input
+
+API not documented yet. Just this example:
+
+```python
+import time
+from linuxpy.input.device import find_gamepads
+
+pad = next(find_gamepads())
+abs = pad.absolute
+
+with pad:
+    while True:
+	    print(f"X:{abs.x:>3} | Y:{abs.y:>3} | RX:{abs.rx:>3} | RY:{abs.ry:>3}", end="\r", flush=True)
+	    time.sleep(0.1)
+```
