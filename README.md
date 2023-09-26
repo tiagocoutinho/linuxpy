@@ -204,3 +204,10 @@ with pad:
 	    print(f"X:{abs.x:>3} | Y:{abs.y:>3} | RX:{abs.rx:>3} | RY:{abs.ry:>3}", end="\r", flush=True)
 	    time.sleep(0.1)
 ```
+
+
+[pypi-python-versions]: https://img.shields.io/pypi/pyversions/linuxpy.svg
+[pypi-version]: https://img.shields.io/pypi/v/linuxpy.svg
+[pypi-status]: https://img.shields.io/pypi/status/linuxpy.svg
+[license]: https://img.shields.io/pypi/l/linuxpy.svg
+[CI]: https://github.com/tiagocoutinho/linuxpy/actions/workflows/ci.yml/badge.svg
