@@ -6,9 +6,6 @@ from io import IOBase
 from .io import IO
 
 
-PathType = pathlib.Path | str
-
-
 log = logging.getLogger(__name__)
 
 
@@ -34,7 +31,7 @@ class ReentrantContextManager:
         raise NotImplementedError
 
 
-def device_number(path: PathType):
+def device_number(path):
     """Retrieves device"""
     num = ""
     for c in str(path)[::-1]:
@@ -45,7 +42,7 @@ def device_number(path: PathType):
     return int(num) if num else None
 
 
-def is_device_file(path: PathType, read_write: bool = True):
+def is_device_file(path, read_write=True):
     """Check if path is a readable (and, optionally, writable) character device."""
     path = pathlib.Path(path)
     if not path.is_char_device():
@@ -56,9 +53,7 @@ def is_device_file(path: PathType, read_write: bool = True):
     return True
 
 
-def iter_device_files(
-    path: PathType = "/dev", pattern: str = "*"
-) -> list[pathlib.Path]:
+def iter_device_files(path="/dev", pattern="*"):
     path = pathlib.Path(path)
     items = path.glob(pattern)
 
