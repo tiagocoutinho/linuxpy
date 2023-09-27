@@ -38,6 +38,7 @@ INDEX = """\
 </html>
 """
 
+
 @contextmanager
 def elapsed(name) -> float:
     start = time.perf_counter()
@@ -120,6 +121,7 @@ def gen_frames():
                     yield b"".join((PREFIX, jpeg, SUFFIX))
                     for name, measurement in timer.measurements.items():
                         print(f"{name}: {measurement.last*1000:0.1f}ms")
+
 
 @app.get("/")
 def index():

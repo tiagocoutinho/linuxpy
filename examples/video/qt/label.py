@@ -15,7 +15,7 @@ def update():
     bgr = cv2.imdecode(frame.array, cv2.IMREAD_UNCHANGED)
     img = QtGui.QImage(bgr, 640, 480, QtGui.QImage.Format.Format_BGR888)
     label.setPixmap(QtGui.QPixmap.fromImage(img))
-    #app.processEvents()
+    # app.processEvents()
 
 
 app = QtWidgets.QApplication([])

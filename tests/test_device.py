@@ -5,7 +5,7 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 import os
-from contextlib import contextmanager, ExitStack
+from contextlib import ExitStack, contextmanager
 from errno import EINVAL
 from inspect import isgenerator
 from math import isclose

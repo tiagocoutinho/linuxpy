@@ -1,4 +1,3 @@
-
 #
 # This file is part of the python-linux project
 #

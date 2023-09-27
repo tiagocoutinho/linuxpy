@@ -37,7 +37,6 @@ class QVideo(QtWidgets.QWidget):
         painter.drawImage(QtCore.QPointF(), self.image)
 
 
-
 class QControlPanel(QtWidgets.QGroupBox):
     def __init__(self, parent=None):
         super().__init__("Controls", parent)
@@ -50,9 +49,14 @@ class QControlPanel(QtWidgets.QGroupBox):
 
 
 def controls(device):
-
     for control in device.controls.values():
-        if control.type in (ControlType.INTEGER, ControlType.INTEGER64, ControlType.U8, ControlType.U16, ControlType.U32):
+        if control.type in (
+            ControlType.INTEGER,
+            ControlType.INTEGER64,
+            ControlType.U8,
+            ControlType.U16,
+            ControlType.U32,
+        ):
             QtWidgets.QSpinBox()
 
 
