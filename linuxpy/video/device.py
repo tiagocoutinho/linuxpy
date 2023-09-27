@@ -13,11 +13,8 @@ import errno
 import fractions
 import logging
 import mmap
-import os
-import pathlib
 import select
 import typing
-from io import IOBase
 from collections import UserDict
 
 from linuxpy.io import IO
