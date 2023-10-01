@@ -10,6 +10,8 @@ from .base import CEnum, run
 HEADERS = [
     "/usr/include/linux/usbdevice_fs.h",
     "/usr/include/linux/usbip.h",
+    "/usr/include/linux/usb/ch9.h",
+    "/usr/include/linux/usb/ch11.h",
 ]
 
 
@@ -48,6 +50,13 @@ MACRO_ENUMS = [
     CEnum("Capability", "USBDEVFS_CAP_", "IntFlag"),
     CEnum("DisconnectClaim", "USBDEVFS_DISCONNECT_CLAIM_", "IntFlag"),
     CEnum("IOC", "USBDEVFS_", filter=lambda name, value: "_IO" in value and not name.endswith("32")),
+    CEnum("Direction", "USB_DIR_"),
+    CEnum("RequestType", "USB_TYPE_"),
+    CEnum("Recipient", "USB_RECIP_"),
+    CEnum("Request", "USB_REQ_"),
+    CEnum("Device", "USB_DEVICE_"),
+    CEnum("Test", "USB_TEST_"),
+    CEnum("StatusType", "USB_STATUS_TYPE_"),
 ]
 
 

@@ -37,7 +37,7 @@ fsword = cuint
 fsblkcnt = culong
 fsfilcnt = culong
 
-
+cast = ctypes.cast
 sizeof = ctypes.sizeof
 
 calcsize = struct.calcsize

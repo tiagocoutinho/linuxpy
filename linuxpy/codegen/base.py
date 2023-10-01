@@ -202,8 +202,12 @@ def find_xml_base_type(etree, context, type_id):
             name, base_id = find_xml_base_type(etree, context, node.get("type"))
             if name == "u8":
                 name = "cchar"
-            n = int(node.get("max")) + 1
-            return f"{name} * {n}", base_id
+            nmax = node.get("max")
+            if nmax:
+                n = int(nmax) + 1
+                return f"{name} * {n}", base_id
+            else:
+                return f"POINTER({name})", base_id
 
         type_id = node.get("type")
 
@@ -304,20 +308,20 @@ def run(name, headers, template, macro_enums):
     cache = {}
     temp_dir = tempfile.mkdtemp()
 
-    structs = {}
+    structs = []
     for header in headers:
         fill_macros(header, cache, macro_enums)
         base_header = os.path.split(os.path.splitext(header)[0])[1]
         xml_filename = os.path.join(temp_dir, base_header + ".xml")
         cmd = f"castxml --castxml-output=1.0.0 -o {xml_filename} {header}"
         assert os.system(cmd) == 0
-
-        structs.update(get_structs(header, xml_filename))
+        new_structs = get_structs(header, xml_filename)
+        structs += list(new_structs.values())
 
         get_enums(header, xml_filename, macro_enums)
 
     structs_body = "\n\n".join(
-        str(struct) for struct in structs.values() if struct.parent is None
+        str(struct) for struct in structs if struct.parent is None
     )
     enums_body = "\n\n".join(str(enum) for enum in macro_enums if enum.name != "IOC")
     iocs_body = "\n\n".join(str(enum) for enum in macro_enums if enum.name == "IOC")

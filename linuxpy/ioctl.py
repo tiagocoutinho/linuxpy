@@ -63,6 +63,6 @@ def IOWR(magic, number, size):
     return IOC(READ | WRITE, magic, number, size)
 
 
-def ioctl(fd, request, arg):
+def ioctl(fd, request, *arg):
     log.debug("%s, request=%s, arg=%s", fd, request, arg)
-    return fcntl.ioctl(fd, request, arg)
+    return fcntl.ioctl(fd, request, *arg)

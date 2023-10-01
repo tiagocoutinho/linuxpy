@@ -9,18 +9,18 @@ import os
 import select
 
 
-def fopen(path, rw=False, binary=True, blocking=False):
-    kwargs = {"buffering": 0}
-    if not blocking:
-
-        def opener(path, flags):
-            return os.open(path, flags | os.O_NONBLOCK)
-
-        kwargs["opener"] = opener
-    flags = "rb" if binary else "r"
+def fopen(path, rw=False, binary=True, blocking=False, close_on_exec=True):
+    def opener(path, flags):
+        if not blocking:
+            flags |= os.O_NONBLOCK
+        if close_on_exec:
+            flags |= os.O_CLOEXEC
+        return os.open(path, flags)
+    kwargs = {"buffering": 0, "opener": opener}
+    flgs = "rb" if binary else "r"
     if rw:
-        flags += "+"
-    return open(path, flags, **kwargs)
+        flgs += "+"
+    return open(path, flgs, **kwargs)
 
 
 class IO:
