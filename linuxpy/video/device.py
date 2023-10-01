@@ -655,6 +655,7 @@ def enqueue_buffers(
 class Device(BaseDevice):
     def __init__(self, name_or_file, read_write=True, io=IO):
         self.info = None
+        self.controls = None
         super().__init__(name_or_file, read_write=read_write, io=io)
 
     def __iter__(self):

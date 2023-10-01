@@ -6,7 +6,11 @@ from io import IOBase
 from .io import IO
 
 
+DEV_PATH = pathlib.Path("/dev")
+
+
 log = logging.getLogger(__name__)
+
 
 
 class ReentrantContextManager:
@@ -63,7 +67,6 @@ def iter_device_files(path="/dev", pattern="*"):
 class BaseDevice(ReentrantContextManager):
     def __init__(self, name_or_file, read_write=True, io=IO):
         super().__init__()
-        self.controls = None
         self.io = io
         if isinstance(name_or_file, (str, pathlib.Path)):
             filename = pathlib.Path(name_or_file)
@@ -78,7 +81,7 @@ class BaseDevice(ReentrantContextManager):
             self._init()
         else:
             raise TypeError(
-                f"name_or_file must be str or a file-like object, not {name_or_file.__class__.__name__}"
+                f"name_or_file must be a Path, str or a file-like object, not {name_or_file.__class__.__name__}"
             )
         self.log = log.getChild(filename.stem)
         self.filename = filename
