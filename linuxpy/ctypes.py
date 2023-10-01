@@ -22,10 +22,21 @@ u64 = ctypes.c_uint64
 
 cint = ctypes.c_int
 cuint = ctypes.c_uint
+clong = ctypes.c_long
+culong = ctypes.c_ulong
+clonglong = ctypes.c_longlong
+culonglong = ctypes.c_ulonglong
+
 cchar = ctypes.c_char
+ccharp = ctypes.c_char_p
 
 cenum = cuint
 cvoidp = ctypes.c_void_p
+
+fsword = cuint
+fsblkcnt = culong
+fsfilcnt = culong
+
 
 sizeof = ctypes.sizeof
 
@@ -33,6 +44,7 @@ calcsize = struct.calcsize
 
 Union = ctypes.Union
 
+pointer = ctypes.pointer
 POINTER = ctypes.POINTER
 
 create_string_buffer = ctypes.create_string_buffer
@@ -73,3 +85,6 @@ class timespec(Struct):
         ("secs", ctypes.c_long),
         ("nsecs", ctypes.c_long),
     ]
+
+
+c = ctypes.cdll.LoadLibrary('libc.so.6')

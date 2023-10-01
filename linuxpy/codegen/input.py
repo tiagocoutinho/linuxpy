@@ -4,7 +4,7 @@
 # Copyright (c) 2023 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
-from linuxpy.codegen import CEnum, run
+from .base import CEnum, run
 
 
 HEADERS = [
@@ -45,7 +45,7 @@ from linuxpy.ctypes import Struct, Union, POINTER, timeval
 # macros from #define statements
 MACRO_ENUMS = [
     CEnum("Property", "INPUT_PROP_"),
-    CEnum("EventType", "EV_", filter=lambda name: name != "EV_VERSION"),
+    CEnum("EventType", "EV_", filter=lambda name, _: name != "EV_VERSION"),
     CEnum("Key", ["KEY_", "BTN_"], with_prefix=True),
     CEnum("Relative", "REL_"),
     CEnum("Absolute", "ABS_"),

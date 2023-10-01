@@ -29,6 +29,7 @@ CTYPES_MAP = {
     "long long unsigned int": "i64",
     "long int": "i64",
     "long long int": "i64",
+    "void *": "cvoidp",
     "void": "None",
 }
 
@@ -37,7 +38,7 @@ MACRO_RE = re.compile(r"#define[ \t]+(?P<name>[\w]+)[ \t]+(?P<value>.+)\s*")
 
 class CEnum:
     def __init__(
-        self, name, prefixes, klass=None, with_prefix=False, filter=lambda _: True
+        self, name, prefixes, klass=None, with_prefix=False, filter=lambda _n, _v: True
     ):
         self.name = name
         if isinstance(prefixes, str):
@@ -142,6 +143,8 @@ def decode_macro_value(value, context, name_map):
         for size in (8, 16, 32, 64):
             typ = f"{dtype}{size}"
             value = value.replace(f"__{typ}", typ)
+    for ctype, pytype in CTYPES_MAP.items():
+        value = value.replace(" " + ctype, pytype)
     try:
         return "0x{:X}".format(int(value))
     except ValueError:
@@ -171,7 +174,7 @@ def fill_macros(filename, name_map, enums):
         if cenum is None:
             continue
         cenum, prefix = cenum
-        if not cenum.filter(cname):
+        if not cenum.filter(cname, cvalue):
             continue
         py_value = decode_macro_value(cvalue, cenum, name_map)
         py_name = cname[0 if cenum.with_prefix else len(prefix) :]
@@ -333,5 +336,5 @@ def run(name, headers, template, macro_enums):
     try:
         text = black.format_str(text, mode=black.FileMode())
     except Exception:
-        pass
+        raise
     print(text)
