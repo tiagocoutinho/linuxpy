@@ -40,6 +40,20 @@ from linuxpy.ctypes import Struct, Union, POINTER
 {structs_body}
 
 
+# Extra structs not found on header files
+
+class usb_hid_descriptor(Struct):
+    _fields_ = [
+        ("bLength", u8),
+        ("bDescriptorType", u8),
+        ("bcdHID", u16),
+        ("bCountryCode", u8),
+        ("bNumDescriptors", u8),
+        ("bClassDescriptorType", u8),
+        ("wClassDescriptorLength", u16),
+    ]
+
+
 {iocs_body}"""
 
 
