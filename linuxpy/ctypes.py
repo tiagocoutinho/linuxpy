@@ -60,7 +60,7 @@ class Struct(ctypes.Structure):
                 for field in self._fields_
             )
         )
-        return f"{name}()"
+        return f"{name}({fields})"
 
     def __iter__(self):
         for fname, _ in self._fields_:
