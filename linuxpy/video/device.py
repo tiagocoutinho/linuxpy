@@ -1369,6 +1369,8 @@ class VideoCapture(BufferManager):
                 self.buffer = MemoryMapStreamReader(self)
             elif Capability.READWRITE in source:
                 self.buffer = Read(self)
+            else:
+                raise IOError("Device needs to support STREAMING or READWRITE capability")
             self.buffer.open()
             self.stream_on()
             self.device.log.info("Video capture started!")

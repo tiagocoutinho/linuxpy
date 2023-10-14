@@ -124,6 +124,7 @@ class Hardware:
             arg.card = self.card
             arg.bus_info = self.bus_info
             arg.version = self.version
+            arg.capabilities = raw.Capability.STREAMING
         elif isinstance(arg, raw.v4l2_format):
             if ioc == raw.IOC.G_FMT:
                 arg.fmt.pix.width = 640
