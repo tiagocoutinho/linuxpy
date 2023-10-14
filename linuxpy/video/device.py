@@ -667,7 +667,7 @@ class Device(BaseDevice):
             async for frame in stream:
                 yield frame
 
-    def _init(self):
+    def _on_open(self):
         self.info = read_info(self.fileno())
         self.controls = Controls.from_device(self)
 

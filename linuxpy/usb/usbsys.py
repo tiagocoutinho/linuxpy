@@ -80,7 +80,7 @@ class Device(BaseDevice):
     def __repr__(self):
         return f"{type(self).__name__}(bus={self.bus_number}, address={self.device_address}, syspath={self.syspath.stem})"
 
-    def _init(self):
+    def _on_open(self):
         pass
 
 def is_available():

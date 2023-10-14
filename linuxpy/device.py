@@ -12,7 +12,6 @@ DEV_PATH = pathlib.Path("/dev")
 log = logging.getLogger(__name__)
 
 
-
 class ReentrantContextManager:
     def __init__(self):
         self._context_level = 0
@@ -78,7 +77,7 @@ class BaseDevice(ReentrantContextManager):
             self._fobj = name_or_file
             # this object context manager won't close the file anymore
             self._context_level += 1
-            self._init()
+            self._on_open()
         else:
             raise TypeError(
                 f"name_or_file must be a Path, str or a file-like object, not {name_or_file.__class__.__name__}"
@@ -90,14 +89,14 @@ class BaseDevice(ReentrantContextManager):
     def __repr__(self):
         return f"<{type(self).__name__} name={self.filename}, closed={self.closed}>"
 
-    def _init(self):
+    def _on_open(self):
         raise NotImplementedError
 
     def open(self):
         if not self._fobj:
             self.log.info("opening %s", self.filename)
             self._fobj = self.io.open(self.filename, self._read_write)
-            self._init()
+            self._on_open()
             self.log.info("opened %s", self.filename)
 
     def close(self):

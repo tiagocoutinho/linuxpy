@@ -337,7 +337,7 @@ class Device(BaseDevice):
         self._caps = None
         super().__init__(*args, **kwargs)
 
-    def _init(self):
+    def _on_open(self):
         pass
 
     @property
