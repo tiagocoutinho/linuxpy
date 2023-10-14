@@ -147,6 +147,23 @@ frame 10136
 
 (check [basic gevent](examples/basic_gevent.py) and [web gevent](examples/web/sync.py) examples)
 
+#### Video output
+
+It is possible to write to a video output capable device (ex: v4l2loopback).
+The following example shows how to grab frames from device 0 and write them
+to device 20
+
+>>> from linuxpy.video.device import Device, VideoOutput, BufferType
+>>> source = Device.from_id(0)
+>>> target = Device.from_id(20)
+>>> source.set_format(BufferType.VIDEO_CAPTURE, 640, 480, "MJPG")
+>>> target.set_format(BufferType.VIDEO_OUTPUT, 640, 480, "MJPG")
+>>> output = VideoOutput(target)
+>>> with source, target:
+        for frame in source:
+            output.write(frame.data)
+
+
 #### Bonus track
 
 You've been patient enough to read until here so, just for you,
@@ -187,6 +204,26 @@ $ FLASK_APP=web flask run -h 0.0.0.0
 
 Point your browser to [127.0.0.1:5000](http://127.0.0.1:5000) and you should see
 your camera rolling!
+
+#### v4l2loopback
+
+Start from scratch:
+```bash
+# Remove kernel module and all devices (no client can be connected at this point)
+sudo modprobe -r v4l2loopback
+
+# Install some devices
+sudo modprobe v4l2loopback video_nr=20,21 card_label="Loopback 0","Loopback 1"
+```
+
+#### References
+
+See the ``linux/videodev2.h`` header file for details.
+
+
+* [V4L2 (Latest)](https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/v4l2.html) ([videodev.h](https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/videodev.html))
+* [V4L2 6.2](https://www.kernel.org/doc/html/v6.2/userspace-api/media/v4l/v4l2.html) ([videodev.h](https://www.kernel.org/doc/html/v6.2/userspace-api/media/v4l/videodev.html))
+
 
 ### Input
 
