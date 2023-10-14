@@ -7,10 +7,11 @@
 import logging
 from io import BytesIO
 from tkinter import READABLE, Canvas, Tk
+from sys import argv
 
 from PIL import Image, ImageTk
 
-from linuxpy.video.device import Device, VideoCapture
+from linuxpy.video.device import Device, VideoCapture, Capability
 
 fmt = "%(threadName)-10s %(asctime)-15s %(levelname)-5s %(name)s: %(message)s"
 logging.basicConfig(level="INFO", format=fmt)
@@ -28,8 +29,20 @@ def update(cam, mask=None):
     canvas.itemconfig(container, image=cam.image)
 
 
-with Device.from_id(0) as cam:
-    video_capture = VideoCapture(cam)
+import argparse
+parser = argparse.ArgumentParser("v4l2-tk")
+parser.add_argument("-d", "--device", type=int, default=0)
+parser.add_argument("-s", "--source", choices=["auto", "stream", "read"], default="auto")
+args = parser.parse_args()
+if args.source == "auto":
+    source = None
+elif args.source == "stream":
+    source = Capability.STREAMING
+elif args.source == "read":
+    source = Capability.READWRITE
+
+with Device.from_id(args.device) as cam:
+    video_capture = VideoCapture(cam, source=source)
     fmt = video_capture.get_format()
     video_capture.set_format(fmt.width, fmt.height, "MJPG")
     with video_capture as buffers:
