@@ -85,3 +85,6 @@ target-version = "py37"
 
 [tool.ruff.isort]
 combine-as-imports = true
+
+[project.scripts]
+linuxpy-codegen = "linuxpy.codegen.cli:main"

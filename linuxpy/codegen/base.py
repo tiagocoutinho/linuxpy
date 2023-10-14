@@ -8,6 +8,7 @@
 import datetime
 import logging
 import os
+import pathlib
 import platform
 import re
 import tempfile
@@ -304,10 +305,10 @@ def get_enums(header_filename, xml_filename, enums):
         enums.append(enum)
 
 
-def run(name, headers, template, macro_enums):
+def run(name, headers, template, macro_enums, output=None):
     cache = {}
     temp_dir = tempfile.mkdtemp()
-
+    logging.info("Starting %s...", name)
     structs = []
     for header in headers:
         fill_macros(header, cache, macro_enums)
@@ -341,4 +342,12 @@ def run(name, headers, template, macro_enums):
         text = black.format_str(text, mode=black.FileMode())
     except Exception:
         raise
-    print(text)
+
+    logging.info("Writting %s...", name)
+    if output is None:
+        print(text)
+    else:
+        output = pathlib.Path(output)
+        with output.open("w") as fobj:
+            print(text, file=fobj)
+    logging.info("Finished %s!", name)

@@ -1,11 +1,13 @@
 # run with:
 #
 
+import logging
 import pathlib
 import pprint
 import datetime
 import platform
 
+import black
 import requests
 
 this_dir = pathlib.Path(__file__).parent
@@ -66,8 +68,8 @@ HEADER = """\
 """
 
 
-def dump_items(items, path=this_dir.parent / "usb" / "usbids.py"):
-    path = pathlib.Path(path)
+def dump_items(items, output=this_dir.parent / "usb" / "usbids.py"):
+    output = pathlib.Path(output)
     fields = {
         "name": "linuxpy.codegen.usbids",
         "date": datetime.datetime.now(),
@@ -76,16 +78,28 @@ def dump_items(items, path=this_dir.parent / "usb" / "usbids.py"):
         "version": platform.version(),
     }
     text = HEADER.format(**fields)
+    fields = [
+        f"{item} = {pprint.pformat(values)}\n\n" for item, values in items.items()
+    ]
+    text += "\n".join(fields)
 
-    with path.open("w") as fobj:
-        fobj.write(text)
-        for item, values in items.items():
-            fobj.write(f"{item} = {pprint.pformat(values)}\n\n\n")
+    try:
+        text = black.format_str(text, mode=black.FileMode())
+    except Exception:
+        raise
+
+    if output is None:
+        print(text)
+    else:
+        with output.open("w") as fobj:
+            print(text, file=fobj)
 
 
 def main():
+    logging.info("Starting %s...", __name__)
     items = get()
     dump_items(items)
+    logging.info("Finished %s!", __name__)
 
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@
 # Copyright (c) 2023 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
+import pathlib
+
 from .base import CEnum, run
 
 
@@ -31,6 +33,9 @@ import enum
 {enums_body}"""
 
 
+this_dir = pathlib.Path(__file__).parent
+
+
 class MagicEnum(CEnum):
     def __init__(self):
         super().__init__("Magic", "", filter=lambda name, _: "MAGIC_STRING" not in name)
@@ -44,8 +49,8 @@ class MagicEnum(CEnum):
 MACRO_ENUMS = [MagicEnum()]
 
 
-def main():
-    run(__package__, HEADERS, TEMPLATE, MACRO_ENUMS)
+def main(output=this_dir.parent / "magic.py"):
+    run(__name__, HEADERS, TEMPLATE, MACRO_ENUMS, output=output)
 
 
 if __name__ == "__main__":

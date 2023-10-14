@@ -4,6 +4,8 @@
 # Copyright (c) 2023 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
+import pathlib
+
 from .base import CEnum, run
 
 
@@ -42,6 +44,9 @@ from linuxpy.ctypes import Struct, Union, POINTER, timeval
 {iocs_body}"""
 
 
+this_dir = pathlib.Path(__file__).parent
+
+
 # macros from #define statements
 MACRO_ENUMS = [
     CEnum("Property", "INPUT_PROP_"),
@@ -66,8 +71,8 @@ MACRO_ENUMS = [
 ]
 
 
-def main():
-    run(__package__, HEADERS, TEMPLATE, MACRO_ENUMS)
+def main(output=this_dir.parent / "input" / "raw.py"):
+    run(__name__, HEADERS, TEMPLATE, MACRO_ENUMS, output=output)
 
 
 if __name__ == "__main__":

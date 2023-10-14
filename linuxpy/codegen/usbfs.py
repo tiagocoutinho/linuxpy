@@ -4,6 +4,8 @@
 # Copyright (c) 2023 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
+import pathlib
+
 from .base import CEnum, run
 
 
@@ -56,6 +58,7 @@ class usb_hid_descriptor(Struct):
 
 {iocs_body}"""
 
+this_dir = pathlib.Path(__file__).parent
 
 # macros from #define statements
 MACRO_ENUMS = [
@@ -83,8 +86,11 @@ MACRO_ENUMS = [
 ]
 
 
-def main():
-    run(__package__, HEADERS, TEMPLATE, MACRO_ENUMS)
+this_dir = pathlib.Path(__file__).parent
+
+
+def main(output=this_dir.parent / "usb" / "usbfs.py"):
+    run(__name__, HEADERS, TEMPLATE, MACRO_ENUMS, output=output)
 
 
 if __name__ == "__main__":
