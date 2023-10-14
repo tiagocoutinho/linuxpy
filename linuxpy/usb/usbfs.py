@@ -10,8 +10,24 @@ USBFS_MAXDRIVERNAME = 255
 DeviceDescriptorDecoder = struct.Struct("<BBHBBBBHHHBBBB")
 DeviceDescriptor = collections.namedtuple(
     "DeviceDescriptor",
-    ("length", "descriptor_type", "bcdUSB", "device_class", "device_sub_class", "protocol", "max_pack_size", "vendor_id", "product_id", "bcdDevice", "manufacturer", "product_index", "serial_number_index", "nb_configs")
+    (
+        "length",
+        "descriptor_type",
+        "bcdUSB",
+        "device_class",
+        "device_sub_class",
+        "protocol",
+        "max_pack_size",
+        "vendor_id",
+        "product_id",
+        "bcdDevice",
+        "manufacturer",
+        "product_index",
+        "serial_number_index",
+        "nb_configs",
+    ),
 )
+
 
 def read_descriptor(fd):
     # just after the open() call we can read the ubfs device descriptor
@@ -21,7 +37,6 @@ def read_descriptor(fd):
 
 
 class Device(BaseDevice):
-
     def __init__(self, path):
         super().__init__(path)
         self.descriptor = None
@@ -51,9 +66,8 @@ class Device(BaseDevice):
         return self.descriptor.manufacturer
 
     def open(self):
-        self._fobj = open(self.filename, 'rb')
+        self._fobj = open(self.filename, "rb")
         self.descriptor = read_descriptor(self._fobj)
-
 
 
 @functools.cache
@@ -92,7 +106,9 @@ def iter_devices():
 def lsusb():
     for dev in iter_devices():
         dev.open()
-        print(f"Bus {dev.bus_number:03d} Device {dev.device_address:03d}: ID {dev.vendor_id:04x}:{dev.product_id:04x} {dev.manufacturer}")
+        print(
+            f"Bus {dev.bus_number:03d} Device {dev.device_address:03d}: ID {dev.vendor_id:04x}:{dev.product_id:04x} {dev.manufacturer}"
+        )
 
 
 if __name__ == "__main__":

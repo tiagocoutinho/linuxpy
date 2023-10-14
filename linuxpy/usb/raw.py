@@ -954,4 +954,3 @@ class IOC(enum.IntEnum):
     FORBID_SUSPEND = _IO("U", 33)
     ALLOW_SUSPEND = _IO("U", 34)
     WAIT_FOR_RESUME = _IO("U", 35)
-

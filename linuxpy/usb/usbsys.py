@@ -2,17 +2,21 @@ import enum
 import functools
 import pathlib
 
+from ..ctypes import sizeof
+from ..util import bcd_version
 from .. import sysfs
-from .raw import UsbDeviceSpeed
-from .base import BaseDevice, USB_DEV_TMPFS_PATH
+from . import raw
+from .base import BaseDevice, DescriptorType, USB_DEV_TMPFS_PATH
+
+
+Speed = raw.UsbDeviceSpeed
 
 
 class Removable(enum.Enum):
-
     UNKNOWN = "unknown"
     FIXED = "fixed"
     REMOVABLE = "removable"
-    
+
 
 def _attr_getter(filename, decode, alternative):
     def getter(self):
@@ -22,6 +26,7 @@ def _attr_getter(filename, decode, alternative):
                 return decode(fobj.read())
         elif alternative:
             return alternative(self)
+
     return getter
 
 
@@ -35,28 +40,81 @@ def attr(filename, decode=str.strip, alternative=None):
 
 def _decode_speed(speed):
     match int(speed):
-        case 1: return UsbDeviceSpeed.LOW
-        case 12: return UsbDeviceSpeed.FULL
-        case 480: return UsbDeviceSpeed.HIGH
-        case 5000: return UsbDeviceSpeed.SUPER
-        case 10000: return UsbDeviceSpeed.SUPER_PLUS
-        case _: return UsbDeviceSpeed.UNKNOWN
+        case 1:
+            return Speed.LOW
+        case 12:
+            return Speed.FULL
+        case 480:
+            return Speed.HIGH
+        case 5000:
+            return Speed.SUPER
+        case 10000:
+            return Speed.SUPER_PLUS
+        case _:
+            return Speed.UNKNOWN
 
 
 def _manufacturer_alternative(device):
     from .usbids import V
+
     vendor_id = device.vendor_id
     return V.get(vendor_id, {}).get("name")
 
 
 def _product_alternative(device):
     from .usbids import V
+
     vendor_id, product_id = device.vendor_id, device.product_id
     return V.get(vendor_id, {}).get("children", {}).get(product_id, {}).get("name")
 
 
-class Device(BaseDevice):
+DESCRIPTOR_STRUCT_MAP = {
+    DescriptorType.DEVICE: raw.usb_device_descriptor,
+    DescriptorType.CONFIG: raw.usb_config_descriptor,
+    DescriptorType.STRING: raw.usb_string_descriptor,
+    DescriptorType.INTERFACE: raw.usb_interface_descriptor,
+    DescriptorType.ENDPOINT: raw.usb_endpoint_descriptor,
+    DescriptorType.HID: raw.usb_hid_descriptor,
+}
 
+
+class DeviceDescriptor:
+    @classmethod
+    def from_struct(cls, struct: raw.usb_device_descriptor):
+        self = cls()
+        self.usb_version = bcd_version(struct.bcdUSB)
+        self.version = bcd_version(struct.bcdDevice)
+        self.class_name = struct.bDeviceClass
+        self.sub_class_name = struct.bDeviceSubClass
+        self.vendor_id = struct.idVendor
+        self.product_id = struct.idProduct
+        self.nb_configurations = struct.bNumConfigurations
+        return self
+
+
+def _parse_device_descriptor(data, offset=0):
+    assert data[offset] == sizeof(raw.usb_device_descriptor)
+    assert data[offset + 1] == DescriptorType.DEVICE
+    desc = raw.usb_device_descriptor.from_buffer_copy(data, offset)
+
+
+def _iter_decode_descriptors(data):
+    offset, size = 0, len(data)
+    while offset < size:
+        length = data[offset]
+        dtype = data[offset + 1]
+        dclass = DESCRIPTOR_STRUCT_MAP[dtype]
+        extra = sizeof(dclass) - length
+        if extra:
+            local = data[offset : offset + length] + extra * b"\x00"
+            descriptor = dclass.from_buffer_copy(local)
+        else:
+            descriptor = dclass.from_buffer_copy(data, offset)
+        offset += length
+        yield descriptor
+
+
+class Device(BaseDevice):
     bus_number = cached_attr("busnum", int)
     device_address = cached_attr("devnum", int)
     manufacturer = cached_attr("manufacturer", alternative=_manufacturer_alternative)
@@ -74,7 +132,9 @@ class Device(BaseDevice):
 
     def __init__(self, name_or_file, **kwargs):
         self.syspath = pathlib.Path(name_or_file)
-        dev_name = USB_DEV_TMPFS_PATH / f"{self.bus_number:03d}" / f"{self.device_address:03d}"
+        dev_name = (
+            USB_DEV_TMPFS_PATH / f"{self.bus_number:03d}" / f"{self.device_address:03d}"
+        )
         super().__init__(dev_name, **kwargs)
 
     def __repr__(self):
@@ -83,6 +143,15 @@ class Device(BaseDevice):
     def _on_open(self):
         pass
 
+
+class Configuration:
+    pass
+
+
+class Interface:
+    pass
+
+
 def is_available():
     return sysfs.is_available()
 
@@ -90,7 +159,7 @@ def is_available():
 def iter_paths():
     for path in sysfs.DEVICE_PATH.iterdir():
         name = path.name
-        if (not name[0].isdigit() and not name.startswith('usb')) or ':' in name:
+        if (not name[0].isdigit() and not name.startswith("usb")) or ":" in name:
             continue
         yield path
 
@@ -100,9 +169,24 @@ def iter_devices():
         yield Device(path)
 
 
+def find(find_all=False, custom_match=None, **kwargs):
+    idevs = iter_devices()
+    if custom_match:
+        idevs = filter(custom_match, idevs)
+    if kwargs:
+
+        def accept(d):
+            return all(getattr(d, key) == value for key, value in kwargs.items())
+
+        idevs = filter(accept, idevs)
+    return idevs if find_all else next(idevs, None)
+
+
 def lsusb():
     for dev in iter_devices():
-        print(f"Bus {dev.bus_number:03d} Device {dev.device_address:03d}: ID {dev.vendor_id:04x}:{dev.product_id:04x} {dev.manufacturer} {dev.product}")
+        print(
+            f"Bus {dev.bus_number:03d} Device {dev.device_address:03d}: ID {dev.vendor_id:04x}:{dev.product_id:04x} {dev.manufacturer} {dev.product}"
+        )
 
 
 if __name__ == "__main__":

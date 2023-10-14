@@ -1,4 +1,5 @@
 import enum
+import errno
 import pathlib
 
 from ..ctypes import cuint, pointer, cast, u8, cvoidp, u32
@@ -7,17 +8,17 @@ from .. import device
 from .. import ioctl
 from . import raw
 
-USB_DEV_PATH	= pathlib.Path("/dev")
+USB_DEV_PATH = pathlib.Path("/dev")
 USB_DEV_TMPFS_PATH = USB_DEV_PATH / "bus" / "usb"
 
 DT_DEVICE_SIZE = 18
 DT_CONFIG_SIZE = 9
 DT_INTERFACE_SIZE = 9
 DT_ENDPOINT_SIZE = 7
-DT_ENDPOINT_AUDIO_SIZE = 9	# Audio extension
+DT_ENDPOINT_AUDIO_SIZE = 9  # Audio extension
 DT_HUB_NONVAR_SIZE = 7
 DT_SS_ENDPOINT_COMPANION_SIZE = 6
-DT_BOS_SIZE	 = 5
+DT_BOS_SIZE = 5
 DT_DEVICE_CAPABILITY_SIZE = 3
 
 if kernel.VERSION >= (5, 2, 0):
@@ -35,6 +36,23 @@ class TransferType(enum.IntEnum):
     INTERRUPT = 0x3
 
 
+class DescriptorType(enum.IntEnum):
+    DEVICE = 0x1
+    CONFIG = 0x2
+    STRING = 0x3
+    INTERFACE = 0x4
+    ENDPOINT = 0x5
+    INTERFACE_ASSOCIATION = 0x0B
+    BOS = 0x0F
+    DEVICE_CAPABILITY = 0x10
+    HID = 0x21
+    REPORT = 0x22
+    PHYSICAL = 0x23
+    HUB = 0x29
+    SUPERSPEED_HUB = 0x2A
+    SS_ENDPOINT_COMPANION = 0x30
+
+
 def set_configuration(fd, n):
     n = cuint(n)
     return ioctl.ioctl(fd, raw.IOC.SETCONFIGURATION, n)
@@ -43,7 +61,7 @@ def set_configuration(fd, n):
 def claim_interface(fd, n):
     n = cuint(n)
     return ioctl.ioctl(fd, raw.IOC.CLAIMINTERFACE, n)
-    
+
 
 def active_configuration(fd):
     result = u8(0)
@@ -59,6 +77,38 @@ def active_configuration(fd):
     return result.value
 
 
+def kernel_driver(fd, interface):
+    result = raw.usbdevfs_getdriver()
+    result.interface = interface
+    try:
+        ioctl.ioctl(fd, raw.IOC.GETDRIVER, result)
+    except OSError as error:
+        if error.errno == errno.ENODATA:
+            return
+        raise
+    return result.driver
+
+
+def connect(fd, interface):
+    command = raw.usbdevfs_ioctl()
+    command.ifno = interface
+    command.ioctl_code = raw.IOC.DISCONNECT
+    ioctl.ioctl(fd, raw.IOC.IOCTL, command)
+
+
+def disconnect(fd, interface):
+    command = raw.usbdevfs_ioctl()
+    command.ifno = interface
+    command.ioctl_code = raw.IOC.DISCONNECT
+    try:
+        ioctl.ioctl(fd, raw.IOC.IOCTL, command)
+    except OSError as error:
+        if error.errno == errno.ENODATA:
+            return False
+        raise
+    return True
+
+
 def capabilities(fd):
     caps = u32()
     ioctl.ioctl(fd, raw.IOC.GET_CAPABILITIES, caps)
@@ -71,14 +121,13 @@ def speed(fd):
 
 
 class BaseDevice(device.BaseDevice):
-
     def __repr__(self):
         return f"{type(self).__name__}(bus={self.bus_number}, address={self.device_address})"
 
     @property
     def bus_number(self):
         raise NotImplementedError
-    
+
     @property
     def device_address(self):
         raise NotImplementedError
@@ -99,12 +148,17 @@ class BaseDevice(device.BaseDevice):
     def speed(self):
         return speed(self.fileno())
 
+    def kernel_driver(self, interface):
+        return kernel_driver(self.fileno(), interface)
+
+    def connect(self, interface):
+        connect(self.fileno(), interface)
+
+    def disconnect(self, interface):
+        disconnect(self.fileno(), interface)
+
     def set_configuration(self, n):
         return set_configuration(self.fileno(), n)
 
     def claim_interface(self, n):
         return claim_interface(self.fileno(), n)
-    
-    @classmethod
-    def from_address(cls, bus_number, device_address):
-        pass
