@@ -277,6 +277,10 @@ InputEvent = _build_struct_type(
 )
 
 
+class InputError(Exception):
+    pass
+
+
 class _Type:
     _event_type = None
 
@@ -336,6 +340,16 @@ class Device(BaseDevice):
     def __init__(self, *args, **kwargs):
         self._caps = None
         super().__init__(*args, **kwargs)
+
+    def __iter__(self):
+        with EventReader(self) as reader:
+            while True:
+                yield reader.read()
+
+    async def __aiter__(self):
+        async with EventReader(self) as reader:
+            while True:
+                yield await reader.aread()
 
     def _on_open(self):
         pass
@@ -403,6 +417,66 @@ class Device(BaseDevice):
         Event must be available to read or otherwise will raise an error
         """
         return InputEvent.from_struct(read_event(self.fileno()))
+
+
+class EventReader:
+    def __init__(self, device: Device, max_queue_size=1):
+        self.device = device
+        self._loop = None
+        self._selector = None
+        self._buffer = None
+        self._max_queue_size = max_queue_size
+
+    async def __aenter__(self):
+        if self.device.is_blocking:
+            raise InputError("Cannot use async frame reader on blocking device")
+        self._buffer = asyncio.Queue(maxsize=self._max_queue_size)
+        self._selector = select.epoll()
+        self._loop = asyncio.get_event_loop()
+        self._loop.add_reader(self._selector.fileno(), self._on_event)
+        self._selector.register(self.device.fileno(), select.POLLIN)
+        return self
+
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        self._selector.unregister(self.device.fileno())
+        self._loop.remove_reader(self._selector.fileno())
+        self._selector.close()
+        self._selector = None
+        self._loop = None
+        self._buffer = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, tb):
+        pass
+
+    def _on_event(self):
+        task = self._loop.create_future()
+        try:
+            self._selector.poll(0)  # avoid blocking
+            data = self.device.read_event()
+            task.set_result(data)
+        except Exception as error:
+            task.set_exception(error)
+
+        buffer = self._buffer
+        if buffer.full():
+            self.device.log.warn("missed event")
+            buffer.get_nowait()
+        buffer.put_nowait(task)
+
+    def read(self, timeout=None):
+        if not self.device.is_blocking:
+            read, _, _ = self.device.io.select((self.device,), (), (), timeout)
+            if not read:
+                return
+        return self.device.read_event()
+
+    async def aread(self):
+        """Wait for next event or return last event"""
+        task = await self._buffer.get()
+        return await task
 
 
 def event_stream(fd):

@@ -10,7 +10,7 @@ import shutil
 import beautifultable
 import typer
 
-from .device import EventType, Device, async_event_stream, iter_input_files
+from .device import EventType, Device, iter_input_files
 
 app = typer.Typer()
 
@@ -74,7 +74,7 @@ def listen(path: str):
     CLEAR_LINE = "\r\x1b[0K"
 
     async def event_loop():
-        async for event in async_event_stream(device.fileno()):
+        async for event in device:
             if event.type == EventType.KEY:
                 keys = state["keys"]
                 (keys.add if event.value else keys.discard)(event.code)
@@ -86,7 +86,7 @@ def listen(path: str):
                 pass
             else:
                 continue
-            print(template.format(**state), end="\n", flush=True)
+            print(CLEAR_LINE + template.format(**state), end="", flush=True)
 
     with Device(path) as device:
         state = create_state(device)
