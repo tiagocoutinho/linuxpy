@@ -13,6 +13,7 @@ import errno
 import fractions
 import logging
 import mmap
+import os
 import select
 import typing
 from collections import UserDict
@@ -1339,9 +1340,10 @@ class Frame:
 
 
 class VideoCapture(BufferManager):
-    def __init__(self, device: Device, size: int = 2):
+    def __init__(self, device: Device, size: int = 2, source: Capability = None):
         super().__init__(device, BufferType.VIDEO_CAPTURE, size)
         self.buffer = None
+        self.source = source
 
     def __enter__(self):
         self.open()
@@ -1360,7 +1362,13 @@ class VideoCapture(BufferManager):
     def open(self):
         if self.buffer is None:
             self.device.log.info("Preparing for video capture...")
-            self.buffer = MemoryMap(self)
+            source = (
+                self.device.info.capabilities if self.source is None else self.source
+            )
+            if Capability.STREAMING in source:
+                self.buffer = MemoryMapStreamReader(self)
+            elif Capability.READWRITE in source:
+                self.buffer = Read(self)
             self.buffer.open()
             self.stream_on()
             self.device.log.info("Video capture started!")
@@ -1374,17 +1382,11 @@ class VideoCapture(BufferManager):
             self.device.log.info("Video capture closed")
 
 
-class MemoryMap(ReentrantContextManager):
+class Read(ReentrantContextManager):
     def __init__(self, buffer_manager: BufferManager):
         super().__init__()
         self.buffer_manager = buffer_manager
-        self.buffers = None
-        self.reader = QueueReader(buffer_manager, Memory.MMAP)
         self.frame_reader = FrameReader(self.device, self.raw_read)
-
-    @property
-    def device(self) -> Device:
-        return self.buffer_manager.device
 
     def __iter__(self):
         with self.frame_reader:
@@ -1395,6 +1397,62 @@ class MemoryMap(ReentrantContextManager):
         async with self.frame_reader:
             while True:
                 yield await self.frame_reader.aread()
+
+    def open(self):
+        self.format = self.buffer_manager.get_format()
+
+    def close(self):
+        pass
+
+    @property
+    def device(self) -> Device:
+        return self.buffer_manager.device
+
+    def raw_grab(self):
+        return os.read(self.device.fileno(), 2**31 - 1), raw.v4l2_buffer()
+
+    def raw_read(self):
+        data, buff = self.raw_grab()
+        return Frame(data, buff, self.format)
+
+    def wait_read(self):
+        device = self.device
+        if device.io.select is not None:
+            device.io.select((device,), (), ())
+        return self.raw_read()
+
+    def read(self):
+        # first time we check what mode device was opened (blocking vs non-blocking)
+        # if file was opened with O_NONBLOCK: DQBUF will not block until a buffer
+        # is available for read. So we need to do it here
+        if self.device.is_blocking:
+            self.read = self.raw_read
+        else:
+            self.read = self.wait_read
+        return self.read()
+
+
+class MemoryMapStreamReader(ReentrantContextManager):
+    def __init__(self, buffer_manager: BufferManager):
+        super().__init__()
+        self.buffer_manager = buffer_manager
+        self.buffers = None
+        self.reader = QueueReader(buffer_manager, Memory.MMAP)
+        self.frame_reader = FrameReader(self.device, self.raw_read)
+
+    def __iter__(self):
+        with self.frame_reader:
+            while True:
+                yield self.frame_reader.read()
+
+    async def __aiter__(self):
+        async with self.frame_reader:
+            while True:
+                yield await self.frame_reader.aread()
+
+    @property
+    def device(self) -> Device:
+        return self.buffer_manager.device
 
     def open(self):
         if self.buffers is None:
