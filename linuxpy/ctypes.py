@@ -87,4 +87,4 @@ class timespec(Struct):
     ]
 
 
-c = ctypes.cdll.LoadLibrary('libc.so.6')
+c = ctypes.cdll.LoadLibrary("libc.so.6")

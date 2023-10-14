@@ -30,9 +30,12 @@ def update(cam, mask=None):
 
 
 import argparse
+
 parser = argparse.ArgumentParser("v4l2-tk")
 parser.add_argument("-d", "--device", type=int, default=0)
-parser.add_argument("-s", "--source", choices=["auto", "stream", "read"], default="auto")
+parser.add_argument(
+    "-s", "--source", choices=["auto", "stream", "read"], default="auto"
+)
 args = parser.parse_args()
 if args.source == "auto":
     source = None

@@ -1,6 +1,5 @@
-
 # run with:
-# 
+#
 
 import pathlib
 import pprint
@@ -21,7 +20,7 @@ def get_raw(url: str = USB_IDS) -> str:
     return response.text
 
 
-def get(url: str = USB_IDS) -> dict[int, ]:
+def get(url: str = USB_IDS) -> dict[int,]:
     raw = get_raw(url=url)
 
     items = {}
@@ -30,7 +29,7 @@ def get(url: str = USB_IDS) -> dict[int, ]:
         if line.startswith("#"):
             continue
         if line.startswith("\t\t"):  # Interface, protocol, etc
-            l2_id, l2_name  = line.strip().split("  ", 1)
+            l2_id, l2_name = line.strip().split("  ", 1)
             l2_id = int(l2_id, 16)
             l2 = {"name": l2_name}
             l1.setdefault("children", {})[l2_id] = l2
@@ -39,12 +38,12 @@ def get(url: str = USB_IDS) -> dict[int, ]:
             l1_id = int(l1_id, 16)
             l1 = {"name": l1_name}
             l0.setdefault("children", {})[l1_id] = l1
-        elif line: # Vendor, class, audio terminal, etc 
+        elif line:  # Vendor, class, audio terminal, etc
             l0_id, l0_name = line.split("  ", 1)
-            if ' ' in l0_id:
-                itype, l0_id = l0_id.split(' ', 1)
+            if " " in l0_id:
+                itype, l0_id = l0_id.split(" ", 1)
             else:
-                itype = 'V' # Vendors don't have prefix
+                itype = "V"  # Vendors don't have prefix
             l0_id = int(l0_id, 16)
             l0 = {"name": l0_name}
             items.setdefault(itype, {})[l0_id] = l0
@@ -67,10 +66,10 @@ HEADER = """\
 """
 
 
-def dump_items(items, path = this_dir.parent / "usb" / "usbids.py"):
+def dump_items(items, path=this_dir.parent / "usb" / "usbids.py"):
     path = pathlib.Path(path)
     fields = {
-        "name": 'linuxpy.codegen.usbids',
+        "name": "linuxpy.codegen.usbids",
         "date": datetime.datetime.now(),
         "system": platform.system(),
         "release": platform.release(),

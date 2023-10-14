@@ -95,4 +95,3 @@ class Magic(enum.IntEnum):
     PPC_CMM = 0xC7571590
     SECRETMEM = 0x5345434D  # "SECM"
     SHIFTFS = 0x6A656A62
-

@@ -60,10 +60,19 @@ class usb_hid_descriptor(Struct):
 # macros from #define statements
 MACRO_ENUMS = [
     CEnum("URBType", "USBDEVFS_URB_TYPE_"),
-    CEnum("URB", "USBDEVFS_URB_", "IntFlag", filter=lambda name, _: not name.startswith("USBDEVFS_USB_TYPE_")),
+    CEnum(
+        "URB",
+        "USBDEVFS_URB_",
+        "IntFlag",
+        filter=lambda name, _: not name.startswith("USBDEVFS_USB_TYPE_"),
+    ),
     CEnum("Capability", "USBDEVFS_CAP_", "IntFlag"),
     CEnum("DisconnectClaim", "USBDEVFS_DISCONNECT_CLAIM_", "IntFlag"),
-    CEnum("IOC", "USBDEVFS_", filter=lambda name, value: "_IO" in value and not name.endswith("32")),
+    CEnum(
+        "IOC",
+        "USBDEVFS_",
+        filter=lambda name, value: "_IO" in value and not name.endswith("32"),
+    ),
     CEnum("Direction", "USB_DIR_"),
     CEnum("RequestType", "USB_TYPE_"),
     CEnum("Recipient", "USB_RECIP_"),
