@@ -21,10 +21,7 @@ classifiers = [
     "Topic :: Multimedia :: Video",
     "Topic :: Multimedia :: Video :: Capture",
 ]
-dependencies = [
-    "v4l2py>=2.3.0",
-    "enjoy>=0.1.2",
-]
+dependencies = []
 dynamic = ["version", "readme"]
 
 [project.urls]
