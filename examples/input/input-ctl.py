@@ -84,15 +84,12 @@ def listen(path: str):
             variable[0] += 1
 
     async def event_loop():
-        start = last = time.monotonic()
-        last_update = 0
+        start = time.monotonic()
         data = [0]
         asyncio.create_task(cycle(data))
         async for event in device:
             new = time.monotonic()
-            fps, last = 1 / (new - last), new
-            if new - last_update > 0.1:
-                elapsed, last_update = new - start, new
+            elapsed = new - start
             if event.type == EventType.KEY:
                 keys = state["keys"]
                 (keys.add if event.value else keys.discard)(event.code)
