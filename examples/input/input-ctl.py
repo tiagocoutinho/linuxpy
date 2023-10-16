@@ -5,12 +5,14 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 import asyncio
+import logging
 import shutil
+import time
 
 import beautifultable
 import typer
 
-from .device import EventType, Device, iter_input_files
+from linuxpy.input.device import EventType, Device, iter_input_files
 
 app = typer.Typer()
 
@@ -71,10 +73,26 @@ def table():
 
 @app.command()
 def listen(path: str):
+    fmt = "%(threadName)-10s %(asctime)-15s %(levelname)-5s %(name)s: %(message)s"
+    logging.basicConfig(level="INFO", format=fmt)
+
     CLEAR_LINE = "\r\x1b[0K"
 
+    async def cycle(variable):
+        while True:
+            await asyncio.sleep(0.1)
+            variable[0] += 1
+
     async def event_loop():
+        start = last = time.monotonic()
+        last_update = 0
+        data = [0]
+        asyncio.create_task(cycle(data))
         async for event in device:
+            new = time.monotonic()
+            fps, last = 1 / (new - last), new
+            if new - last_update > 0.1:
+                elapsed, last_update = new - start, new
             if event.type == EventType.KEY:
                 keys = state["keys"]
                 (keys.add if event.value else keys.discard)(event.code)
@@ -86,7 +104,11 @@ def listen(path: str):
                 pass
             else:
                 continue
-            print(CLEAR_LINE + template.format(**state), end="", flush=True)
+            print(CLEAR_LINE, end="")
+            print(template.format(**state), end="")
+            print(f" | data={data[0]}; {elapsed=:.2f} s", end="", flush=True)
+
+
 
     with Device(path) as device:
         state = create_state(device)
