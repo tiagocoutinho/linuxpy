@@ -429,7 +429,7 @@ class EventReader:
 
     async def __aenter__(self):
         if self.device.is_blocking:
-            raise InputError("Cannot use async frame reader on blocking device")
+            raise InputError("Cannot use async event reader on blocking device")
         self._buffer = asyncio.Queue(maxsize=self._max_queue_size)
         self._selector = select.epoll()
         self._loop = asyncio.get_event_loop()
