@@ -64,6 +64,9 @@ def iter_device_files(path="/dev", pattern="*"):
 
 
 class BaseDevice(ReentrantContextManager):
+
+    PREFIX = None
+
     def __init__(self, name_or_file, read_write=True, io=IO):
         super().__init__()
         self.io = io
@@ -91,6 +94,10 @@ class BaseDevice(ReentrantContextManager):
 
     def _on_open(self):
         raise NotImplementedError
+
+    @classmethod
+    def from_id(cls, did: int, **kwargs):
+        return cls(f"{cls.PREFIX}{did}", **kwargs)
 
     def open(self):
         if not self._fobj:

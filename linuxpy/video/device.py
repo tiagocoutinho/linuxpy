@@ -654,6 +654,9 @@ def enqueue_buffers(
 
 
 class Device(BaseDevice):
+
+    PREFIX = "/dev/video"
+
     def __init__(self, name_or_file, read_write=True, io=IO):
         self.info = None
         self.controls = None

@@ -334,6 +334,9 @@ class _Keys(_Type):
 
 
 class Device(BaseDevice):
+
+    PREFIX = "/dev/input/event"
+
     absolute = _Abs()
     keys = _Keys()
 
