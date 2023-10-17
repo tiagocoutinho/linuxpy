@@ -499,6 +499,33 @@ async def async_event_stream(fd, maxsize=1000):
         loop.remove_reader(fd)
 
 
+def event_packets_stream(fd):
+    """Yields packets of events occurring at the same moment in time."""
+    packet = []
+    for event in event_stream(fd):
+        if event.type == EventType.SYN:
+            if event.code == Synchronization.REPORT:
+                yield packet
+                packet = []
+            elif event.code == Synchronization.DROPPED:
+                packet = []
+        else:
+            packet.append(event)
+
+
+async def async_event_packets_stream(fd, maxsize=1000):
+    packet = []
+    async for event in async_event_stream(fd, maxsize=maxsize):
+        if event.type == EventType.SYN:
+            if event.code == Synchronization.REPORT:
+                yield packet
+                packet = []
+            elif event.code == Synchronization.DROPPED:
+                packet = []
+        else:
+            packet.append(event)
+
+
 def find_gamepads():
     for path in iter_input_files():
         with Device(path) as dev:
