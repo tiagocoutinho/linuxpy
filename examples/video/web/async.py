@@ -1,5 +1,5 @@
 #
-# This file is part of the python-linux project
+# This file is part of the linuxpy project
 #
 # Copyright (c) 2023 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
@@ -11,7 +11,7 @@
 # run from this directory with:
 # uvicorn async:app
 
-"""FastAPI example for v4l2py"""
+"""FastAPI example for linuxpy.video"""
 
 import asyncio
 import logging
