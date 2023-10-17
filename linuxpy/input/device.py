@@ -516,6 +516,19 @@ def find_keyboards():
             yield dev
 
 
+def find_mice():
+    def is_mouse(dev):
+        with dev:
+            caps = dev.capabilities
+        if not EventType.ABS in caps and not EventType.REL in caps:
+            return False
+        return Key.BTN_MOUSE in caps.get(EventType.KEY, ())
+
+    paths = iter_input_files()
+    devs = (Device(path) for path in paths)
+    return filter(is_mouse, devs)
+
+
 def main():
     import sys
 
