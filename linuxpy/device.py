@@ -64,7 +64,6 @@ def iter_device_files(path="/dev", pattern="*"):
 
 
 class BaseDevice(ReentrantContextManager):
-
     PREFIX = None
 
     def __init__(self, name_or_file, read_write=True, io=IO):

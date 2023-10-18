@@ -654,7 +654,6 @@ def enqueue_buffers(
 
 
 class Device(BaseDevice):
-
     PREFIX = "/dev/video"
 
     def __init__(self, name_or_file, read_write=True, io=IO):
@@ -674,10 +673,6 @@ class Device(BaseDevice):
     def _on_open(self):
         self.info = read_info(self.fileno())
         self.controls = Controls.from_device(self)
-
-    @classmethod
-    def from_id(cls, did: int, **kwargs):
-        return cls("/dev/video{}".format(did), **kwargs)
 
     def query_buffer(self, buffer_type, memory, index):
         return query_buffer(self.fileno(), buffer_type, memory, index)
