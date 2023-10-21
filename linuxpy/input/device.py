@@ -31,6 +31,7 @@ from .raw import (
 from .raw import EventType
 from .raw import input_id, input_absinfo, input_mask, input_event
 from .raw import ff_effect
+from .raw import UIOC, uinput_setup
 
 
 EVENT_SIZE = sizeof(input_event)
@@ -550,6 +551,94 @@ def find_mice():
     paths = iter_input_files()
     devs = (Device(path) for path in paths)
     return filter(is_mouse, devs)
+
+
+def u_device_setup(fd, bus: Bus, vendor: int, product: int, name: str | bytes) -> None:
+    setup = uinput_setup()
+    setup.id.bustype = bus
+    setup.id.vendor = vendor
+    setup.id.product = product
+    name = name[:80]
+    if isinstance(name, str):
+        name = name.encode()
+    setup.name = name
+    ioctl(fd, UIOC.DEV_SETUP, setup)
+
+
+def u_device_create(fd):
+    ioctl(fd, UIOC.DEV_CREATE)
+
+
+def u_device_destroy(fd):
+    ioctl(fd, UIOC.DEV_DESTROY)
+
+
+def u_set_event(fd, event_type: EventType):
+    ioctl(fd, UIOC.SET_EVBIT, event_type)
+
+
+def u_set_keys(fd, *keys: Key):
+    for key in keys:
+        ioctl(fd, UIOC.SET_KEYBIT, key)
+
+
+def u_set_relatives(fd, *relatives: Relative):
+    for relative in relatives:
+        ioctl(fd, UIOC.SET_RELBIT, relative)
+
+
+def u_emit(fd, event_type, event_code, value):
+    event = input_event()
+    event.type = event_type
+    event.code = event_code
+    event.value = value
+    return os.write(fd, bytes(event))
+
+
+class BaseUDevice(BaseDevice):
+    """A uinput device with no capabilities registered"""
+
+    PATH = "/dev/uinput"
+
+    def __init__(self, filename=PATH):
+        # Force write only
+        super().__init__(filename, read_write="w")
+        self.bustype = Bus.USB
+        self.vendor = 0x1
+        self.product = 0x1
+        self.name = "linuxpy emulated device"
+
+    def _on_open(self):
+        self.setup()
+        self.create()
+
+    def _on_close(self):
+        self.destroy()
+
+    def setup(self):
+        u_device_setup(
+            self.fileno(), self.bustype, self.vendor, self.product, self.name
+        )
+
+    def create(self):
+        u_device_create(self.fileno())
+
+    def destroy(self):
+        u_device_destroy(self.fileno())
+
+    def emit(self, event_type: EventType, event_code: int, value: int):
+        return u_emit(self.fileno(), event_type, event_code, value)
+
+
+class UMouse(BaseUDevice):
+    def setup(self):
+        u_set_event(self.fileno(), EventType.KEY)
+        u_set_keys(self.fileno(), Key.BTN_LEFT, Key.BTN_MIDDLE, Key.BTN_RIGHT)
+
+        u_set_event(self.fileno(), EventType.REL)
+        u_set_relatives(self.fileno(), Relative.X, Relative.Y)
+
+        return super().setup()
 
 
 def main():
