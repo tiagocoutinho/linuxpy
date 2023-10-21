@@ -19,8 +19,15 @@ def fopen(path, rw=False, binary=True, blocking=False, close_on_exec=True):
 
     kwargs = {"buffering": 0, "opener": opener}
     flgs = "rb" if binary else "r"
-    if rw:
-        flgs += "+"
+    if isinstance(rw, bool):
+        flgs = "rb" if binary else "r"
+        if rw:
+            flgs += "+"
+    else:
+        flgs = rw
+        if binary:
+            flgs += "b"
+
     return open(path, flgs, **kwargs)
 
 
