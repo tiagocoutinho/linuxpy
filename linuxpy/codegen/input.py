@@ -11,6 +11,7 @@ from .base import CEnum, run
 
 HEADERS = [
     "/usr/include/linux/input.h",
+    "/usr/include/linux/uinput.h",
     "/usr/include/linux/input-event-codes.h",
 ]
 
@@ -31,7 +32,7 @@ TEMPLATE = """\
 import enum
 
 from linuxpy.ioctl import IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR
-from linuxpy.ctypes import u8, i8, u16, i16, u32, i32, u64, i64, cuint, cint, cchar
+from linuxpy.ctypes import u8, u16, i16, i64, cuint, cint, cchar, ccharp
 from linuxpy.ctypes import Struct, Union, POINTER, timeval
 
 
@@ -47,10 +48,21 @@ from linuxpy.ctypes import Struct, Union, POINTER, timeval
 this_dir = pathlib.Path(__file__).parent
 
 
+class IOCEnum(CEnum):
+    def add_item(self, name, value):
+        value = value.replace("UINPUT_IOCTL_BASE", '"U"')
+        super().add_item(name, value)
+
+
 # macros from #define statements
 MACRO_ENUMS = [
+    IOCEnum("UIOC", "UI_"),
     CEnum("Property", "INPUT_PROP_"),
-    CEnum("EventType", "EV_", filter=lambda name, _: name != "EV_VERSION"),
+    CEnum(
+        "EventType",
+        "EV_",
+        filter=lambda name, _: name not in {"EV_VERSION", "EV_UINPUT"},
+    ),
     CEnum("Key", ["KEY_", "BTN_"], with_prefix=True),
     CEnum("Relative", "REL_"),
     CEnum("Absolute", "ABS_"),

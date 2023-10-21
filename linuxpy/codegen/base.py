@@ -19,6 +19,7 @@ import black
 
 
 CTYPES_MAP = {
+    "char*": "ccharp",
     "unsigned char": "u8",
     "signed char": "cchar",
     "char": "cchar",
@@ -324,8 +325,10 @@ def run(name, headers, template, macro_enums, output=None):
     structs_body = "\n\n".join(
         str(struct) for struct in structs if struct.parent is None
     )
-    enums_body = "\n\n".join(str(enum) for enum in macro_enums if enum.name != "IOC")
-    iocs_body = "\n\n".join(str(enum) for enum in macro_enums if enum.name == "IOC")
+    enums_body = "\n\n".join(
+        str(enum) for enum in macro_enums if "IOC" not in enum.name
+    )
+    iocs_body = "\n\n".join(str(enum) for enum in macro_enums if "IOC" in enum.name)
 
     fields = {
         "name": name,
