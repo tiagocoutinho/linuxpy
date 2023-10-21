@@ -488,14 +488,10 @@ def event_stream(fd):
 
 
 async def async_event_stream(fd, maxsize=1000):
-    loop = asyncio.get_event_loop()
     queue = asyncio.Queue(maxsize=maxsize)
-    loop.add_reader(fd, lambda: queue.put_nowait(read_event(fd)))
-    try:
+    with add_reader_asyncio(fd, lambda: queue.put_nowait(read_event(fd))):
         while True:
             yield InputEvent.from_struct(await queue.get())
-    finally:
-        loop.remove_reader(fd)
 
 
 def event_packets_stream(fd):
