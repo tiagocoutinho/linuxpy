@@ -92,7 +92,10 @@ class BaseDevice(ReentrantContextManager):
         return f"<{type(self).__name__} name={self.filename}, closed={self.closed}>"
 
     def _on_open(self):
-        raise NotImplementedError
+        pass
+
+    def _on_close(self):
+        pass
 
     @classmethod
     def from_id(cls, did: int, **kwargs):
@@ -107,6 +110,7 @@ class BaseDevice(ReentrantContextManager):
 
     def close(self):
         if not self.closed:
+            self._on_close()
             self.log.info("closing %s", self.filename)
             self._fobj.close()
             self._fobj = None
