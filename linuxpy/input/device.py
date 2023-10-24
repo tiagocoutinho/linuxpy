@@ -129,7 +129,7 @@ def device_id(fd):
     return result
 
 
-def name(fd):
+def read_name(fd):
     result = create_string_buffer(_S_BUFF)
     ioctl(fd, EVIOCGNAME, result)
     return result.value.decode()
@@ -364,7 +364,7 @@ class Device(BaseDevice):
 
     @property
     def name(self):
-        return name(self.fileno())
+        return read_name(self.fileno())
 
     @property
     def version(self):
