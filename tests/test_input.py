@@ -18,7 +18,7 @@ from linuxpy.input.device import (
 def gamepad():
     name = uuid.uuid4().hex
     with UGamepad(name=name) as simulator:
-        time.sleep(0.1)
+        time.sleep(1)
         for pad in find_gamepads():
             with pad:
                 name = pad.name
@@ -33,7 +33,7 @@ def _(find=each(find_gamepads, find_mice), uclass=each(UGamepad, UMouse)):
     name = uuid.uuid4().hex
     with uclass(name=name) as simulator:
         # give kernel time to expose the device
-        time.sleep(0.2)
+        time.sleep(1)
         devices = find()
         devices = list(devices)
         assert devices
