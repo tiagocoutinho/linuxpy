@@ -40,5 +40,6 @@ jobs:
         sudo usermod -aG tty,input $USER
         sudo -s -u ${USER} bash -c 'whoami && groups'
         echo 'SUBSYSTEM=="misc", KERNEL=="uinput", MODE="0660", GROUP="input"' | sudo tee /etc/udev/rules.d/uinput.rules
+        sudo udevadm control --reload-rules && sudo udevadm trigger
     - name: Tests
       run: ward
