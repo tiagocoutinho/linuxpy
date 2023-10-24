@@ -8,8 +8,10 @@ import asyncio
 import collections
 import enum
 import functools
+import pathlib
 import select
 import os
+from collections.abc import Generator
 
 from linuxpy.ctypes import cint, cuint, i32, cvoidp, sizeof, create_string_buffer, cast
 from linuxpy.device import iter_device_files, BaseDevice
@@ -524,34 +526,51 @@ async def async_event_batch_stream(fd, maxsize=1000):
             packet.append(event)
 
 
+def iter_devices(path="/dev/input", **kwargs):
+    return (Device(path, **kwargs) for path in iter_input_files(path=path))
+
+
+def is_gamepad(device: Device) -> bool:
+    with device:
+        caps = device.capabilities
+    key_caps = caps.get(EventType.KEY, ())
+    return EventType.ABS in caps and Key.BTN_GAMEPAD in key_caps
+
+
+def is_keyboard(device: Device) -> bool:
+    with device:
+        caps = device.capabilities
+    key_caps = caps.get(EventType.KEY, ())
+    return Key.KEY_A in key_caps and Key.KEY_CAPSLOCK in key_caps
+
+
+def is_mouse(device: Device) -> bool:
+    with device:
+        caps = device.capabilities
+    if not EventType.ABS in caps and not EventType.REL in caps:
+        return False
+    key_caps = caps.get(EventType.KEY, ())
+    return Key.BTN_MOUSE in key_caps
+
+
+def _filter_devices(func):
+    return filter(func, iter_devices())
+
+
 def find_gamepads():
-    for path in iter_input_files():
-        with Device(path) as dev:
-            caps = dev.capabilities
-        if EventType.ABS in caps and Key.BTN_GAMEPAD in caps.get(EventType.KEY, ()):
-            yield dev
+    return _filter_devices(is_gamepad)
 
 
 def find_keyboards():
-    for path in iter_input_files():
-        with Device(path) as dev:
-            caps = dev.capabilities
-        key_caps = caps.get(EventType.KEY, ())
-        if Key.KEY_A in key_caps and Key.KEY_CAPSLOCK in key_caps:
-            yield dev
+    return _filter_devices(is_keyboard)
 
 
 def find_mice():
-    def is_mouse(dev):
-        with dev:
-            caps = dev.capabilities
-        if not EventType.ABS in caps and not EventType.REL in caps:
-            return False
-        return Key.BTN_MOUSE in caps.get(EventType.KEY, ())
+    return _filter_devices(is_mouse)
 
-    paths = iter_input_files()
-    devs = (Device(path) for path in paths)
-    return filter(is_mouse, devs)
+
+def is_uinput_available():
+    return BaseUDevice.PATH.exists()
 
 
 def u_device_setup(fd, bus: Bus, vendor: int, product: int, name: str | bytes) -> None:
@@ -578,36 +597,54 @@ def u_set_event(fd, event_type: EventType):
     ioctl(fd, UIOC.SET_EVBIT, event_type)
 
 
+def _u_set_n(fd, ioc, values):
+    for value in values:
+        ioctl(fd, ioc, value)
+
+
 def u_set_keys(fd, *keys: Key):
-    for key in keys:
-        ioctl(fd, UIOC.SET_KEYBIT, key)
+    _u_set_n(fd, UIOC.SET_KEYBIT, keys)
 
 
 def u_set_relatives(fd, *relatives: Relative):
-    for relative in relatives:
-        ioctl(fd, UIOC.SET_RELBIT, relative)
+    _u_set_n(fd, UIOC.SET_RELBIT, relatives)
 
 
-def u_emit(fd, event_type, event_code, value):
+def u_set_absolutes(fd, *absolutes: Absolute):
+    _u_set_n(fd, UIOC.SET_ABSBIT, absolutes)
+
+
+def u_set_miscellaneous(fd, *misc: Miscelaneous):
+     _u_set_n(fd, UIOC.SET_MSCBIT, misc)
+
+
+def u_set_force_feedback(fd, *ff: ForceFeedback):
+     _u_set_n(fd, UIOC.SET_FFBIT, ff)
+
+
+def u_emit(fd, event_type, event_code, value, syn=True):
     event = input_event()
     event.type = event_type
     event.code = event_code
     event.value = value
-    return os.write(fd, bytes(event))
+    os.write(fd, bytes(event))
+    if syn:
+        u_emit(fd, EventType.SYN, Synchronization.REPORT, 0, syn=False)
 
 
 class BaseUDevice(BaseDevice):
     """A uinput device with no capabilities registered"""
 
-    PATH = "/dev/uinput"
+    PATH = pathlib.Path("/dev/uinput")
+    CAPABILITIES = {}
 
-    def __init__(self, filename=PATH):
+    def __init__(self, filename=PATH, bus=Bus.USB, vendor_id=0x01, product_id=0x01, name="linuxpy emulated device"):
         # Force write only
         super().__init__(filename, read_write="w")
-        self.bustype = Bus.USB
-        self.vendor = 0x1
-        self.product = 0x1
-        self.name = "linuxpy emulated device"
+        self.bustype = bus
+        self.vendor_id = vendor_id
+        self.product_id = product_id
+        self.name = name
 
     def _on_open(self):
         self.setup()
@@ -617,9 +654,25 @@ class BaseUDevice(BaseDevice):
         self.destroy()
 
     def setup(self):
+        self.set_capabilities(self.CAPABILITIES)
         u_device_setup(
-            self.fileno(), self.bustype, self.vendor, self.product, self.name
+            self.fileno(), self.bustype, self.vendor_id, self.product_id, self.name
         )
+
+    def set_capabilities(self, caps: dict):
+        for event_type, capabilities in caps.items():
+            u_set_event(self.fileno(), event_type)
+            if event_type == EventType.KEY:
+                u_set_keys(self.fileno(), *capabilities)
+            elif event_type == EventType.ABS:
+                u_set_absolutes(self.fileno(), *capabilities)
+            elif event_type == EventType.REL:
+                u_set_relatives(self.fileno(), *capabilities)
+            elif event_type == EventType.MSC:
+                u_set_miscellaneous(self.fileno(), *capabilities)
+            elif event_type == EventType.FF:
+                u_set_force_feedback(self.fileno(), *capabilities)
+
 
     def create(self):
         u_device_create(self.fileno())
@@ -627,19 +680,28 @@ class BaseUDevice(BaseDevice):
     def destroy(self):
         u_device_destroy(self.fileno())
 
-    def emit(self, event_type: EventType, event_code: int, value: int):
-        return u_emit(self.fileno(), event_type, event_code, value)
+    def emit(self, event_type: EventType, event_code: int, value: int, syn=True):
+        return u_emit(self.fileno(), event_type, event_code, value, syn=syn)
 
 
 class UMouse(BaseUDevice):
-    def setup(self):
-        u_set_event(self.fileno(), EventType.KEY)
-        u_set_keys(self.fileno(), Key.BTN_LEFT, Key.BTN_MIDDLE, Key.BTN_RIGHT)
+    CAPABILITIES = {
+        EventType.KEY: {Key.BTN_LEFT, Key.BTN_MIDDLE, Key.BTN_RIGHT},
+        EventType.REL: {Relative.X, Relative.Y}
+    }
 
-        u_set_event(self.fileno(), EventType.REL)
-        u_set_relatives(self.fileno(), Relative.X, Relative.Y)
 
-        return super().setup()
+class UGamepad(BaseUDevice):
+    CAPABILITIES = {
+#        EventType.FF: {ForceFeedback.RUMBLE, ForceFeedback.PERIODIC, ForceFeedback.SQUARE, ForceFeedback.TRIANGLE, ForceFeedback.SINE, ForceFeedback.GAIN},
+        EventType.KEY: {Key.BTN_GAMEPAD, Key.BTN_EAST, Key.BTN_NORTH, Key.BTN_WEST, Key.BTN_EAST, Key.BTN_SELECT, Key.BTN_START, 
+                        Key.BTN_TL, Key.BTN_TR, Key.BTN_TL2, Key.BTN_TR2, Key.BTN_MODE, Key.BTN_THUMBL, Key.BTN_THUMBR,
+                        Key.BTN_DPAD_UP, Key.BTN_DPAD_DOWN, Key.BTN_DPAD_LEFT, Key.BTN_DPAD_RIGHT},
+        EventType.ABS: {Absolute.X, Absolute.Y, Absolute.RX, Absolute.RY, Absolute.RZ},
+        EventType.MSC: {Miscelaneous.SCAN},
+    }
+
+
 
 
 def main():
@@ -651,7 +713,7 @@ def main():
             "ID: bus={0.bustype} vendor={0.vendor} product={0.product} "
             "version={0.version}".format(device_id(dev))
         )
-        print("name:", name(dev))
+        print("name:", read_name(dev))
         print("physical_location:", physical_location(dev))
         #    print('UID:', uid(fd))
         print(
