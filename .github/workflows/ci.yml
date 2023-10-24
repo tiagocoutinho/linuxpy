@@ -39,7 +39,6 @@ jobs:
       run: |
         sudo usermod -aG tty,input $USER
         sudo -s -u ${USER} bash -c 'whoami && groups'
-        ls -l /dev/
-        ls -l /dev/input
+        sudo echo 'SUBSYSTEM=="misc", KERNEL=="uinput", MODE="0660", GROUP="input"' > /etc/udev/rules.d/uinput.rules
     - name: Tests
       run: ward
