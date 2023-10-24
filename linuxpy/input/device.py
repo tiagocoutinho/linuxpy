@@ -358,27 +358,27 @@ class Device(BaseDevice):
     def _on_open(self):
         pass
 
-    @property
+    @functools.cached_property
     def uid(self):
         return uid(self.fileno())
 
-    @property
+    @functools.cached_property
     def name(self):
         return read_name(self.fileno())
 
-    @property
+    @functools.cached_property
     def version(self):
         return version(self.fileno())
 
-    @property
+    @functools.cached_property
     def physical_location(self):
         return physical_location(self.fileno())
 
-    @property
+    @functools.cached_property
     def device_id(self):
         return device_id(self.fileno())
 
-    @property
+    @functools.cached_property
     def capabilities(self):
         if self._caps is None:
             self._caps = capabilities(self.fileno())
