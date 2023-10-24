@@ -35,5 +35,11 @@ jobs:
       run: |
         python -m build
         twine check dist/*
+    - name: Allow user to access /dev/uinput
+      run: |
+        sudo usermod -aG tty,input $USER
+        sudo -s -u ${USER} bash -c 'whoami && groups'
+        ls -l /dev/
+        ls -l /dev/input
     - name: Tests
       run: ward
