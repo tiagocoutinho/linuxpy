@@ -11,7 +11,7 @@ import functools
 import pathlib
 import select
 import os
-from collections.abc import Generator
+from typing import Union
 
 from linuxpy.ctypes import cint, cuint, i32, cvoidp, sizeof, create_string_buffer, cast
 from linuxpy.device import iter_device_files, BaseDevice
@@ -573,7 +573,9 @@ def is_uinput_available():
     return BaseUDevice.PATH.exists()
 
 
-def u_device_setup(fd, bus: Bus, vendor: int, product: int, name: str | bytes) -> None:
+def u_device_setup(
+    fd, bus: Bus, vendor: int, product: int, name: Union[str, bytes]
+) -> None:
     setup = uinput_setup()
     setup.id.bustype = bus
     setup.id.vendor = vendor
