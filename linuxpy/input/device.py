@@ -496,7 +496,7 @@ async def async_event_stream(fd, maxsize=1000):
             yield InputEvent.from_struct(await queue.get())
 
 
-def event_packets_stream(fd):
+def event_batch_stream(fd):
     """Yields packets of events occurring at the same moment in time."""
     packet = []
     for event in event_stream(fd):
@@ -510,7 +510,8 @@ def event_packets_stream(fd):
             packet.append(event)
 
 
-async def async_event_packets_stream(fd, maxsize=1000):
+async def async_event_batch_stream(fd, maxsize=1000):
+    """Yields packets of events occurring at the same moment in time."""
     packet = []
     async for event in async_event_stream(fd, maxsize=maxsize):
         if event.type == EventType.SYN:
