@@ -4,7 +4,14 @@ import uuid
 from ward import skip, test, each, fixture, Scope
 
 
-from linuxpy.input.device import EventType, is_uinput_available, UGamepad, UMouse, find_gamepads, find_mice
+from linuxpy.input.device import (
+    EventType,
+    is_uinput_available,
+    UGamepad,
+    UMouse,
+    find_gamepads,
+    find_mice,
+)
 
 
 @fixture
@@ -91,7 +98,7 @@ def _(pair_dev_simulator=gamepad):
         assert type(device.rx) is int
         assert type(device.ry) is int
         assert type(device.rz) is int
-        assert not device.active_keys 
+        assert not device.active_keys
 
 
 @skip(when=not is_uinput_available(), reason="uinput is not available")

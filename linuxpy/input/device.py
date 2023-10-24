@@ -615,11 +615,11 @@ def u_set_absolutes(fd, *absolutes: Absolute):
 
 
 def u_set_miscellaneous(fd, *misc: Miscelaneous):
-     _u_set_n(fd, UIOC.SET_MSCBIT, misc)
+    _u_set_n(fd, UIOC.SET_MSCBIT, misc)
 
 
 def u_set_force_feedback(fd, *ff: ForceFeedback):
-     _u_set_n(fd, UIOC.SET_FFBIT, ff)
+    _u_set_n(fd, UIOC.SET_FFBIT, ff)
 
 
 def u_emit(fd, event_type, event_code, value, syn=True):
@@ -638,7 +638,14 @@ class BaseUDevice(BaseDevice):
     PATH = pathlib.Path("/dev/uinput")
     CAPABILITIES = {}
 
-    def __init__(self, filename=PATH, bus=Bus.USB, vendor_id=0x01, product_id=0x01, name="linuxpy emulated device"):
+    def __init__(
+        self,
+        filename=PATH,
+        bus=Bus.USB,
+        vendor_id=0x01,
+        product_id=0x01,
+        name="linuxpy emulated device",
+    ):
         # Force write only
         super().__init__(filename, read_write="w")
         self.bustype = bus
@@ -673,7 +680,6 @@ class BaseUDevice(BaseDevice):
             elif event_type == EventType.FF:
                 u_set_force_feedback(self.fileno(), *capabilities)
 
-
     def create(self):
         u_device_create(self.fileno())
 
@@ -687,21 +693,36 @@ class BaseUDevice(BaseDevice):
 class UMouse(BaseUDevice):
     CAPABILITIES = {
         EventType.KEY: {Key.BTN_LEFT, Key.BTN_MIDDLE, Key.BTN_RIGHT},
-        EventType.REL: {Relative.X, Relative.Y}
+        EventType.REL: {Relative.X, Relative.Y},
     }
 
 
 class UGamepad(BaseUDevice):
     CAPABILITIES = {
-#        EventType.FF: {ForceFeedback.RUMBLE, ForceFeedback.PERIODIC, ForceFeedback.SQUARE, ForceFeedback.TRIANGLE, ForceFeedback.SINE, ForceFeedback.GAIN},
-        EventType.KEY: {Key.BTN_GAMEPAD, Key.BTN_EAST, Key.BTN_NORTH, Key.BTN_WEST, Key.BTN_EAST, Key.BTN_SELECT, Key.BTN_START, 
-                        Key.BTN_TL, Key.BTN_TR, Key.BTN_TL2, Key.BTN_TR2, Key.BTN_MODE, Key.BTN_THUMBL, Key.BTN_THUMBR,
-                        Key.BTN_DPAD_UP, Key.BTN_DPAD_DOWN, Key.BTN_DPAD_LEFT, Key.BTN_DPAD_RIGHT},
+        #        EventType.FF: {ForceFeedback.RUMBLE, ForceFeedback.PERIODIC, ForceFeedback.SQUARE, ForceFeedback.TRIANGLE, ForceFeedback.SINE, ForceFeedback.GAIN},
+        EventType.KEY: {
+            Key.BTN_GAMEPAD,
+            Key.BTN_EAST,
+            Key.BTN_NORTH,
+            Key.BTN_WEST,
+            Key.BTN_EAST,
+            Key.BTN_SELECT,
+            Key.BTN_START,
+            Key.BTN_TL,
+            Key.BTN_TR,
+            Key.BTN_TL2,
+            Key.BTN_TR2,
+            Key.BTN_MODE,
+            Key.BTN_THUMBL,
+            Key.BTN_THUMBR,
+            Key.BTN_DPAD_UP,
+            Key.BTN_DPAD_DOWN,
+            Key.BTN_DPAD_LEFT,
+            Key.BTN_DPAD_RIGHT,
+        },
         EventType.ABS: {Absolute.X, Absolute.Y, Absolute.RX, Absolute.RY, Absolute.RZ},
         EventType.MSC: {Miscelaneous.SCAN},
     }
-
-
 
 
 def main():

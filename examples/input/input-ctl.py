@@ -105,8 +105,6 @@ def listen(path: str):
             print(template.format(**state), end="")
             print(f" | data={data[0]}; {elapsed=:.2f} s", end="", flush=True)
 
-
-
     with Device(path) as device:
         state = create_state(device)
         template = create_state_template(state)
