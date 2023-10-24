@@ -30,7 +30,7 @@ jobs:
     - name: Linting tests
       run: |
         black --check --diff linuxpy tests examples
-        ruff check --diff --format=github --show-files .
+        ruff check --diff --output-format=github --show-files .
     - name: Build package
       run: |
         python -m build
