@@ -18,6 +18,7 @@ from linuxpy.input.device import (
 def gamepad():
     name = uuid.uuid4().hex
     with UGamepad(name=name) as simulator:
+        simulator.open()
         time.sleep(1)
         for pad in find_gamepads():
             with pad:
