@@ -1121,5 +1121,3 @@ class UIOC(enum.IntEnum):
     BEGIN_FF_ERASE = _IOWR("U", 202, uinput_ff_erase)
     END_FF_ERASE = _IOW("U", 203, uinput_ff_erase)
     GET_VERSION = _IOR("U", 45, cuint)
-    FF_UPLOAD = 0x1
-    FF_ERASE = 0x2

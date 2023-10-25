@@ -56,7 +56,7 @@ class IOCEnum(CEnum):
 
 # macros from #define statements
 MACRO_ENUMS = [
-    IOCEnum("UIOC", "UI_", filter=lambda _, value: "_IO" not in value),
+    IOCEnum("UIOC", "UI_", filter=lambda _, value: "_IO" in value),
     CEnum("Property", "INPUT_PROP_"),
     CEnum(
         "EventType",
