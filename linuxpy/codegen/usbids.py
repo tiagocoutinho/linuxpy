@@ -23,6 +23,7 @@ def get_raw(url: str = USB_IDS) -> str:
 
 
 def get(url: str = USB_IDS) -> dict[int,]:
+    logging.info("  Fetching usbids...")
     raw = get_raw(url=url)
 
     items = {}
@@ -69,6 +70,7 @@ HEADER = """\
 
 
 def dump_items(items, output=this_dir.parent / "usb" / "usbids.py"):
+    logging.info("  Building usbids...")
     output = pathlib.Path(output)
     fields = {
         "name": "linuxpy.codegen.usbids",
@@ -83,11 +85,10 @@ def dump_items(items, output=this_dir.parent / "usb" / "usbids.py"):
     ]
     text += "\n".join(fields)
 
-    try:
-        text = black.format_str(text, mode=black.FileMode())
-    except Exception:
-        raise
+    logging.info("  Applying black to usbids...")
+    text = black.format_str(text, mode=black.FileMode())
 
+    logging.info("  Writting usbids...")
     if output is None:
         print(text)
     else:

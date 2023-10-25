@@ -312,6 +312,7 @@ def run(name, headers, template, macro_enums, output=None):
     logging.info("Starting %s...", name)
     structs = []
     for header in headers:
+        logging.info("  Building %s for %s...", header, name)
         fill_macros(header, cache, macro_enums)
         base_header = os.path.split(os.path.splitext(header)[0])[1]
         xml_filename = os.path.join(temp_dir, base_header + ".xml")
@@ -341,12 +342,9 @@ def run(name, headers, template, macro_enums, output=None):
         "iocs_body": iocs_body,
     }
     text = template.format(**fields)
-    try:
-        text = black.format_str(text, mode=black.FileMode())
-    except Exception:
-        raise
-
-    logging.info("Writting %s...", name)
+    logging.info("  Applying black to %s...", name)
+    text = black.format_str(text, mode=black.FileMode())
+    logging.info("  Writting %s...", name)
     if output is None:
         print(text)
     else:
