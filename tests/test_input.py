@@ -35,6 +35,7 @@ def _(find=each(find_gamepads, find_mice), uclass=each(UGamepad, UMouse)):
     name = uuid.uuid4().hex
     with uclass(name=name) as simulator:
         # give kernel time to expose the device
+        time.sleep(10)
         time.sleep(1)
         devices = find()
         devices = list(devices)
