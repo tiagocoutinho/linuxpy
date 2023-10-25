@@ -25,7 +25,6 @@ dependencies = []
 dynamic = ["version", "readme"]
 
 [project.urls]
-#Changelog = "https://github.com/encode/httpx/blob/master/CHANGELOG.md"
 Documentation = "https://github.com/tiagocoutinho/linuxpy"
 Homepage = "https://github.com/tiagocoutinho/linuxpy"
 Source = "https://github.com/tiagocoutinho/linuxpy"
@@ -46,6 +45,16 @@ dev = [
 test = [ 
     "ward>=0.67.0b0",
     "ward-coverage>=0.3.0",
+]
+examples = [
+    "flask>=2,<4",
+    "fastapi<1",
+    "opencv-python",
+    "qtpy",
+    "pyqt6",
+    "gunicorn",
+    "gevent",
+    "uvicorn",
 ]
 
 [build-system]
