@@ -13,7 +13,7 @@ A two purpose API:
 * raw python binding for the linux userspace API, using ctypes (don't even
   bother wasting your time here. You probably won't use it)
 
-Only works on python >= 3.7.
+Only works on python >= 3.8.
 
 ## Installation
 
