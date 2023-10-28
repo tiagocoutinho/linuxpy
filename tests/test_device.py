@@ -20,13 +20,13 @@ try:
 except ImportError:
     numpy = None
 
+from linuxpy.device import device_number
 from linuxpy.video import raw
 from linuxpy.video.device import (
     BufferType,
     Device,
     PixelFormat,
     VideoCapture,
-    device_number,
     iter_devices,
     iter_video_files,
 )
