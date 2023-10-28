@@ -33,7 +33,7 @@ log_mmap = log.getChild("mmap")
 
 
 class V4L2Error(Exception):
-    pass
+    """Video for linux 2 error"""
 
 
 def _enum(name, prefix, klass=enum.IntEnum):
