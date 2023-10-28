@@ -15,7 +15,6 @@ import logging
 import mmap
 import os
 import select
-import typing
 from collections import UserDict
 
 from linuxpy.ctypes import cenum
@@ -392,7 +391,7 @@ def request_buffers(fd, buffer_type: BufferType, memory: Memory, count: int) -> 
     req.count = count
     ioctl(fd, IOC.REQBUFS, req)
     if not req.count:
-        raise IOError("Not enough buffer memory")
+        raise OSError("Not enough buffer memory")
     return req
 
 
@@ -581,7 +580,7 @@ def create_buffer(fd, buffer_type: BufferType, memory: Memory) -> raw.v4l2_buffe
     return buffers[0]
 
 
-def create_buffers(fd, buffer_type: BufferType, memory: Memory, count: int) -> typing.List[raw.v4l2_buffer]:
+def create_buffers(fd, buffer_type: BufferType, memory: Memory, count: int) -> list[raw.v4l2_buffer]:
     """request + query buffers"""
     request_buffers(fd, buffer_type, memory, count)
     return [query_buffer(fd, buffer_type, memory, index) for index in range(count)]
@@ -591,7 +590,7 @@ def mmap_from_buffer(fd, buff: raw.v4l2_buffer) -> mmap.mmap:
     return mem_map(fd, buff.length, offset=buff.m.offset)
 
 
-def create_mmap_buffers(fd, buffer_type: BufferType, memory: Memory, count: int) -> typing.List[mmap.mmap]:
+def create_mmap_buffers(fd, buffer_type: BufferType, memory: Memory, count: int) -> list[mmap.mmap]:
     """create buffers + mmap_from_buffer"""
     return [mmap_from_buffer(fd, buff) for buff in create_buffers(fd, buffer_type, memory, count)]
 
@@ -600,7 +599,7 @@ def create_mmap_buffer(fd, buffer_type: BufferType, memory: Memory) -> mmap.mmap
     return create_mmap_buffers(fd, buffer_type, memory, 1)
 
 
-def enqueue_buffers(fd, buffer_type: BufferType, memory: Memory, count: int) -> typing.List[raw.v4l2_buffer]:
+def enqueue_buffers(fd, buffer_type: BufferType, memory: Memory, count: int) -> list[raw.v4l2_buffer]:
     return [enqueue_buffer(fd, buffer_type, memory, index) for index in range(count)]
 
 
@@ -637,13 +636,13 @@ class Device(BaseDevice):
     def request_buffers(self, buffer_type, memory, size):
         return request_buffers(self.fileno(), buffer_type, memory, size)
 
-    def create_buffers(self, buffer_type: BufferType, memory: Memory, count: int) -> typing.List[raw.v4l2_buffer]:
+    def create_buffers(self, buffer_type: BufferType, memory: Memory, count: int) -> list[raw.v4l2_buffer]:
         return create_buffers(self.fileno(), buffer_type, memory, count)
 
     def free_buffers(self, buffer_type, memory):
         return free_buffers(self.fileno(), buffer_type, memory)
 
-    def enqueue_buffers(self, buffer_type: BufferType, memory: Memory, count: int) -> typing.List[raw.v4l2_buffer]:
+    def enqueue_buffers(self, buffer_type: BufferType, memory: Memory, count: int) -> list[raw.v4l2_buffer]:
         return enqueue_buffers(self.fileno(), buffer_type, memory, count)
 
     def set_format(
@@ -739,8 +738,8 @@ class Controls(dict):
     def __delattr__(self, key):
         try:
             del self[key]
-        except KeyError:
-            raise AttributeError(key)
+        except KeyError as error:
+            raise AttributeError(key) from error
 
     def __missing__(self, key):
         for v in self.values():
@@ -1113,7 +1112,7 @@ class BufferManager(DeviceHelper):
     def dequeue_buffer(self, memory: Memory) -> raw.v4l2_buffer:
         return self.device.dequeue_buffer(self.type, memory)
 
-    def enqueue_buffers(self, memory: Memory) -> typing.List[raw.v4l2_buffer]:
+    def enqueue_buffers(self, memory: Memory) -> list[raw.v4l2_buffer]:
         return self.device.enqueue_buffers(self.type, memory, self.size)
 
     def free_buffers(self, memory: Memory):
@@ -1272,7 +1271,7 @@ class VideoCapture(BufferManager):
             elif Capability.READWRITE in source:
                 self.buffer = Read(self)
             else:
-                raise IOError("Device needs to support STREAMING or READWRITE capability")
+                raise OSError("Device needs to support STREAMING or READWRITE capability")
             self.buffer.open()
             self.stream_on()
             self.device.log.info("Video capture started!")

@@ -59,13 +59,8 @@ def get_controls(device: str, controls: list, legacy_controls: bool) -> None:
         print("")
 
 
-def set_controls(
-    device: str, controls: list, legacy_controls: bool, clipping: bool
-) -> None:
-    controls = (
-        (ctrl.strip(), value.strip())
-        for (ctrl, value) in (c.split("=") for c in controls)
-    )
+def set_controls(device: str, controls: list, legacy_controls: bool, clipping: bool) -> None:
+    controls = ((ctrl.strip(), value.strip()) for (ctrl, value) in (c.split("=") for c in controls))
 
     with Device(device, legacy_controls=legacy_controls) as cam:
         print("Changing value of given controls ...\n")
@@ -95,9 +90,7 @@ def set_controls(
             if success:
                 print(f"{result} {control}: {value_old} -> {value_new}\n")
             else:
-                print(
-                    f"{result} {control}: {value_old} -> {value_new}\n{result} {reason}\n"
-                )
+                print(f"{result} {control}: {value_old} -> {value_new}\n{result} {reason}\n")
 
 
 def reset_controls(device: str, controls: list, legacy_controls: bool) -> None:

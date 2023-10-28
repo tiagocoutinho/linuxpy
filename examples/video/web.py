@@ -44,6 +44,4 @@ def index():
 
 @app.get("/stream")
 def stream():
-    return flask.Response(
-        gen_frames(), mimetype="multipart/x-mixed-replace; boundary=frame"
-    )
+    return flask.Response(gen_frames(), mimetype="multipart/x-mixed-replace; boundary=frame")

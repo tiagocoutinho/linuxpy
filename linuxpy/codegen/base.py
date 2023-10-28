@@ -143,10 +143,10 @@ def decode_macro_value(value, context, name_map):
     for ctype, pytype in CTYPES_MAP.items():
         value = value.replace(" " + ctype, pytype)
     try:
-        return "0x{:X}".format(int(value))
+        return f"0x{int(value):X}"
     except ValueError:
         try:
-            return "0x{:X}".format(int(value, 16))
+            return f"0x{int(value, 16):X}"
         except ValueError:
             for c_name, py_name in name_map.items():
                 py_class, name = py_name.split(".", 1)
@@ -183,7 +183,7 @@ def fill_macros(filename, name_map, enums):
 
 def find_xml_base_type(etree, context, type_id):
     while True:
-        node = etree.find("*[@id='{}']".format(type_id))
+        node = etree.find(f"*[@id='{type_id}']")
         if node is None:
             return
         if node.tag == "Struct":
@@ -211,7 +211,7 @@ def find_xml_base_type(etree, context, type_id):
 
 def get_structs(header_filename, xml_filename):
     etree = xml.etree.ElementTree.parse(xml_filename)
-    header_tag = etree.find("File[@name='{}']".format(header_filename))
+    header_tag = etree.find(f"File[@name='{header_filename}']")
     structs = {}
     if header_tag is None:
         return structs
@@ -269,7 +269,7 @@ def cname_to_pyname(
 
 def get_enums(header_filename, xml_filename, enums):
     etree = xml.etree.ElementTree.parse(xml_filename)
-    header_tag = etree.find("File[@name='{}']".format(header_filename))
+    header_tag = etree.find(f"File[@name='{header_filename}']")
     structs = {}
     if header_tag is None:
         return structs

@@ -12,7 +12,7 @@ import time
 import beautifultable
 import typer
 
-from linuxpy.input.device import EventType, Device, iter_input_files
+from linuxpy.input.device import Device, EventType, iter_input_files
 
 app = typer.Typer()
 
@@ -32,10 +32,7 @@ def create_state(dev):
             state["keys"] = dev.active_keys
             state["pressed"] = names(state["keys"])
         elif event_type == EventType.ABS:
-            state["abs"] = {
-                name(code): "{:3d}".format(dev.get_abs_info(code).value)
-                for code in codes
-            }
+            state["abs"] = {name(code): f"{dev.get_abs_info(code).value:3d}" for code in codes}
         elif event_type == EventType.FF:
             # TODO
             pass
@@ -117,7 +114,7 @@ def info(path: str):
         typer.echo(dev.name)
         for cap, items in dev.capabilities.items():
             items = ", ".join(item.name.rsplit("_", 1)[-1] for item in items)
-            typer.echo("{}: {}".format(cap.name, items))
+            typer.echo(f"{cap.name}: {items}")
 
 
 if __name__ == "__main__":

@@ -14,9 +14,7 @@ import PIL.Image
 from linuxpy.video.device import Device, PixelFormat, VideoCapture
 
 BOUNDARY = "frame"
-HEADER = (
-    "--{boundary}\r\nContent-Type: image/{type}\r\nContent-Length: {length}\r\n\r\n"
-)
+HEADER = "--{boundary}\r\nContent-Type: image/{type}\r\nContent-Length: {length}\r\n\r\n"
 SUFFIX = b"\r\n"
 
 

@@ -54,6 +54,4 @@ def index():
 
 @app.get("/stream")
 def stream():
-    return fastapi.responses.StreamingResponse(
-        gen_frames(), media_type="multipart/x-mixed-replace; boundary=frame"
-    )
+    return fastapi.responses.StreamingResponse(gen_frames(), media_type="multipart/x-mixed-replace; boundary=frame")

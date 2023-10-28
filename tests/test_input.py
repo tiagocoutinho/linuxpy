@@ -109,11 +109,11 @@ def _(pair_dev_simulator=gamepad):
         assert device.device_id.vendor == simulator.vendor_id
         assert device.device_id.product == simulator.product_id
         assert device.version > 0
-        assert type(device.x) is int
-        assert type(device.y) is int
-        assert type(device.rx) is int
-        assert type(device.ry) is int
-        assert type(device.rz) is int
+        assert isinstance(device.x, int)
+        assert isinstance(device.y, int)
+        assert isinstance(device.rx, int)
+        assert isinstance(device.ry, int)
+        assert isinstance(device.rz, int)
         assert not device.active_keys
 
 

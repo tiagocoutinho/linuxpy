@@ -202,9 +202,7 @@ def _():
         assert len(devices) == 2
         for device in devices:
             assert isinstance(device, Device)
-        assert {device.filename for device in devices} == {
-            Path(filename) for filename in expected_files
-        }
+        assert {device.filename for device in devices} == {Path(filename) for filename in expected_files}
 
 
 @test("device creation")

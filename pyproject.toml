@@ -5,7 +5,7 @@ license = {text = "GPL-3.0-or-later"}
 authors = [
     { name = "Jose Tiago Macara Coutinho", email = "coutinhotiago@gmail.com" }
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -13,10 +13,10 @@ classifiers = [
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Multimedia :: Video",
     "Topic :: Multimedia :: Video :: Capture",
 ]
@@ -83,8 +83,21 @@ report = {skip_empty = true}
 branch = true
 
 [tool.ruff]
-select = ["E", "F", "W", "C", "B", "B9", "I001"]
-ignore = ["B904", "B028", "C901", "W191"]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+    "W191", # indentation contains tabs
+]
 line-length = 120
 indent-width = 4
 target-version = "py39"

@@ -4,9 +4,9 @@
 # Copyright (c) 2023 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
+import argparse
 import logging
 from io import BytesIO
-from sys import argv
 from tkinter import READABLE, Canvas, Tk
 
 from PIL import Image, ImageTk
@@ -29,13 +29,9 @@ def update(cam, mask=None):
     canvas.itemconfig(container, image=cam.image)
 
 
-import argparse
-
 parser = argparse.ArgumentParser("v4l2-tk")
 parser.add_argument("-d", "--device", type=int, default=0)
-parser.add_argument(
-    "-s", "--source", choices=["auto", "stream", "read"], default="auto"
-)
+parser.add_argument("-s", "--source", choices=["auto", "stream", "read"], default="auto")
 args = parser.parse_args()
 if args.source == "auto":
     source = None

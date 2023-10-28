@@ -221,8 +221,8 @@ def capabilities_str(caps, indent=""):
     lines = []
     sub_indent = indent if indent else "  "
     for cap, values in caps.items():
-        lines.append("{}{}:".format(indent, cap.name))
-        lines.extend((2 * sub_indent + value.name for value in values))
+        lines.append(f"{indent}{ cap.name}:")
+        lines.extend(2 * sub_indent + value.name for value in values)
     return "\n".join(lines)
 
 
@@ -292,12 +292,12 @@ class _Type:
     def __get__(self, obj, type=None):
         if self._event_type not in obj.capabilities:
             name = EVENT_TYPE_MAP[self._event_type].__name__.lower()
-            raise ValueError("device has no {!r} capability".format(name))
+            raise ValueError(f"device has no {name!r} capability")
         return self.__class__(obj)
 
     def _check_code(self, code):
         if code not in self.device.capabilities[self._event_type]:
-            raise ValueError("device has no {!r} capability".format(code.name))
+            raise ValueError(f"device has no {code.name!r} capability")
 
 
 class _Abs(_Type):

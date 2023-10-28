@@ -131,9 +131,7 @@ def stop(device_id):
 def device(device_id: int):
     camera = cameras()[device_id]
     with camera.device:
-        return flask.render_template(
-            "device.html", camera=camera, ControlType=ControlType
-        )
+        return flask.render_template("device.html", camera=camera, ControlType=ControlType)
 
 
 @app.get("/camera/<int:device_id>/stream")
@@ -181,9 +179,7 @@ def reset_control(device_id, control_id):
     with camera.device:
         control = camera.device.controls[control_id]
         control.value = control.info.default_value
-    return flask.render_template(
-        "control.html", control=control, ControlType=ControlType
-    )
+    return flask.render_template("control.html", control=control, ControlType=ControlType)
 
 
 if __name__ == "__main__":

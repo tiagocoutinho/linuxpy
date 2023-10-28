@@ -33,9 +33,7 @@ class QVideo(QtWidgets.QWidget):
                 data = frame.array
                 data.shape = frame.height, frame.width, -1
                 bgr = cv2.cvtColor(data, cv2.COLOR_YUV2BGR_YUYV)
-            self.image = QtGui.QImage(
-                bgr, frame.width, frame.height, QtGui.QImage.Format.Format_BGR888
-            )
+            self.image = QtGui.QImage(bgr, frame.width, frame.height, QtGui.QImage.Format.Format_BGR888)
         painter = QtGui.QPainter(self)
         painter.drawImage(QtCore.QPointF(), self.image)
 

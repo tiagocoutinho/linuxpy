@@ -102,9 +102,7 @@ templates = Jinja2Templates(directory="templates", line_statement_prefix="#")
 
 @app.get("/")
 def index(request: Request):
-    return templates.TemplateResponse(
-        "index.html", {"request": request, "cameras": cameras()}
-    )
+    return templates.TemplateResponse("index.html", {"request": request, "cameras": cameras()})
 
 
 @app.get("/camera/{device_id}")
@@ -119,9 +117,7 @@ def device(request: Request, device_id: int):
 async def start(device_id: int):
     camera = cameras()[device_id]
     camera.start()
-    return HTMLResponse(
-        f'<img src="/camera/{device_id}/stream" width="640" alt="{camera.info.card}"/>'
-    )
+    return HTMLResponse(f'<img src="/camera/{device_id}/stream" width="640" alt="{camera.info.card}"/>')
 
 
 @app.post("/camera/{device_id}/stop")
@@ -141,9 +137,7 @@ async def stream(device_id: int):
             await camera.clients.put(queue)
             yield await queue.get()
 
-    return StreamingResponse(
-        gen_frames(), media_type=f"multipart/x-mixed-replace; boundary={BOUNDARY}"
-    )
+    return StreamingResponse(gen_frames(), media_type=f"multipart/x-mixed-replace; boundary={BOUNDARY}")
 
 
 @app.post("/camera/{device_id}/format")
