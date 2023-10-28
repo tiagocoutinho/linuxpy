@@ -8,7 +8,6 @@ import collections
 import ctypes
 import struct
 
-
 i8 = ctypes.c_int8
 i16 = ctypes.c_int16
 i32 = ctypes.c_int32
@@ -54,12 +53,7 @@ cast = ctypes.cast
 class Struct(ctypes.Structure):
     def __repr__(self):
         name = type(self).__name__
-        fields = ", ".join(
-            (
-                "{}={}".format(field[0], getattr(self, field[0]))
-                for field in self._fields_
-            )
-        )
+        fields = ", ".join(("{}={}".format(field[0], getattr(self, field[0])) for field in self._fields_))
         return f"{name}({fields})"
 
     def __iter__(self):

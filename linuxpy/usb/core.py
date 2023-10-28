@@ -1,4 +1,4 @@
-from . import usbsys, usbfs
+from . import usbfs, usbsys
 
 
 def iter_devices():

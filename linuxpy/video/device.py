@@ -18,15 +18,15 @@ import select
 import typing
 from collections import UserDict
 
-from linuxpy.io import IO
-from linuxpy.ioctl import ioctl
 from linuxpy.ctypes import cenum
 from linuxpy.device import (
     BaseDevice,
     ReentrantContextManager,
     iter_device_files,
-    device_number,
 )
+from linuxpy.io import IO
+from linuxpy.ioctl import ioctl
+
 from . import raw
 
 log = logging.getLogger(__name__)
@@ -40,11 +40,7 @@ class V4L2Error(Exception):
 def _enum(name, prefix, klass=enum.IntEnum):
     return klass(
         name,
-        (
-            (name.replace(prefix, ""), getattr(raw, name))
-            for name in dir(raw)
-            if name.startswith(prefix)
-        ),
+        ((name.replace(prefix, ""), getattr(raw, name)) for name in dir(raw) if name.startswith(prefix)),
     )
 
 
@@ -92,27 +88,19 @@ Info = collections.namedtuple(
     "crop_capabilities buffers formats frame_sizes inputs controls",
 )
 
-ImageFormat = collections.namedtuple(
-    "ImageFormat", "type description flags pixel_format"
-)
+ImageFormat = collections.namedtuple("ImageFormat", "type description flags pixel_format")
 
 Format = collections.namedtuple("Format", "width height pixel_format")
 
-CropCapability = collections.namedtuple(
-    "CropCapability", "type bounds defrect pixel_aspect"
-)
+CropCapability = collections.namedtuple("CropCapability", "type bounds defrect pixel_aspect")
 
 Rect = collections.namedtuple("Rect", "left top width height")
 
 Size = collections.namedtuple("Size", "width height")
 
-FrameType = collections.namedtuple(
-    "FrameType", "type pixel_format width height min_fps max_fps step_fps"
-)
+FrameType = collections.namedtuple("FrameType", "type pixel_format width height min_fps max_fps step_fps")
 
-Input = collections.namedtuple(
-    "InputType", "index name type audioset tuner std status capabilities"
-)
+Input = collections.namedtuple("InputType", "index name type audioset tuner std status capabilities")
 
 
 INFO_REPR = """\
@@ -139,9 +127,7 @@ def Info_repr(info):
     dcaps = "|".join(cap.name for cap in flag_items(info.device_capabilities))
     caps = "|".join(cap.name for cap in flag_items(info.capabilities))
     buffers = "|".join(buff.name for buff in info.buffers)
-    return INFO_REPR.format(
-        info=info, capabilities=caps, device_capabilities=dcaps, buffers=buffers
-    )
+    return INFO_REPR.format(info=info, capabilities=caps, device_capabilities=dcaps, buffers=buffers)
 
 
 Info.__repr__ = Info_repr
@@ -199,28 +185,20 @@ def frame_sizes(fd, pixel_formats):
             except ValueError:
                 break
             if ftype == FrameIntervalType.DISCRETE:
-                min_fps = max_fps = step_fps = fractions.Fraction(
-                    val.discrete.denominator / val.discrete.numerator
-                )
+                min_fps = max_fps = step_fps = fractions.Fraction(val.discrete.denominator / val.discrete.numerator)
             else:
                 if val.stepwise.min.numerator == 0:
                     min_fps = 0
                 else:
-                    min_fps = fractions.Fraction(
-                        val.stepwise.min.denominator, val.stepwise.min.numerator
-                    )
+                    min_fps = fractions.Fraction(val.stepwise.min.denominator, val.stepwise.min.numerator)
                 if val.stepwise.max.numerator == 0:
                     max_fps = 0
                 else:
-                    max_fps = fractions.Fraction(
-                        val.stepwise.max.denominator, val.stepwise.max.numerator
-                    )
+                    max_fps = fractions.Fraction(val.stepwise.max.denominator, val.stepwise.max.numerator)
                 if val.stepwise.step.numerator == 0:
                     step_fps = 0
                 else:
-                    step_fps = fractions.Fraction(
-                        val.stepwise.step.denominator, val.stepwise.step.numerator
-                    )
+                    step_fps = fractions.Fraction(val.stepwise.step.denominator, val.stepwise.step.numerator)
             res.append(
                 FrameType(
                     type=ftype,
@@ -245,9 +223,7 @@ def frame_sizes(fd, pixel_formats):
             except OSError:
                 break
             if size.type == FrameSizeType.DISCRETE:
-                sizes += get_frame_intervals(
-                    pixel_format, size.discrete.width, size.discrete.height
-                )
+                sizes += get_frame_intervals(pixel_format, size.discrete.width, size.discrete.height)
             size.index += 1
     return sizes
 
@@ -301,9 +277,7 @@ def iter_read_controls(fd):
     nxt = ControlFlag.NEXT_CTRL | ControlFlag.NEXT_COMPOUND
     ctrl.id = nxt
     for ctrl_ext in iter_read(fd, IOC.QUERY_EXT_CTRL, ctrl):
-        if not (ctrl_ext.flags & ControlFlag.DISABLED) and not (
-            ctrl_ext.type == ControlType.CTRL_CLASS
-        ):
+        if not (ctrl_ext.flags & ControlFlag.DISABLED) and not (ctrl_ext.type == ControlType.CTRL_CLASS):
             yield copy.deepcopy(ctrl_ext)
         ctrl_ext.id |= nxt
 
@@ -381,9 +355,7 @@ def read_info(fd):
     )
 
 
-def query_buffer(
-    fd, buffer_type: BufferType, memory: Memory, index: int
-) -> raw.v4l2_buffer:
+def query_buffer(fd, buffer_type: BufferType, memory: Memory, index: int) -> raw.v4l2_buffer:
     buff = raw.v4l2_buffer()
     buff.type = buffer_type
     buff.memory = memory
@@ -393,9 +365,7 @@ def query_buffer(
     return buff
 
 
-def enqueue_buffer(
-    fd, buffer_type: BufferType, memory: Memory, index: int
-) -> raw.v4l2_buffer:
+def enqueue_buffer(fd, buffer_type: BufferType, memory: Memory, index: int) -> raw.v4l2_buffer:
     buff = raw.v4l2_buffer()
     buff.type = buffer_type
     buff.memory = memory
@@ -415,9 +385,7 @@ def dequeue_buffer(fd, buffer_type: BufferType, memory: Memory) -> raw.v4l2_buff
     return buff
 
 
-def request_buffers(
-    fd, buffer_type: BufferType, memory: Memory, count: int
-) -> raw.v4l2_requestbuffers:
+def request_buffers(fd, buffer_type: BufferType, memory: Memory, count: int) -> raw.v4l2_requestbuffers:
     req = raw.v4l2_requestbuffers()
     req.type = buffer_type
     req.memory = memory
@@ -428,9 +396,7 @@ def request_buffers(
     return req
 
 
-def free_buffers(
-    fd, buffer_type: BufferType, memory: Memory
-) -> raw.v4l2_requestbuffers:
+def free_buffers(fd, buffer_type: BufferType, memory: Memory) -> raw.v4l2_requestbuffers:
     req = raw.v4l2_requestbuffers()
     req.type = buffer_type
     req.memory = memory
@@ -439,9 +405,7 @@ def free_buffers(
     return req
 
 
-def set_format(
-    fd, buffer_type: BufferType, width: int, height: int, pixel_format: str = "MJPG"
-):
+def set_format(fd, buffer_type: BufferType, width: int, height: int, pixel_format: str = "MJPG"):
     f = raw.v4l2_format()
     if isinstance(pixel_format, str):
         pixel_format = raw.v4l2_fourcc(*pixel_format.upper())
@@ -503,9 +467,7 @@ def get_fps(fd, buffer_type):
         parm = p.parm.output
     else:
         raise ValueError(f"Unsupported buffer type {buffer_type!r}")
-    return fractions.Fraction(
-        parm.timeperframe.denominator, parm.timeperframe.numerator
-    )
+    return fractions.Fraction(parm.timeperframe.denominator, parm.timeperframe.numerator)
 
 
 def stream_on(fd, buffer_type):
@@ -549,9 +511,7 @@ def get_selection(
     sel.pr = ctypes.cast(ctypes.pointer(rects), ctypes.POINTER(raw.v4l2_ext_rect))
     ioctl(fd, IOC.G_SELECTION, sel)
     if sel.rectangles == 0:
-        return Rect(
-            left=sel.r.left, top=sel.r.top, width=sel.r.width, height=sel.r.height
-        )
+        return Rect(left=sel.r.left, top=sel.r.top, width=sel.r.width, height=sel.r.height)
     else:
         return [
             Rect(
@@ -621,9 +581,7 @@ def create_buffer(fd, buffer_type: BufferType, memory: Memory) -> raw.v4l2_buffe
     return buffers[0]
 
 
-def create_buffers(
-    fd, buffer_type: BufferType, memory: Memory, count: int
-) -> typing.List[raw.v4l2_buffer]:
+def create_buffers(fd, buffer_type: BufferType, memory: Memory, count: int) -> typing.List[raw.v4l2_buffer]:
     """request + query buffers"""
     request_buffers(fd, buffer_type, memory, count)
     return [query_buffer(fd, buffer_type, memory, index) for index in range(count)]
@@ -633,23 +591,16 @@ def mmap_from_buffer(fd, buff: raw.v4l2_buffer) -> mmap.mmap:
     return mem_map(fd, buff.length, offset=buff.m.offset)
 
 
-def create_mmap_buffers(
-    fd, buffer_type: BufferType, memory: Memory, count: int
-) -> typing.List[mmap.mmap]:
+def create_mmap_buffers(fd, buffer_type: BufferType, memory: Memory, count: int) -> typing.List[mmap.mmap]:
     """create buffers + mmap_from_buffer"""
-    return [
-        mmap_from_buffer(fd, buff)
-        for buff in create_buffers(fd, buffer_type, memory, count)
-    ]
+    return [mmap_from_buffer(fd, buff) for buff in create_buffers(fd, buffer_type, memory, count)]
 
 
 def create_mmap_buffer(fd, buffer_type: BufferType, memory: Memory) -> mmap.mmap:
     return create_mmap_buffers(fd, buffer_type, memory, 1)
 
 
-def enqueue_buffers(
-    fd, buffer_type: BufferType, memory: Memory, count: int
-) -> typing.List[raw.v4l2_buffer]:
+def enqueue_buffers(fd, buffer_type: BufferType, memory: Memory, count: int) -> typing.List[raw.v4l2_buffer]:
     return [enqueue_buffer(fd, buffer_type, memory, index) for index in range(count)]
 
 
@@ -677,30 +628,22 @@ class Device(BaseDevice):
     def query_buffer(self, buffer_type, memory, index):
         return query_buffer(self.fileno(), buffer_type, memory, index)
 
-    def enqueue_buffer(
-        self, buffer_type: BufferType, memory: Memory, index: int
-    ) -> raw.v4l2_buffer:
+    def enqueue_buffer(self, buffer_type: BufferType, memory: Memory, index: int) -> raw.v4l2_buffer:
         return enqueue_buffer(self.fileno(), buffer_type, memory, index)
 
-    def dequeue_buffer(
-        self, buffer_type: BufferType, memory: Memory
-    ) -> raw.v4l2_buffer:
+    def dequeue_buffer(self, buffer_type: BufferType, memory: Memory) -> raw.v4l2_buffer:
         return dequeue_buffer(self.fileno(), buffer_type, memory)
 
     def request_buffers(self, buffer_type, memory, size):
         return request_buffers(self.fileno(), buffer_type, memory, size)
 
-    def create_buffers(
-        self, buffer_type: BufferType, memory: Memory, count: int
-    ) -> typing.List[raw.v4l2_buffer]:
+    def create_buffers(self, buffer_type: BufferType, memory: Memory, count: int) -> typing.List[raw.v4l2_buffer]:
         return create_buffers(self.fileno(), buffer_type, memory, count)
 
     def free_buffers(self, buffer_type, memory):
         return free_buffers(self.fileno(), buffer_type, memory)
 
-    def enqueue_buffers(
-        self, buffer_type: BufferType, memory: Memory, count: int
-    ) -> typing.List[raw.v4l2_buffer]:
+    def enqueue_buffers(self, buffer_type: BufferType, memory: Memory, count: int) -> typing.List[raw.v4l2_buffer]:
         return enqueue_buffers(self.fileno(), buffer_type, memory, count)
 
     def set_format(
@@ -710,9 +653,7 @@ class Device(BaseDevice):
         height: int,
         pixel_format: str = "MJPG",
     ):
-        return set_format(
-            self.fileno(), buffer_type, width, height, pixel_format=pixel_format
-        )
+        return set_format(self.fileno(), buffer_type, width, height, pixel_format=pixel_format)
 
     def get_format(self, buffer_type):
         return get_format(self.fileno(), buffer_type)
@@ -776,7 +717,7 @@ class Controls(dict):
             ControlType.U16: U16Control,
             ControlType.U32: U32Control,
         }
-        ctrl_dict = dict()
+        ctrl_dict = {}
 
         for ctrl in device.info.controls:
             ctrl_type = ControlType(ctrl.type)
@@ -790,9 +731,7 @@ class Controls(dict):
             return self[key]
         except KeyError:
             pass
-        raise AttributeError(
-            f"'{self.__class__.__name__}' object has no attribute '{key}'"
-        )
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{key}'")
 
     def __setattr__(self, key, value):
         self[key] = value
@@ -821,9 +760,7 @@ class Controls(dict):
                 raise ValueError(f"{control_class} is no valid ControlClass")
             control_class = cl[0]
         else:
-            raise TypeError(
-                f"control_class expected as ControlClass or str, not {control_class.__class__.__name__}"
-            )
+            raise TypeError(f"control_class expected as ControlClass or str, not {control_class.__class__.__name__}")
 
         for v in self.values():
             if isinstance(v, BaseControl) and (v.control_class == control_class):
@@ -868,11 +805,7 @@ class BaseControl:
         if addrepr:
             repr += f" {addrepr}"
 
-        flags = [
-            flag.name.lower()
-            for flag in ControlFlag
-            if ((self._info.flags & flag) == flag)
-        ]
+        flags = [flag.name.lower() for flag in ControlFlag if ((self._info.flags & flag) == flag)]
         if flags:
             repr += " flags=" + ",".join(flags)
 
@@ -896,9 +829,7 @@ class BaseControl:
                 reasons.append("disabled")
             if self.is_flagged_grabbed:
                 reasons.append("grabbed")
-            raise AttributeError(
-                f"{self.__class__.__name__} {self.config_name} is not writeable: {', '.join(reasons)}"
-            )
+            raise AttributeError(f"{self.__class__.__name__} {self.config_name} is not writeable: {', '.join(reasons)}")
         set_control(self.device, self.id, value)
 
     @property
@@ -950,29 +881,20 @@ class BaseControl:
 
     @property
     def is_flagged_execute_on_write(self) -> bool:
-        return (
-            self._info.flags & ControlFlag.EXECUTE_ON_WRITE
-        ) == ControlFlag.EXECUTE_ON_WRITE
+        return (self._info.flags & ControlFlag.EXECUTE_ON_WRITE) == ControlFlag.EXECUTE_ON_WRITE
 
     @property
     def is_flagged_modify_layout(self) -> bool:
-        return (
-            self._info.flags & ControlFlag.MODIFY_LAYOUT
-        ) == ControlFlag.MODIFY_LAYOUT
+        return (self._info.flags & ControlFlag.MODIFY_LAYOUT) == ControlFlag.MODIFY_LAYOUT
 
     @property
     def is_flagged_dynamic_array(self) -> bool:
-        return (
-            self._info.flags & ControlFlag.DYNAMIC_ARRAY
-        ) == ControlFlag.DYNAMIC_ARRAY
+        return (self._info.flags & ControlFlag.DYNAMIC_ARRAY) == ControlFlag.DYNAMIC_ARRAY
 
     @property
     def is_writeable(self) -> bool:
         return not (
-            self.is_flagged_read_only
-            or self.is_flagged_inactive
-            or self.is_flagged_disabled
-            or self.is_flagged_grabbed
+            self.is_flagged_read_only or self.is_flagged_inactive or self.is_flagged_disabled or self.is_flagged_grabbed
         )
 
 
@@ -1056,9 +978,7 @@ class BaseNumericControl(BaseMonoControl):
                 pass
             else:
                 return v
-        raise ValueError(
-            f"Failed to coerce {value.__class__.__name__} '{value}' to int"
-        )
+        raise ValueError(f"Failed to coerce {value.__class__.__name__} '{value}' to int")
 
     def _mangle_write(self, value):
         if self.clipping:
@@ -1068,13 +988,9 @@ class BaseNumericControl(BaseMonoControl):
                 return self.maximum
         else:
             if value < self.minimum:
-                raise ValueError(
-                    f"Control {self.config_name}: {value} exceeds allowed minimum {self.minimum}"
-                )
+                raise ValueError(f"Control {self.config_name}: {value} exceeds allowed minimum {self.minimum}")
             elif value > self.maximum:
-                raise ValueError(
-                    f"Control {self.config_name}: {value} exceeds allowed maximum {self.maximum}"
-                )
+                raise ValueError(f"Control {self.config_name}: {value} exceeds allowed maximum {self.maximum}")
         return value
 
     def increase(self, steps: int = 1):
@@ -1137,9 +1053,7 @@ class BooleanControl(BaseMonoControl):
                 pass
             else:
                 return v
-        raise ValueError(
-            f"Failed to coerce {value.__class__.__name__} '{value}' to bool"
-        )
+        raise ValueError(f"Failed to coerce {value.__class__.__name__} '{value}' to bool")
 
 
 class MenuControl(BaseMonoControl, UserDict):
@@ -1148,19 +1062,11 @@ class MenuControl(BaseMonoControl, UserDict):
         UserDict.__init__(self)
 
         if self.type == ControlType.MENU:
-            self.data = {
-                item.index: item.name.decode()
-                for item in iter_read_menu(self.device._fobj, self)
-            }
+            self.data = {item.index: item.name.decode() for item in iter_read_menu(self.device._fobj, self)}
         elif self.type == ControlType.INTEGER_MENU:
-            self.data = {
-                item.index: int(item.name)
-                for item in iter_read_menu(self.device._fobj, self)
-            }
+            self.data = {item.index: int(item.name) for item in iter_read_menu(self.device._fobj, self)}
         else:
-            raise TypeError(
-                f"MenuControl only supports control types MENU or INTEGER_MENU, but not {self.type.name}"
-            )
+            raise TypeError(f"MenuControl only supports control types MENU or INTEGER_MENU, but not {self.type.name}")
 
     def _convert_write(self, value):
         return int(value)
@@ -1360,17 +1266,13 @@ class VideoCapture(BufferManager):
     def open(self):
         if self.buffer is None:
             self.device.log.info("Preparing for video capture...")
-            source = (
-                self.device.info.capabilities if self.source is None else self.source
-            )
+            source = self.device.info.capabilities if self.source is None else self.source
             if Capability.STREAMING in source:
                 self.buffer = MemoryMapStreamReader(self)
             elif Capability.READWRITE in source:
                 self.buffer = Read(self)
             else:
-                raise IOError(
-                    "Device needs to support STREAMING or READWRITE capability"
-                )
+                raise IOError("Device needs to support STREAMING or READWRITE capability")
             self.buffer.open()
             self.stream_on()
             self.device.log.info("Video capture started!")

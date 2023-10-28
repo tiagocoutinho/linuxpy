@@ -84,9 +84,10 @@ branch = true
 
 [tool.ruff]
 select = ["E", "F", "W", "C", "B", "B9", "I001"]
-ignore = ["B904", "B028", "C901", ]
+ignore = ["B904", "B028", "C901", "W191"]
 line-length = 120
-target-version = "py37"
+indent-width = 4
+target-version = "py39"
 
 [tool.ruff.isort]
 combine-as-imports = true

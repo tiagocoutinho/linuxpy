@@ -2,10 +2,8 @@ import enum
 import errno
 import pathlib
 
-from ..ctypes import cuint, pointer, cast, u8, cvoidp, u32
-from .. import kernel
-from .. import device
-from .. import ioctl
+from .. import device, ioctl, kernel
+from ..ctypes import cast, cuint, cvoidp, pointer, u8, u32
 from . import raw
 
 USB_DEV_PATH = pathlib.Path("/dev")

@@ -5,7 +5,6 @@ from io import IOBase
 
 from .io import IO
 
-
 DEV_PATH = pathlib.Path("/dev")
 
 

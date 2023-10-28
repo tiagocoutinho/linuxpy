@@ -1,62 +1,75 @@
-import time
+import asyncio
+import pathlib
 import uuid
+from contextlib import contextmanager
 
-from ward import skip, test, each, fixture, Scope
-
+from ward import each, fixture, skip, test
 
 from linuxpy.input.device import (
+    Device,
     EventType,
-    is_uinput_available,
     UGamepad,
     UMouse,
     find_gamepads,
     find_mice,
+    is_uinput_available,
 )
 
 
+@contextmanager
+def wait_for_new_device():
+    base_dir = pathlib.Path("/dev/input")
+    assert base_dir.is_dir()
+    before = set(base_dir.glob("event*"))
+
+    async def wait():
+        while True:
+            await asyncio.sleep(0.1)
+            new = set(base_dir.glob("event*")) - before
+            if new:
+                assert len(new) == 1
+                filename = new.pop()
+                return Device(filename)
+
+    yield wait
+
+
 @fixture
-def gamepad():
+async def gamepad():
     name = uuid.uuid4().hex
-    with UGamepad(name=name) as simulator:
-        assert not simulator.closed
-        simulator.open()
-        time.sleep(1)
-        for pad in find_gamepads():
-            with pad:
-                name = pad.name
-            if pad.name == name:
-                yield pad, simulator
-                break
+    with wait_for_new_device() as device_finder:
+        with UGamepad(name=name) as simulator:
+            assert not simulator.closed
+            device = await device_finder()
+            yield device, simulator
 
 
 @skip(when=not is_uinput_available(), reason="uinput is not available")
 @test("find device")
-def _(find=each(find_gamepads, find_mice), uclass=each(UGamepad, UMouse)):
+async def _(find=each(find_gamepads, find_mice), uclass=each(UGamepad, UMouse)):
     name = uuid.uuid4().hex
-    with uclass(name=name) as simulator:
-        # give kernel time to expose the device
-        time.sleep(10)
-        time.sleep(1)
-        devices = find()
-        devices = list(devices)
-        assert devices
-        devs = []
-        for device in devices:
-            with device:
-                if device.name == name:
-                    devs.append(device)
-        assert len(devs) == 1
-        device = devs[0]
-        caps = device.capabilities
-        del caps[EventType.SYN]
-        assert device.name == simulator.name
-        assert caps == simulator.CAPABILITIES
+    with wait_for_new_device() as device_finder:
+        with uclass(name=name) as simulator:
+            await device_finder()
+            devices = list(find())
+            assert devices
+            devs = []
+            for device in devices:
+                with device:
+                    if device.name == name:
+                        devs.append(device)
+            assert len(devs) == 1
+            device = devs[0]
+            caps = device.capabilities
+            del caps[EventType.SYN]
+            assert device.name == simulator.name
+            assert caps == simulator.CAPABILITIES
 
 
 @skip(when=not is_uinput_available(), reason="uinput is not available")
 @test("open/close")
 def _(pair_dev_simulator=gamepad):
-    dev, simulator = pair_dev_simulator
+    dev, _ = pair_dev_simulator
     assert dev.closed
     # closing closed has no effect
     dev.close()

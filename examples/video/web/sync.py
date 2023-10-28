@@ -23,8 +23,8 @@ import gevent.queue
 import gevent.time
 from common import BOUNDARY, BaseCamera, frame_to_image
 
-from linuxpy.video.device import ControlType, Device, iter_video_capture_devices
 from linuxpy.io import GeventIO
+from linuxpy.video.device import ControlType, Device, iter_video_capture_devices
 
 gevent.monkey.patch_all()
 

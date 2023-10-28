@@ -6,12 +6,12 @@
 
 import logging
 from io import BytesIO
-from tkinter import READABLE, Canvas, Tk
 from sys import argv
+from tkinter import READABLE, Canvas, Tk
 
 from PIL import Image, ImageTk
 
-from linuxpy.video.device import Device, VideoCapture, Capability
+from linuxpy.video.device import Capability, Device, VideoCapture
 
 fmt = "%(threadName)-10s %(asctime)-15s %(levelname)-5s %(name)s: %(message)s"
 logging.basicConfig(level="INFO", format=fmt)

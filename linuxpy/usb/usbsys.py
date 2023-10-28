@@ -2,12 +2,11 @@ import enum
 import functools
 import pathlib
 
+from .. import sysfs
 from ..ctypes import sizeof
 from ..util import bcd_version
-from .. import sysfs
 from . import raw
-from .base import BaseDevice, DescriptorType, USB_DEV_TMPFS_PATH
-
+from .base import USB_DEV_TMPFS_PATH, BaseDevice, DescriptorType
 
 Speed = raw.UsbDeviceSpeed
 
@@ -95,7 +94,7 @@ class DeviceDescriptor:
 def _parse_device_descriptor(data, offset=0):
     assert data[offset] == sizeof(raw.usb_device_descriptor)
     assert data[offset + 1] == DescriptorType.DEVICE
-    desc = raw.usb_device_descriptor.from_buffer_copy(data, offset)
+    raw.usb_device_descriptor.from_buffer_copy(data, offset)
 
 
 def _iter_decode_descriptors(data):
@@ -132,13 +131,13 @@ class Device(BaseDevice):
 
     def __init__(self, name_or_file, **kwargs):
         self.syspath = pathlib.Path(name_or_file)
-        dev_name = (
-            USB_DEV_TMPFS_PATH / f"{self.bus_number:03d}" / f"{self.device_address:03d}"
-        )
+        dev_name = USB_DEV_TMPFS_PATH / f"{self.bus_number:03d}" / f"{self.device_address:03d}"
         super().__init__(dev_name, **kwargs)
 
     def __repr__(self):
-        return f"{type(self).__name__}(bus={self.bus_number}, address={self.device_address}, syspath={self.syspath.stem})"
+        return (
+            f"{type(self).__name__}(bus={self.bus_number}, address={self.device_address}, syspath={self.syspath.stem})"
+        )
 
     def _on_open(self):
         pass

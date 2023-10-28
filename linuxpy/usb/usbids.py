@@ -22,9 +22,7 @@ V = {
     4: {"name": "Nebraska Furniture Mart"},
     17: {"children": {30600: {"name": "counterfeit flash drive"}}, "name": "Unknown"},
     64: {
-        "children": {
-            1853: {"name": "Mini Multimedia 2.4GHz Wireless Keyboard " "with Touch Pad"}
-        },
+        "children": {1853: {"name": "Mini Multimedia 2.4GHz Wireless Keyboard " "with Touch Pad"}},
         "name": "Anyware Corporation",
     },
     66: {"name": "DMT"},
@@ -34,9 +32,7 @@ V = {
         "children": {
             6: {"name": "PC TWIN SHOCK Gamepad"},
             17: {"name": "Gamepad"},
-            6144: {
-                "name": "Mayflash Wii U Pro Game Controller Adapter " "[DirectInput]"
-            },
+            6144: {"name": "Mayflash Wii U Pro Game Controller Adapter " "[DirectInput]"},
             6171: {"name": "Venom Arcade Joystick"},
             6211: {"name": "Mayflash GameCube Controller Adapter"},
             6212: {"name": "Mayflash GameCube Controller"},
@@ -50,11 +46,7 @@ V = {
     },
     258: {"name": "miniSTREAK"},
     261: {
-        "children": {
-            5215: {
-                "name": "NW-3100 802.11b/g 54Mbps Wireless Network " "Adapter [zd1211]"
-            }
-        },
+        "children": {5215: {"name": "NW-3100 802.11b/g 54Mbps Wireless Network " "Adapter [zd1211]"}},
         "name": "Trust International B.V.",
     },
     295: {
@@ -83,9 +75,7 @@ V = {
         "name": "OCZ Technology Inc",
     },
     805: {
-        "children": {
-            44034: {"name": "ATV Turbo / Rally2 Dual Channel USB 2.0 " "Flash Drive"}
-        },
+        "children": {44034: {"name": "ATV Turbo / Rally2 Dual Channel USB 2.0 " "Flash Drive"}},
         "name": "OCZ Technology Inc",
     },
     902: {"children": {1: {"name": "PSX for USB Converter"}}, "name": "LTS"},
@@ -152,9 +142,7 @@ V = {
             8270: {"name": "LUFA Dual CDC Demo Application"},
             8271: {"name": "LUFA Generic HID Demo Application"},
             8288: {"name": "Benito Programmer Project"},
-            8289: {
-                "name": "LUFA Combined Mass Storage and Keyboard " "Demo Application"
-            },
+            8289: {"name": "LUFA Combined Mass Storage and Keyboard " "Demo Application"},
             8290: {"name": "LUFA Combined CDC and Mouse Demo " "Application"},
             8291: {"name": "LUFA Datalogger Device"},
             8292: {"name": "Interfaceless Control-Only LUFA Devices"},
@@ -206,9 +194,7 @@ V = {
             24871: {"name": "AT91SAM HID Keyboard Demo Application"},
             24873: {"name": "AT91SAM Mass Storage Demo Application"},
             25088: {"name": "AT91SAM HID Mouse Demo Application"},
-            30211: {
-                "name": "D-Link DWL-120 802.11b Wireless Adapter " "[Atmel at76c503a]"
-            },
+            30211: {"name": "D-Link DWL-120 802.11b Wireless Adapter " "[Atmel at76c503a]"},
             30212: {"name": "at76c503a 802.11b Adapter"},
             30213: {"name": "at76c503a 802.11b Adapter"},
             30214: {"name": "at76c505 802.11b Adapter"},
@@ -503,9 +489,7 @@ V = {
             10519: {"name": "LaserJet 2420"},
             10769: {"name": "PSC 2150 series"},
             10775: {"name": "LaserJet 2430"},
-            10781: {
-                "name": "Integrated Module with Bluetooth 2.1 " "Wireless technology"
-            },
+            10781: {"name": "Integrated Module with Bluetooth 2.1 " "Wireless technology"},
             11025: {"name": "PSC 2170 series"},
             11031: {"name": "LaserJet 1020"},
             11082: {"name": "Business Slim Keyboard"},
@@ -876,10 +860,7 @@ V = {
     },
     1027: {
         "children": {
-            0: {
-                "name": "H4SMK 7 Port Hub / Bricked Counterfeit FT232 "
-                "Serial (UART) IC"
-            },
+            0: {"name": "H4SMK 7 Port Hub / Bricked Counterfeit FT232 " "Serial (UART) IC"},
             562: {"name": "Serial Converter"},
             4192: {"name": "JTAG adapter"},
             4660: {"name": "IronLogic RFID Adapter [Z-2 USB]"},
@@ -1071,9 +1052,7 @@ V = {
             803: {"name": "5932-USB Enhanced Keyboard, " "Flash-Recovery/Download"},
             804: {"name": "5953-USB Enhanced Dynakey"},
             805: {"name": "5953-USB Enhanced Dynakey " "Flash-Recovery/Download"},
-            808: {
-                "name": "K016: USB-MSR ISO 3-track MSR: POS " "Standard (See HID pages)"
-            },
+            808: {"name": "K016: USB-MSR ISO 3-track MSR: POS " "Standard (See HID pages)"},
             809: {"name": "K018: USB-MSR JIS 2-Track MSR: POS " "Standard"},
             810: {"name": "K016: USB-MSR ISO 3-Track MSR: HID " "Keyboard Mode"},
             811: {"name": "K016/K018: USB-MSR " "Flash-Recovery/Download"},
@@ -1309,10 +1288,7 @@ V = {
         "children": {
             2664: {"name": "Func MS-3 gaming mouse [WT6573F MCU]"},
             8192: {"name": "wired Keyboard [Dynex DX-WRK1401]"},
-            9063: {
-                "name": "Human Interface Device [HP CalcPad 200 "
-                "Calculator and Numeric Keypad]"
-            },
+            9063: {"name": "Human Interface Device [HP CalcPad 200 " "Calculator and Numeric Keypad]"},
             25872: {"name": "Weltrend Bar Code Reader"},
             25888: {"name": "Xploder Xbox Memory Unit (8MB)"},
             25907: {"name": "Speed-Link Competition Pro"},
@@ -1384,10 +1360,7 @@ V = {
             344: {"name": "WLI-UC-GNHP Wireless LAN Adapter"},
             349: {"name": "WLI-UC-GN Wireless LAN Adapter [Ralink " "RT3070]"},
             367: {"name": "WLI-UC-G301N Wireless LAN Adapter [Ralink " "RT3072]"},
-            383: {
-                "name": "Sony UWA-BR100 802.11abgn Wireless Adapter "
-                "[Atheros AR7010+AR9280]"
-            },
+            383: {"name": "Sony UWA-BR100 802.11abgn Wireless Adapter " "[Atheros AR7010+AR9280]"},
             414: {"name": "WLI-UC-GNP Wireless LAN Adapter"},
             417: {"name": "MiniStation Metro"},
             418: {"name": "WLI-UC-GNM Wireless LAN Adapter [Ralink " "RT8070]"},
@@ -1876,22 +1849,12 @@ V = {
             18755: {"name": "USB47xx/49xx hub integrated I2S audio + " "HID port"},
             18756: {"name": "USB47xx/49xx hub integrated serial port"},
             18758: {"name": "USB47xx/49xx hub integrated serial + I2S " "audio port"},
-            18759: {
-                "name": "USB47xx/49xx hub integrated serial + I2S " "audio + HID port"
-            },
+            18759: {"name": "USB47xx/49xx hub integrated serial + I2S " "audio + HID port"},
             18762: {"name": "USB47xx/49xx hub integrated WinUSB + I2S " "audio port"},
-            18763: {
-                "name": "USB47xx/49xx hub integrated WinUSB + I2S " "audio + HID port"
-            },
+            18763: {"name": "USB47xx/49xx hub integrated WinUSB + I2S " "audio + HID port"},
             18764: {"name": "USB47xx/49xx hub integrated WinUSB + " "serial port"},
-            18766: {
-                "name": "USB47xx/49xx hub integrated WinUSB + "
-                "serial + I2S audio port"
-            },
-            18767: {
-                "name": "USB47xx/49xx hub integrated WinUSB + "
-                "serial + I2S audio + HID port"
-            },
+            18766: {"name": "USB47xx/49xx hub integrated WinUSB + " "serial + I2S audio port"},
+            18767: {"name": "USB47xx/49xx hub integrated WinUSB + " "serial + I2S audio + HID port"},
             21556: {"name": "Hub"},
             21812: {"name": "Hub"},
             22340: {"name": "Hub"},
@@ -2138,17 +2101,10 @@ V = {
     },
     1086: {
         "children": {
-            12289: {
-                "name": "AN-WF100 802.11abgn Wireless Adapter " "[Broadcom BCM4323]"
-            },
-            12292: {
-                "name": "TWFM-B003D 802.11abgn Wireless Module " "[Broadcom BCM43236B]"
-            },
+            12289: {"name": "AN-WF100 802.11abgn Wireless Adapter " "[Broadcom BCM4323]"},
+            12292: {"name": "TWFM-B003D 802.11abgn Wireless Module " "[Broadcom BCM43236B]"},
             12297: {"name": "VC400"},
-            12545: {
-                "name": "AN-WF500 802.11abgn + BT Wireless "
-                "Adapter [Broadcom BCM43242]"
-            },
+            12545: {"name": "AN-WF500 802.11abgn + BT Wireless " "Adapter [Broadcom BCM43242]"},
             17085: {"name": "Flatron 795FT Plus Monitor"},
             19021: {"name": "Flatron 915FT Plus Monitor"},
             28673: {"name": "MF-PD100 Soul Digital MP3 Player"},
@@ -2310,10 +2266,7 @@ V = {
             57361: {"name": "Nspire CAS+ prototype"},
             57362: {"name": "TI-Nspire Calculator"},
             57363: {"name": "Network Bridge"},
-            57372: {
-                "name": "Data Collection Sled [Nspire Lab Cradle, "
-                "Nspire Datatracker Cradle]"
-            },
+            57372: {"name": "Data Collection Sled [Nspire Lab Cradle, " "Nspire Datatracker Cradle]"},
             57374: {"name": "Nspire CX Navigator Access Point"},
             57375: {"name": "Python Adapter (firmware install mode)"},
             57376: {"name": "Python Adapter"},
@@ -2346,9 +2299,7 @@ V = {
         "children": {
             28721: {"name": "FX2 SPI/I2C Interface"},
             46706: {"name": "Libiio based instrument [ADALM2000]"},
-            46707: {
-                "name": "LibIIO based AD9363 Software Defined " "Radio [ADALM-PLUTO]"
-            },
+            46707: {"name": "LibIIO based AD9363 Software Defined " "Radio [ADALM-PLUTO]"},
             61440: {"name": "FT2232 JTAG ICE [gnICE]"},
             61441: {"name": "FT2232H Hi-Speed JTAG ICE [gnICE+]"},
         },
@@ -2406,10 +2357,7 @@ V = {
             4098: {"name": "Game Pad"},
             4099: {"name": "Genius VideoCam"},
             4100: {"name": "Flight2000 F-23 Joystick"},
-            4106: {
-                "name": "Aashima Technology Trust Sight Fighter "
-                "Vibration Feedback Joystick"
-            },
+            4106: {"name": "Aashima Technology Trust Sight Fighter " "Vibration Feedback Joystick"},
             8193: {"name": "ColorPage-Vivid Pro Scanner"},
             8196: {"name": "ColorPage-HR6 V1 Scanner"},
             8197: {"name": "ColorPage-HR6/Vivid3"},
@@ -2626,10 +2574,7 @@ V = {
             669: {"name": "Xbox360 HD-DVD Drive"},
             670: {"name": "Xbox360 HD-DVD Memory Unit"},
             672: {"name": "Xbox360 Big Button IR"},
-            680: {
-                "name": "Xbox360 Wireless N Networking Adapter "
-                "[Atheros AR7010+AR9280]"
-            },
+            680: {"name": "Xbox360 Wireless N Networking Adapter " "[Atheros AR7010+AR9280]"},
             685: {"name": "Xbox NUI Audio"},
             686: {"name": "Xbox NUI Camera"},
             688: {"name": "Xbox NUI Motor"},
@@ -2798,10 +2743,7 @@ V = {
             1874: {"name": "Wired Keyboard 400"},
             1885: {"name": "LifeCam Cinema"},
             1889: {"name": "LifeCam VX-2000"},
-            1893: {
-                "name": "Xbox360 Slim Internal Wireless Module "
-                "(1400) [Marvell 88W8786U]"
-            },
+            1893: {"name": "Xbox360 Slim Internal Wireless Module " "(1400) [Marvell 88W8786U]"},
             1894: {"name": "LifeCam VX-800"},
             1896: {"name": "Sidewinder X4"},
             1900: {"name": "Comfort Mouse 4500"},
@@ -2814,9 +2756,7 @@ V = {
             1943: {"name": "Optical Mouse 200"},
             1945: {"name": "Surface Pro embedded keyboard"},
             1957: {"name": "Wireless Receiver 1461C"},
-            1970: {
-                "name": "2.4GHz Transceiver v8.0 used by mouse " "Wireless Desktop 900"
-            },
+            1970: {"name": "2.4GHz Transceiver v8.0 used by mouse " "Wireless Desktop 900"},
             1974: {"name": "Comfort Curve Keyboard 3000"},
             1977: {"name": "Wired Keyboard 200"},
             1990: {"name": "RTL8153 GigE [Surface Ethernet Adapter]"},
@@ -3399,9 +3339,7 @@ V = {
             50450: {"name": "LX-700 Cordless Desktop Receiver"},
             50451: {"name": "MX3000 Cordless Desktop Receiver"},
             50452: {"name": "Cordless Mouse"},
-            50453: {
-                "name": "Cordless 2.4 GHz Presenter Presentation " "remote control"
-            },
+            50453: {"name": "Cordless 2.4 GHz Presenter Presentation " "remote control"},
             50455: {"name": "LX710 Cordless Desktop Laser"},
             50456: {"name": "MX610 Laser Cordless Mouse"},
             50458: {"name": "MX Revolution/G7 Cordless Mouse"},
@@ -3770,10 +3708,7 @@ V = {
             49160: {"name": "Audio 655 DSP"},
             49166: {"name": "Blackwire C310 headset"},
             49211: {"name": "HD1"},
-            49235: {
-                "name": "Blackwire C5220 headset (remote control "
-                "and 3.5mm audio adapter)"
-            },
+            49235: {"name": "Blackwire C5220 headset (remote control " "and 3.5mm audio adapter)"},
             49238: {"name": "Blackwire C3220 Headset"},
             51713: {"name": "Calisto 800 Series"},
             55904: {"name": "DA60"},
@@ -3796,12 +3731,8 @@ V = {
             40967: {"name": "External Disk USB 3.0"},
             40969: {"name": "Stor.E Basics"},
             40973: {"name": "STOR.E BASICS 500GB"},
-            41216: {
-                "name": 'Canvio Alu 2TB 2.5" Black External Disk ' "Model HDTH320EK3CA"
-            },
-            41218: {
-                "name": 'Canvio Alu 2TB 2.5" Black External Disk ' "Model HDTH320EK3CA"
-            },
+            41216: {"name": 'Canvio Alu 2TB 2.5" Black External Disk ' "Model HDTH320EK3CA"},
+            41218: {"name": 'Canvio Alu 2TB 2.5" Black External Disk ' "Model HDTH320EK3CA"},
             41474: {"name": "Canvio Basics HDD"},
             41480: {"name": "Canvio Basics 2TB USB 3.0 Portable Hard " "Drive"},
             45057: {"name": "Stor.E Partner"},
@@ -3904,10 +3835,7 @@ V = {
             57344: {"name": "T-Com TC 300"},
             57347: {"name": "Pirelli DP-L10"},
             57357: {"name": "Broadcom Bluetooth 2.1 Device"},
-            57359: {
-                "name": "Foxconn T77H114 BCM2070 [Single-Chip "
-                "Bluetooth 2.1 + EDR Adapter]"
-            },
+            57359: {"name": "Foxconn T77H114 BCM2070 [Single-Chip " "Bluetooth 2.1 + EDR Adapter]"},
             57361: {"name": "Acer Bluetooth module"},
             57366: {"name": "Ubee PXU1900 WiMAX Adapter [Beceem " "BCSM250]"},
             57388: {"name": "Atheros AR5BBU12 Bluetooth Device"},
@@ -3937,12 +3865,8 @@ V = {
             36873: {"name": "Zolid HD DVD Maker"},
             37173: {"name": "Zolid Mini DVB-T Stick"},
             37638: {"name": "IT930x DVB stick"},
-            38147: {
-                "name": "ITE it9503 feature-limited DVB-T " "transmission chip [ccHDtv]"
-            },
-            38151: {
-                "name": "ITE it9507 full featured DVB-T " "transmission chip [ccHDtv]"
-            },
+            38147: {"name": "ITE it9503 feature-limited DVB-T " "transmission chip [ccHDtv]"},
+            38151: {"name": "ITE it9507 full featured DVB-T " "transmission chip [ccHDtv]"},
             39184: {"name": "IT9910 chipset based grabber"},
             65369: {"name": "Hdmi-CEC Bridge"},
         },
@@ -4658,10 +4582,7 @@ V = {
             12423: {"name": "Elura 50 (PTP mode)"},
             12424: {"name": "Elura 50 (normal mode)"},
             12429: {"name": "MVX3i"},
-            12430: {
-                "name": "FV M1 (normal mode) / MVX 3i (normal "
-                "mode) / Optura Xi (normal mode)"
-            },
+            12430: {"name": "FV M1 (normal mode) / MVX 3i (normal " "mode) / Optura Xi (normal mode)"},
             12435: {"name": "Optura 300"},
             12438: {"name": "IXY DV M2 (normal mode) / MVX 10i " "(normal mode)"},
             12441: {"name": "EOS 300D (ptp)"},
@@ -4675,12 +4596,8 @@ V = {
             12450: {"name": "Camera"},
             12456: {"name": "Elura 60E/Optura 40 (ptp)"},
             12457: {"name": "MVX25i (normal mode) / Optura 40 (normal " "mode)"},
-            12465: {
-                "name": "PowerShot S70 (normal mode) / PowerShot " "S70 (PTP mode)"
-            },
-            12466: {
-                "name": "PowerShot S60 (normal mode) / PowerShot " "S60 (PTP mode)"
-            },
+            12465: {"name": "PowerShot S70 (normal mode) / PowerShot " "S70 (PTP mode)"},
+            12466: {"name": "PowerShot S60 (normal mode) / PowerShot " "S60 (PTP mode)"},
             12467: {"name": "PowerShot G6 (normal mode) / PowerShot " "G6 (PTP mode)"},
             12468: {"name": "PowerShot S500"},
             12469: {"name": "PowerShot A75"},
@@ -4697,18 +4614,14 @@ V = {
             12477: {"name": "CP-220"},
             12478: {"name": "CP-330"},
             12479: {"name": "Digital IXUS 40"},
-            12480: {
-                "name": "Digital IXUS 30 (PTP mode) / PowerShot " "SD200 (PTP mode)"
-            },
+            12480: {"name": "Digital IXUS 30 (PTP mode) / PowerShot " "SD200 (PTP mode)"},
             12481: {
                 "name": "Digital IXUS 50 (normal mode) / IXY "
                 "Digital 55 (normal mode) / PowerShot "
                 "A520 (PTP mode) / PowerShot SD400 "
                 "(normal mode)"
             },
-            12482: {
-                "name": "PowerShot A510 (normal mode) / PowerShot " "A510 (PTP mode)"
-            },
+            12482: {"name": "PowerShot A510 (normal mode) / PowerShot " "A510 (PTP mode)"},
             12484: {
                 "name": "Digital IXUS i5 (normal mode) / IXY "
                 "Digital L2 (normal mode) / PowerShot "
@@ -4733,9 +4646,7 @@ V = {
             12537: {"name": "PowerShot A410 (PTP mode)"},
             12538: {"name": "PowerShot S80"},
             12540: {"name": "PowerShot A620 (PTP mode)"},
-            12541: {
-                "name": "PowerShot A610 (normal mode)/PowerShot " "A610 (PTP mode)"
-            },
+            12541: {"name": "PowerShot A610 (normal mode)/PowerShot " "A610 (PTP mode)"},
             12542: {"name": "Digital IXUS 65 (PTP mode)/PowerShot " "SD630 (PTP mode)"},
             12543: {"name": "Digital IXUS 55 (PTP mode)/PowerShot " "SD450 (PTP mode)"},
             12544: {"name": "PowerShot TX1"},
@@ -4743,30 +4654,19 @@ V = {
             12558: {"name": "Digital IXUS 50 (PTP mode)"},
             12559: {"name": "PowerShot A420"},
             12560: {"name": "EOS Digital Rebel XTi"},
-            12565: {
-                "name": "PowerShot SD900 / Digital IXUS 900 Ti / " "IXY DIGITAL 1000"
-            },
+            12565: {"name": "PowerShot SD900 / Digital IXUS 900 Ti / " "IXY DIGITAL 1000"},
             12566: {"name": "Digital IXUS 750 / PowerShot SD550 (PTP " "mode)"},
             12567: {"name": "PowerShot A700"},
-            12569: {
-                "name": "PowerShot SD700 IS / Digital IXUS 800 IS "
-                "/ IXY Digital 800 IS"
-            },
+            12569: {"name": "PowerShot SD700 IS / Digital IXUS 800 IS " "/ IXY Digital 800 IS"},
             12570: {"name": "PowerShot S3 IS"},
             12571: {"name": "PowerShot A540"},
-            12572: {
-                "name": "PowerShot SD600 DIGITAL ELPH / DIGITAL "
-                "IXUS 60 / IXY DIGITAL 70"
-            },
+            12572: {"name": "PowerShot SD600 DIGITAL ELPH / DIGITAL " "IXUS 60 / IXY DIGITAL 70"},
             12581: {"name": "PowerShot G7"},
             12582: {"name": "PowerShot A530"},
             12583: {"name": "SELPHY CP710"},
             12584: {"name": "SELPHY CP510"},
             12589: {"name": "Elura 100"},
-            12598: {
-                "name": "PowerShot SD800 IS / Digital IXUS 850 IS "
-                "/ IXY DIGITAL 900 IS"
-            },
+            12598: {"name": "PowerShot SD800 IS / Digital IXUS 850 IS " "/ IXY DIGITAL 900 IS"},
             12599: {"name": "PowerShot SD40 / Digital IXUS i7 IXY / " "DIGITAL L4"},
             12600: {"name": "PowerShot A710 IS"},
             12601: {"name": "PowerShot A640"},
@@ -4779,45 +4679,24 @@ V = {
             12615: {"name": "EOS 1Ds Mark III"},
             12616: {"name": "PowerShot S5 IS"},
             12617: {"name": "PowerShot A460"},
-            12619: {
-                "name": "PowerShot SD850 IS DIGITAL ELPH / "
-                "Digital IXUS 950 IS / IXY DIGITAL 810 "
-                "IS"
-            },
+            12619: {"name": "PowerShot SD850 IS DIGITAL ELPH / " "Digital IXUS 950 IS / IXY DIGITAL 810 " "IS"},
             12620: {"name": "PowerShot A570 IS"},
             12621: {"name": "PowerShot A560"},
-            12622: {
-                "name": "PowerShot SD750 DIGITAL ELPH / DIGITAL "
-                "IXUS 75 / IXY DIGITAL 90"
-            },
-            12623: {
-                "name": "PowerShot SD1000 DIGITAL ELPH / DIGITAL "
-                "IXUS 70 / IXY DIGITAL 10"
-            },
+            12622: {"name": "PowerShot SD750 DIGITAL ELPH / DIGITAL " "IXUS 75 / IXY DIGITAL 90"},
+            12623: {"name": "PowerShot SD1000 DIGITAL ELPH / DIGITAL " "IXUS 70 / IXY DIGITAL 10"},
             12624: {"name": "PowerShot A550"},
             12629: {"name": "PowerShot A450"},
             12634: {"name": "PowerShot G9"},
             12635: {"name": "PowerShot A650 IS"},
             12637: {"name": "PowerShot A720"},
             12638: {"name": "PowerShot SX100 IS"},
-            12639: {
-                "name": "PowerShot SD950 IS DIGITAL ELPH / "
-                "DIGITAL IXUS 960 IS / IXY DIGITAL 2000 "
-                "IS"
-            },
+            12639: {"name": "PowerShot SD950 IS DIGITAL ELPH / " "DIGITAL IXUS 960 IS / IXY DIGITAL 2000 " "IS"},
             12640: {"name": "Digital IXUS 860 IS"},
             12656: {"name": "SELPHY CP750"},
             12657: {"name": "SELPHY CP740"},
             12658: {"name": "SELPHY CP520"},
-            12659: {
-                "name": "PowerShot SD890 IS DIGITAL ELPH / "
-                "Digital IXUS 970 IS / IXY DIGITAL 820 "
-                "IS"
-            },
-            12660: {
-                "name": "PowerShot SD790 IS DIGITAL ELPH / "
-                "Digital IXUS 90 IS / IXY DIGITAL 95 IS"
-            },
+            12659: {"name": "PowerShot SD890 IS DIGITAL ELPH / " "Digital IXUS 970 IS / IXY DIGITAL 820 " "IS"},
+            12660: {"name": "PowerShot SD790 IS DIGITAL ELPH / " "Digital IXUS 90 IS / IXY DIGITAL 95 IS"},
             12661: {"name": "IXY Digital 25 IS"},
             12662: {"name": "PowerShot A590"},
             12663: {"name": "PowerShot A580"},
@@ -4830,17 +4709,9 @@ V = {
             12687: {"name": "PowerShot G10"},
             12689: {"name": "PowerShot A2000 IS"},
             12690: {"name": "PowerShot SX110 IS"},
-            12691: {
-                "name": "PowerShot SD990 IS DIGITAL ELPH / "
-                "Digital IXUS 980 IS / IXY DIGITAL 3000 "
-                "IS"
-            },
+            12691: {"name": "PowerShot SD990 IS DIGITAL ELPH / " "Digital IXUS 980 IS / IXY DIGITAL 3000 " "IS"},
             12693: {"name": "PowerShot SX1 IS"},
-            12694: {
-                "name": "PowerShot SD880 IS DIGITAL ELPH / "
-                "Digital IXUS 870 IS / IXY DIGITAL 920 "
-                "IS"
-            },
+            12694: {"name": "PowerShot SD880 IS DIGITAL ELPH / " "Digital IXUS 870 IS / IXY DIGITAL 920 " "IS"},
             12697: {"name": "EOS 5D Mark II"},
             12698: {"name": "EOS 7D"},
             12699: {"name": "EOS 50D"},
@@ -4851,29 +4722,14 @@ V = {
             12720: {"name": "SELPHY ES30"},
             12721: {"name": "SELPHY CP530"},
             12732: {"name": "PowerShot D10"},
-            12733: {
-                "name": "PowerShot SD960 IS DIGITAL ELPH / "
-                "Digital IXUS 110 IS / IXY DIGITAL 510 "
-                "IS"
-            },
+            12733: {"name": "PowerShot SD960 IS DIGITAL ELPH / " "Digital IXUS 110 IS / IXY DIGITAL 510 " "IS"},
             12734: {"name": "PowerShot A2100 IS"},
             12735: {"name": "PowerShot A480"},
             12736: {"name": "PowerShot SX200 IS"},
-            12737: {
-                "name": "PowerShot SD970 IS DIGITAL ELPH / "
-                "Digital IXUS 990 IS / IXY DIGITAL 830 "
-                "IS"
-            },
-            12738: {
-                "name": "PowerShot SD780 IS DIGITAL ELPH / "
-                "Digital IXUS 100 IS / IXY DIGITAL 210 "
-                "IS"
-            },
+            12737: {"name": "PowerShot SD970 IS DIGITAL ELPH / " "Digital IXUS 990 IS / IXY DIGITAL 830 " "IS"},
+            12738: {"name": "PowerShot SD780 IS DIGITAL ELPH / " "Digital IXUS 100 IS / IXY DIGITAL 210 " "IS"},
             12739: {"name": "PowerShot A1100 IS"},
-            12740: {
-                "name": "PowerShot SD1200 IS DIGITAL ELPH / "
-                "Digital IXUS 95 IS / IXY DIGITAL 110 IS"
-            },
+            12740: {"name": "PowerShot SD1200 IS DIGITAL ELPH / " "Digital IXUS 95 IS / IXY DIGITAL 110 IS"},
             12751: {"name": "EOS Rebel T1i / EOS 500D / EOS Kiss X3"},
             12765: {"name": "SELPHY CP780"},
             12767: {"name": "PowerShot G11"},
@@ -4881,11 +4737,7 @@ V = {
             12769: {"name": "PowerShot S90"},
             12772: {"name": "PowerShot SX20 IS"},
             12773: {"name": "Digital IXUS 200 IS"},
-            12774: {
-                "name": "PowerShot SD940 IS DIGITAL ELPH / "
-                "Digital IXUS 120 IS / IXY DIGITAL 220 "
-                "IS"
-            },
+            12774: {"name": "PowerShot SD940 IS DIGITAL ELPH / " "Digital IXUS 120 IS / IXY DIGITAL 220 " "IS"},
             12775: {"name": "SELPHY CP790"},
             12778: {"name": "EOS Rebel T2i / EOS 550D / EOS Kiss X4"},
             12782: {"name": "SELPHY ES40"},
@@ -5133,11 +4985,7 @@ V = {
             12556: {"name": "Wheel Mouse"},
             17447: {"name": "Portable CD ROM"},
             17538: {"name": "Serial Converter"},
-            17540: {
-                "name": "SMSC USB20H04 3-Port Hub [ThinkPad X4 "
-                "UltraBase, Wistron S Note-3 Media "
-                "Slice]"
-            },
+            17540: {"name": "SMSC USB20H04 3-Port Hub [ThinkPad X4 " "UltraBase, Wistron S Note-3 Media " "Slice]"},
             17541: {"name": "ThinkPad Dock Hub"},
             17700: {"name": "40 Character Vacuum Fluorescent Display"},
             17701: {"name": "Double sided CRT"},
@@ -5205,9 +5053,7 @@ V = {
             56929: {"name": "Barcode Reader"},
             56932: {"name": "Barcode Reader"},
             61440: {"name": "CY30700 Licorice evaluation board"},
-            61713: {
-                "name": "CY8CKIT-002 PSoC MiniProg3 Rev A Program " "and debug kit"
-            },
+            61713: {"name": "CY8CKIT-002 PSoC MiniProg3 Rev A Program " "and debug kit"},
             61717: {"name": "PSoC FirstTouch Programmer"},
             61753: {"name": "KitProg"},
             62001: {"name": "DELLY Changer 4in1 universal IR remote"},
@@ -5290,10 +5136,7 @@ V = {
             323: {"name": "GT-S55"},
             324: {"name": "GT-S85"},
             337: {"name": "Perfection V800 Photo"},
-            514: {
-                "name": "Interface Card UB-U05 for Thermal Receipt "
-                "Printers [M129C/TM-T70/TM-T88IV]"
-            },
+            514: {"name": "Interface Card UB-U05 for Thermal Receipt " "Printers [M129C/TM-T70/TM-T88IV]"},
             1025: {"name": "CP 800 Digital Camera"},
             1026: {"name": "PhotoPC 850z"},
             1027: {"name": "PhotoPC 3000z"},
@@ -5366,49 +5209,27 @@ V = {
             2115: {"name": "LP-M5000"},
             2116: {"name": "EP-901A/EP-901F [Artisan 800/Stylus Photo " "PX800FW]"},
             2118: {"name": "EP-801A [Artisan 700/Stylus Photo " "PX700W/TX700W]"},
-            2119: {
-                "name": "PX-601F [ME Office 700FW/Stylus Office " "BX600FW/TX600FW]"
-            },
+            2119: {"name": "PX-601F [ME Office 700FW/Stylus Office " "BX600FW/TX600FW]"},
             2120: {"name": "ME Office 600F/Stylus Office " "BX300F/TX300F"},
             2121: {"name": "Stylus SX205"},
             2122: {"name": "PX-501A [Stylus NX400]"},
             2125: {"name": "PX-402A [Stylus SX115/Stylus NX110 " "Series]"},
-            2127: {
-                "name": "Multifunctional Printer Scanner [ME "
-                "Office 510 / Epson Stylus SX215]"
-            },
+            2127: {"name": "Multifunctional Printer Scanner [ME " "Office 510 / Epson Stylus SX215]"},
             2128: {"name": "EP-702A [Stylus Photo PX650/TX650 " "Series]"},
             2129: {"name": "Stylus SX410"},
-            2130: {
-                "name": "EP-802A [Artisan 710 Series/Stylus Photo "
-                "PX710W/TX720W Series]"
-            },
-            2131: {
-                "name": "EP-902A [Artisan 810 Series/Stylus Photo " "PX810FW Series]"
-            },
-            2132: {
-                "name": "ME OFFICE 650FN Series/Stylus Office " "BX310FN/TX520FN Series"
-            },
+            2130: {"name": "EP-802A [Artisan 710 Series/Stylus Photo " "PX710W/TX720W Series]"},
+            2131: {"name": "EP-902A [Artisan 810 Series/Stylus Photo " "PX810FW Series]"},
+            2132: {"name": "ME OFFICE 650FN Series/Stylus Office " "BX310FN/TX520FN Series"},
             2133: {"name": "PX-602F [Stylus Office BX610FW/TX620FW " "Series]"},
             2134: {"name": "PX-502A [Stylus SX515W]"},
             2140: {"name": "ME 320/330 Series [Stylus SX125]"},
-            2141: {
-                "name": "PX-603F [ME OFFICE 960FWD Series/Stylus "
-                "Office BX625FWD/TX620FWD Series]"
-            },
+            2141: {"name": "PX-603F [ME OFFICE 960FWD Series/Stylus " "Office BX625FWD/TX620FWD Series]"},
             2142: {"name": "PX-503A [ME OFFICE 900WD Series/Stylus " "Office BX525WD]"},
             2143: {"name": "Stylus Office BX320FW/TX525FW Series"},
-            2144: {
-                "name": "EP-903A/EP-903F [Artisan 835/Stylus Photo " "PX820FWD Series]"
-            },
-            2145: {
-                "name": "EP-803A/EP-803AW [Artisan 725/Stylus "
-                "Photo PX720WD/TX720WD Series]"
-            },
+            2144: {"name": "EP-903A/EP-903F [Artisan 835/Stylus Photo " "PX820FWD Series]"},
+            2145: {"name": "EP-803A/EP-803AW [Artisan 725/Stylus " "Photo PX720WD/TX720WD Series]"},
             2146: {"name": "EP-703A [Stylus Photo PX660 Series]"},
-            2147: {
-                "name": "ME OFFICE 620F Series/Stylus Office " "BX305F/BX305FW/TX320F"
-            },
+            2147: {"name": "ME OFFICE 620F Series/Stylus Office " "BX305F/BX305FW/TX320F"},
             2148: {"name": "ME OFFICE 560W Series"},
             2149: {"name": "ME OFFICE 520 Series"},
             2150: {"name": "AcuLaser MX20DN/MX20DNF/MX21DNF"},
@@ -5419,13 +5240,8 @@ V = {
             2162: {"name": "K300 Series"},
             2163: {"name": "L200 Series"},
             2168: {"name": "EP-704A"},
-            2169: {
-                "name": "EP-904A/EP-904F [Artisan 837/Stylus Photo " "PX830FWD Series]"
-            },
-            2171: {
-                "name": "EP-804A/EP-804AR/EP-804AW [Stylus Photo "
-                "PX730WD/Artisan 730 Series]"
-            },
+            2169: {"name": "EP-904A/EP-904F [Artisan 837/Stylus Photo " "PX830FWD Series]"},
+            2171: {"name": "EP-804A/EP-804AR/EP-804AW [Stylus Photo " "PX730WD/Artisan 730 Series]"},
             2172: {"name": "PX-1700F"},
             2173: {"name": "PX-B750F/WP-4525 Series"},
             2175: {"name": "PX-403A"},
@@ -5790,14 +5606,8 @@ V = {
     1237: {"name": "Forte Technologies, Inc."},
     1238: {
         "children": {
-            58113: {
-                "name": "Bio-Key TouchLock XL All Weather Keyless "
-                "Bio-Lock with Fingerprint Recognition"
-            },
-            58114: {
-                "name": "ZC3202 [4GB Green Book Digital Quran "
-                "Reading Pen For Home Teaching Quran]"
-            },
+            58113: {"name": "Bio-Key TouchLock XL All Weather Keyless " "Bio-Lock with Fingerprint Recognition"},
+            58114: {"name": "ZC3202 [4GB Green Book Digital Quran " "Reading Pen For Home Teaching Quran]"},
         },
         "name": "Mentor Graphics",
     },
@@ -5810,10 +5620,7 @@ V = {
             2: {"name": "PicoLCD 20x2"},
             3: {"name": "PICkit 2 Microcontroller Programmer"},
             10: {"name": "CDC RS-232 Emulation Demo"},
-            11: {
-                "name": "PIC18F2550 (32K Flashable 10 Channel, 10 "
-                "Bit A/D USB Microcontroller)"
-            },
+            11: {"name": "PIC18F2550 (32K Flashable 10 Channel, 10 " "Bit A/D USB Microcontroller)"},
             50: {"name": "PICkit1"},
             51: {"name": "PICkit2"},
             54: {"name": "PICkit Serial Analyzer"},
@@ -5888,10 +5695,7 @@ V = {
             10290: {"name": "HT82A832R Audio MCU"},
             10292: {"name": "HT82A834R Audio MCU"},
             17733: {"name": "Keyboard [Diatec Majestouch 2 " "Tenkeyless]"},
-            40988: {
-                "name": "wireless multimedia keyboard with "
-                "trackball [Trust ADURA 17911]"
-            },
+            40988: {"name": "wireless multimedia keyboard with " "trackball [Trust ADURA 17911]"},
             41040: {"name": "Chatman V1"},
             41042: {"name": "USB-zyTemp"},
             41045: {"name": "Keyboard"},
@@ -5949,14 +5753,8 @@ V = {
             9367: {"name": "HDC-TM700"},
             9484: {"name": "Gobi Wireless Modem (QDL mode)"},
             9485: {"name": "Gobi Wireless Modem"},
-            14596: {
-                "name": "N5HBZ0000055 802.11abgn Wireless Adapter "
-                "[Atheros AR7010+AR9280]"
-            },
-            14600: {
-                "name": "N5HBZ0000062 802.11abgn Wireless Adapter "
-                "[Atheros AR9374v1.1]"
-            },
+            14596: {"name": "N5HBZ0000055 802.11abgn Wireless Adapter " "[Atheros AR7010+AR9280]"},
+            14600: {"name": "N5HBZ0000062 802.11abgn Wireless Adapter " "[Atheros AR9374v1.1]"},
             15364: {"name": "JT-P100MR-20 [ePassport Reader]"},
         },
         "name": "Panasonic (Matsushita)",
@@ -6078,9 +5876,7 @@ V = {
             1255: {"name": "STCII DFU Adapter"},
             1256: {"name": "eUSBDM DFU Adapter"},
             1257: {"name": "DM-E DFU Adapter"},
-            1280: {
-                "name": "Veridicom 5thSense Fingerprint Sensor and " "eUSB SmartCard"
-            },
+            1280: {"name": "Veridicom 5thSense Fingerprint Sensor and " "eUSB SmartCard"},
             1793: {"name": "DCS200 Loader Device"},
             1794: {"name": "DVD Creation Station 200"},
             1795: {"name": "DVC100 Loader Device"},
@@ -6350,10 +6146,7 @@ V = {
             26724: {"name": "GT-I9070 (network tethering, USB " "debugging enabled)"},
             26725: {"name": "Galaxy (PTP mode)"},
             26726: {"name": "Galaxy (debugging mode)"},
-            26728: {
-                "name": "Escape Composite driver for Android "
-                "Phones: Modem+Diagnostic+ADB"
-            },
+            26728: {"name": "Escape Composite driver for Android " "Phones: Modem+Diagnostic+ADB"},
             26741: {"name": "GT-B3710 Standalone LTE device " "(Commercial)"},
             26742: {"name": "GT-B3710 LTE Modem"},
             26743: {"name": "Galaxy S"},
@@ -6419,10 +6212,7 @@ V = {
             1026: {"name": "Genius LuxeMate i200 Keyboard"},
             1027: {"name": "KU-0420 keyboard"},
             1048: {"name": "KU-0418 Tactical Pad"},
-            1560: {
-                "name": "RG-0618U Wireless HID Receiver & KG-0609 "
-                "Wireless Keyboard with Touchpad"
-            },
+            1560: {"name": "RG-0618U Wireless HID Receiver & KG-0609 " "Wireless Keyboard with Touchpad"},
             1816: {"name": "wired mouse"},
             1888: {"name": "Acer KU-0760 Keyboard"},
             2099: {"name": "KU-0833 Keyboard"},
@@ -7291,33 +7081,16 @@ V = {
             2069: {"name": "Nostromo n52 HID SpeedPad Mouse Wheel"},
             2086: {"name": "ErgoFit Wireless Optical Mouse (HID)"},
             2432: {"name": "HID UPS Battery"},
-            4100: {
-                "name": "F9L1004 802.11n Surf N300 XR Wireless "
-                "Adapter [Realtek RTL8192CU]"
-            },
-            4354: {
-                "name": "F7D1102 N150/Surf Micro Wireless Adapter "
-                "v1000 [Realtek RTL8188CUS]"
-            },
+            4100: {"name": "F9L1004 802.11n Surf N300 XR Wireless " "Adapter [Realtek RTL8192CU]"},
+            4354: {"name": "F7D1102 N150/Surf Micro Wireless Adapter " "v1000 [Realtek RTL8188CUS]"},
             4355: {"name": "F9L1103 N750 DB 802.11abgn 2x3:3 [Ralink " "RT3573]"},
-            4358: {
-                "name": "F9L1106v1 802.11a/b/g/n/ac Wireless "
-                "Adapter [Broadcom BCM43526]"
-            },
-            4361: {
-                "name": "F9L1109v1 802.11a/b/g/n/ac Wireless "
-                "Adapter [Realtek RTL8812AU]"
-            },
-            4362: {
-                "name": "F9L1101v2 802.11abgn Wireless Adapter " "[Realtek RTL8192DU]"
-            },
+            4358: {"name": "F9L1106v1 802.11a/b/g/n/ac Wireless " "Adapter [Broadcom BCM43526]"},
+            4361: {"name": "F9L1109v1 802.11a/b/g/n/ac Wireless " "Adapter [Realtek RTL8812AU]"},
+            4362: {"name": "F9L1101v2 802.11abgn Wireless Adapter " "[Realtek RTL8192DU]"},
             4594: {"name": "ISY Wireless Micro Adapter IWL 2000 " "[RTL8188CUS]"},
             4610: {"name": "F5U120-PC Parallel Printer Port"},
             4611: {"name": "F5U120-PC Serial Port"},
-            8451: {
-                "name": "F7D2102 802.11n N300 Micro Wireless "
-                "Adapter v3000 [Realtek RTL8192CU]"
-            },
+            8451: {"name": "F7D2102 802.11n N300 Micro Wireless " "Adapter v3000 [Realtek RTL8192CU]"},
             8689: {"name": "N300 WLAN N Adapter [ISY]"},
             8690: {"name": "RTL8192CU 802.11n WLAN Adapter [ISY IWL " "4000]"},
             9610: {"name": "F5U258 Host to Host cable"},
@@ -7325,64 +7098,31 @@ V = {
             12801: {"name": "F1DF102U/F1DG102U Flip KVM"},
             16464: {"name": "ZD1211B"},
             20565: {"name": "F5D5055 Gigabit Network Adapter " "[AX88xxx]"},
-            24656: {
-                "name": "F6D6050 802.11abgn Wireless Adapter " "[Broadcom BCM4323]"
-            },
-            24657: {
-                "name": "F5D6051 802.11b Wireless Network Adapter " "[ZyDAS ZD1201]"
-            },
-            24922: {
-                "name": "F7D4101 / F9L1101v1 802.11abgn Wireless "
-                "Adapter [Broadcom BCM4323]"
-            },
-            28752: {
-                "name": "F5D7050 Wireless G Adapter v1000/v2000 " "[Intersil ISL3887]"
-            },
+            24656: {"name": "F6D6050 802.11abgn Wireless Adapter " "[Broadcom BCM4323]"},
+            24657: {"name": "F5D6051 802.11b Wireless Network Adapter " "[ZyDAS ZD1201]"},
+            24922: {"name": "F7D4101 / F9L1101v1 802.11abgn Wireless " "Adapter [Broadcom BCM4323]"},
+            28752: {"name": "F5D7050 Wireless G Adapter v1000/v2000 " "[Intersil ISL3887]"},
             28753: {"name": "F5D7051 802.11g Adapter v1000 [Broadcom " "4320 USB]"},
             28762: {"name": "F5D7050 Wireless G Adapter v3000 [Ralink " "RT2571W]"},
             28763: {"name": "Wireless G Adapter"},
             28764: {"name": "F5D7050 Wireless G Adapter v4000 [Zydas " "ZD1211B]"},
             28766: {"name": "F5D7050 Wireless G Adapter v5000 " "[Realtek RTL8187B]"},
             28778: {"name": "2-N-1 7-Port Hub (Upper half)"},
-            32851: {
-                "name": "F5D8053 N Wireless USB Adapter " "v1000/v4000 [Ralink RT2870]"
-            },
+            32851: {"name": "F5D8053 N Wireless USB Adapter " "v1000/v4000 [Ralink RT2870]"},
             32860: {"name": "F5D8053 N Wireless Adapter v3000 [Ralink " "RT2870]"},
-            32862: {
-                "name": "F5D8053 N Wireless USB Adapter v5000 " "[Realtek RTL8192U]"
-            },
+            32862: {"name": "F5D8053 N Wireless USB Adapter v5000 " "[Realtek RTL8192U]"},
             33116: {"name": "F5D8053 N Wireless USB Adapter v3000 " "[Ralink RT2870]"},
-            33119: {
-                "name": "F5D8053 N Wireless USB Adapter v6000 " "[Realtek RTL8192SU]"
-            },
+            33119: {"name": "F5D8053 N Wireless USB Adapter v6000 " "[Realtek RTL8192SU]"},
             33370: {"name": "F5D8055 N+ Wireless Adapter v1000 " "[Ralink RT2870]"},
             33371: {"name": "F5D8055 N+ Wireless Adapter v2000 " "[Ralink RT3072]"},
-            33882: {
-                "name": "F7D2101 802.11n Surf & Share Wireless "
-                "Adapter v1000 [Realtek RTL8192SU]"
-            },
-            36955: {
-                "name": "F5D9050 Wireless G+ MIMO Network Adapter "
-                "v3000 [Ralink RT2573]"
-            },
-            36956: {
-                "name": "F5D9050 Wireless G+ MIMO Network Adapter "
-                "v4000 [Ralink RT2573]"
-            },
-            37722: {
-                "name": "F6D4050 N150 Enhanced Wireless Network "
-                "Adapter v1000 [Ralink RT3070]"
-            },
-            37723: {
-                "name": "F6D4050 N150 Enhanced Wireless Network "
-                "Adapter v2000 [Ralink RT3070]"
-            },
+            33882: {"name": "F7D2101 802.11n Surf & Share Wireless " "Adapter v1000 [Realtek RTL8192SU]"},
+            36955: {"name": "F5D9050 Wireless G+ MIMO Network Adapter " "v3000 [Ralink RT2573]"},
+            36956: {"name": "F5D9050 Wireless G+ MIMO Network Adapter " "v4000 [Ralink RT2573]"},
+            37722: {"name": "F6D4050 N150 Enhanced Wireless Network " "Adapter v1000 [Ralink RT3070]"},
+            37723: {"name": "F6D4050 N150 Enhanced Wireless Network " "Adapter v2000 [Ralink RT3070]"},
             37978: {"name": "F7D1101 v1 Basic Wireless Adapter " "[Realtek RTL8188SU]"},
             37979: {"name": "F7D1101 v2 Basic Wireless Adapter " "[Ralink RT3370]"},
-            54049: {
-                "name": "Dynex DX-NUSB 802.11bgn Wireless Adapter "
-                "[Broadcom BCM43231]"
-            },
+            54049: {"name": "Dynex DX-NUSB 802.11bgn Wireless Adapter " "[Broadcom BCM43231]"},
         },
         "name": "Belkin Components",
     },
@@ -8043,10 +7783,7 @@ V = {
         "name": "Telex Communications, Inc.",
     },
     1379: {"name": "Immersion Corp."},
-    1380: {
-        "name": "Kodak Digital Product Center, Japan Ltd. (formerly Chinon "
-        "Industries Inc.)"
-    },
+    1380: {"name": "Kodak Digital Product Center, Japan Ltd. (formerly Chinon " "Industries Inc.)"},
     1381: {
         "children": {
             1: {"name": "Serial Port [etek]"},
@@ -8073,9 +7810,7 @@ V = {
             12290: {"name": "Keyboard"},
             12292: {"name": "Genius KB-29E"},
             12307: {"name": "BakkerElkhuizen Wired Keyboard S-board " "840 Design"},
-            12320: {
-                "name": "BakkerElkhuizen Wired Keyboard S-board " "840 Design USB-Hub"
-            },
+            12320: {"name": "BakkerElkhuizen Wired Keyboard S-board " "840 Design USB-Hub"},
             12327: {"name": "Sun-Flex ProTouch"},
             12551: {"name": "Keyboard"},
             12594: {"name": "Optical mouse M-DY4DR / M-DY6DR"},
@@ -8856,9 +8591,7 @@ V = {
             28784: {"name": "QF-707u Bazooka Joystick"},
             40960: {"name": "MaxFire G-08XU Gamepad"},
             40981: {"name": "4-Axis,16-Button with POV"},
-            40985: {
-                "name": "USB, Vibration ,4-axis, 8-button " "joystick w/view finder"
-            },
+            40985: {"name": "USB, Vibration ,4-axis, 8-button " "joystick w/view finder"},
             40992: {"name": "USB,4-Axis,10-Button with POV"},
             40993: {"name": "USB,4-Axis,12-Button with POV"},
             40994: {"name": "USB,4-Axis,14-Button with POV"},
@@ -8951,20 +8684,13 @@ V = {
             13331: {"name": "ZyAIR AG-225H v2 802.11bg"},
             13333: {"name": "G-210H 802.11g Wireless Adapter"},
             13334: {"name": "NWD-210N 802.11b/g/n-draft wireless " "adapter"},
-            13335: {
-                "name": "NWD271N 802.11n Wireless Adapter " "[Atheros AR9001U-(2)NG]"
-            },
+            13335: {"name": "NWD271N 802.11n Wireless Adapter " "[Atheros AR9001U-(2)NG]"},
             13336: {"name": "NWD211AN 802.11abgn Wireless Adapter " "[Ralink RT2870]"},
             13337: {"name": "G-220 v3 802.11bg Wireless Adapter " "[ZyDAS ZD1211B]"},
             13338: {"name": "NWD-270N Wireless N-lite USB Adapter"},
             13342: {"name": "NWD2105 802.11bgn Wireless Adapter " "[Ralink RT3070]"},
-            13343: {
-                "name": "NWD2205 802.11n Wireless N Adapter " "[Realtek RTL8192CU]"
-            },
-            13349: {
-                "name": "NWD6505 802.11a/b/g/n/ac Wireless "
-                "Adapter [MediaTek MT7610U]"
-            },
+            13343: {"name": "NWD2205 802.11n Wireless N Adapter " "[Realtek RTL8192CU]"},
+            13349: {"name": "NWD6505 802.11a/b/g/n/ac Wireless " "Adapter [MediaTek MT7610U]"},
             13374: {"name": "N220 802.11bgn Wireless Adapter"},
         },
         "name": "ZyXEL Communications Corp.",
@@ -9134,9 +8860,7 @@ V = {
             593: {"name": "Optical"},
             594: {"name": "Optical"},
             629: {"name": "ST332082 0A"},
-            632: {
-                "name": "LDHD-UPS [Professional Desktop Hard Drive " "eSATA / USB2.0]"
-            },
+            632: {"name": "LDHD-UPS [Professional Desktop Hard Drive " "eSATA / USB2.0]"},
             634: {"name": "LPHD250-U [Portable Hard Drive Silver " "Series 250 Go]"},
             1136: {"name": "Prestige Portable Hard Drive"},
             1146: {"name": "Select Portable Hard Drive"},
@@ -9610,9 +9334,7 @@ V = {
             37393: {"name": "Acer Gobi Wireless Modem (QDL mode)"},
             37394: {"name": "Acer Gobi Wireless Modem"},
             37396: {"name": "Acer Gobi 2000 Wireless Modem (QDL " "mode)"},
-            37397: {
-                "name": "Quectel EC20 LTE modem / Acer Gobi 2000 " "Wireless Modem"
-            },
+            37397: {"name": "Quectel EC20 LTE modem / Acer Gobi 2000 " "Wireless Modem"},
             37409: {"name": "Gobi Wireless Modem (QDL mode)"},
             37410: {"name": "Gobi Wireless Modem"},
             37412: {"name": "Sony Gobi 2000 Wireless Modem (QDL " "mode)"},
@@ -9675,9 +9397,7 @@ V = {
             1029: {"name": "Type 101"},
             1030: {"name": "Type 102"},
             1079: {"name": "Aficio SP 3510SF"},
-            1102: {
-                "name": "SP C250SF (multifunction device: printer, " "scanner, fax)"
-            },
+            1102: {"name": "SP C250SF (multifunction device: printer, " "scanner, fax)"},
             6147: {"name": "V5 camera [R5U870]"},
             6160: {"name": "Pavilion Webcam [R5U870]"},
             6162: {"name": "Pavilion Webcam"},
@@ -9765,10 +9485,7 @@ V = {
     1496: {
         "children": {
             16385: {"name": "Artec Ultima 2000"},
-            16386: {
-                "name": "Artec Ultima 2000 (GT6801 based)/Lifetec "
-                "LT9385/ScanMagic 1200 UB Plus Scanner"
-            },
+            16386: {"name": "Artec Ultima 2000 (GT6801 based)/Lifetec " "LT9385/ScanMagic 1200 UB Plus Scanner"},
             16387: {"name": "Artec E+ 48U"},
             16388: {"name": "Artec E+ Pro"},
             16389: {"name": "MEM48U"},
@@ -10039,10 +9756,7 @@ V = {
             10: {"name": "Keyboard with PS/2 Port"},
             11: {"name": "Mouse"},
             256: {"name": "Nintendo Game Boy Advance SP"},
-            288: {
-                "name": "Pacific Image Electronics PrimeFilm 1800u "
-                "slide/negative scanner"
-            },
+            288: {"name": "Pacific Image Electronics PrimeFilm 1800u " "slide/negative scanner"},
             305: {"name": "CF/SM Reader/Writer"},
             322: {"name": "Multiple Slides Scanner-3600"},
             323: {"name": "Multiple Frames Film Scanner-36series"},
@@ -10114,10 +9828,7 @@ V = {
             1952: {"name": "Pen Flash"},
             2176: {"name": "Wasp (SL-6612)"},
             2343: {"name": "Card Reader"},
-            4613: {
-                "name": "Afilias Optical Mouse H3003 / Trust "
-                "Optical USB MultiColour Mouse MI-2330"
-            },
+            4613: {"name": "Afilias Optical Mouse H3003 / Trust " "Optical USB MultiColour Mouse MI-2330"},
             42752: {"name": "Pen Flash"},
             61698: {"name": "VX7012 TV Box"},
             61699: {"name": "VX7012 TV Box"},
@@ -10388,10 +10099,7 @@ V = {
             16642: {"name": "Wireless Mouse"},
             16646: {"name": "Wireless Mouse 2.4G"},
             16648: {"name": "Wireless Mouse 2.4G"},
-            19457: {
-                "name": "2,4Ghz Wireless Transceiver [for Delux "
-                "M618 Plus Wireless Vertical Mouse]"
-            },
+            19457: {"name": "2,4Ghz Wireless Transceiver [for Delux " "M618 Plus Wireless Vertical Mouse]"},
             25345: {"name": "Trust Wireless Optical Mouse MI-4150K"},
             36867: {"name": "VoIP Conference Hub (A16GH)"},
             36868: {"name": "USR9602 USB Internet Mini Phone"},
@@ -10458,9 +10166,7 @@ V = {
     1607: {
         "children": {
             256: {"name": "ARC SpectraPro UV/VIS/IR " "Monochromator/Spectrograph"},
-            257: {
-                "name": "ARC AM-VM Mono Airpath/Vacuum " "Monochromator/Spectrograph"
-            },
+            257: {"name": "ARC AM-VM Mono Airpath/Vacuum " "Monochromator/Spectrograph"},
             258: {"name": "ARC Inspectrum Mono"},
             259: {"name": "ARC Filterwheel"},
             1001: {"name": "Inspectrum 128x1024 F VIS Spectrograph"},
@@ -10971,9 +10677,7 @@ V = {
             793: {"name": "220V Remote NDIS Device"},
             800: {"name": "IEEE 802.11b Wireless LAN Card"},
             801: {"name": "Dynalink WLL013 / Compex WLU11A 802.11b " "Adapter"},
-            1026: {
-                "name": "Scientific Atlanta WebSTAR 100 & 200 " "series Cable Modem"
-            },
+            1026: {"name": "Scientific Atlanta WebSTAR 100 & 200 " "series Cable Modem"},
             2065: {"name": "BT Virtual Bus for Helium"},
             2081: {"name": "BT Voyager 1010 802.11b Adapter"},
             17410: {"name": "Scientific Atlanta WebSTAR 2000 series " "Cable Modem"},
@@ -11129,9 +10833,7 @@ V = {
     1720: {"name": "Pixela Corp."},
     1721: {
         "children": {
-            288: {
-                "name": "SpeedTouch 120g 802.11g Wireless Adapter " "[Intersil ISL3886]"
-            },
+            288: {"name": "SpeedTouch 120g 802.11g Wireless Adapter " "[Intersil ISL3886]"},
             289: {"name": "SpeedTouch 121g Wireless Dongle"},
             8193: {"name": "SPEED TOUCH Card"},
             16481: {"name": "SpeedTouch ISDN or ADSL Modem"},
@@ -11632,14 +11334,9 @@ V = {
             57344: {"name": "HWGUSB2-54 WLAN"},
             57360: {"name": "HWGUSB2-54-LB"},
             57376: {"name": "HWGUSB2-54V2-AP"},
-            57393: {
-                "name": "Hercules HWNUm-300 Wireless N mini " "[Realtek RTL8191SU]"
-            },
+            57393: {"name": "Hercules HWNUm-300 Wireless N mini " "[Realtek RTL8191SU]"},
             57394: {"name": "HWGUm-54 [Hercules Wireless G Ultra Mini " "Key]"},
-            57395: {
-                "name": "Hercules HWNUp-150 802.11n Wireless N "
-                "Pico [Realtek RTL8188CUS]"
-            },
+            57395: {"name": "Hercules HWNUp-150 802.11n Wireless N " "Pico [Realtek RTL8188CUS]"},
         },
         "name": "Guillemot Corp.",
     },
@@ -11665,12 +11362,8 @@ V = {
             512: {"name": "2202 Ethernet [pegasus]"},
             513: {"name": "EZ Connect USB Ethernet"},
             60932: {"name": "SMCWUSB32 802.11b Wireless LAN Card"},
-            60934: {
-                "name": "SMC2862W-G v1 EZ Connect 802.11g Adapter " "[Intersil ISL3886]"
-            },
-            60947: {
-                "name": "SMC2862W-G v2 EZ Connect 802.11g Adapter " "[Intersil ISL3887]"
-            },
+            60934: {"name": "SMC2862W-G v1 EZ Connect 802.11g Adapter " "[Intersil ISL3886]"},
+            60947: {"name": "SMC2862W-G v2 EZ Connect 802.11g Adapter " "[Intersil ISL3887]"},
         },
         "name": "Standard Microsystems Corp.",
     },
@@ -11843,14 +11536,8 @@ V = {
             1584: {"name": "VQ630 Dual Mode Digital Camera(Bulk)"},
             1585: {"name": "Hercules Dualpix"},
             1920: {"name": "Smart Cam Deluxe(composite)"},
-            4880: {
-                "name": "Epsilon 1.3/Jenoptik JD C1.3/UMAX "
-                "AstraPix 470 (mass storage mode)"
-            },
-            4881: {
-                "name": "Epsilon 1.3/Jenoptik JD C1.3/UMAX "
-                "AstraPix 470 (PC Cam mode)"
-            },
+            4880: {"name": "Epsilon 1.3/Jenoptik JD C1.3/UMAX " "AstraPix 470 (mass storage mode)"},
+            4881: {"name": "Epsilon 1.3/Jenoptik JD C1.3/UMAX " "AstraPix 470 (PC Cam mode)"},
             4884: {"name": "Mercury 2.1MEG Deluxe Classic Cam"},
             8721: {"name": "Jenoptik jdc 21 LCD Camera"},
             8736: {"name": "Mercury Digital Pro 3.1p VQ2220 (mass " "storage mode)"},
@@ -12476,9 +12163,7 @@ V = {
             24: {"name": "Wireless LAN USB-11 mini 2"},
             26: {"name": "ULUSB-11 Key"},
             28: {"name": "CG-WLUSB2GT 802.11g Wireless Adapter " "[Intersil ISL3880]"},
-            32: {
-                "name": "CG-WLUSB2GTST 802.11g Wireless Adapter " "[Intersil ISL3887]"
-            },
+            32: {"name": "CG-WLUSB2GTST 802.11g Wireless Adapter " "[Intersil ISL3887]"},
             46: {"name": "CG-WLUSB2GPX [Ralink RT2571W]"},
             47: {"name": "CG-WLUSB2GNL"},
             49: {"name": "CG-WLUSB2GS 802.11bg [Atheros AR5523]"},
@@ -12511,10 +12196,7 @@ V = {
         "children": {
             4: {"name": "SCSI-DB25 SCSI Bridge [shuttle]"},
             5: {"name": "SCSI-HD50 SCSI Bridge [shuttle]"},
-            6: {
-                "name": "CameraMate SmartMedia and CompactFlash Card "
-                "Reader [eusb/shuttle]"
-            },
+            6: {"name": "CameraMate SmartMedia and CompactFlash Card " "Reader [eusb/shuttle]"},
             64513: {"name": "Freecom USB-IDE"},
         },
         "name": "Microtech",
@@ -12663,12 +12345,8 @@ V = {
             16644: {"name": "XX9"},
             16906: {"name": "UF200 Ethernet"},
             21249: {"name": "GW-US54ZGL 802.11bg"},
-            24577: {
-                "name": "WUG2690 802.11bg Wireless Module [ZyDAS " "ZD1211+AL2230]"
-            },
-            33160: {
-                "name": "AboCom Systems Inc [WN2001 Prolink " "Wireless-N Nano Adapter]"
-            },
+            24577: {"name": "WUG2690 802.11bg Wireless Module [ZyDAS " "ZD1211+AL2230]"},
+            33160: {"name": "AboCom Systems Inc [WN2001 Prolink " "Wireless-N Nano Adapter]"},
             40961: {"name": "WUG2200 802.11g Wireless Adapter [Envara " "WiND512]"},
             43969: {"name": "DU-E10 Ethernet [pegasus]"},
             45056: {"name": "BWU613"},
@@ -12681,10 +12359,7 @@ V = {
             45105: {"name": "BCM92045DG-Flash with trace filter"},
             45106: {"name": "BCM92045DG-Flash with trace filter"},
             45107: {"name": "BCM92045DG-Flash with trace filter"},
-            45594: {
-                "name": "WUG2400 802.11g Wireless Adapter [Texas "
-                "Instruments TNETW1450]"
-            },
+            45594: {"name": "WUG2400 802.11g Wireless Adapter [Texas " "Instruments TNETW1450]"},
             45595: {"name": "HWU54DM"},
             45596: {"name": "RT2573"},
             45597: {"name": "RT2573"},
@@ -12930,92 +12605,35 @@ V = {
             5101: {"name": "VvBus for Helium 2xx"},
             5105: {"name": "DSL-302G Modem"},
             5106: {"name": "DSL-502G Router"},
-            13056: {
-                "name": "DWA-130 802.11n Wireless N "
-                "Adapter(rev.E) [Realtek RTL8191SU]"
-            },
-            13058: {
-                "name": "DWA-130 802.11n Wireless N "
-                "Adapter(rev.C2) [Realtek RTL8191SU]"
-            },
-            13059: {
-                "name": "DWA-131 802.11n Wireless N Nano "
-                "Adapter(rev.A1) [Realtek RTL8192SU]"
-            },
+            13056: {"name": "DWA-130 802.11n Wireless N " "Adapter(rev.E) [Realtek RTL8191SU]"},
+            13058: {"name": "DWA-130 802.11n Wireless N " "Adapter(rev.C2) [Realtek RTL8191SU]"},
+            13059: {"name": "DWA-131 802.11n Wireless N Nano " "Adapter(rev.A1) [Realtek RTL8192SU]"},
             13060: {"name": "FR-300USB 802.11bgn Wireless Adapter"},
-            14855: {
-                "name": "WUA-2340 RangeBooster G Adapter(rev.A) " "[Atheros AR5523]"
-            },
-            14856: {
-                "name": "WUA-2340 RangeBooster G Adapter(rev.A) "
-                "(no firmware) [Atheros AR5523]"
-            },
-            14857: {
-                "name": "DWA-160 802.11abgn Xtreme N Dual Band "
-                "Adapter(rev.A2) [Atheros AR9170+AR9104]"
-            },
-            14861: {
-                "name": "DWA-120 802.11g Wireless 108G Adapter " "[Atheros AR5523]"
-            },
-            14863: {
-                "name": "DWA-130 802.11n Wireless N "
-                "Adapter(rev.D) [Atheros AR9170+AR9102]"
-            },
+            14855: {"name": "WUA-2340 RangeBooster G Adapter(rev.A) " "[Atheros AR5523]"},
+            14856: {"name": "WUA-2340 RangeBooster G Adapter(rev.A) " "(no firmware) [Atheros AR5523]"},
+            14857: {"name": "DWA-160 802.11abgn Xtreme N Dual Band " "Adapter(rev.A2) [Atheros AR9170+AR9104]"},
+            14861: {"name": "DWA-120 802.11g Wireless 108G Adapter " "[Atheros AR5523]"},
+            14863: {"name": "DWA-130 802.11n Wireless N " "Adapter(rev.D) [Atheros AR9170+AR9102]"},
             14864: {"name": "DWA-126 802.11n Wireless Adapter " "[Atheros AR9271]"},
-            15105: {
-                "name": "AirPlus G DWL-G122 Wireless "
-                "Adapter(rev.D) [Marvell "
-                "88W8338+88W8010]"
-            },
-            15120: {
-                "name": "DWA-142 RangeBooster N Adapter [Marvell " "88W8362+88W8060]"
-            },
-            15121: {
-                "name": "DWA-130 802.11n Wireless N "
-                "Adapter(rev.A1) [Marvell "
-                "88W8362+88W8060]"
-            },
-            15363: {
-                "name": "AirPlus G DWL-G122 Wireless "
-                "Adapter(rev.C1) [Ralink RT2571W]"
-            },
+            15105: {"name": "AirPlus G DWL-G122 Wireless " "Adapter(rev.D) [Marvell " "88W8338+88W8010]"},
+            15120: {"name": "DWA-142 RangeBooster N Adapter [Marvell " "88W8362+88W8060]"},
+            15121: {"name": "DWA-130 802.11n Wireless N " "Adapter(rev.A1) [Marvell " "88W8362+88W8060]"},
+            15363: {"name": "AirPlus G DWL-G122 Wireless " "Adapter(rev.C1) [Ralink RT2571W]"},
             15364: {"name": "WUA-1340"},
             15365: {"name": "EH103 Wireless G Adapter"},
             15366: {"name": "DWA-111 802.11bg Wireless Adapter " "[Ralink RT2571W]"},
             15367: {"name": "DWA-110 Wireless G Adapter(rev.A1) " "[Ralink RT2571W]"},
-            15369: {
-                "name": "DWA-140 RangeBooster N Adapter(rev.B1) " "[Ralink RT2870]"
-            },
-            15370: {
-                "name": "DWA-140 RangeBooster N Adapter(rev.B2) " "[Ralink RT3072]"
-            },
+            15369: {"name": "DWA-140 RangeBooster N Adapter(rev.B1) " "[Ralink RT2870]"},
+            15370: {"name": "DWA-140 RangeBooster N Adapter(rev.B2) " "[Ralink RT3072]"},
             15371: {"name": "DWA-110 Wireless G Adapter(rev.B) " "[Ralink RT2870]"},
-            15373: {
-                "name": "DWA-125 Wireless N 150 Adapter(rev.A1) " "[Ralink RT3070]"
-            },
-            15374: {
-                "name": "WUA-2340 RangeBooster G Adapter(rev.B) " "[Ralink RT2070]"
-            },
-            15375: {
-                "name": "AirPlus G DWL-G122 Wireless " "Adapter(rev.E1) [Ralink RT2070]"
-            },
-            15376: {
-                "name": "DWA-160 802.11abgn Xtreme N Dual Band "
-                "Adapter(rev.A1) [Atheros AR9170+AR9104]"
-            },
-            15377: {
-                "name": "DWA-160 Xtreme N Dual Band USB "
-                "Adapter(rev.B) [Ralink RT2870]"
-            },
-            15379: {
-                "name": "DWA-130 802.11n Wireless N " "Adapter(rev.B) [Ralink RT2870]"
-            },
-            15381: {
-                "name": "DWA-140 RangeBooster N Adapter(rev.B3) " "[Ralink RT2870]"
-            },
-            15382: {
-                "name": "DWA-125 Wireless N 150 Adapter(rev.A2) " "[Ralink RT3070]"
-            },
+            15373: {"name": "DWA-125 Wireless N 150 Adapter(rev.A1) " "[Ralink RT3070]"},
+            15374: {"name": "WUA-2340 RangeBooster G Adapter(rev.B) " "[Ralink RT2070]"},
+            15375: {"name": "AirPlus G DWL-G122 Wireless " "Adapter(rev.E1) [Ralink RT2070]"},
+            15376: {"name": "DWA-160 802.11abgn Xtreme N Dual Band " "Adapter(rev.A1) [Atheros AR9170+AR9104]"},
+            15377: {"name": "DWA-160 Xtreme N Dual Band USB " "Adapter(rev.B) [Ralink RT2870]"},
+            15379: {"name": "DWA-130 802.11n Wireless N " "Adapter(rev.B) [Ralink RT2870]"},
+            15381: {"name": "DWA-140 RangeBooster N Adapter(rev.B3) " "[Ralink RT2870]"},
+            15382: {"name": "DWA-125 Wireless N 150 Adapter(rev.A2) " "[Ralink RT3070]"},
             15874: {"name": "DWM-156 3.75G HSUPA Adapter"},
             20736: {"name": "Remote NDIS Device"},
             43008: {"name": "DWM-152 3.75G HSUPA Adapter"},
@@ -13247,10 +12865,7 @@ V = {
             83: {"name": "Handheld"},
             84: {"name": "Handheld"},
             96: {"name": "Tungsten C/E/T/T2/T3 / Zire 71"},
-            97: {
-                "name": "Lifedrive / Treo 650/680 / Tunsten E2/T5/TX "
-                "/ Centro / Zire 21/31/72 / Z22"
-            },
+            97: {"name": "Lifedrive / Treo 650/680 / Tunsten E2/T5/TX " "/ Centro / Zire 21/31/72 / Z22"},
             98: {"name": "Handheld"},
             99: {"name": "Handheld"},
             100: {"name": "Handheld"},
@@ -13306,16 +12921,10 @@ V = {
             13570: {"name": "WN3501D Wireless Adapter"},
             13571: {"name": "T-Sinus 111 Wireless Adapter"},
             17665: {"name": "T-Sinus 154data"},
-            17666: {
-                "name": "Siemens S30853-S1016-R107 802.11g "
-                "Wireless Adapter [Intersil ISL3886]"
-            },
+            17666: {"name": "Siemens S30853-S1016-R107 802.11g " "Wireless Adapter [Intersil ISL3886]"},
             17669: {"name": "SMCWUSB-G 802.11bg"},
             17671: {"name": "SMCWUSBT-G2 802.11g Wireless Adapter " "[Atheros AR5523]"},
-            17697: {
-                "name": "Siemens S30863-S1016-R107-2 802.11g "
-                "Wireless Adapter [Intersil ISL3887]"
-            },
+            17697: {"name": "Siemens S30863-S1016-R107-2 802.11g " "Wireless Adapter [Intersil ISL3887]"},
             17713: {"name": "T-Com Sinus 154 data II [Intersil " "ISL3887]"},
             20550: {"name": "SpeedStream 10/100 Ethernet [pegasus]"},
             21761: {"name": "Wireless Adapter 11g"},
@@ -13327,17 +12936,10 @@ V = {
             34082: {"name": "Arcadyan 802.11N Wireless Adapter"},
             34113: {"name": "WN4501F 802.11g Wireless Adapter " "[Intersil ISL3887]"},
             42258: {"name": "Arcadyan 802.11N Wireless Adapter"},
-            42520: {
-                "name": "SMCWUSBS-N EZ Connect N Draft 11n "
-                "Wireless Adapter [Ralink RT2870]"
-            },
-            42753: {
-                "name": "SMCWUSBS-N3 EZ Connect N Wireless " "Adapter [Ralink RT3070]"
-            },
+            42520: {"name": "SMCWUSBS-N EZ Connect N Draft 11n " "Wireless Adapter [Ralink RT2870]"},
+            42753: {"name": "SMCWUSBS-N3 EZ Connect N Wireless " "Adapter [Ralink RT3070]"},
             45060: {"name": "CPWUE001 USB/Ethernet Adapter"},
-            46370: {
-                "name": "SMCWUSBS-N2 EZ Connect N Wireless " "Adapter [Ralink RT2870]"
-            },
+            46370: {"name": "SMCWUSBS-N2 EZ Connect N Wireless " "Adapter [Ralink RT2870]"},
             47873: {"name": "BlueExpert Bluetooth Device"},
             49155: {"name": "802.11b Wireless Adapter"},
             50433: {"name": "Zoom 4410 Wireless-G [Intersil ISL3887]"},
@@ -13364,15 +12966,11 @@ V = {
     2116: {"name": "Welland Industrial Co., Ltd"},
     2118: {
         "children": {
-            4097: {
-                "name": "EA101 10 Mbps 10BASE-T Ethernet [Kawasaki " "LSI KL5KLUSB101B]"
-            },
+            4097: {"name": "EA101 10 Mbps 10BASE-T Ethernet [Kawasaki " "LSI KL5KLUSB101B]"},
             4098: {"name": "Ethernet"},
             4128: {"name": "FA101 Fast Ethernet USB 1.1"},
             4160: {"name": "FA120 Fast Ethernet USB 2.0 [Asix AX88172 " "/ AX8817x]"},
-            4352: {
-                "name": "Managed Switch M4100 series, M5300 " "series, M7100 series"
-            },
+            4352: {"name": "Managed Switch M4100 series, M5300 " "series, M7100 series"},
             16656: {"name": "MA111(v1) 802.11b Wireless [Intersil " "Prism 3.0]"},
             16896: {"name": "WG121(v1) 54 Mbps Wireless [Intersil " "ISL3886]"},
             16912: {"name": "WG121(v2) 54 Mbps Wireless [Intersil " "ISL3886]"},
@@ -13380,32 +12978,19 @@ V = {
             16944: {"name": "MA111(v2) 802.11b Wireless [SIS SIS " "162]"},
             16960: {"name": "WG111(v1) rev 2 54 Mbps Wireless " "[Intersil ISL3887]"},
             16992: {"name": "WG111v3 54 Mbps Wireless [realtek " "RTL8187B]"},
-            17152: {
-                "name": "WG111U Double 108 Mbps Wireless [Atheros "
-                "AR5004X / AR5005UX]"
-            },
-            17153: {
-                "name": "WG111U (no firmware) Double 108 Mbps "
-                "Wireless [Atheros AR5004X / AR5005UX]"
-            },
+            17152: {"name": "WG111U Double 108 Mbps Wireless [Atheros " "AR5004X / AR5005UX]"},
+            17153: {"name": "WG111U (no firmware) Double 108 Mbps " "Wireless [Atheros AR5004X / AR5005UX]"},
             24320: {"name": "WPN111 802.11g Wireless Adapter [Atheros " "AR5523]"},
             26849: {"name": "LB1120-100NAS"},
             27136: {"name": "WG111v2 54 Mbps Wireless [RealTek " "RTL8187L]"},
             28928: {"name": "WN121T RangeMax Next Wireless-N [Marvell " "TopDog]"},
-            36864: {
-                "name": "WN111(v1) RangeMax Next Wireless " "[Marvell 88W8362+88W8060]"
-            },
-            36865: {
-                "name": "WN111(v2) RangeMax Next Wireless " "[Atheros AR9170+AR9101]"
-            },
+            36864: {"name": "WN111(v1) RangeMax Next Wireless " "[Marvell 88W8362+88W8060]"},
+            36865: {"name": "WN111(v2) RangeMax Next Wireless " "[Atheros AR9170+AR9101]"},
             36880: {"name": "WNDA3100v1 802.11abgn [Atheros " "AR9170+AR9104]"},
             36881: {"name": "WNDA3100v2 802.11abgn [Broadcom " "BCM4323]"},
             36882: {"name": "WNDA4100 802.11abgn 3x3:3 [Ralink " "RT3573]"},
             36884: {"name": "WNDA3100v3 802.11abgn 2x2:2 [MediaTek " "MT7632U]"},
-            36888: {
-                "name": "WNDA3200 802.11abgn Wireless Adapter "
-                "[Atheros AR7010+AR9280]"
-            },
+            36888: {"name": "WNDA3200 802.11abgn Wireless Adapter " "[Atheros AR7010+AR9280]"},
             36896: {"name": "WNA3100(v1) Wireless-N 300 [Broadcom " "BCM43231]"},
             36897: {"name": "WNA3100M(v1) Wireless-N 300 [Realtek " "RTL8192CU]"},
             36912: {"name": "WNA1100 Wireless-N 150 [Atheros AR9271]"},
@@ -13413,18 +12998,10 @@ V = {
             36929: {"name": "WNA1000M 802.11bgn [Realtek RTL8188CUS]"},
             36930: {"name": "On Networks N150MA 802.11bgn [Realtek " "RTL8188CUS]"},
             36931: {"name": "WNA1000Mv2 802.11bgn [Realtek " "RTL8188CUS?]"},
-            36944: {
-                "name": "A6200 802.11a/b/g/n/ac Wireless Adapter " "[Broadcom BCM43526]"
-            },
-            36945: {
-                "name": "A6200v2 802.11a/b/g/n/ac (2x2) Wireless "
-                "Adapter [Realtek RTL8812AU]"
-            },
+            36944: {"name": "A6200 802.11a/b/g/n/ac Wireless Adapter " "[Broadcom BCM43526]"},
+            36945: {"name": "A6200v2 802.11a/b/g/n/ac (2x2) Wireless " "Adapter [Realtek RTL8812AU]"},
             36946: {"name": "A6100 AC600 DB Wireless Adapter [Realtek " "RTL8811AU]"},
-            36948: {
-                "name": "Nighthawk A7000 802.11ac Wireless "
-                "Adapter AC1900 [Realtek 8814AU]"
-            },
+            36948: {"name": "Nighthawk A7000 802.11ac Wireless " "Adapter AC1900 [Realtek 8814AU]"},
             40961: {"name": "PA101 10 Mbps HPNA Home Phoneline RJ-1"},
             61441: {"name": "On Networks N300MA 802.11bgn [Realtek " "RTL8192CU]"},
         },
@@ -13455,10 +13032,7 @@ V = {
     2129: {
         "children": {
             5442: {"name": "SiPix Blink"},
-            5443: {
-                "name": "Maxell WS30 Slim Digital Camera, or "
-                "Pandigital PI8004W01 digital photo frame"
-            },
+            5443: {"name": "Maxell WS30 Slim Digital Camera, or " "Pandigital PI8004W01 digital photo frame"},
             41320: {"name": "MXIC"},
         },
         "name": "Macronix International Co., Ltd",
@@ -13618,9 +13192,7 @@ V = {
         "name": "Swecoin AB",
     },
     2190: {
-        "children": {
-            20534: {"name": "Portable secure storage for software " "licenses"}
-        },
+        "children": {20534: {"name": "Portable secure storage for software " "licenses"}},
         "name": "iLok",
     },
     2194: {
@@ -14229,11 +13801,7 @@ V = {
     2345: {"name": "American Biometric Co."},
     2346: {"name": "Toshiba Information & Industrial Sys. And Services"},
     2347: {
-        "children": {
-            16912: {
-                "name": "20S - Bluetooth Motorcycle headset & " "universal intercom"
-            }
-        },
+        "children": {16912: {"name": "20S - Bluetooth Motorcycle headset & " "universal intercom"}},
         "name": "Sena Technologies, Inc.",
     },
     2351: {
@@ -14270,24 +13838,15 @@ V = {
             1802: {"name": "Pocket PC e400 Series"},
             1803: {"name": "Pocket PC e800 Series"},
             2567: {"name": "WLM-10U1 802.11abgn Wireless Adapter " "[Ralink RT3572]"},
-            2568: {
-                "name": "WLM-20U2/GN-1080 802.11abgn Wireless "
-                "Adapter [Atheros AR7010+AR9280]"
-            },
-            2571: {
-                "name": "WLU5053 802.11abgn Wireless Module " "[Broadcom BCM43236B]"
-            },
+            2568: {"name": "WLM-20U2/GN-1080 802.11abgn Wireless " "Adapter [Atheros AR7010+AR9280]"},
+            2571: {"name": "WLU5053 802.11abgn Wireless Module " "[Broadcom BCM43236B]"},
             2579: {"name": "AX88179 Gigabit Ethernet [Toshiba]"},
             2821: {"name": "PX1220E-1G25 External hard drive"},
             2825: {"name": "PX1396E-3T01 External hard drive"},
             2842: {"name": "STOR.E ALU 2S"},
-            4864: {
-                "name": "Wireless Broadband (CDMA EV-DO) SM-Bus " "Minicard Status Port"
-            },
+            4864: {"name": "Wireless Broadband (CDMA EV-DO) SM-Bus " "Minicard Status Port"},
             4865: {"name": "Wireless Broadband (CDMA EV-DO) Minicard " "Status Port"},
-            4866: {
-                "name": "Wireless Broadband (3G HSDPA) SM-Bus " "Minicard Status Port"
-            },
+            4866: {"name": "Wireless Broadband (3G HSDPA) SM-Bus " "Minicard Status Port"},
             4867: {"name": "Wireless Broadband (3G HSDPA) Minicard " "Status Port"},
             4872: {"name": "Broadband (3G HSDPA) SM-Bus Minicard " "Diagnostics Port"},
             4875: {"name": "F3507g Mobile Broadband Module"},
@@ -14335,11 +13894,7 @@ V = {
             25918: {"name": "Flash Memory"},
             25920: {"name": "TransMemory Flash Memory"},
             25924: {"name": "TransMemory-Mini / Kingston DataTraveler " "2.0 Stick"},
-            25925: {
-                "name": "Kingston DataTraveler 102/2.0 / HEMA "
-                "Flash Drive 2 GB / PNY Attache 4GB "
-                "Stick"
-            },
+            25925: {"name": "Kingston DataTraveler 102/2.0 / HEMA " "Flash Drive 2 GB / PNY Attache 4GB " "Stick"},
             40962: {"name": "SunplusIT SATA bridge"},
         },
         "name": "Toshiba Corp.",
@@ -14367,9 +13922,7 @@ V = {
             13: {"name": "Hypurius"},
             14: {"name": "Millennius"},
             15: {"name": "Purius"},
-            48: {
-                "name": "Composite Device, Mass Storage Device " "(Flash Drive) amd HID"
-            },
+            48: {"name": "Composite Device, Mass Storage Device " "(Flash Drive) amd HID"},
             60: {"name": "Rhythmedics HID Bootloader"},
         },
         "name": "NuTesla",
@@ -14400,17 +13953,11 @@ V = {
             9472: {"name": "USB Optical Mouse"},
             9488: {"name": "Optical Mouse"},
             9505: {"name": "Optical Mouse"},
-            9728: {
-                "name": "Typhoon Easycam USB 330K (newer)/Typhoon "
-                "Easycam USB 2.0 VGA 1.3M/Sansun SN-508"
-            },
+            9728: {"name": "Typhoon Easycam USB 330K (newer)/Typhoon " "Easycam USB 2.0 VGA 1.3M/Sansun SN-508"},
             9729: {"name": "SPC 610NC Laptop Camera"},
             9731: {"name": "PAC7312 Camera"},
             9736: {"name": "PAC7311 Trust WB-3300p"},
-            9742: {
-                "name": "PAC7311 Gigaware VGA PC Camera:Trust "
-                "WB-3350p:SIGMA cam 2350"
-            },
+            9742: {"name": "PAC7311 Gigaware VGA PC Camera:Trust " "WB-3350p:SIGMA cam 2350"},
             9743: {"name": "PAC7311 SnakeCam"},
             9761: {"name": "PAC731x Trust Webcam"},
             9762: {"name": "Webcam Genius"},
@@ -14657,10 +14204,7 @@ V = {
     2458: {
         "children": {
             1592: {"name": "Sanwa Supply Inc. Small Keyboard"},
-            9760: {
-                "name": "Graphics tablet [Polostar PT1001, Zeniq "
-                "PT1001, Leogics PT1001]"
-            },
+            9760: {"name": "Graphics tablet [Polostar PT1001, Zeniq " "PT1001, Leogics PT1001]"},
             24844: {"name": "EL-610 Super Mini Electron luminescent " "Keyboard"},
             25392: {"name": "SANWA Supply Inc. Slim Keyboard"},
             28986: {"name": "WK-713 Multimedia Keyboard"},
@@ -15154,21 +14698,10 @@ V = {
             17666: {"name": "Keyboard (Boot Interface Subclass)"},
             17667: {"name": "Mouse (Boot Interface Subclass)"},
             22528: {"name": "BCM5880 Secure Applications Processor"},
-            22529: {
-                "name": "BCM5880 Secure Applications Processor "
-                "with fingerprint swipe sensor"
-            },
-            22530: {
-                "name": "BCM5880 Secure Applications Processor "
-                "with fingerprint touch sensor"
-            },
-            22531: {
-                "name": "BCM5880 Secure Applications Processor " "with secure keyboard"
-            },
-            22532: {
-                "name": "BCM5880 Secure Applications Processor "
-                "with fingerprint swipe sensor"
-            },
+            22529: {"name": "BCM5880 Secure Applications Processor " "with fingerprint swipe sensor"},
+            22530: {"name": "BCM5880 Secure Applications Processor " "with fingerprint touch sensor"},
+            22531: {"name": "BCM5880 Secure Applications Processor " "with secure keyboard"},
+            22532: {"name": "BCM5880 Secure Applications Processor " "with fingerprint swipe sensor"},
             25344: {"name": "Pirelli Remote NDIS Device"},
             25616: {"name": "BCM20703A1 Bluetooth 4.1 + LE"},
             48401: {"name": "BCM4320 802.11bg Wireless Adapter"},
@@ -15485,10 +15018,7 @@ V = {
         "children": {
             768: {"name": "IDT1221U RS-232 Adapter"},
             1025: {"name": "Spectrum III Hybrid Smartcard Reader"},
-            1584: {
-                "name": "Spectrum III Mag-Only Insert Reader "
-                "(SPT3-355 Series) USB-CDC"
-            },
+            1584: {"name": "Spectrum III Mag-Only Insert Reader " "(SPT3-355 Series) USB-CDC"},
             2064: {"name": "SecurePIN (IDPA-506100Y) PIN Pad"},
             8240: {"name": "ValueMag Magnetic Stripe Reader"},
             14096: {"name": "ViVOpay Kiosk III"},
@@ -15560,9 +15090,7 @@ V = {
             26385: {"name": "GlobeTrotter Express 7.2 v2"},
             26993: {"name": "Globetrotter HSDPA Modem"},
             29265: {"name": "Globetrotter HSUPA Modem (aka iCON HSUPA " "E)"},
-            29953: {
-                "name": "Globetrotter HSUPA Modem (icon 411 aka " '"Vodafone K3760")'
-            },
+            29953: {"name": "Globetrotter HSUPA Modem (icon 411 aka " '"Vodafone K3760")'},
             30209: {"name": "Globetrotter MO40x 3G Modem (GTM 382)"},
             30465: {"name": "Globetrotter HSUPA Modem (aka icon 451)"},
             53333: {"name": "Globetrotter GI0505 [iCON 505]"},
@@ -15582,12 +15110,7 @@ V = {
         "name": "Hama, Inc.",
     },
     2810: {
-        "children": {
-            2002: {
-                "name": "Controller Board for Projected Capacitive "
-                "Touch Screen DUS3000"
-            }
-        },
+        "children": {2002: {"name": "Controller Board for Projected Capacitive " "Touch Screen DUS3000"}},
         "name": "DMC Co., Ltd.",
     },
     2812: {"name": "Zaptronix Ltd"},
@@ -15632,9 +15155,7 @@ V = {
             6004: {"name": "Gobi Wireless Modem (QDL mode)"},
             6006: {"name": "Gobi Wireless Modem"},
             6009: {"name": "My Cinema U3100 Mini Plus [AF9035A]"},
-            6020: {
-                "name": "USB-N13 802.11n Network Adapter (rev. A1) " "[Ralink RT3072]"
-            },
+            6020: {"name": "USB-N13 802.11n Network Adapter (rev. A1) " "[Ralink RT3072]"},
             6022: {"name": "USB-N10 802.11n Network Adapter [Realtek " "RTL8188SU]"},
             6024: {"name": "BT-270 Bluetooth Adapter"},
             6033: {"name": "WL-167G v3 802.11n Adapter [Realtek " "RTL8188SU]"},
@@ -15644,45 +15165,21 @@ V = {
             6047: {"name": "Eee Note EA800 (tablet mode)"},
             6048: {"name": "Xonar U3 sound card"},
             6049: {"name": "Eee Note EA800 (mass storage mode)"},
-            6059: {
-                "name": "USB-N13 802.11n Network Adapter (rev. B1) "
-                "[Realtek RTL8192CU]"
-            },
+            6059: {"name": "USB-N13 802.11n Network Adapter (rev. B1) " "[Realtek RTL8192CU]"},
             6074: {"name": "N10 Nano 802.11n Network Adapter [Realtek " "RTL8192CU]"},
             6082: {"name": "ROG Spitfire"},
             6087: {"name": "WL-330NUL"},
-            6089: {
-                "name": "USB-AC53 802.11a/b/g/n/ac Wireless "
-                "Adapter [Broadcom BCM43526]"
-            },
+            6089: {"name": "USB-AC53 802.11a/b/g/n/ac Wireless " "Adapter [Broadcom BCM43526]"},
             6091: {"name": "Broadcom BCM20702A0 Bluetooth"},
-            6097: {
-                "name": "AC51 802.11a/b/g/n/ac Wireless Adapter " "[Mediatek MT7610U]"
-            },
-            6098: {
-                "name": "USB-AC56 802.11a/b/g/n/ac Wireless "
-                "Adapter [Realtek RTL8812AU]"
-            },
-            6099: {
-                "name": "USB-N10 v2 802.11b/g/n Wireless Adapter " "[MediaTek MT7601U]"
-            },
-            6107: {
-                "name": "USB-AC50 802.11a/b/g/n/ac (1x1) Wireless "
-                "Adapter [MediaTek MT7610U]"
-            },
-            6120: {
-                "name": "USB-N14 802.11b/g/n (2x2) Wireless " "Adapter [Ralink RT5372]"
-            },
-            6123: {
-                "name": "USB-AC55 802.11a/b/g/n/ac Wireless "
-                "Adapter [MediaTek MT7612U]"
-            },
+            6097: {"name": "AC51 802.11a/b/g/n/ac Wireless Adapter " "[Mediatek MT7610U]"},
+            6098: {"name": "USB-AC56 802.11a/b/g/n/ac Wireless " "Adapter [Realtek RTL8812AU]"},
+            6099: {"name": "USB-N10 v2 802.11b/g/n Wireless Adapter " "[MediaTek MT7601U]"},
+            6107: {"name": "USB-AC50 802.11a/b/g/n/ac (1x1) Wireless " "Adapter [MediaTek MT7610U]"},
+            6120: {"name": "USB-N14 802.11b/g/n (2x2) Wireless " "Adapter [Ralink RT5372]"},
+            6123: {"name": "USB-AC55 802.11a/b/g/n/ac Wireless " "Adapter [MediaTek MT7612U]"},
             6133: {"name": "Xonar U5 sound card"},
             6154: {"name": "Broadcom BCM20702 Single-Chip Bluetooth " "4.0 + LE"},
-            6167: {
-                "name": "USB-AC68 802.11a/b/g/n/ac (4x4) Wireless "
-                "Adapter [Realtek RTL8814AU]"
-            },
+            6167: {"name": "USB-AC68 802.11a/b/g/n/ac (4x4) Wireless " "Adapter [Realtek RTL8814AU]"},
             6181: {"name": "Qualcomm Bluetooth 4.1"},
             6384: {"name": "Realtek 8188EUS [USB-N10 Nano]"},
             19584: {"name": "Transformer Pad TF300TG"},
@@ -15712,13 +15209,9 @@ V = {
     2828: {
         "children": {
             9: {"name": "Todos Argos Mini II Smart Card Reader"},
-            30: {
-                "name": "e.dentifier2 (ABN AMRO electronic banking " "card reader NL)"
-            },
+            30: {"name": "e.dentifier2 (ABN AMRO electronic banking " "card reader NL)"},
             46: {"name": "C200 smartcard controller (Nordea card " "reader)"},
-            63: {
-                "name": "Todos C400 smartcard controller " "(Handelsbanken card reader)"
-            },
+            63: {"name": "Todos C400 smartcard controller " "(Handelsbanken card reader)"},
             80: {"name": "Argos Mini II Smart Card Reader (CCID)"},
         },
         "name": "Todos AB",
@@ -15937,9 +15430,7 @@ V = {
             258: {"name": "Certis V1 fingerprint reader"},
             259: {"name": "Certis V2 fingerprint reader"},
             512: {"name": "CL1356T / CL1356T5 / CL1356A smartcard " "readers (CCID)"},
-            513: {
-                "name": "CL1356T / CL1356T5 / CL1356A smartcard " "readers (DFU + CCID)"
-            },
+            513: {"name": "CL1356T / CL1356T5 / CL1356A smartcard " "readers (DFU + CCID)"},
             544: {"name": "CL1356A FFPJP smartcard reader (CCID + " "HID)"},
             545: {"name": "CL1356A smartcard reader (DFU + CCID + " "HID)"},
         },
@@ -16208,10 +15699,7 @@ V = {
             2820: {"name": "Hermes / TyTN / T-Mobile MDA Vario II / " "O2 Xda Trion"},
             2821: {"name": "P3600"},
             2822: {"name": "Athena / Advantage x7500 / Dopod U1000 / " "T-Mobile AMEO"},
-            2828: {
-                "name": "Elf / Touch / P3450 / T-Mobile MDA Touch "
-                "/ O2 Xda Nova / Dopod S1"
-            },
+            2828: {"name": "Elf / Touch / P3450 / T-Mobile MDA Touch " "/ O2 Xda Nova / Dopod S1"},
             2847: {"name": "Sony Ericsson XPERIA X1"},
             2863: {"name": "Rhodium"},
             2897: {"name": "Qtek 8310 mobile phone [Tornado Noble]"},
@@ -16232,9 +15720,7 @@ V = {
             3230: {"name": "Incredible"},
             3234: {"name": "Desire HD (debug mode)"},
             3237: {"name": "Android Phone [Evo Shift 4G]"},
-            3243: {
-                "name": "Desire / Desire HD / Hero / Thunderbolt " "(HTC Sync Mode)"
-            },
+            3243: {"name": "Desire / Desire HD / Hero / Thunderbolt " "(HTC Sync Mode)"},
             3246: {"name": "T-Mobile MyTouch 4G Slide [Doubleshot]"},
             3557: {"name": "One (M7)"},
             3562: {"name": "M7_UL [HTC One]"},
@@ -16400,9 +15886,7 @@ V = {
             806: {"name": "Card reader"},
             1041: {"name": "Hub"},
             2065: {
-                "name": "Realtek 8812AU/8821AU 802.11ac WLAN "
-                "Adapter [USB Wireless Dual-Band Adapter "
-                "2.4/5Ghz]"
+                "name": "Realtek 8812AU/8821AU 802.11ac WLAN " "Adapter [USB Wireless Dual-Band Adapter " "2.4/5Ghz]"
             },
             2081: {"name": "RTL8821A Bluetooth"},
             5924: {"name": "RTL8723AU 802.11n WLAN Adapter"},
@@ -16526,10 +16010,7 @@ V = {
             4097: {"name": "Fujitsu Pocket Loox 600 PDA"},
             4102: {"name": "SmartCard Reader 2A"},
             4103: {"name": "Connect2Air E-5400 802.11g Wireless " "Adapter"},
-            4105: {
-                "name": "Connect2Air E-5400 D1700 802.11g Wireless "
-                "Adapter [Intersil ISL3887]"
-            },
+            4105: {"name": "Connect2Air E-5400 D1700 802.11g Wireless " "Adapter [Intersil ISL3887]"},
             4108: {"name": "Keyboard FSC KBPC PX"},
             4111: {"name": "miniCard D2301 802.11bg Wireless Module " "[SiS 163U]"},
             4119: {"name": "Keyboard KB SCR"},
@@ -16584,10 +16065,7 @@ V = {
     },
     3090: {
         "children": {
-            5: {
-                "name": "PSX Vibration Feedback Converter / Intec "
-                "Wireless Controller for Xbox"
-            },
+            5: {"name": "PSX Vibration Feedback Converter / Intec " "Wireless Controller for Xbox"},
             48: {"name": "PSX Vibration Feedback Converter"},
             28686: {"name": "Logic Analyzer (LAP-C-16032)"},
             34817: {"name": "Nyko Xbox Controller"},
@@ -16659,14 +16137,8 @@ V = {
             512: {"name": "MS7120 Barcode Scanner"},
             516: {"name": "Metrologic MS7120 Barcode Scanner " "(keyboard mode)"},
             518: {"name": "Metrologic MS4980 Barcode Scanner"},
-            1792: {
-                "name": "Metrologic MS7120 Barcode Scanner "
-                "(uni-directional serial mode)"
-            },
-            1824: {
-                "name": "Metrologic MS7120 Barcode Scanner "
-                "(bi-directional serial mode)"
-            },
+            1792: {"name": "Metrologic MS7120 Barcode Scanner " "(uni-directional serial mode)"},
+            1824: {"name": "Metrologic MS7120 Barcode Scanner " "(bi-directional serial mode)"},
             2660: {"name": "[Stratos 2700]"},
             2913: {"name": "Vuquest 3310g"},
             2922: {"name": "Vuquest 3310 Area-Imaging Scanner"},
@@ -16725,10 +16197,7 @@ V = {
             4199: {"name": "Mass Storage Reader"},
             4440: {"name": "A56AK"},
             6220: {"name": "VoIP Phone"},
-            6800: {
-                "name": "2M pixel Microscope Camera (with capture "
-                "button) [Andonstar V160]"
-            },
+            6800: {"name": "2M pixel Microscope Camera (with capture " "button) [Andonstar V160]"},
             20484: {"name": "Redragon Mitra RGB Keyboard"},
             20737: {"name": "2.4G Wireless Device [Rii MX3]"},
             24577: {"name": "Genius VideoCAM NB"},
@@ -16822,10 +16291,7 @@ V = {
             25231: {"name": "PC Camera with Microphone (SN9C202 + " "OV9650)"},
             25248: {"name": "PC Camera with Microphone (SN9C202 + " "OV7670ISP)"},
             25250: {"name": "PC Camera with Microphone (SN9C202 + " "OM6802)"},
-            25264: {
-                "name": "PC Camera with Microphone (SN9C202 + "
-                "MI0360/MT9V011 or MI0360SOC/MT9V111)"
-            },
+            25264: {"name": "PC Camera with Microphone (SN9C202 + " "MI0360/MT9V011 or MI0360SOC/MT9V111)"},
             25267: {"name": "PC Camera with Microphone (SN9C202 + " "OV9655)"},
             25274: {"name": "PC Camera with Microphone (SN9C202 + " "S5K53BEB)"},
             25275: {"name": "PC Camera with Microphone (SN9C202 + " "OV7660)"},
@@ -16884,9 +16350,7 @@ V = {
             768: {"name": "cyberJack pinpad(a)"},
             1024: {"name": "cyberJack e-com(a)"},
             1025: {"name": "cyberJack pinpad(a2)"},
-            1280: {
-                "name": "cyberJack RFID standard dual interface " "smartcard reader"
-            },
+            1280: {"name": "cyberJack RFID standard dual interface " "smartcard reader"},
             1281: {"name": "cyberJack RFID comfort dual interface " "smartcard reader"},
             1282: {"name": "cyberJack compact"},
             1284: {"name": "cyberJack go / go plus"},
@@ -16994,9 +16458,7 @@ V = {
     3174: {"name": "Rexon Electronics Corp."},
     3175: {"name": "Concept Telecom, Ltd"},
     3178: {
-        "children": {
-            5: {"name": "Color 320 x 240 LCD Display Terminal with " "Touchscreen"}
-        },
+        "children": {5: {"name": "Color 320 x 240 LCD Display Terminal with " "Touchscreen"}},
         "name": "ACS",
     },
     3180: {
@@ -17193,10 +16655,7 @@ V = {
             151: {"name": "Cinergy T RC MKII"},
             153: {"name": "AfaTech 9015 [Cinergy T Stick Dual]"},
             165: {"name": "Cinergy Hybrid Stick"},
-            169: {
-                "name": "RTL2838 DVB-T COFDM Demodulator [TerraTec "
-                "Cinergy T Stick Black]"
-            },
+            169: {"name": "RTL2838 DVB-T COFDM Demodulator [TerraTec " "Cinergy T Stick Black]"},
             179: {"name": "NOXON DAB/DAB+ Stick"},
             185: {"name": "WDR DAB/DAB+ Stick"},
             224: {"name": "NOXON DAB/DAB+ Stick V2"},
@@ -17250,10 +16709,7 @@ V = {
             35: {"name": "UB81 802.11bgn"},
             37: {"name": "802.11b/g/n USB Wireless Network Adapter"},
             38: {"name": "UB82 802.11abgn"},
-            39: {
-                "name": "Sphairon Homelink 1202 802.11n Wireless "
-                "Adapter [Atheros AR9170]"
-            },
+            39: {"name": "Sphairon Homelink 1202 802.11n Wireless " "Adapter [Atheros AR9170]"},
         },
         "name": "Z-Com",
     },
@@ -17301,18 +16757,9 @@ V = {
             6: {"name": "AR5523 (no firmware)"},
             54: {"name": "AR9462 Bluetooth"},
             4097: {"name": "Thomson TG121N [Atheros AR9001U-(2)NG]"},
-            4098: {
-                "name": "TP-Link TL-WN821N v2 / TL-WN822N v1 "
-                "802.11n [Atheros AR9170]"
-            },
-            4102: {
-                "name": "TP-Link TL-WN322G v3 / TL-WN422G v2 "
-                "802.11g [Atheros AR9271]"
-            },
-            4112: {
-                "name": "3Com 3CRUSBN275 802.11abgn Wireless "
-                "Adapter [Atheros AR9170]"
-            },
+            4098: {"name": "TP-Link TL-WN821N v2 / TL-WN822N v1 " "802.11n [Atheros AR9170]"},
+            4102: {"name": "TP-Link TL-WN322G v3 / TL-WN422G v2 " "802.11g [Atheros AR9271]"},
+            4112: {"name": "3Com 3CRUSBN275 802.11abgn Wireless " "Adapter [Atheros AR9170]"},
             8447: {"name": "AR7010 (no firmware)"},
             12288: {"name": "AR3011 Bluetooth (no firmware)"},
             12290: {"name": "AR3011 Bluetooth"},
@@ -17322,10 +16769,7 @@ V = {
             12296: {"name": "Bluetooth (AR3011)"},
             12573: {"name": "Bluetooth"},
             12575: {"name": "AR3012 Bluetooth"},
-            28693: {
-                "name": "TP-Link TL-WN821N v3 / TL-WN822N v2 "
-                "802.11n [Atheros AR7010+AR9287]"
-            },
+            28693: {"name": "TP-Link TL-WN821N v3 / TL-WN822N v2 " "802.11n [Atheros AR7010+AR9287]"},
             37232: {"name": "AR9170 802.11n"},
             37489: {"name": "AR9271 802.11n"},
             37752: {"name": "QCA9377-7"},
@@ -17503,14 +16947,8 @@ V = {
     3417: {"children": {680: {"name": "Digital Clock"}}, "name": "TRC Simulators b.v."},
     3420: {
         "children": {
-            40961: {
-                "name": "SMC2662W (v1) EZ Connect 802.11b "
-                "Wireless Adapter [Atmel AT76C503A]"
-            },
-            40962: {
-                "name": "SMC2662W v2 / SMC2662W-AR / Belkin "
-                "F5D6050 [Atmel at76c503a]"
-            },
+            40961: {"name": "SMC2662W (v1) EZ Connect 802.11b " "Wireless Adapter [Atmel AT76C503A]"},
+            40962: {"name": "SMC2662W v2 / SMC2662W-AR / Belkin " "F5D6050 [Atmel at76c503a]"},
         },
         "name": "SMC Networks, Inc.",
     },
@@ -17683,18 +17121,11 @@ V = {
         "children": {
             355: {"name": "802.11g 54 Mbps Wireless Dongle"},
             5665: {"name": "802.11b Wireless Adapter"},
-            14178: {
-                "name": "Cohiba 802.11g Wireless Mini adapter " "[Intersil ISL3887]"
-            },
+            14178: {"name": "Cohiba 802.11g Wireless Mini adapter " "[Intersil ISL3887]"},
             14179: {"name": "802.11g Wireless dongle"},
             28928: {"name": "802.11b Adapter"},
-            28944: {
-                "name": "WL-210 / WU210P 802.11b Wireless Adapter " "[Atmel AT76C503A]"
-            },
-            30213: {
-                "name": "TRENDnet TEW-224UB 802.11b Wireless "
-                "Adapter [Atmel AT76C503A]"
-            },
+            28944: {"name": "WL-210 / WU210P 802.11b Wireless Adapter " "[Atmel AT76C503A]"},
+            30213: {"name": "TRENDnet TEW-224UB 802.11b Wireless " "Adapter [Atmel AT76C503A]"},
             30721: {"name": "AR5523"},
             30722: {"name": "AR5523 (no firmware)"},
             30737: {"name": "AR5523"},
@@ -17740,10 +17171,7 @@ V = {
     3487: {
         "children": {
             1: {"name": "Uninterruptible Power Supply"},
-            2: {
-                "name": "Black Knight PRO / WOW Uninterruptible Power "
-                "Supply (Cypress HID->COM RS232)"
-            },
+            2: {"name": "Black Knight PRO / WOW Uninterruptible Power " "Supply (Cypress HID->COM RS232)"},
             162: {"name": "Imperial Uninterruptible Power Supply (HID " "PDC)"},
             163: {"name": "Smart King PRO Uninterruptible Power " "Supply (HID PDC)"},
             164: {"name": "WOW Uninterruptible Power Supply (HID " "PDC)"},
@@ -17943,14 +17371,8 @@ V = {
             8200: {"name": "All-In-One Card Reader"},
             8211: {"name": "SD/MS Combo Card Reader"},
             8212: {"name": "SD/MS Single Card Reader"},
-            8227: {
-                "name": "card reader SD/MS DEMO board with ICSI "
-                "brand name (MaskROM version)"
-            },
-            8228: {
-                "name": "card reader SD/MS DEMO board with Generic "
-                "brand name (MaskROM version)"
-            },
+            8227: {"name": "card reader SD/MS DEMO board with ICSI " "brand name (MaskROM version)"},
+            8228: {"name": "card reader SD/MS DEMO board with Generic " "brand name (MaskROM version)"},
             8230: {"name": "USB2.0 Card Reader"},
             8231: {"name": "USB 2.0 Card Reader"},
             8981: {"name": "UFD MP3 player (model 2)"},
@@ -18007,9 +17429,7 @@ V = {
             72: {"name": "WL-349v1 Wireless Adapter 150N 002 [Ralink " "RT3070]"},
             73: {"name": "WL-356 Wireless Adapter 300N"},
             74: {"name": "WL-358v1 Wireless Micro USB Adapter 300N X3 " "002"},
-            75: {
-                "name": "WL-349v3 Wireless Micro Adapter 150N X1 " "[Realtek RTL8192SU]"
-            },
+            75: {"name": "WL-349v3 Wireless Micro Adapter 150N X1 " "[Realtek RTL8192SU]"},
             76: {"name": "WL-352 802.11n Adapter [Realtek RTL8191SU]"},
             80: {"name": "WL-349v4 Wireless Micro Adapter 150N X1 " "[Ralink RT3370]"},
             86: {"name": "LN-031 10/100/1000 Ethernet Adapter"},
@@ -18204,9 +17624,7 @@ V = {
     3669: {
         "children": {
             4362: {
-                "name": "Tanic S110-SG1 + ISSC IS1002N [Slow "
-                "Infra-Red (SIR) & Bluetooth 1.2 (Class 2) "
-                "Adapter]"
+                "name": "Tanic S110-SG1 + ISSC IS1002N [Slow " "Infra-Red (SIR) & Bluetooth 1.2 (Class 2) " "Adapter]"
             },
             4363: {"name": "MS3303H USB-to-Serial Bridge"},
         },
@@ -18233,26 +17651,13 @@ V = {
     },
     3686: {
         "children": {
-            1: {
-                "name": "HWUN1 Hi-Gain Wireless-300N Adapter w/ "
-                "Upgradable Antenna [Ralink RT2870]"
-            },
+            1: {"name": "HWUN1 Hi-Gain Wireless-300N Adapter w/ " "Upgradable Antenna [Ralink RT2870]"},
             3: {"name": "HWDN1 Hi-Gain Wireless-300N Dish Adapter " "[Ralink RT2870]"},
-            9: {
-                "name": "HWUN2 Hi-Gain Wireless-150N Adapter w/ "
-                "Upgradable Antenna [Ralink RT2770]"
-            },
+            9: {"name": "HWUN2 Hi-Gain Wireless-150N Adapter w/ " "Upgradable Antenna [Ralink RT2770]"},
             11: {"name": "HWDN2 Hi-Gain Wireless-150N Dish Adapter " "[Ralink RT2770]"},
             19: {"name": "HWUN3 Hi-Gain Wireless-N Adapter [Ralink " "RT3070]"},
-            21: {
-                "name": "HWDN2 Rev. E Hi-Gain Wireless-150N Dish "
-                "Adapter [Realtek RTL8191SU]"
-            },
-            23: {
-                "name": "HAWNU1 Hi-Gain Wireless-150N Network "
-                "Adapter with Range Amplifier [Ralink "
-                "RT3070]"
-            },
+            21: {"name": "HWDN2 Rev. E Hi-Gain Wireless-150N Dish " "Adapter [Realtek RTL8191SU]"},
+            23: {"name": "HAWNU1 Hi-Gain Wireless-150N Network " "Adapter with Range Amplifier [Ralink " "RT3070]"},
             24: {"name": "Wireless-N Network Adapter [Ralink RT2870]"},
             16395: {"name": "UF100 10/100 Network Adapter"},
             16396: {"name": "UF100 Ethernet [pegasus2]"},
@@ -18264,10 +17669,7 @@ V = {
         "children": {
             257: {"name": "MA100 [USB-UART Bridge IC]"},
             704: {"name": "Defender Gaming Keyboard"},
-            779: {
-                "name": "Truly Ergonomic Computer Keyboard (Device "
-                "Firmware Update mode)"
-            },
+            779: {"name": "Truly Ergonomic Computer Keyboard (Device " "Firmware Update mode)"},
             780: {"name": "Truly Ergonomic Computer Keyboard"},
             24577: {"name": "GEMBIRD Flexible keyboard KB-109F-B-DE"},
             32604: {"name": "BPF-015 Key Chain Photo Frame"},
@@ -18344,9 +17746,7 @@ V = {
             35: {"name": "S103 / Powertel M6200"},
             165: {"name": "GSM modem [Medion Surfstick Model:S4222]"},
             6150: {"name": "Samsung SE-208 Slim Portable DVD Writer"},
-            6198: {
-                "name": "Samsung SE-S084 Super WriteMaster Slim " "External DVD writer"
-            },
+            6198: {"name": "Samsung SE-S084 Super WriteMaster Slim " "External DVD writer"},
             6279: {"name": "Slim Portable DVD Writer"},
             6486: {"name": "Samsung SE-506 Portable BluRay Disc " "Writer"},
             8192: {"name": "MT65xx Preloader"},
@@ -18402,10 +17802,7 @@ V = {
         "children": {
             8486: {"name": "7-in-1 Card Reader"},
             8531: {"name": "SD Card Reader Key"},
-            8552: {
-                "name": "Transcend JetFlash 2.0 / Astone USB Drive "
-                "/ Intellegent Stick 2.0"
-            },
+            8552: {"name": "Transcend JetFlash 2.0 / Astone USB Drive " "/ Intellegent Stick 2.0"},
             8723: {"name": "WinDroid N287 AH7N2502.013317"},
             26627: {"name": "OTI-6803 Flash Disk"},
             26632: {"name": "OTI-6808 Flash Disk"},
@@ -18503,10 +17900,7 @@ V = {
     },
     3823: {
         "children": {
-            1: {
-                "name": "Titan6001 Surface Acoustic Wave Touchscreen "
-                "Controller [eGalax]"
-            },
+            1: {"name": "Titan6001 Surface Acoustic Wave Touchscreen " "Controller [eGalax]"},
             2: {"name": "Touchscreen Controller(Professional)"},
             29184: {"name": "Touchscreen Controller"},
             30980: {
@@ -18984,10 +18378,7 @@ V = {
             56065: {"name": "FusionHDTV DVB-T (MT352+LgZ201) " "(initialized)"},
             56080: {"name": "FusionHDTV DVB-T (MT352+Thomson7579) " "(uninitialized)"},
             56081: {"name": "FusionHDTV DVB-T (MT352+Thomson7579) " "(initialized)"},
-            56184: {
-                "name": "FusionHDTV DVB-T Dual Digital 4 "
-                "(ZL10353+xc2028/xc3028) (initialized)"
-            },
+            56184: {"name": "FusionHDTV DVB-T Dual Digital 4 " "(ZL10353+xc2028/xc3028) (initialized)"},
         },
         "name": "DVICO",
     },
@@ -19594,16 +18985,8 @@ V = {
             24663: {"name": "Pantech Android composite"},
             24664: {"name": "Pantech Android composite"},
             24665: {"name": "Pantech Android composite"},
-            24704: {
-                "name": "MHS291LVW LTE Modem [Verizon Jetpack 4G "
-                "LTE Mobile Hotspot MHS291L] (Zero CD "
-                "Mode)"
-            },
-            24709: {
-                "name": "MHS291LVW LTE Modem [Verizon Jetpack 4G "
-                "LTE Mobile Hotspot MHS291L] (Modem "
-                "Mode)"
-            },
+            24704: {"name": "MHS291LVW LTE Modem [Verizon Jetpack 4G " "LTE Mobile Hotspot MHS291L] (Zero CD " "Mode)"},
+            24709: {"name": "MHS291LVW LTE Modem [Verizon Jetpack 4G " "LTE Mobile Hotspot MHS291L] (Modem " "Mode)"},
             28721: {"name": "Pantech Android composite"},
             28722: {"name": "Pantech Android composite"},
             28723: {"name": "Pantech Android composite"},
@@ -19705,10 +19088,7 @@ V = {
             35323: {"name": "Qivicon ZigBee Stick"},
             35388: {"name": "C8051F38x HDBaseT Receiver [UHBX-R-XT]"},
             35436: {"name": "C8051F38x 4K HDMI Audio Extractor " "[EMX-AMP]"},
-            35531: {
-                "name": "C8051F38x HDBaseT Wall Plate Receiver "
-                "with IR, RS-232, and PoH [UHBX-R-WP]"
-            },
+            35531: {"name": "C8051F38x HDBaseT Wall Plate Receiver " "with IR, RS-232, and PoH [UHBX-R-WP]"},
             35576: {
                 "name": "C8051F38x 4K HDMI Audio Extractor "
                 "w/Audio Amplifier, HDBT Input, Line "
@@ -19788,9 +19168,7 @@ V = {
     4309: {
         "children": {
             4: {"name": "PS/2 Converter"},
-            21842: {
-                "name": "KVM Human Interface Composite Device " "(Keyboard/Mouse ports)"
-            },
+            21842: {"name": "KVM Human Interface Composite Device " "(Keyboard/Mouse ports)"},
             21922: {"name": "2Port KVMSwitcher"},
             23048: {"name": "Dual Bay Docking Station"},
         },
@@ -20003,10 +19381,7 @@ V = {
     4427: {
         "children": {
             272: {"name": "Turbolink UB801R WLAN Adapter"},
-            336: {
-                "name": "Turbolink UB801RE Wireless 802.11g 54Mbps "
-                "Network Adapter [RTL8187]"
-            },
+            336: {"name": "Turbolink UB801RE Wireless 802.11g 54Mbps " "Network Adapter [RTL8187]"},
         },
         "name": "Sphairon Access Systems GmbH",
     },
@@ -20129,9 +19504,7 @@ V = {
             36883: {"name": "Sierra Wireless Gobi 3000 Modem device " "(MC8355)"},
             36929: {"name": "EM7305 Modem"},
             36949: {"name": "Gobi 9x15 Multimode 3G/4G LTE Modem (NAT " "mode)"},
-            36951: {
-                "name": "Gobi 9x15 Multimode 3G/4G LTE Modem (IP " "passthrough mode)"
-            },
+            36951: {"name": "Gobi 9x15 Multimode 3G/4G LTE Modem (IP " "passthrough mode)"},
             36977: {"name": "AirPrime MC7455 3G/4G LTE Modem"},
             36985: {"name": "EM7455"},
         },
@@ -20232,9 +19605,7 @@ V = {
             6837: {"name": "Arachnid Labs Tsunami"},
             6838: {"name": "Arachnid Labs Tsunami Bootloader"},
             8192: {"name": "Zygmunt Krynicki Lantern Brightness " "Sensor"},
-            8193: {
-                "name": "OSHEC Pi-pilot opensource and " "openhardware autopilot system"
-            },
+            8193: {"name": "OSHEC Pi-pilot opensource and " "openhardware autopilot system"},
             8194: {"name": "Peter Lawrence " "PIC16F1-USB-DFU-Bootloader"},
             8195: {"name": "Peter Lawrence SAMDx1-USB-DFU-Bootloader"},
             8196: {"name": "GCBASIC Serial CDC Stack"},
@@ -20282,10 +19653,7 @@ V = {
             16534: {"name": "CynaraKrewe Cynara"},
             16716: {"name": "Adi Linden"},
             16717: {"name": "Adi Linden"},
-            16962: {
-                "name": "Komakallio Astrophotography Community "
-                "KomaHub Remote Power Switch"
-            },
+            16962: {"name": "Komakallio Astrophotography Community " "KomaHub Remote Power Switch"},
             16982: {"name": "CuVoodoo BusVoodoo multi-protocol " "debugging adapter"},
             17185: {"name": "mooltipass Offline Password Keeper " "Bootloader"},
             17186: {"name": "mooltipass Arduino Sketch"},
@@ -20295,10 +19663,7 @@ V = {
             17733: {"name": "SlothCo Enterprises Teletype Adapter"},
             17990: {"name": "SmartPID SPC1000"},
             18248: {"name": "Kate Gray GHETT-iO Bootloader"},
-            18256: {
-                "name": "Chris Pavlina (c4757p) C4-x computer "
-                "(development interface)"
-            },
+            18256: {"name": "Chris Pavlina (c4757p) C4-x computer " "(development interface)"},
             18263: {"name": "Chris Pavlina (c4757p) WCP52 Gain/Phase " "Analyzer"},
             18433: {"name": "Wojciech Krutnik NVMemProg"},
             19552: {"name": "MightyPork GEX module"},
@@ -20332,16 +19697,10 @@ V = {
             28673: {"name": "Secalot Bootloader"},
             28849: {"name": "Sutajio Ko-Usagi (Kosagi) Tomu"},
             29489: {"name": "Dangerous Prototypes Bus Pirate Next Gen " "CDC"},
-            29490: {
-                "name": "Dangerous Prototypes Bus Pirate Next Gen " "Logic Analyzer"
-            },
+            29490: {"name": "Dangerous Prototypes Bus Pirate Next Gen " "Logic Analyzer"},
             29697: {"name": "Beststream-jp Tool_CDC"},
-            30000: {
-                "name": "PotentialLabs Refflion - IoT Development " "Board - Bootloader"
-            },
-            30001: {
-                "name": "PotentialLabs Refflion - IoT Development " "Board - Sketch"
-            },
+            30000: {"name": "PotentialLabs Refflion - IoT Development " "Board - Bootloader"},
+            30001: {"name": "PotentialLabs Refflion - IoT Development " "Board - Sketch"},
             30033: {"name": "The Tessel Project Tessel 2"},
             30583: {"name": "circuitvalley IO Board V3"},
             30584: {"name": "circuitvalley IO Board V3 Bootloader"},
@@ -20424,9 +19783,7 @@ V = {
             49370: {"name": "Monero Hardware Monero Firmware"},
             49374: {"name": "KMRH Labs SBL Brain"},
             49397: {"name": "unethi PERswitch"},
-            49578: {
-                "name": "Proyecto CIAA Computadora Industrial " "Abierta Argentina"
-            },
+            49578: {"name": "Proyecto CIAA Computadora Industrial " "Abierta Argentina"},
             49585: {"name": "Chibitronics Love-to-Code"},
             49937: {"name": "bg nerilex GB-USB-Link"},
             51740: {"name": "KnightOS Generic Hub"},
@@ -20472,15 +19829,11 @@ V = {
             61453: {"name": "RomanStepanov Shifter/Pedals Adapter"},
             61742: {"name": "Michael Bemmerl Feuermelder"},
             61802: {"name": "uri_ba Cougar TQS adapter"},
-            61804: {
-                "name": "uri_ba adapter for Vipercore's FCC3 " "Force Sensing Module"
-            },
+            61804: {"name": "uri_ba adapter for Vipercore's FCC3 " "Force Sensing Module"},
             62336: {"name": "Windsor Schmidt MD-380 Open Radio " "Firmware"},
             62460: {"name": "dRonin Flight controller-Lumenier Lux"},
             62618: {
-                "name": "TimVideos.us & HDMI2USB.tv Projects FPGA "
-                "Programmer & UART Bridge (PIC based "
-                "Firmware)"
+                "name": "TimVideos.us & HDMI2USB.tv Projects FPGA " "Programmer & UART Bridge (PIC based " "Firmware)"
             },
             64017: {"name": "moonglow OpenXHC"},
             64087: {"name": "3DRacers Pilot Board"},
@@ -20637,10 +19990,7 @@ V = {
             5771: {"name": "PRISM3 WLAN Adapter"},
             16407: {"name": "PC-Chips 802.11b Adapter"},
             16419: {"name": "WM168g 802.11bg Wireless Adapter " "[Intersil ISL3886]"},
-            16421: {
-                "name": "IOGear GWU513 v2 802.11bg Wireless "
-                "Adapter [Intersil ISL3887]"
-            },
+            16421: {"name": "IOGear GWU513 v2 802.11bg Wireless " "Adapter [Intersil ISL3887]"},
         },
         "name": "AirVast",
     },
@@ -20672,11 +20022,7 @@ V = {
         "name": "A-DATA Technology Co., Ltd.",
     },
     4704: {
-        "children": {
-            60962: {
-                "name": "SMC2862W-G v3 EZ Connect 802.11g Adapter " "[Intersil ISL3887]"
-            }
-        },
+        "children": {60962: {"name": "SMC2862W-G v3 EZ Connect 802.11g Adapter " "[Intersil ISL3887]"}},
         "name": "Standard Microsystems Corp.",
     },
     4708: {"name": "Covidien Energy-based Devices"},
@@ -20795,14 +20141,8 @@ V = {
     },
     4763: {
         "children": {
-            5643: {
-                "name": "Siemens S30853-S1031-R351 802.11g "
-                "Wireless Adapter [Atheros AR5523]"
-            },
-            5644: {
-                "name": "Siemens S30853-S1038-R351 802.11g "
-                "Wireless Adapter [Atheros AR5523]"
-            },
+            5643: {"name": "Siemens S30853-S1031-R351 802.11g " "Wireless Adapter [Atheros AR5523]"},
+            5644: {"name": "Siemens S30853-S1038-R351 802.11g " "Wireless Adapter [Atheros AR5523]"},
             5734: {"name": "TG54USB 802.11bg"},
             5735: {"name": "802.11bg"},
             6184: {"name": "Gigaset USB Adapter 300"},
@@ -20955,10 +20295,7 @@ V = {
             355: {"name": "256MB/512MB/1GB Flash Drive"},
             357: {"name": "2GB/4GB/8GB Flash Drive"},
             400: {"name": "Ut190 8 GB Flash Drive with MicroSD " "reader"},
-            784: {
-                "name": "SD/MicroSD CardReader [hama]/IT1327E "
-                "[Basic Line flash drive]"
-            },
+            784: {"name": "SD/MicroSD CardReader [hama]/IT1327E " "[Basic Line flash drive]"},
             816: {"name": "63-in-1 Multi-Card Reader/Writer"},
             865: {"name": "CR-75: 51-in-1 Card Reader/Writer [Sakar]"},
             4457: {"name": "TS2GJF210 JetFlash 210 2GB"},
@@ -21204,20 +20541,13 @@ V = {
     4977: {
         "children": {
             1: {"name": "CNUSB-611AR Wireless Adapter-G [AT76C503]"},
-            2: {
-                "name": "CNUSB-611AR Wireless Adapter-G [AT76C503] "
-                "(FiberLine WL-240U)"
-            },
+            2: {"name": "CNUSB-611AR Wireless Adapter-G [AT76C503] " "(FiberLine WL-240U)"},
             19: {"name": "CNUSB-611 Wireless Adapter [AT76C505]"},
-            20: {
-                "name": "CNUSB-611 Wireless Adapter [AT76C505] " "(FiberLine WL-240U)"
-            },
+            20: {"name": "CNUSB-611 Wireless Adapter [AT76C505] " "(FiberLine WL-240U)"},
             22339: {"name": "CNUSB-611 (D) Wireless Adapter " "[AT76C503]"},
             36898: {"name": "CWD-854 [RT2573]"},
             36914: {"name": "CWD-854 rev F"},
-            37889: {
-                "name": "CWD-854 Wireless 802.11g 54Mbps Network " "Adapter [RTL8187]"
-            },
+            37889: {"name": "CWD-854 Wireless 802.11g 54Mbps Network " "Adapter [RTL8187]"},
         },
         "name": "CNet Technology Inc.",
     },
@@ -21245,9 +20575,7 @@ V = {
             24320: {"name": "WPN111 RangeMax(TM) Wireless USB 2.0 " "Adapter"},
             24321: {"name": "WPN111 (no firmware)"},
             24322: {"name": "WPN111 (no firmware)"},
-            28160: {
-                "name": "WPNT121 802.11g 240Mbps Wireless Adapter " "[Airgo AGN300]"
-            },
+            28160: {"name": "WPNT121 802.11g 240Mbps Wireless Adapter " "[Airgo AGN300]"},
         },
         "name": "Netgear, Inc",
     },
@@ -21272,11 +20600,7 @@ V = {
         "name": "Validity Sensors, Inc.",
     },
     5006: {
-        "children": {
-            36864: {
-                "name": "Raisonance S.A. STM32 ARM evaluation " "board / RLink dongle"
-            }
-        },
+        "children": {36864: {"name": "Raisonance S.A. STM32 ARM evaluation " "board / RLink dongle"}},
         "name": "Jungo LTD",
     },
     5008: {
@@ -21361,35 +20685,22 @@ V = {
             26: {"name": "HU200TS Wireless Adapter"},
             30: {"name": "WUSBF54G 802.11bg"},
             32: {"name": "WUSB54GC v1 802.11g Adapter [Ralink RT73]"},
-            34: {
-                "name": "WUSB54GX4 802.11g 240Mbps Wireless Adapter " "[Airgo AGN300]"
-            },
+            34: {"name": "WUSB54GX4 802.11g 240Mbps Wireless Adapter " "[Airgo AGN300]"},
             35: {"name": "WUSB54GR"},
             36: {"name": "WUSBF54G v1.1 802.11bg"},
             38: {"name": "WUSB54GSC v1 802.11g Adapter [Broadcom 4320 " "USB]"},
             40: {"name": "WUSB200 802.11g Adapter [Ralink RT2671]"},
-            41: {
-                "name": "WUSB300N 802.11bgn Wireless Adapter "
-                "[Marvell 88W8362+88W8060]"
-            },
+            41: {"name": "WUSB300N 802.11bgn Wireless Adapter " "[Marvell 88W8362+88W8060]"},
             47: {"name": "AE1000 v1 802.11n [Ralink RT3572]"},
             49: {"name": "AM10 v1 802.11n [Ralink RT3072]"},
             57: {"name": "AE1200 802.11bgn Wireless Adapter [Broadcom " "BCM43235]"},
             58: {"name": "AE2500 802.11abgn Wireless Adapter " "[Broadcom BCM43236]"},
             59: {"name": "AE3000 802.11abgn (3x3) Wireless Adapter " "[Ralink RT3573]"},
-            62: {
-                "name": "AE6000 802.11a/b/g/n/ac Wireless Adapter " "[MediaTek MT7610U]"
-            },
-            63: {
-                "name": "WUSB6300 802.11a/b/g/n/ac Wireless Adapter "
-                "[Realtek RTL8812AU]"
-            },
+            62: {"name": "AE6000 802.11a/b/g/n/ac Wireless Adapter " "[MediaTek MT7610U]"},
+            63: {"name": "WUSB6300 802.11a/b/g/n/ac Wireless Adapter " "[Realtek RTL8812AU]"},
             65: {"name": "Gigabit Ethernet Adapter"},
             66: {"name": "WUSB6100M 802.11a/b/g/n/ac Wireless " "Adapter"},
-            5041: {
-                "name": "WUSB200: Wireless-G Business Network "
-                "Adapter with Rangebooster"
-            },
+            5041: {"name": "WUSB200: Wireless-G Business Network " "Adapter with Rangebooster"},
         },
         "name": "Linksys",
     },
@@ -21438,10 +20749,7 @@ V = {
             12817: {"name": "DTV-DVB Hybrid Analog/Capture / Pinnacle " "PCTV 310e"},
             12818: {"name": "DTV-DVB UDTT704C - DVBT/NTSC/PAL " "Driver(PCM4)"},
             12819: {"name": "DTV-DVB UDTT704D - DVBT/NTSC/PAL Driver " "(PCM4)"},
-            12820: {
-                "name": "DTV-DVB UDTT704F -(MiniCard) "
-                "DVBT/NTSC/PAL Driver(Without HID)"
-            },
+            12820: {"name": "DTV-DVB UDTT704F -(MiniCard) " "DVBT/NTSC/PAL Driver(Without HID)"},
             12821: {"name": "DTV-DVB UDAT7240 - ATSC/NTSC/PAL " "Driver(PCM4)"},
             12822: {"name": "DTV-DVB UDTT 7047-USB 2.0 DVB-T Driver"},
             12823: {"name": "Digital-TV Receiver."},
@@ -21456,14 +20764,10 @@ V = {
             12857: {"name": "DTV-DVB UDTT704D - DVBT/NTSC/PAL " "Driver(Without HID)"},
             12864: {"name": "DTV-DVB UDXTTM6010 - A/D Driver(Without " "HID)"},
             12865: {"name": "DTV-DVB UDXTTM6010 - A/D Driver(Without " "HID)"},
-            12866: {
-                "name": "DTV-DVB UDAT7240LP - ATSC/NTSC/PAL " "Driver(Without HID)"
-            },
+            12866: {"name": "DTV-DVB UDAT7240LP - ATSC/NTSC/PAL " "Driver(Without HID)"},
             12867: {"name": "DTV-DVB UDXTTM6010 - A/D Driver(Without " "HID)"},
             12868: {"name": "DTV-DVB UDTT 7047Z-USB 2.0 DVB-T Driver"},
-            12871: {
-                "name": "AW-NU222 802.11bgn Wireless Module " "[Ralink RT2770+RT2720]"
-            },
+            12871: {"name": "AW-NU222 802.11bgn Wireless Module " "[Ralink RT2770+RT2720]"},
             12873: {"name": "Internal Bluetooth"},
             12880: {"name": "Broadcom Bluetooth 2.1"},
             12898: {"name": "802.11 n/g/b Wireless LAN USB Adapter"},
@@ -21545,10 +20849,7 @@ V = {
         "children": {
             6656: {"name": "512MB/1GB Flash Drive"},
             6691: {"name": "512MB Flash Drive"},
-            7424: {
-                "name": "DataTraveler 2.0 1GB/4GB Flash Drive / "
-                "Patriot Xporter 4GB Flash Drive"
-            },
+            7424: {"name": "DataTraveler 2.0 1GB/4GB Flash Drive / " "Patriot Xporter 4GB Flash Drive"},
             7680: {"name": "Flash Drive 2 GB [ICIDU 2 GB]"},
             7760: {"name": "U3 Smart Drive"},
             7936: {"name": "Kingston DataTraveler / Patriot Xporter"},
@@ -21729,9 +21030,7 @@ V = {
     5206: {"name": "Extending Wire & Cable Co., Ltd."},
     5207: {
         "children": {
-            20759: {
-                "name": "OpenMoko Neo1973 kernel usbnet (g_ether, " "CDC Ethernet) mode"
-            },
+            20759: {"name": "OpenMoko Neo1973 kernel usbnet (g_ether, " "CDC Ethernet) mode"},
             20760: {"name": "OpenMoko Neo1973 Debug board (V2+)"},
             20761: {"name": "OpenMoko Neo1973 u-boot cdc_acm serial " "port"},
             20762: {"name": "HXD8 u-boot usbtty CDC ACM Mode"},
@@ -21740,10 +21039,7 @@ V = {
             20765: {"name": "QT2410 u-boot usbtty CDC ACM mode"},
             20768: {"name": "OpenMoko Neo1973 u-boot usbtty generic " "serial"},
             20769: {"name": "OpenMoko Neo1973 kernel mass storage " "(g_storage) mode"},
-            20770: {
-                "name": "OpenMoko Neo1973 / Neo Freerunner kernel "
-                "cdc_ether USB network"
-            },
+            20770: {"name": "OpenMoko Neo1973 / Neo Freerunner kernel " "cdc_ether USB network"},
             20771: {"name": "OpenMoko Neo1973 internal USB CSR4 " "module"},
             20772: {"name": "OpenMoko Neo1973 Bluetooth Device ID " "service"},
         },
@@ -21912,52 +21208,21 @@ V = {
     5298: {
         "children": {
             14995: {"name": "Topcom 802.11bg Wireless Adapter " "[Atheros AR5523]"},
-            14997: {
-                "name": "Toshiba WUS-G06G-JT 802.11bg Wireless "
-                "Adapter [Atheros AR5523]"
-            },
-            15000: {
-                "name": "Airlink101 AWLL4130 802.11bg Wireless "
-                "Adapter [Atheros AR5523]"
-            },
-            15362: {
-                "name": "Conceptronic C54RU v2 802.11bg Wireless "
-                "Adapter [Ralink RT2571]"
-            },
+            14997: {"name": "Toshiba WUS-G06G-JT 802.11bg Wireless " "Adapter [Atheros AR5523]"},
+            15000: {"name": "Airlink101 AWLL4130 802.11bg Wireless " "Adapter [Atheros AR5523]"},
+            15362: {"name": "Conceptronic C54RU v2 802.11bg Wireless " "Adapter [Ralink RT2571]"},
             15365: {"name": "rt2570 802.11g WLAN"},
-            15366: {
-                "name": "Conceptronic C300RU v1 802.11bgn "
-                "Wireless Adapter [Ralink RT2870]"
-            },
+            15366: {"name": "Conceptronic C300RU v1 802.11bgn " "Wireless Adapter [Ralink RT2870]"},
             15367: {"name": "802.11n adapter"},
             15369: {"name": "802.11n adapter"},
-            15394: {
-                "name": "Conceptronic C54RU v3 802.11bg Wireless "
-                "Adapter [Ralink RT2571W]"
-            },
-            15395: {
-                "name": "Airlink101 AWLL6080 802.11bgn Wireless "
-                "Adapter [Ralink RT2870]"
-            },
-            15396: {
-                "name": "NEC NP01LM 802.11abg Wireless Adapter " "[Ralink RT2571W]"
-            },
-            15397: {
-                "name": "DrayTek Vigor N61 802.11bgn Wireless "
-                "Adapter [Ralink RT2870]"
-            },
-            15399: {
-                "name": "Airlink101 AWLL6070 802.11bgn Wireless "
-                "Adapter [Ralink RT2770]"
-            },
-            15400: {
-                "name": "Conceptronic C300RU v2 802.11bgn "
-                "Wireless Adapter [Ralink RT2770]"
-            },
+            15394: {"name": "Conceptronic C54RU v3 802.11bg Wireless " "Adapter [Ralink RT2571W]"},
+            15395: {"name": "Airlink101 AWLL6080 802.11bgn Wireless " "Adapter [Ralink RT2870]"},
+            15396: {"name": "NEC NP01LM 802.11abg Wireless Adapter " "[Ralink RT2571W]"},
+            15397: {"name": "DrayTek Vigor N61 802.11bgn Wireless " "Adapter [Ralink RT2870]"},
+            15399: {"name": "Airlink101 AWLL6070 802.11bgn Wireless " "Adapter [Ralink RT2770]"},
+            15400: {"name": "Conceptronic C300RU v2 802.11bgn " "Wireless Adapter [Ralink RT2770]"},
             15403: {"name": "NEC NP02LM 802.11bgn Wireless Adapter " "[Ralink RT3072]"},
-            15404: {
-                "name": "Keebox W150NU 802.11bgn Wireless Adapter " "[Ralink RT3070]"
-            },
+            15404: {"name": "Keebox W150NU 802.11bgn Wireless Adapter " "[Ralink RT3070]"},
         },
         "name": "Ralink Technology, Corp.",
     },
@@ -22117,9 +21382,7 @@ V = {
         "name": "Silicon Portals",
     },
     5417: {
-        "children": {
-            12544: {"name": "CDMA 1xRTT USB Modem " "(U-100/105/200/300/520)"}
-        },
+        "children": {12544: {"name": "CDMA 1xRTT USB Modem " "(U-100/105/200/300/520)"}},
         "name": "UBIQUAM Co., Ltd.",
     },
     5418: {
@@ -22253,10 +21516,7 @@ V = {
             69: {"name": "Mamba Chroma (Wireless)"},
             70: {"name": "Mamba 2015 Tournament Edition " "[RZ01-01370100-R3]"},
             72: {"name": "Orochi 2015 (Wired)"},
-            74: {
-                "name": "RZ03-0133 Gaming Lapboard, Keyboard Mouse "
-                "Combo, Dongle [Turret Dongle]"
-            },
+            74: {"name": "RZ03-0133 Gaming Lapboard, Keyboard Mouse " "Combo, Dongle [Turret Dongle]"},
             76: {"name": "Diamondback Chroma"},
             77: {"name": "DeathAdder 2000 (Cynosa Pro Bundle)"},
             79: {"name": "RZ01-0145, Gaming Mouse [DeathAdder 2000 " "(Alternate)]"},
@@ -22281,23 +21541,14 @@ V = {
             107: {"name": "Abyssus Essential"},
             108: {"name": "Mamba Elite (Wired)"},
             110: {"name": "DeathAdder Essential"},
-            111: {
-                "name": "RZ01-0257 Gaming Mouse [Lancehead Wireless "
-                "(2019, Wireless, Receiver)]"
-            },
-            112: {
-                "name": "RZ01-0257 Gaming Mouse [Lancehead Wireless " "(2019, Wired)]"
-            },
-            113: {
-                "name": "RZ01-0254 Gaming Mouse [DeathAdder " "Essential White Edition]"
-            },
+            111: {"name": "RZ01-0257 Gaming Mouse [Lancehead Wireless " "(2019, Wireless, Receiver)]"},
+            112: {"name": "RZ01-0257 Gaming Mouse [Lancehead Wireless " "(2019, Wired)]"},
+            113: {"name": "RZ01-0254 Gaming Mouse [DeathAdder " "Essential White Edition]"},
             114: {"name": "Mamba 2018 (Wireless)"},
             115: {"name": "Mamba 2018 (Wired)"},
             120: {"name": "Viper (wired)"},
             122: {"name": "RC30-0305 Gaming Mouse [Viper Ultimate " "(Wired)]"},
-            123: {
-                "name": "RC30-0305 Gaming Mouse Dongle [Viper " "Ultimate (Wireless)]"
-            },
+            123: {"name": "RC30-0305 Gaming Mouse Dongle [Viper " "Ultimate (Wireless)]"},
             126: {"name": "RC30-030502 Mouse Dock"},
             131: {"name": "RC30-0315, Gaming Mouse [Basilisk X " "HyperSpeed]"},
             132: {"name": "RZ01-0321 Gaming Mouse [DeathAdder V2]"},
@@ -22380,9 +21631,7 @@ V = {
             587: {"name": "Gaming Laptop [Blade 15 Advanced (Late " "2019)]"},
             588: {"name": "Gaming Laptop [Blade Pro (Late 2019)]"},
             589: {"name": "Blade 15 Studio Edition (2019)"},
-            595: {
-                "name": "RZ09-0330, Gaming Laptop [Blade 15 " "Advanced (Early 2020)]"
-            },
+            595: {"name": "RZ09-0330, Gaming Laptop [Blade 15 " "Advanced (Early 2020)]"},
             597: {"name": "RZ09-0328, Gaming Laptop [Blade 15 Base " "Model (2020)]"},
             598: {"name": "RZ09--0329, Gaming Laptop [Blade Pro 17 " "Full HD (2020)]"},
             605: {"name": "RZ03-0338, Gaming Keyboard [Ornata V2]"},
@@ -22400,24 +21649,16 @@ V = {
             1306: {"name": "Nari Ultimate"},
             1308: {"name": "Nari (Wireless)"},
             1309: {"name": "Nari (Wired)"},
-            1310: {
-                "name": "RC30-026902, Gaming Headset [Nari "
-                "Essential, Wireless, Receiver]"
-            },
+            1310: {"name": "RC30-026902, Gaming Headset [Nari " "Essential, Wireless, Receiver]"},
             1311: {"name": "RC30-026901, Gaming Headset [Nari " "Essential, Wired]"},
             1312: {"name": "Kraken Tournament Edition"},
             1313: {"name": "Kraken Kitty Edition"},
             1319: {"name": "RZ04-0318 Gaming Headset [Kraken " "Ultimate]"},
-            2308: {
-                "name": "R201-0282 Gaming Keyboard, Mouse "
-                "Combination [Turret For Xbox One]"
-            },
+            2308: {"name": "R201-0282 Gaming Keyboard, Mouse " "Combination [Turret For Xbox One]"},
             2560: {"name": "Atrox Arcade Stick for Xbox One"},
             2562: {"name": "ManO'War"},
             2563: {"name": "Wildcat"},
-            2581: {
-                "name": "RZ06-0199, Gaming Controller [Wolverine " "Tournament Edition]"
-            },
+            2581: {"name": "RZ06-0199, Gaming Controller [Wolverine " "Tournament Edition]"},
             3072: {"name": "RZ02-0135 Hard Gaming Mouse Mat " "[Firefly]"},
             3073: {"name": "Goliathus"},
             3074: {"name": "Goliathus Extended"},
@@ -22489,9 +21730,7 @@ V = {
     },
     5455: {"name": "SNBC CO., Ltd"},
     5460: {
-        "children": {
-            20496: {"name": "PV-D231U(RN)-F [PixelView PlayTV SBTVD " "Full-Seg]"}
-        },
+        "children": {20496: {"name": "PV-D231U(RN)-F [PixelView PlayTV SBTVD " "Full-Seg]"}},
         "name": "Prolink Microsystems Corp.",
     },
     5463: {
@@ -22514,24 +21753,15 @@ V = {
             12295: {"name": "TEW-444UB EU (no firmware)"},
             12298: {"name": "TEW-429UB 802.11bg"},
             12299: {"name": "TEW-429UB 802.11bg"},
-            12300: {
-                "name": "TEW-429UF A1 802.11bg Wireless Adapter " "[ZyDAS ZD1211B]"
-            },
+            12300: {"name": "TEW-429UF A1 802.11bg Wireless Adapter " "[ZyDAS ZD1211B]"},
             12301: {"name": "TEW-429UB C1 802.11bg"},
-            12302: {
-                "name": "SMC SMCWUSB-N 802.11bgn 2x2:2 Wireless "
-                "Adapter [Ralink RT2870]"
-            },
+            12302: {"name": "SMC SMCWUSB-N 802.11bgn 2x2:2 Wireless " "Adapter [Ralink RT2870]"},
             12306: {"name": "TEW-604UB 802.11bg Wireless Adapter " "[Atheros AR5523]"},
-            12307: {
-                "name": "TEW-645UB 802.11bgn 1x2:2 Wireless " "Adapter [Ralink RT2770]"
-            },
+            12307: {"name": "TEW-645UB 802.11bgn 1x2:2 Wireless " "Adapter [Ralink RT2770]"},
             12804: {"name": "Allnet ALL0298 v2 802.11bg"},
             12805: {"name": "Allnet ALL0283 [AR5523]"},
             12806: {"name": "Allnet ALL0283 [AR5523](no firmware)"},
-            12807: {
-                "name": "TEW-509UB A1 802.11abg Wireless Adapter " "[ZyDAS ZD1211]"
-            },
+            12807: {"name": "TEW-509UB A1 802.11abg Wireless Adapter " "[ZyDAS ZD1211]"},
             12808: {"name": "TEW-509UB 1.1R 802.11abg Wireless " "Adapter"},
         },
         "name": "TRENDnet",
@@ -22574,10 +21804,7 @@ V = {
     5544: {"name": "Teams Power Limited"},
     5545: {
         "children": {
-            2: {
-                "name": "SparkLAN WL-682 802.11bg Wireless Adapter "
-                "[Intersil ISL3887]"
-            },
+            2: {"name": "SparkLAN WL-682 802.11bg Wireless Adapter " "[Intersil ISL3887]"},
             4: {"name": "WUBR-177G [Ralink RT2571W]"},
             6: {"name": "Wireless 11n USB Adapter"},
             16: {"name": "802.11n USB Wireless Card"},
@@ -22607,12 +21834,8 @@ V = {
             5: {"name": "3M pixel Microscope Camera (Mk 2)"},
             6: {"name": "2M pixel Microscope Camera (with capture " "button)"},
             7: {"name": "3M pixel Microscope Camera (with capture " "button)"},
-            8: {
-                "name": "1.3M pixel Microscope Camera (colour, with " "capture button)"
-            },
-            9: {
-                "name": "1.3M pixel Microscope Camera (colour, with " "capture button)"
-            },
+            8: {"name": "1.3M pixel Microscope Camera (colour, with " "capture button)"},
+            9: {"name": "1.3M pixel Microscope Camera (colour, with " "capture button)"},
             10: {"name": "2M pixel Microscope Camera (Mk 2)"},
             16: {"name": '1.3M pixel "Tinycam"'},
             257: {"name": "3M pixel Microscope Camera"},
@@ -22630,12 +21853,7 @@ V = {
         "name": "SoundGraph Inc.",
     },
     5573: {
-        "children": {
-            8: {
-                "name": "Advance Multimedia Internet Technology Inc. "
-                "(AMIT) WL532U 802.11g Adapter"
-            }
-        },
+        "children": {8: {"name": "Advance Multimedia Internet Technology Inc. " "(AMIT) WL532U 802.11g Adapter"}},
         "name": "Pressure Profile Systems, Inc.",
     },
     5574: {
@@ -22955,9 +22173,7 @@ V = {
     },
     5728: {"name": "Creatix Polymedia GmbH"},
     5735: {
-        "children": {
-            5: {"name": "PCR330A RFID Reader (125 kHz, keyboard " "emulation)"}
-        },
+        "children": {5: {"name": "PCR330A RFID Reader (125 kHz, keyboard " "emulation)"}},
         "name": "GIGA-TMS INC.",
     },
     5736: {
@@ -22971,12 +22187,8 @@ V = {
             1057: {"name": "Prism2.5 802.11b Adapter"},
             1089: {"name": "IBM Integrated Bluetooth II"},
             1280: {"name": "BTM200B BlueTooth Adapter"},
-            4176: {
-                "name": "802UIG-1 802.11g Wireless Mini Adapter " "[Intersil ISL3887]"
-            },
-            4608: {
-                "name": "802AIN Wireless N Network Adapter " "[Atheros AR9170+AR9101]"
-            },
+            4176: {"name": "802UIG-1 802.11g Wireless Mini Adapter " "[Intersil ISL3887]"},
+            4608: {"name": "802AIN Wireless N Network Adapter " "[Atheros AR9170+AR9101]"},
             5185: {"name": "IBM Integrated Bluetooth II"},
             9281: {"name": "BMDC-2 IBM Bluetooth III w.56k"},
             13377: {"name": "IBM Integrated Bluetooth III"},
@@ -23005,8 +22217,7 @@ V = {
     },
     5751: {
         "children": {259: {"name": "Token"}},
-        "name": "China Huada Integrated Circuit Design (Group) Co., Ltd. (CIDC "
-        "Group)",
+        "name": "China Huada Integrated Circuit Design (Group) Co., Ltd. (CIDC " "Group)",
     },
     5753: {
         "children": {
@@ -23091,9 +22302,7 @@ V = {
             1809: {"name": "SMCWUSBT-G (no firmware)"},
             1810: {"name": "AR5523"},
             1811: {"name": "AR5523 (no firmware)"},
-            1813: {
-                "name": "Name: Voyager 1055 Laptop 802.11g Adapter " "[Broadcom 4320]"
-            },
+            1813: {"name": "Name: Voyager 1055 Laptop 802.11g Adapter " "[Broadcom 4320]"},
             1826: {"name": "RT2573"},
             1830: {"name": "Wi-Fi Wireless LAN Adapter"},
             1856: {"name": "802.11n Wireless LAN Card"},
@@ -23342,25 +22551,13 @@ V = {
     5943: {
         "children": {
             57: {"name": "USB1000 Gigabit Notebook Adapter"},
-            112: {
-                "name": "WUSB100 v1 RangePlus Wireless Network "
-                "Adapter [Ralink RT2870]"
-            },
-            113: {
-                "name": "WUSB600N v1 Dual-Band Wireless-N Network "
-                "Adapter [Ralink RT2870]"
-            },
+            112: {"name": "WUSB100 v1 RangePlus Wireless Network " "Adapter [Ralink RT2870]"},
+            113: {"name": "WUSB600N v1 Dual-Band Wireless-N Network " "Adapter [Ralink RT2870]"},
             115: {"name": "WUSB54GC v2 802.11g Adapter [Realtek " "RTL8187B]"},
             117: {"name": "WUSB54GSC v2 802.11g Adapter [Broadcom " "4326U]"},
             119: {"name": "WUSB54GC v3 802.11g Adapter [Ralink " "RT2070L]"},
-            120: {
-                "name": "WUSB100 v2 RangePlus Wireless Network "
-                "Adapter [Ralink RT3070]"
-            },
-            121: {
-                "name": "WUSB600N v2 Dual-Band Wireless-N Network "
-                "Adapter [Ralink RT3572]"
-            },
+            120: {"name": "WUSB100 v2 RangePlus Wireless Network " "Adapter [Ralink RT3070]"},
+            121: {"name": "WUSB600N v2 Dual-Band Wireless-N Network " "Adapter [Ralink RT3572]"},
         },
         "name": "802.11g Adapter [Linksys WUSB54GC v3]",
     },
@@ -23374,17 +22571,13 @@ V = {
     5949: {"children": {2: {"name": "GP-K7000 keyboard"}}, "name": "QSENN"},
     5952: {
         "children": {
-            256: {
-                "name": "EUB1200AC AC1200 DB Wireless Adapter " "[Realtek RTL8812AU]"
-            },
+            256: {"name": "EUB1200AC AC1200 DB Wireless Adapter " "[Realtek RTL8812AU]"},
             1536: {"name": "EUB600v1 802.11abgn Wireless Adapter " "[Ralink RT3572]"},
             1541: {"name": "LevelOne WUA-0605 N_Max Wireless USB " "Adapter"},
             1557: {"name": "LevelOne WUA-0615 N_Max Wireless USB " "Adapter"},
             4096: {"name": "NUB-350 802.11g Wireless Adapter " "[Intersil ISL3887]"},
             8192: {"name": "NUB-8301 802.11bg"},
-            14081: {
-                "name": "EUB-3701 EXT 802.11g Wireless Adapter " "[Ralink RT2571W]"
-            },
+            14081: {"name": "EUB-3701 EXT 802.11g Wireless Adapter " "[Ralink RT2571W]"},
             38403: {"name": "RTL8188S WLAN Adapter"},
             38657: {"name": "EnGenius 802.11n Wireless USB Adapter"},
             38658: {"name": "EnGenius 802.11n Wireless USB Adapter"},
@@ -23439,10 +22632,7 @@ V = {
             27985: {"name": "2.0Mpixel Web Cam - Eurocom D900C"},
             35346: {"name": "Syntek 0.3MPixel USB 2.0 UVC PC Camera"},
             35379: {"name": "Syntek USB 2.0 UVC PC Camera"},
-            41745: {
-                "name": "1.3MPixel Web Cam - Asus A3A, A6J, A6K, "
-                "A6M, A6R, A6T, A6V, A7T, A7sv, A7U"
-            },
+            41745: {"name": "1.3MPixel Web Cam - Asus A3A, A6J, A6K, " "A6M, A6R, A6T, A6V, A7T, A7sv, A7U"},
             41746: {"name": "1.3MPixel Web Cam"},
             43041: {"name": "Web Cam - Packard Bell BU45, PB Easynote " "MX66-208W"},
             43537: {"name": "Web Cam"},
@@ -23456,12 +22646,7 @@ V = {
     5974: {"children": {6: {"name": "DiviPitch"}}, "name": "ENENSYS Technologies"},
     5977: {"name": "LucidPort Technology, Inc."},
     5985: {
-        "children": {
-            2821: {
-                "name": "802.11n Network Adapter (wrong ID - "
-                "swapped vendor and device)"
-            }
-        },
+        "children": {2821: {"name": "802.11n Network Adapter (wrong ID - " "swapped vendor and device)"}},
         "name": "ASUSTek Computer, Inc. (wrong ID)",
     },
     6000: {"children": {65280: {"name": "steel series rgb keyboard"}}, "name": "MSI"},
@@ -23475,10 +22660,7 @@ V = {
         "children": {
             4: {"name": "MM004V5 Photo Key Chain (Digital Photo " 'Frame) 1.5"'},
             339: {"name": "LW153 802.11n Adapter [ralink rt3070]"},
-            340: {
-                "name": "LW154 802.11bgn (1x1:1) Wireless Adapter "
-                "[Realtek RTL8188SU]"
-            },
+            340: {"name": "LW154 802.11bgn (1x1:1) Wireless Adapter " "[Realtek RTL8188SU]"},
             787: {"name": "LW313 802.11n Adapter [ralink rt2770 + " "rt2720]"},
         },
         "name": "Sweex",
@@ -23533,11 +22715,7 @@ V = {
     6023: {"name": "ATI AIB"},
     6024: {"name": "ShenZhen Litkconn Technology Co., Ltd."},
     6030: {
-        "children": {
-            2821: {
-                "name": "CrossLink cable 2GB (wrong ID - swapped " "vendor and device)"
-            }
-        },
+        "children": {2821: {"name": "CrossLink cable 2GB (wrong ID - swapped " "vendor and device)"}},
         "name": "ASUSTek Computer, Inc. (wrong ID)",
     },
     6038: {"name": "Printrex, Inc."},
@@ -23545,10 +22723,7 @@ V = {
     6041: {
         "children": {
             28753: {"name": "Belkin F5D7051 802.11g Adapter v1000 " "[Broadcom 4320]"},
-            32849: {
-                "name": "Belkin F5D8051 v2 802.11bgn Wireless "
-                "Adapter [Marvell 88W8362]"
-            },
+            32849: {"name": "Belkin F5D8051 v2 802.11bgn Wireless " "Adapter [Marvell 88W8362]"},
         },
         "name": "Thales Norway A/S",
     },
@@ -23905,9 +23080,7 @@ V = {
             11522: {"name": "Android Open Accessory device (audio)"},
             11523: {"name": "Android Open Accessory device (audio + " "ADB)"},
             11524: {"name": "Android Open Accessory device (accessory " "+ audio)"},
-            11525: {
-                "name": "Android Open Accessory device (accessory " "+ audio + ADB)"
-            },
+            11525: {"name": "Android Open Accessory device (accessory " "+ audio + ADB)"},
             19985: {"name": "Nexus One"},
             19986: {"name": "Nexus One (debug)"},
             19987: {"name": "Nexus One (tether)"},
@@ -24043,12 +23216,8 @@ V = {
             12: {"name": "Wireless Desktop nRF24L01 CX-1766"},
             257: {"name": "HP Prime Wireless Kit [FOK65AA] (Flash " "mode)"},
             8755: {"name": "Linksys WUSB11 v2.8 802.11b Adapter " "[Atmel AT76C505]"},
-            8756: {
-                "name": "Linksys WUSB54G v1 OEM 802.11g Adapter " "[Intersil ISL3886]"
-            },
-            8757: {
-                "name": "Linksys WUSB54GP v1 OEM 802.11g Adapter " "[Intersil ISL3886]"
-            },
+            8756: {"name": "Linksys WUSB54G v1 OEM 802.11g Adapter " "[Intersil ISL3886]"},
+            8757: {"name": "Linksys WUSB54GP v1 OEM 802.11g Adapter " "[Intersil ISL3886]"},
             8758: {"name": "Linksys WUSB11 v3.0 802.11b Adapter " "[Intersil PRISM 3]"},
             30583: {"name": "Bitcraze Crazyradio (PA) dongle"},
         },
@@ -24108,13 +23277,9 @@ V = {
     6449: {"name": "Ningbo Broad Telecommunication Co., Ltd."},
     6452: {
         "children": {
-            1538: {
-                "name": "F71610 or F71612 Consumer Infrared " "Receiver/Transceiver"
-            },
+            1538: {"name": "F71610 or F71612 Consumer Infrared " "Receiver/Transceiver"},
             1794: {"name": "Integrated Consumer Infrared " "Receiver/Transceiver"},
-            20840: {
-                "name": "F71610A or F71612A Consumer Infrared " "Receiver/Transceiver"
-            },
+            20840: {"name": "F71610A or F71612A Consumer Infrared " "Receiver/Transceiver"},
         },
         "name": "Feature Integration Technology Inc. (Fintek)",
     },
@@ -24130,9 +23295,7 @@ V = {
         "name": "Meinberg Funkuhren GmbH & Co. KG",
     },
     6465: {
-        "children": {
-            32801: {"name": "WH1080 Weather Station / USB Missile " "Launcher"}
-        },
+        "children": {32801: {"name": "WH1080 Weather Station / USB Missile " "Launcher"}},
         "name": "Dream Link",
     },
     6467: {
@@ -24306,9 +23469,7 @@ V = {
     },
     6602: {"children": {1: {"name": "Sandio 3D HID Mouse"}}, "name": "Mindtribe"},
     6607: {
-        "children": {
-            1: {"name": "MiniKit Slim handsfree car kit in firmware " "update mode"}
-        },
+        "children": {1: {"name": "MiniKit Slim handsfree car kit in firmware " "update mode"}},
         "name": "Parrot SA",
     },
     6609: {"name": "BYD"},
@@ -24333,13 +23494,8 @@ V = {
             805: {"name": "LTE4G O2 ZTE MF821D LTE/UMTS/GSM " "Modem/Networkcard"},
             806: {"name": "LTE4G O2 ZTE MF821D LTE/UMTS/GSM " "Modem/Networkcard"},
             1281: {"name": "Lever Cell Phone Model Z936L"},
-            4097: {
-                "name": "K3805-Z vodafone WCDMA/GSM Modem - "
-                "storage mode (made by ZTE)"
-            },
-            4098: {
-                "name": "K3805-Z vodafone WCDMA/GSM " "Modem/Networkcard (made by ZTE)"
-            },
+            4097: {"name": "K3805-Z vodafone WCDMA/GSM Modem - " "storage mode (made by ZTE)"},
+            4098: {"name": "K3805-Z vodafone WCDMA/GSM " "Modem/Networkcard (made by ZTE)"},
             4104: {"name": "K3570-Z"},
             4112: {"name": "K3571-Z"},
             4119: {"name": "K5006-Z vodafone LTE/UMTS/GSM " "Modem/Networkcard"},
@@ -24538,14 +23694,8 @@ V = {
             897: {"name": "VS-DVB-T 380U (af9015 based)"},
             1317: {"name": "X-Tensions ISDN TA XC-525 [HFC-S USB]"},
             8193: {"name": "SpeedLink Snappy Mic webcam " "(SL-6825-SBK)"},
-            36867: {
-                "name": "SpeedLink Vicious And Devine Laplace "
-                "webcam, white (VD-1504-SWT)"
-            },
-            36868: {
-                "name": "SpeedLink Vicious And Devine Laplace "
-                "webcam, black (VD-1504-SBK)"
-            },
+            36867: {"name": "SpeedLink Vicious And Devine Laplace " "webcam, white (VD-1504-SWT)"},
+            36868: {"name": "SpeedLink Vicious And Devine Laplace " "webcam, black (VD-1504-SBK)"},
         },
         "name": "X-TENSIONS",
     },
@@ -24698,9 +23848,7 @@ V = {
     },
     6943: {
         "children": {
-            49167: {
-                "name": "HM-CFG-USB/HM-CFG-USB-2 [HomeMatic " "Configuration adapter]"
-            },
+            49167: {"name": "HM-CFG-USB/HM-CFG-USB-2 [HomeMatic " "Configuration adapter]"},
             49184: {"name": "HmIP-RFUSB"},
         },
         "name": "eQ-3 Entwicklung GmbH",
@@ -24757,9 +23905,7 @@ V = {
         "name": "Generalplus Technology Inc.",
     },
     6983: {
-        "children": {
-            1: {"name": "CHUSB Duo Charger (NiMH AA/AAA USB smart " "charger)"}
-        },
+        "children": {1: {"name": "CHUSB Duo Charger (NiMH AA/AAA USB smart " "charger)"}},
         "name": "Energizer Holdings, Inc.",
     },
     6984: {"name": "Plastron Precision Co., Ltd."},
@@ -24805,9 +23951,7 @@ V = {
     7029: {
         "children": {
             12402: {"name": "AirLive WN-360USB adapter"},
-            33137: {
-                "name": "WN-370USB 802.11bgn Wireless Adapter " "[Realtek RTL8188SU]"
-            },
+            33137: {"name": "WN-370USB 802.11bgn Wireless Adapter " "[Realtek RTL8188SU]"},
             33159: {"name": "AirLive WL-1600USB 802.11g Adapter " "[Realtek RTL8187L]"},
             37232: {"name": "AirLive X.USB 802.11abgn [Atheros " "AR9170+AR9104]"},
             41472: {"name": "AirLive WN-200USB wireless 11b/g/n " "dongle"},
@@ -24824,9 +23968,7 @@ V = {
             54168: {"name": "DVB-T receiver [RTL2832U]"},
             55040: {"name": "FM Radio SnapMusic Mobile 700 (FM700)"},
             58007: {"name": "Conceptronic DVB-T CTVDIGRCU V3.0"},
-            58114: {
-                "name": "CVBS / S-Video Capture Device [Pinnacle " "Dazzle / UB315-E]"
-            },
+            58114: {"name": "CVBS / S-Video Capture Device [Pinnacle " "Dazzle / UB315-E]"},
             58188: {"name": "UB435-Q ATSC TV Stick"},
             58243: {"name": "DVB-T UB383-T [af9015]"},
             58245: {"name": "DVB-T UB385-T [af9015]"},
@@ -25103,10 +24245,7 @@ V = {
             38: {"name": "Keyboard"},
             50: {"name": "Optical Mouse with Scroll Wheel"},
             52: {"name": "XM102K Optical Wheel Mouse"},
-            99: {
-                "name": "Touchpad (integrated in detachable keyboard "
-                "of Chuwi SurBook)"
-            },
+            99: {"name": "Touchpad (integrated in detachable keyboard " "of Chuwi SurBook)"},
             101: {"name": "Optical Wheel Mouse [Rapoo N1130]"},
             12288: {"name": "Micro USB Web Camera"},
             12290: {"name": "WebCam SiGma Micro"},
@@ -25160,10 +24299,7 @@ V = {
     7303: {"name": "2N TELEKOMUNIKACE a.s."},
     7304: {
         "children": {
-            7: {
-                "name": "SMI Grabber (EasyCAP DC60+ clone) (no "
-                "firmware) [SMI-2021CBE]"
-            },
+            7: {"name": "SMI Grabber (EasyCAP DC60+ clone) (no " "firmware) [SMI-2021CBE]"},
             60: {"name": "SMI Grabber (EasyCAP DC60+ clone) " "[SMI-2021CBE]"},
         },
         "name": "Somagic, Inc.",
@@ -25230,9 +24366,7 @@ V = {
     7431: {"name": "Solid-Motion"},
     7432: {"name": "NINGBO HENTEK DRAGON ELECTRONICS CO., LTD."},
     7433: {
-        "children": {
-            4134: {"name": "HSUPA Modem FLYING-LARK46-VER0.07 [Flying " "Angel]"}
-        },
+        "children": {4134: {"name": "HSUPA Modem FLYING-LARK46-VER0.07 [Flying " "Angel]"}},
         "name": "TechFaith Wireless Technology Limited",
     },
     7434: {"name": "Johnson Controls, Inc. The Automotive Business Unit"},
@@ -25283,9 +24417,7 @@ V = {
     },
     7501: {
         "children": {
-            2: {
-                "name": "Ralink RT2770/2720 802.11b/g/n Wireless LAN " "Mini-USB Device"
-            },
+            2: {"name": "Ralink RT2770/2720 802.11b/g/n Wireless LAN " "Mini-USB Device"},
             12: {"name": "Ralink RT3070 802.11b/g/n Wireless Lan USB " "Device"},
             14: {"name": "Ralink RT3070 802.11b/g/n Wireless Lan USB " "Device"},
         },
@@ -25295,10 +24427,7 @@ V = {
         "children": {
             7605: {"name": "IDBG (DFU)"},
             7606: {"name": "IDBG"},
-            20759: {
-                "name": "Neo1973/FreeRunner kernel usbnet "
-                "(g_ether, CDC Ethernet) mode"
-            },
+            20759: {"name": "Neo1973/FreeRunner kernel usbnet " "(g_ether, CDC Ethernet) mode"},
             20760: {"name": "Neo1973/FreeRunner Debug board (V2+)"},
             20761: {"name": "Neo1973/FreeRunner u-boot cdc_acm serial " "port"},
             20762: {"name": "HXD8 u-boot usbtty CDC ACM Mode"},
@@ -25306,9 +24435,7 @@ V = {
             20764: {"name": "SMDK2443 u-boot usbtty CDC ACM mode"},
             20765: {"name": "QT2410 u-boot usbtty CDC ACM mode"},
             20768: {"name": "Neo1973/FreeRunner u-boot usbtty generic " "serial"},
-            20769: {
-                "name": "Neo1973/FreeRunner kernel mass storage " "(g_storage) mode"
-            },
+            20769: {"name": "Neo1973/FreeRunner kernel mass storage " "(g_storage) mode"},
             20770: {"name": "Neo1973/FreeRunner kernel cdc_ether USB " "network"},
             20771: {"name": "Neo1973/FreeRunner internal USB CSR4 " "module"},
             20772: {"name": "Neo1973/FreeRunner Bluetooth Device ID " "service"},
@@ -25495,17 +24622,13 @@ V = {
             24700: {"name": "OpenVizsla USB sniffer/analyzer"},
             24701: {"name": "Spark Core Arduino-compatible board with " "WiFi"},
             24702: {"name": "OSHUG Wuthering multi-tool"},
-            24703: {
-                "name": "Spark Core Arduino-compatible board with " "WiFi (bootloader)"
-            },
+            24703: {"name": "Spark Core Arduino-compatible board with " "WiFi (bootloader)"},
             24704: {"name": "arcin arcade controller"},
             24705: {"name": "BladeRF (bootloader)"},
             24706: {"name": "Facecandy (DFU)"},
             24707: {"name": "LightUp (bootloader)"},
             24708: {"name": "arcin arcade controller (DFU)"},
-            24709: {
-                "name": "IRKit for controlloing home electronics " "from iOS devices"
-            },
+            24709: {"name": "IRKit for controlloing home electronics " "from iOS devices"},
             24710: {"name": "OneRNG entropy device"},
             24711: {"name": "Blinkytape (alternate endpoint config)"},
             24712: {"name": "picp PIC16F145x based PIC16F145x " "programmer"},
@@ -25523,10 +24646,7 @@ V = {
             24724: {"name": "Fx2lafw"},
             24725: {"name": "Fx2lafw"},
             24726: {"name": "LightUp (sketch)"},
-            24727: {
-                "name": "Tessel JavaScript enabled "
-                "Microcontroller with built-in WiFi"
-            },
+            24727: {"name": "Tessel JavaScript enabled " "Microcontroller with built-in WiFi"},
             24728: {"name": "RFIDler"},
             24729: {"name": "RASDR Radio Astronomy SDR Rx Interface"},
             24730: {"name": "RASDR Radio Astronomy SDR Tx Interface"},
@@ -25561,37 +24681,23 @@ V = {
             24759: {"name": "TimVideos' HDMI2USB (FX2) - HDMI/DVI " "Capture Device"},
             24760: {"name": "TimVideos' HDMI2USB (Soft+UTMI) - " "Unconfigured device"},
             24761: {"name": "TimVideos' HDMI2USB (Soft+UTMI) - " "Firmware upgrade"},
-            24762: {
-                "name": "TimVideos' HDMI2USB (Soft+UTMI) - " "HDMI/DVI Capture Device"
-            },
+            24762: {"name": "TimVideos' HDMI2USB (Soft+UTMI) - " "HDMI/DVI Capture Device"},
             24764: {"name": "Simple CC25xx programmer / serial board"},
-            24765: {
-                "name": "Open Source control interface for " "multimedia applications"
-            },
+            24765: {"name": "Open Source control interface for " "multimedia applications"},
             24766: {"name": "Pixelmatix Aurora (bootloader)"},
             24767: {"name": "Pixelmatix Aurora"},
             24768: {"name": "Nucular Keyboard adapter"},
-            24769: {
-                "name": "BrewBit Model-T pOSHW temperature "
-                "controller for homebrewers (bootloader)"
-            },
-            24770: {
-                "name": "BrewBit Model-T pOSHW temperature "
-                "controller for homebrewers"
-            },
+            24769: {"name": "BrewBit Model-T pOSHW temperature " "controller for homebrewers (bootloader)"},
+            24770: {"name": "BrewBit Model-T pOSHW temperature " "controller for homebrewers"},
             24771: {"name": "X Antenna Tracker arduino board"},
             24772: {"name": "CAN bus communication device"},
             24773: {"name": "PIC16F1 bootloader"},
             24774: {"name": "USBtrng hardware random number " "generator"},
             24775: {"name": "Zubax GNSS positioning module for light " "UAV systems"},
-            24776: {
-                "name": "Xlink data transfer and control system " "for Commodore C64"
-            },
+            24776: {"name": "Xlink data transfer and control system " "for Commodore C64"},
             24777: {"name": "random number generator"},
             24778: {"name": "FinalKey password manager"},
-            24779: {
-                "name": "PteroDAQ Data Acquisition on FRDM-KL25Z " "and future boards"
-            },
+            24779: {"name": "PteroDAQ Data Acquisition on FRDM-KL25Z " "and future boards"},
             24780: {"name": "LamDiNao"},
             24781: {"name": "Open Lighting DMX512 / RDM widget"},
             24798: {"name": "Cryptech.is random number generator"},
@@ -25608,10 +24714,7 @@ V = {
             24809: {"name": "keyman64 keyboard itercepter"},
             24810: {"name": "Wiggleport FPGA-based I/O board"},
             24811: {"name": "candleLight CAN adapter"},
-            24812: {
-                "name": "Duet 2 WiFi or Duet 2 Ethernet 3D "
-                "printer control electronics"
-            },
+            24812: {"name": "Duet 2 WiFi or Duet 2 Ethernet 3D " "printer control electronics"},
             24813: {"name": "Duet 2 Maestro 3D printer control " "electronics"},
             24814: {"name": "Duet 3 motion control electronics"},
             24816: {"name": "UDAD-T1 data acquisition device (boot)"},
@@ -25623,9 +24726,7 @@ V = {
             24822: {"name": "EightByEight Blinky Badge"},
             24823: {"name": "cardio NFC/RFID card reader " "(bootloader)"},
             24824: {"name": "cardio NFC/RFID card reader"},
-            24828: {
-                "name": "OnlyKey Two-factor Authentication and " "Password Solution"
-            },
+            24828: {"name": "OnlyKey Two-factor Authentication and " "Password Solution"},
             24832: {"name": "overlay64 video overlay module"},
             24836: {"name": "ScopeFun open source instrumentation"},
             24840: {"name": "Myriad-RF LimeSDR"},
@@ -25730,9 +24831,7 @@ V = {
         "name": "Qualcomm / Option",
     },
     7696: {
-        "children": {
-            8196: {"name": 'Sony 1.3MP 1/3" ICX445 IIDC video camera ' "[Chameleon]"}
-        },
+        "children": {8196: {"name": 'Sony 1.3MP 1/3" ICX445 IIDC video camera ' "[Chameleon]"}},
         "name": "Point Grey Research, Inc.",
     },
     7703: {
@@ -25802,9 +24901,7 @@ V = {
         "children": {
             256: {"name": "WebCam"},
             258: {"name": "GL-UPC822 UVC WebCam"},
-            265: {
-                "name": "EtronTech CMOS based eSP570 WebCam [Onyx " "Titanium TC101]"
-            },
+            265: {"name": "EtronTech CMOS based eSP570 WebCam [Onyx " "Titanium TC101]"},
         },
         "name": "Cubeternet",
     },
@@ -25892,9 +24989,7 @@ V = {
     7847: {
         "children": {
             48: {"name": "Trust GXT 158 Orna Laser Gaming Mouse"},
-            100: {
-                "name": "2.4GHz Wireless rechargeable vertical " "mouse [More&Better]"
-            },
+            100: {"name": "2.4GHz Wireless rechargeable vertical " "mouse [More&Better]"},
             102: {"name": "[Mediatrack Edge Mini Keyboard]"},
             2311: {"name": "Keyboard"},
             4098: {"name": "Vintorez Gaming Mouse"},
@@ -25907,36 +25002,15 @@ V = {
             259: {"name": "HR200 Barcode scanner engine (HID " "keyboard)"},
             262: {"name": "HR200 Barcode scanner engine (Serial CDC)"},
             272: {"name": "HR200 Barcode scanner engine (HID Pos)"},
-            3075: {
-                "name": "HR100/HR3260 cordless/HR3290 "
-                "cordless/BS80 Barcode scanner engine (HID "
-                "keyboard)"
-            },
-            3078: {
-                "name": "HR100/HR3260 cordless/HR3290 "
-                "cordless/BS80 Barcode scanner engine (USB "
-                "Serial CDC)"
-            },
-            3088: {
-                "name": "HR100/HR3260 cordless/HR3290 "
-                "cordless/BS80 Barcode scanner engine (HID "
-                "Pos)"
-            },
+            3075: {"name": "HR100/HR3260 cordless/HR3290 " "cordless/BS80 Barcode scanner engine (HID " "keyboard)"},
+            3078: {"name": "HR100/HR3260 cordless/HR3290 " "cordless/BS80 Barcode scanner engine (USB " "Serial CDC)"},
+            3088: {"name": "HR100/HR3260 cordless/HR3290 " "cordless/BS80 Barcode scanner engine (HID " "Pos)"},
             3331: {"name": "EM2028 Barcode scanner engine (HID " "keyboard)"},
             3334: {"name": "EM2028 Barcode scanner engine (Serial " "CDC)"},
             3344: {"name": "EM2028 Barcode scanner engine (HID Pos)"},
-            4867: {
-                "name": "EM30xx/EM20xx/HR3260 corded/HR200C "
-                "Barcode scanner engine (HID keyboard)"
-            },
-            4870: {
-                "name": "EM30xx/EM20xx/HR3260 corded/HR200C "
-                "Barcode scanner engine (USB serial CDC)"
-            },
-            4880: {
-                "name": "EM30xx/EM20xx/HR3260 corded/HR200C "
-                "Barcode scanner engine (HID Pos)"
-            },
+            4867: {"name": "EM30xx/EM20xx/HR3260 corded/HR200C " "Barcode scanner engine (HID keyboard)"},
+            4870: {"name": "EM30xx/EM20xx/HR3260 corded/HR200C " "Barcode scanner engine (USB serial CDC)"},
+            4880: {"name": "EM30xx/EM20xx/HR3260 corded/HR200C " "Barcode scanner engine (HID Pos)"},
             5123: {"name": "HR15-xx Barcode scanner engine (HID " "keyboard)"},
             5126: {"name": "HR15-xx Barcode scanner engine (Serial " "CDC)"},
             5136: {"name": "HR15-xx Barcode scanner engine (HID Pos)"},
@@ -25946,9 +25020,7 @@ V = {
             6403: {"name": "EM1300 Barcode scanner engine (HID " "keyboard)"},
             6406: {"name": "EM1300 Barcode scanner engine (Serial " "CDC)"},
             6416: {"name": "EM1300 Barcode scanner engine (HID Pos)"},
-            6659: {
-                "name": "HR3290 corded/HR22 Barcode scanner engine " "(HID keyboard)"
-            },
+            6659: {"name": "HR3290 corded/HR22 Barcode scanner engine " "(HID keyboard)"},
             6662: {"name": "HR3290 corded/HR22 Barcode scanner engine " "(Serial CDC)"},
             6672: {"name": "HR3290 corded/HR22 Barcode scanner engine " "(HID Pos)"},
             7171: {"name": "HR2150 Barcode scanner engine (HID " "keyboard)"},
@@ -25966,29 +25038,12 @@ V = {
             8195: {"name": "EM2037v2 Barcode scanner engine (HID " "keyboard)"},
             8198: {"name": "EM2037v2 Barcode scanner engine (Serial " "CDC)"},
             8208: {"name": "EM2037v2 Barcode scanner engine (HID " "Pos)"},
-            32771: {
-                "name": "EM13x5-LD/HR15-70/HR100-70/HR12/HR1150-70 "
-                "Barcode scanner engine (HID keyboard)"
-            },
-            32774: {
-                "name": "EM13x5-LD/HR15-70/HR100-70/HR12/HR1150-70 "
-                "Barcode scanner engine (USB Serial CDC)"
-            },
-            32784: {
-                "name": "EM13x5-LD/HR15-70/HR100-70/HR12/HR1150-70 "
-                "Barcode scanner engine (HID Pos)"
-            },
-            33283: {
-                "name": "EM3080-01/EM3095/FR20/FM30 Barcode "
-                "scanner engine (HID keyboard)"
-            },
-            33286: {
-                "name": "EM3080-01/EM3095/FR20/FM30 Barcode "
-                "scanner engine (USB Serial CDC)"
-            },
-            33296: {
-                "name": "EM3080-01/EM3095/FR20/FM30 Barcode " "scanner engine (HID Pos)"
-            },
+            32771: {"name": "EM13x5-LD/HR15-70/HR100-70/HR12/HR1150-70 " "Barcode scanner engine (HID keyboard)"},
+            32774: {"name": "EM13x5-LD/HR15-70/HR100-70/HR12/HR1150-70 " "Barcode scanner engine (USB Serial CDC)"},
+            32784: {"name": "EM13x5-LD/HR15-70/HR100-70/HR12/HR1150-70 " "Barcode scanner engine (HID Pos)"},
+            33283: {"name": "EM3080-01/EM3095/FR20/FM30 Barcode " "scanner engine (HID keyboard)"},
+            33286: {"name": "EM3080-01/EM3095/FR20/FM30 Barcode " "scanner engine (USB Serial CDC)"},
+            33296: {"name": "EM3080-01/EM3095/FR20/FM30 Barcode " "scanner engine (HID Pos)"},
             33539: {"name": "HR2160 Barcode scanner engine (HID " "keyboard)"},
             33542: {"name": "HR2160 Barcode scanner engine (Serial " "CDC)"},
             33552: {"name": "HR2160 Barcode scanner engine (HID " "Pos)"},
@@ -26156,14 +25211,8 @@ V = {
     8137: {
         "children": {
             3: {"name": "LPC1343"},
-            12: {
-                "name": "LPC4330FET180 [ARM Cortex M4 + M0] (device "
-                "firmware upgrade mode)"
-            },
-            130: {
-                "name": "LPC4330FET180 [ARM Cortex M4 + M0] (mass "
-                "storage controller mode)"
-            },
+            12: {"name": "LPC4330FET180 [ARM Cortex M4 + M0] (device " "firmware upgrade mode)"},
+            130: {"name": "LPC4330FET180 [ARM Cortex M4 + M0] (mass " "storage controller mode)"},
             267: {"name": "PR533"},
             294: {"name": "i.MX 7ULP SystemOnChip in RecoveryMode"},
             299: {"name": "i.MX 8M Dual/8M QuadLite/8M Quad Serial " "Downloader"},
@@ -26212,68 +25261,27 @@ V = {
             6656: {"name": "DUB-E100 Fast Ethernet Adapter(rev.A) " "[ASIX AX88172]"},
             6658: {"name": "DUB-E100 Fast Ethernet Adapter(rev.C1) " "[ASIX AX88772]"},
             8204: {"name": "10/100 Ethernet"},
-            12545: {
-                "name": "DWA-182 AC1200 DB Wireless "
-                "Adapter(rev.A1) [Broadcom BCM43526]"
-            },
-            12800: {
-                "name": "DWL-120 802.11b Wireless Adapter(rev.E1) " "[Atmel at76c503a]"
-            },
-            13057: {
-                "name": "DWA-130 802.11n Wireless N "
-                "Adapter(rev.C1) [Realtek RTL8192U]"
-            },
+            12545: {"name": "DWA-182 AC1200 DB Wireless " "Adapter(rev.A1) [Broadcom BCM43526]"},
+            12800: {"name": "DWL-120 802.11b Wireless Adapter(rev.E1) " "[Atmel at76c503a]"},
+            13057: {"name": "DWA-130 802.11n Wireless N " "Adapter(rev.C1) [Realtek RTL8192U]"},
             13062: {"name": "DWL-G122 Wireless Adapter(rev.F1) " "[Realtek RTL8188SU]"},
-            13064: {
-                "name": "DWA-121 802.11n Wireless N 150 Pico "
-                "Adapter [Realtek RTL8188CUS]"
-            },
-            13065: {
-                "name": "DWA-135 802.11n Wireless N "
-                "Adapter(rev.A1) [Realtek RTL8192CU]"
-            },
-            13066: {
-                "name": "DWA-133 802.11n Wireless N Adapter " "[Realtek RTL8192CU]"
-            },
-            13069: {
-                "name": "DWA-131 802.11n Wireless N Nano Adapter "
-                "(rev.B1) [Realtek RTL8192CU]"
-            },
-            13071: {
-                "name": "DWA-125 Wireless N 150 Adapter(rev.D1) " "[Realtek RTL8188ETV]"
-            },
+            13064: {"name": "DWA-121 802.11n Wireless N 150 Pico " "Adapter [Realtek RTL8188CUS]"},
+            13065: {"name": "DWA-135 802.11n Wireless N " "Adapter(rev.A1) [Realtek RTL8192CU]"},
+            13066: {"name": "DWA-133 802.11n Wireless N Adapter " "[Realtek RTL8192CU]"},
+            13069: {"name": "DWA-131 802.11n Wireless N Nano Adapter " "(rev.B1) [Realtek RTL8192CU]"},
+            13071: {"name": "DWA-125 Wireless N 150 Adapter(rev.D1) " "[Realtek RTL8188ETV]"},
             13072: {"name": "DWA-123 Wireless N 150 Adapter (rev.D1)"},
-            13076: {
-                "name": "DWA-171 AC600 DB Wireless "
-                "Adapter(rev.A1) [Realtek RTL8811AU]"
-            },
-            13077: {
-                "name": "DWA-182 Wireless AC Dualband "
-                "Adapter(rev.C) [Realtek RTL8812AU]"
-            },
+            13076: {"name": "DWA-171 AC600 DB Wireless " "Adapter(rev.A1) [Realtek RTL8811AU]"},
+            13077: {"name": "DWA-182 Wireless AC Dualband " "Adapter(rev.C) [Realtek RTL8812AU]"},
             13079: {"name": "DWA-137 Wireless N High-Gain Adapter " "[Ralink RT5372]"},
-            13081: {
-                "name": "DWA-131 Wireless N Nano Adapter (Rev. "
-                "E1) [Realtek RTL8192EU]"
-            },
+            13081: {"name": "DWA-131 Wireless N Nano Adapter (Rev. " "E1) [Realtek RTL8192EU]"},
             13568: {"name": "Elitegroup Computer Systems WLAN card " "WL-162"},
             14080: {"name": "DWL-122 802.11b [Intersil Prism 3]"},
             14081: {"name": "DWL-G120 Spinnaker 802.11g [Intersil " "ISL3886]"},
-            14082: {
-                "name": "DWL-120 802.11b Wireless Adapter(rev.F) " "[Intersil ISL3871]"
-            },
-            14083: {
-                "name": "AirPlus G DWL-G122 Wireless "
-                "Adapter(rev.A1) [Intersil ISL3880]"
-            },
-            14084: {
-                "name": "AirPlus G DWL-G122 Wireless "
-                "Adapter(rev.A2) [Intersil ISL3887]"
-            },
-            14085: {
-                "name": "AirPlus G DWL-G120 Wireless "
-                "Adapter(rev.C) [Intersil ISL3887]"
-            },
+            14082: {"name": "DWL-120 802.11b Wireless Adapter(rev.F) " "[Intersil ISL3871]"},
+            14083: {"name": "AirPlus G DWL-G122 Wireless " "Adapter(rev.A1) [Intersil ISL3880]"},
+            14084: {"name": "AirPlus G DWL-G122 Wireless " "Adapter(rev.A2) [Intersil ISL3887]"},
+            14085: {"name": "AirPlus G DWL-G120 Wireless " "Adapter(rev.C) [Intersil ISL3887]"},
             14177: {"name": "IEEE 802.11g USB2.0 Wireless Network " "Adapter-PN"},
             14848: {"name": "DWL-AG132 [Atheros AR5523]"},
             14849: {"name": "DWL-AG132 (no firmware) [Atheros " "AR5523]"},
@@ -26285,37 +25293,18 @@ V = {
             14977: {"name": "predator Bootloader Download"},
             14978: {"name": "AirPremier AG DWL-AG132 Wireless " "Adapter"},
             14979: {"name": "predator Bootloader Download"},
-            15104: {
-                "name": "AirPlus DWL-120+ Wireless Adapter [Texas "
-                "Instruments ACX100USB]"
-            },
+            15104: {"name": "AirPlus DWL-120+ Wireless Adapter [Texas " "Instruments ACX100USB]"},
             15105: {"name": "WLAN Boot Device"},
-            15360: {
-                "name": "AirPlus G DWL-G122 Wireless " "Adapter(rev.B1) [Ralink RT2571]"
-            },
+            15360: {"name": "AirPlus G DWL-G122 Wireless " "Adapter(rev.B1) [Ralink RT2571]"},
             15361: {"name": "AirPlus AG DWL-AG122 Wireless Adapter"},
             15362: {"name": "AirPlus G DWL-G122 Wireless Adapter"},
             15365: {"name": "DUB-E100 Fast Ethernet Adapter(rev.B1) " "[ASIX AX88772]"},
-            15381: {
-                "name": "DWA-140 RangeBooster N Adapter(rev.B3) " "[Ralink RT5372]"
-            },
-            15383: {
-                "name": "DWA-123 Wireless N 150 Adapter(rev.A1) " "[Ralink RT3370]"
-            },
-            15385: {
-                "name": "DWA-125 Wireless N 150 Adapter(rev.A3) " "[Ralink RT5370]"
-            },
-            15386: {
-                "name": "DWA-160 802.11abgn Xtreme N Dual Band "
-                "Adapter(rev.B2) [Ralink RT5572]"
-            },
-            15387: {
-                "name": "DWA-127 Wireless N 150 High-Gain "
-                "Adapter(rev.A1) [Ralink RT3070]"
-            },
-            15390: {
-                "name": "DWA-125 Wireless N 150 Adapter(rev.B1) " "[Ralink RT5370]"
-            },
+            15381: {"name": "DWA-140 RangeBooster N Adapter(rev.B3) " "[Ralink RT5372]"},
+            15383: {"name": "DWA-123 Wireless N 150 Adapter(rev.A1) " "[Ralink RT3370]"},
+            15385: {"name": "DWA-125 Wireless N 150 Adapter(rev.A3) " "[Ralink RT5370]"},
+            15386: {"name": "DWA-160 802.11abgn Xtreme N Dual Band " "Adapter(rev.B2) [Ralink RT5572]"},
+            15387: {"name": "DWA-127 Wireless N 150 High-Gain " "Adapter(rev.A1) [Ralink RT3070]"},
+            15390: {"name": "DWA-125 Wireless N 150 Adapter(rev.B1) " "[Ralink RT5370]"},
             16384: {"name": "DSB-650C Ethernet [klsi]"},
             16385: {"name": "DSB-650TX Ethernet [pegasus]"},
             16386: {"name": "DSB-650TX Ethernet [pegasus]"},
@@ -26376,18 +25365,9 @@ V = {
     8217: {
         "children": {
             12832: {"name": "GW-US11S WLAN [Atmel AT76C503A]"},
-            18689: {
-                "name": "GW-USSuper300 802.11bgn Wireless Adapter "
-                "[Realtek RTL8191SU]"
-            },
-            18691: {
-                "name": "GW-USFang300 802.11abgn Wireless Adapter "
-                "[Realtek RTL8192DU]"
-            },
-            18692: {
-                "name": "GW-USUltra300 802.11abgn Wireless "
-                "Adapter [Realtek RTL8192DU]"
-            },
+            18689: {"name": "GW-USSuper300 802.11bgn Wireless Adapter " "[Realtek RTL8191SU]"},
+            18691: {"name": "GW-USFang300 802.11abgn Wireless Adapter " "[Realtek RTL8192DU]"},
+            18692: {"name": "GW-USUltra300 802.11abgn Wireless " "Adapter [Realtek RTL8192DU]"},
             21251: {"name": "GW-US54GXS 802.11bg"},
             21252: {"name": "GWUS300 802.11n"},
             43777: {"name": "GW-US54HP"},
@@ -26395,16 +25375,9 @@ V = {
             43813: {"name": "GW-USMini2N 802.11n Wireless Adapter " "[Ralink RT2870]"},
             43816: {"name": "GW-USNano"},
             43817: {"name": "GW-USMicro300"},
-            43818: {
-                "name": "GW-USNano2 802.11n Wireless Adapter " "[Realtek RTL8188CUS]"
-            },
-            43819: {
-                "name": "GW-USEco300 802.11bgn Wireless Adapter " "[Realtek RTL8192CU]"
-            },
-            43820: {
-                "name": "GW-USDual300 802.11abgn Wireless Adapter "
-                "[Realtek RTL8192DU]"
-            },
+            43818: {"name": "GW-USNano2 802.11n Wireless Adapter " "[Realtek RTL8188CUS]"},
+            43819: {"name": "GW-USEco300 802.11bgn Wireless Adapter " "[Realtek RTL8192CU]"},
+            43820: {"name": "GW-USDual300 802.11abgn Wireless Adapter " "[Realtek RTL8192DU]"},
             43856: {"name": "GW-US54Mini2"},
             49154: {"name": "GW-US54SG"},
             49159: {"name": "GW-US54GZL"},
@@ -26412,17 +25385,9 @@ V = {
             60678: {"name": "GW-US300MiniW 802.11bgn Wireless " "Adapter"},
             60688: {"name": "GW-US300Mini2"},
             60692: {"name": "GW-USMicroN"},
-            60694: {
-                "name": "GW-USMicroN2W 802.11bgn Wireless Adapter "
-                "[Realtek RTL8188SU]"
-            },
-            60695: {
-                "name": "GW-USValue-EZ 802.11n Wireless Adapter " "[Realtek RTL8188CUS]"
-            },
-            60696: {
-                "name": "GW-USHyper300 / GW-USH300N 802.11bgn "
-                "Wireless Adapter [Realtek RTL8191SU]"
-            },
+            60694: {"name": "GW-USMicroN2W 802.11bgn Wireless Adapter " "[Realtek RTL8188SU]"},
+            60695: {"name": "GW-USValue-EZ 802.11n Wireless Adapter " "[Realtek RTL8188CUS]"},
+            60696: {"name": "GW-USHyper300 / GW-USH300N 802.11bgn " "Wireless Adapter [Realtek RTL8191SU]"},
         },
         "name": "PLANEX",
     },
@@ -26640,27 +25605,12 @@ V = {
     },
     8436: {
         "children": {
-            25707: {
-                "name": "TEW-646UBH High Power 150Mbps Wireless N "
-                "Adapter [Realtek RTL8188SU]"
-            },
-            25739: {
-                "name": "TEW-648UBM 802.11n 150Mbps Micro "
-                "Wireless N Adapter [Realtek RTL8188CUS]"
-            },
+            25707: {"name": "TEW-646UBH High Power 150Mbps Wireless N " "Adapter [Realtek RTL8188SU]"},
+            25739: {"name": "TEW-648UBM 802.11n 150Mbps Micro " "Wireless N Adapter [Realtek RTL8188CUS]"},
             26187: {"name": "TEW-664UB H/W:V2.0R"},
-            32843: {
-                "name": "TEW-804UB 802.11a/b/g/n/ac (1x1) "
-                "Wireless Adapter [Realtek RTL8811AU]"
-            },
-            32859: {
-                "name": "TEW-805UB 300Mbps+867Mbps Wireless AC "
-                "Adapter [Realtek RTL8812AU]"
-            },
-            32875: {
-                "name": "TEW-806UBH 802.11a/b/g/n/ac (1x1) "
-                "Wireless Adapter [MediaTek MT7610U]"
-            },
+            32843: {"name": "TEW-804UB 802.11a/b/g/n/ac (1x1) " "Wireless Adapter [Realtek RTL8811AU]"},
+            32859: {"name": "TEW-805UB 300Mbps+867Mbps Wireless AC " "Adapter [Realtek RTL8812AU]"},
+            32875: {"name": "TEW-806UBH 802.11a/b/g/n/ac (1x1) " "Wireless Adapter [MediaTek MT7610U]"},
         },
         "name": "TRENDnet",
     },
@@ -26756,11 +25706,7 @@ V = {
         "name": "Advanced Silicon S.A.",
     },
     8523: {
-        "children": {
-            28672: {
-                "name": "4-port hub [Maxxter ACT-HUB2-4P, HS8836, " "iSoul ultra-slim]"
-            }
-        },
+        "children": {28672: {"name": "4-port hub [Maxxter ACT-HUB2-4P, HS8836, " "iSoul ultra-slim]"}},
         "name": "Huasheng Electronics",
     },
     8526: {"children": {5: {"name": "Z - Gaming mouse [SM700]"}}, "name": "Swiftpoint"},
@@ -26959,9 +25905,7 @@ V = {
     },
     8868: {"name": "VERZO Technology"},
     8870: {
-        "children": {
-            65535: {"name": 'PieKey "beta" 4GB model 4E4F41482E4F5247 ' "(SM3251Q BB)"}
-        },
+        "children": {65535: {"name": 'PieKey "beta" 4GB model 4E4F41482E4F5247 ' "(SM3251Q BB)"}},
         "name": "Pie Digital, Inc.",
     },
     8871: {
@@ -27245,9 +26189,7 @@ V = {
             256: {"name": "TL-WN8200ND [Realtek RTL8192CU]"},
             257: {"name": "RTL8812AU Archer T4U 802.11ac"},
             259: {"name": "Archer T4UH wireless Realtek 8812AU"},
-            261: {
-                "name": "Archer T1U 802.11a/n/ac Wireless Adapter " "[MediaTek MT7610U]"
-            },
+            261: {"name": "Archer T1U 802.11a/n/ac Wireless Adapter " "[MediaTek MT7610U]"},
             262: {"name": "Archer T9UH v1 [Realtek RTL8814AU]"},
             263: {"name": "TL-WN821N v5/v6 [RTL8192EU]"},
             264: {"name": "TL-WN822N Version 4 RTL8192EU"},
@@ -27263,13 +26205,8 @@ V = {
             301: {"name": "Archer T3U [Realtek RTL8812BU]"},
             512: {"name": "MA 180 Zero CD"},
             513: {"name": "HSUPA Modem MA180"},
-            1536: {
-                "name": "UE300 10/100/1000 LAN (mass storage "
-                "CD-ROM mode) [Realtek RTL8153]"
-            },
-            1537: {
-                "name": "UE300 10/100/1000 LAN (ethernet mode) " "[Realtek RTL8153]"
-            },
+            1536: {"name": "UE300 10/100/1000 LAN (mass storage " "CD-ROM mode) [Realtek RTL8153]"},
+            1537: {"name": "UE300 10/100/1000 LAN (ethernet mode) " "[Realtek RTL8153]"},
         },
         "name": "TP-Link",
     },
@@ -27281,10 +26218,7 @@ V = {
             4: {"name": "OpenBeacon"},
             5: {"name": "Blinkenlights WDIM"},
             6: {"name": "Blinkenlights WMCU"},
-            7: {
-                "name": "OpenBeacon Ethernet EasyReader PoE II - "
-                "Active 2.4GHz RFID Reader"
-            },
+            7: {"name": "OpenBeacon Ethernet EasyReader PoE II - " "Active 2.4GHz RFID Reader"},
             8: {"name": "OpenBeacon WLAN"},
             9: {"name": "OpenPCD 2 RFID Reader for 13.56MHz"},
             10: {"name": "OpenPCD 2 Audio & LCD Display"},
@@ -27359,11 +26293,7 @@ V = {
     9212: {
         "children": {
             513: {"name": "SPI-Simulyzer box for SPI data " "communication"},
-            514: {
-                "name": "PSI5-Simulyzer box for PSI5 "
-                "(Peripheral-Sensor-Interfacs) data "
-                "communication"
-            },
+            514: {"name": "PSI5-Simulyzer box for PSI5 " "(Peripheral-Sensor-Interfacs) data " "communication"},
             515: {"name": "SENT-Simulyzer box for SENT data " "communication"},
             516: {"name": "DSI-Simulyzer box for DSI3 data " "communication"},
         },
@@ -27794,9 +26724,7 @@ V = {
         "name": "Basler AG",
     },
     9861: {
-        "children": {
-            2304: {"name": "[Packtalk Bold Bluetooth Motorcycle " "Intercom]"}
-        },
+        "children": {2304: {"name": "[Packtalk Bold Bluetooth Motorcycle " "Intercom]"}},
         "name": "Cardo Peripheral Systems LTD",
     },
     9863: {"children": {64257: {"name": "Base Station"}}, "name": "Fitbit Inc."},
@@ -28028,9 +26956,7 @@ V = {
     10205: {"children": {2: {"name": "Mindeo Virtual COM Port"}}, "name": "Mindeo"},
     10226: {"name": "Softnautics LLP"},
     10243: {
-        "children": {
-            1: {"name": "Controller Area Network car alarm module " "[SLCAN-2]"}
-        },
+        "children": {1: {"name": "Controller Area Network car alarm module " "[SLCAN-2]"}},
         "name": "StarLine LLC.",
     },
     10246: {"children": {1: {"name": "N-PASS X1"}}, "name": "SIMPASS"},
@@ -28049,10 +26975,7 @@ V = {
         "children": {
             353: {"name": "WL-161 802.11b Wireless Adapter [SiS " "162U]"},
             5647: {"name": "WL-160g 802.11g Wireless Adapter [Envara " "WiND512]"},
-            13056: {
-                "name": "WL-140 / Hawking HWU36D 802.11b "
-                "Wireless Adapter [Intersil PRISM 3]"
-            },
+            13056: {"name": "WL-140 / Hawking HWU36D 802.11b " "Wireless Adapter [Intersil PRISM 3]"},
         },
         "name": "ASUSTek Computer Inc.",
     },
@@ -28301,12 +27224,8 @@ V = {
         "children": {
             4098: {"name": "Mimas V2 Spartan6 FPGA Development " "Board"},
             21568: {"name": "TimVideos' HDMI2USB Opsis (FX2) - " "Unconfigured device"},
-            21569: {
-                "name": "TimVideos' HDMI2USB Opsis (FX2) - " "Firmware load/upgrade"
-            },
-            21570: {
-                "name": "TimVideos' HDMI2USB Opsis (FX2) - " "HDMI/DVI Capture Device"
-            },
+            21569: {"name": "TimVideos' HDMI2USB Opsis (FX2) - " "Firmware load/upgrade"},
+            21570: {"name": "TimVideos' HDMI2USB Opsis (FX2) - " "HDMI/DVI Capture Device"},
         },
         "name": "Numato Systems Pvt. Ltd",
     },
@@ -28498,11 +27417,7 @@ V = {
     },
     11212: {"name": "InoTec GmbH Organisationssysteme"},
     11222: {
-        "children": {
-            16897: {
-                "name": "RS-485 Controller and Interface " "[Cypress Semiconductor]"
-            }
-        },
+        "children": {16897: {"name": "RS-485 Controller and Interface " "[Cypress Semiconductor]"}},
         "name": "Coroware, Inc.",
     },
     11224: {"name": "ROPEX Industrie-Elektronik GmbH"},
@@ -29072,85 +27987,39 @@ V = {
             22018: {"name": "Laser Printer 3000cn"},
             22023: {"name": "MFP Color Laser Printer 3115cn"},
             22065: {"name": "Laser Printer 5100cn"},
-            22090: {
-                "name": "C1765 series Multifunction Color "
-                "LaserPrinter, Scanner & Copier"
-            },
+            22090: {"name": "C1765 series Multifunction Color " "LaserPrinter, Scanner & Copier"},
             22789: {"name": "Printing Support"},
             32768: {"name": "BC02 Bluetooth Adapter"},
             32784: {"name": "TrueMobile Bluetooth Module in"},
             33024: {"name": "TrueMobile 1180 802.11b Adapter " "[Intersil PRISM 3]"},
-            33026: {
-                "name": "TrueMobile 1300 802.11g Wireless " "Adapter [Intersil ISL3880]"
-            },
+            33026: {"name": "TrueMobile 1300 802.11g Wireless " "Adapter [Intersil ISL3880]"},
             33027: {"name": "Wireless 350 Bluetooth"},
-            33028: {
-                "name": "Wireless 1450 Dual-band (802.11a/b/g) "
-                "Adapter [Intersil ISL3887]"
-            },
+            33028: {"name": "Wireless 1450 Dual-band (802.11a/b/g) " "Adapter [Intersil ISL3887]"},
             33029: {"name": "U2 in HID - Driver"},
             33030: {"name": "Wireless 350 Bluetooth Internal Card " "in"},
             33040: {"name": "Wireless 3xx Bluetooth Internal Card"},
             33041: {"name": "Wireless 3xx Bluetooth Internal Card " "in"},
-            33044: {
-                "name": "Wireless 5700 Mobile Broadband (CDMA " "EV-DO) Minicard Modem"
-            },
-            33045: {
-                "name": "Wireless 5500 Mobile Broadband (3G " "HSDPA) Minicard Modem"
-            },
-            33046: {
-                "name": "Wireless 5505 Mobile Broadband (3G " "HSDPA) Minicard Modem"
-            },
-            33047: {
-                "name": "Wireless 5700 Mobile Broadband (CDMA "
-                "EV-DO) Expresscard Modem"
-            },
-            33048: {
-                "name": "Wireless 5510 Mobile Broadband (3G "
-                "HSDPA) Expresscard Status Port"
-            },
+            33044: {"name": "Wireless 5700 Mobile Broadband (CDMA " "EV-DO) Minicard Modem"},
+            33045: {"name": "Wireless 5500 Mobile Broadband (3G " "HSDPA) Minicard Modem"},
+            33046: {"name": "Wireless 5505 Mobile Broadband (3G " "HSDPA) Minicard Modem"},
+            33047: {"name": "Wireless 5700 Mobile Broadband (CDMA " "EV-DO) Expresscard Modem"},
+            33048: {"name": "Wireless 5510 Mobile Broadband (3G " "HSDPA) Expresscard Status Port"},
             33056: {"name": "Bluetooth adapter"},
             33057: {"name": "Eastfold in HID"},
             33058: {"name": "Eastfold in DFU"},
             33059: {"name": "eHome Infrared Receiver"},
             33060: {"name": "eHome Infrared Receiver"},
             33062: {"name": "Wireless 355 Bluetooth"},
-            33063: {
-                "name": "Wireless 355 Module with Bluetooth 2.0 " "+ EDR Technology."
-            },
-            33064: {
-                "name": "Wireless 5700-Sprint Mobile Broadband "
-                "(CDMA EV-DO) Mini-Card Status Port"
-            },
-            33065: {
-                "name": "Wireless 5700-Telus Mobile Broadband "
-                "(CDMA EV-DO) Mini-Card Status Port"
-            },
+            33063: {"name": "Wireless 355 Module with Bluetooth 2.0 " "+ EDR Technology."},
+            33064: {"name": "Wireless 5700-Sprint Mobile Broadband " "(CDMA EV-DO) Mini-Card Status Port"},
+            33065: {"name": "Wireless 5700-Telus Mobile Broadband " "(CDMA EV-DO) Mini-Card Status Port"},
             33073: {"name": "Wireless 360 Bluetooth 2.0 + EDR " "module."},
-            33075: {
-                "name": "Wireless 5720 VZW Mobile Broadband "
-                "(EVDO Rev-A) Minicard GPS Port"
-            },
-            33076: {
-                "name": "Wireless 5720 Sprint Mobile Broadband "
-                "(EVDO Rev-A) Minicard Status Port"
-            },
-            33077: {
-                "name": "Wireless 5720 TELUS Mobile Broadband "
-                "(EVDO Rev-A) Minicard Diagnostics Port"
-            },
-            33078: {
-                "name": "Wireless 5520 Cingular Mobile Broadband "
-                "(3G HSDPA) Minicard Diagnostics Port"
-            },
-            33079: {
-                "name": "Wireless 5520 Voda L Mobile Broadband "
-                "(3G HSDPA) Minicard Status Port"
-            },
-            33080: {
-                "name": "Wireless 5520 Voda I Mobile Broadband "
-                "(3G HSDPA) Minicard EAP-SIM Port"
-            },
+            33075: {"name": "Wireless 5720 VZW Mobile Broadband " "(EVDO Rev-A) Minicard GPS Port"},
+            33076: {"name": "Wireless 5720 Sprint Mobile Broadband " "(EVDO Rev-A) Minicard Status Port"},
+            33077: {"name": "Wireless 5720 TELUS Mobile Broadband " "(EVDO Rev-A) Minicard Diagnostics Port"},
+            33078: {"name": "Wireless 5520 Cingular Mobile Broadband " "(3G HSDPA) Minicard Diagnostics Port"},
+            33079: {"name": "Wireless 5520 Voda L Mobile Broadband " "(3G HSDPA) Minicard Status Port"},
+            33080: {"name": "Wireless 5520 Voda I Mobile Broadband " "(3G HSDPA) Minicard EAP-SIM Port"},
             33088: {"name": "Wireless 360 Bluetooth"},
             33090: {"name": "Mobile 360 in DFU"},
             33091: {"name": "Broadcom BCM20702A0 Bluetooth"},
@@ -29275,9 +28144,7 @@ V = {
             52754: {"name": "FV-U35"},
             52759: {"name": "1TB SimpleDrive II USB External Hard " "Drive"},
             52760: {"name": "(re)Drive"},
-            52769: {
-                "name": "JMicron JM20329 SATA Bridge [eg. " "HITACHI SimpleDrive mini]"
-            },
+            52769: {"name": "JMicron JM20329 SATA Bridge [eg. " "HITACHI SimpleDrive mini]"},
             52770: {"name": 'Hitachi SimpleTough (3.5" HDD)'},
         },
         "name": "SimpleTech",
@@ -29479,90 +28346,35 @@ V = {
             1025: {"name": "Touch Sensitive Intelligent Control " "Keypad STICK1A"},
             1040: {"name": "Intelligent Usb Dmx Interface SIUDI7 " "Firmware Download"},
             1041: {"name": "Intelligent Usb Dmx Interface SIUDI7A"},
-            1056: {
-                "name": "Intelligent Usb Dmx Interface SIUDI8A " "Firmware Download"
-            },
+            1056: {"name": "Intelligent Usb Dmx Interface SIUDI8A " "Firmware Download"},
             1057: {"name": "Intelligent Usb Dmx Interface SIUDI8A"},
-            1072: {
-                "name": "Intelligent Usb Dmx Interface SIUDI8C " "Firmware Download"
-            },
+            1072: {"name": "Intelligent Usb Dmx Interface SIUDI8C " "Firmware Download"},
             1073: {"name": "Intelligent Usb Dmx Interface SIUDI8C"},
-            1088: {
-                "name": "Intelligent Usb Dmx Interface SIUDI9A " "Firmware Download"
-            },
+            1088: {"name": "Intelligent Usb Dmx Interface SIUDI9A " "Firmware Download"},
             1089: {"name": "Intelligent Usb Dmx Interface SIUDI9A"},
-            1104: {
-                "name": "Intelligent Usb Dmx Interface SIUDI9C " "Firmware Download"
-            },
+            1104: {"name": "Intelligent Usb Dmx Interface SIUDI9C " "Firmware Download"},
             1105: {"name": "Intelligent Usb Dmx Interface SIUDI9C"},
-            1120: {
-                "name": "Touch Sensitive Intelligent Control "
-                "Keypad STICK2 Firmware download"
-            },
+            1120: {"name": "Touch Sensitive Intelligent Control " "Keypad STICK2 Firmware download"},
             1121: {"name": "Touch Sensitive Intelligent Control " "Keypad STICK2"},
-            1136: {
-                "name": "Touch Sensitive Intelligent Control "
-                "Keypad STICK1B Firmware download"
-            },
+            1136: {"name": "Touch Sensitive Intelligent Control " "Keypad STICK1B Firmware download"},
             1137: {"name": "Touch Sensitive Intelligent Control " "Keypad STICK1B"},
-            1152: {
-                "name": "Touch Sensitive Intelligent Control "
-                "Keypad STICK3 Firmware download"
-            },
+            1152: {"name": "Touch Sensitive Intelligent Control " "Keypad STICK3 Firmware download"},
             1153: {"name": "Touch Sensitive Intelligent Control " "Keypad STICK3"},
-            1168: {
-                "name": "Intelligent Usb Dmx Interface SIUDI9D " "Firmware Download"
-            },
+            1168: {"name": "Intelligent Usb Dmx Interface SIUDI9D " "Firmware Download"},
             1169: {"name": "Intelligent Usb Dmx Interface SIUDI9D"},
-            1280: {
-                "name": "Touch Sensitive Intelligent Control "
-                "Keypad STICK2B Firmware download"
-            },
+            1280: {"name": "Touch Sensitive Intelligent Control " "Keypad STICK2B Firmware download"},
             1281: {"name": "Touch Sensitive Intelligent Control " "Keypad STICK2B"},
-            1312: {
-                "name": "Touch Sensitive Intelligent Control "
-                "Keypad (STICK2C Firmware download, "
-                "32/64bits"
-            },
-            1313: {
-                "name": "Touch Sensitive Intelligent Control "
-                "Keypad (STICK2C, 32/64bits)"
-            },
-            1344: {
-                "name": "Sunlite Universal Smart Handy Interface "
-                "(SUSHI1A Firmware download, 32/64bits)"
-            },
-            1345: {
-                "name": "Sunlite Universal Smart Handy Interface "
-                "(SUSHI1A, 32/64bits)"
-            },
-            1392: {
-                "name": "Touch Sensitive Intelligent Control "
-                "Keypad (STICK4A Firmware download, "
-                "32/64bits)"
-            },
-            1393: {
-                "name": "Touch Sensitive Intelligent Control "
-                "Keypad (STICK4A, 32/64bits)"
-            },
-            1408: {
-                "name": "Touch Sensitive Intelligent Control "
-                "Keypad (STICK5A Firmware download, "
-                "32/64bits)"
-            },
-            1409: {
-                "name": "Touch Sensitive Intelligent Control "
-                "Keypad (STICK5A, 32/64bits)"
-            },
-            1424: {
-                "name": "Intelligent Dmx Interface (SIUDI9S "
-                "Firmware Download, 32/64bits)"
-            },
+            1312: {"name": "Touch Sensitive Intelligent Control " "Keypad (STICK2C Firmware download, " "32/64bits"},
+            1313: {"name": "Touch Sensitive Intelligent Control " "Keypad (STICK2C, 32/64bits)"},
+            1344: {"name": "Sunlite Universal Smart Handy Interface " "(SUSHI1A Firmware download, 32/64bits)"},
+            1345: {"name": "Sunlite Universal Smart Handy Interface " "(SUSHI1A, 32/64bits)"},
+            1392: {"name": "Touch Sensitive Intelligent Control " "Keypad (STICK4A Firmware download, " "32/64bits)"},
+            1393: {"name": "Touch Sensitive Intelligent Control " "Keypad (STICK4A, 32/64bits)"},
+            1408: {"name": "Touch Sensitive Intelligent Control " "Keypad (STICK5A Firmware download, " "32/64bits)"},
+            1409: {"name": "Touch Sensitive Intelligent Control " "Keypad (STICK5A, 32/64bits)"},
+            1424: {"name": "Intelligent Dmx Interface (SIUDI9S " "Firmware Download, 32/64bits)"},
             1425: {"name": "Intelligent Dmx Interface (SIUDI9S, " "32/64bits)"},
-            1536: {
-                "name": "Intelligent Dmx Interface (SIUDI9M "
-                "Firmware Download, 32/64bits)"
-            },
+            1536: {"name": "Intelligent Dmx Interface (SIUDI9M " "Firmware Download, 32/64bits)"},
             1537: {"name": "Intelligent Dmx Interface (SIUDI9M, " "32/64bits)"},
             1552: {"name": "Intelligent Dmx Interface SIUDI10A " "Firmware Download"},
             1553: {"name": "Intelligent Dmx Interface SIUDI10A"},
@@ -29656,22 +28468,13 @@ V = {
             30488: {"name": "EW-7718UN 802.11n Wireless Adapter " "[Ralink RT2870]"},
             30498: {"name": "EW-7722UTn 802.11n Wireless Adapter " "[Ralink RT3072]"},
             30515: {"name": "EW-7733UnD 802.11abgn 3x3:3 [Ralink " "RT3573]"},
-            30737: {
-                "name": "EW-7811Un 802.11n Wireless Adapter " "[Realtek RTL8188CUS]"
-            },
-            30754: {
-                "name": "EW-7612UAn V2 802.11n Wireless Adapter " "[Realtek RTL8192CU]"
-            },
+            30737: {"name": "EW-7811Un 802.11n Wireless Adapter " "[Realtek RTL8188CUS]"},
+            30754: {"name": "EW-7612UAn V2 802.11n Wireless Adapter " "[Realtek RTL8192CU]"},
             42513: {"name": "EW-7611ULB 802.11b/g/n and Bluetooth " "4.0 Adapter"},
             42769: {"name": "EW-7711MAC 802.11ac Wireless Adapter"},
             43025: {"name": "EW-7811UTC 802.11ac Wireless Adapter"},
-            46865: {
-                "name": "EW-7722UAC 802.11a/b/g/n/ac (2x2) "
-                "Wireless Adapter [MediaTek MT7612U]"
-            },
-            47138: {
-                "name": "EW-7822ULC 802.11ac Wireless Adapter " "[Realtek RTL8812AU]"
-            },
+            46865: {"name": "EW-7722UAC 802.11a/b/g/n/ac (2x2) " "Wireless Adapter [MediaTek MT7612U]"},
+            47138: {"name": "EW-7822ULC 802.11ac Wireless Adapter " "[Realtek RTL8812AU]"},
         },
         "name": "Edimax Technology Co., Ltd",
     },
@@ -29724,10 +28527,7 @@ V = {
             390: {"name": "WiMAX Connection 2400m"},
             392: {"name": "WiMAX Connection 2400m"},
             393: {"name": "Centrino Advanced-N 6230 Bluetooth " "adapter"},
-            512: {
-                "name": "AnyPoint(TM) Wireless II Network 11Mbps "
-                "Adapter [Atmel AT76C503A]"
-            },
+            512: {"name": "AnyPoint(TM) Wireless II Network 11Mbps " "Adapter [Atmel AT76C503A]"},
             1073: {"name": "Pro Video PC Camera"},
             1296: {"name": "Digital Movie Creator"},
             1584: {"name": "Pocket PC Camera"},
@@ -29745,9 +28545,7 @@ V = {
             4362: {"name": "Bluetooth Controller from (Ericsson " "P4A)"},
             4363: {"name": "Bluetooth Controller from (Intel/CSR)"},
             4368: {"name": "PRO/Wireless LAN Module"},
-            4369: {
-                "name": "PRO/Wireless 2011B 802.11b Adapter " "[Intersil PRISM 2.5]"
-            },
+            4369: {"name": "PRO/Wireless 2011B 802.11b Adapter " "[Intersil PRISM 2.5]"},
             4386: {"name": "Integrated Hub"},
             4404: {"name": "Hollister Mobile Monitor"},
             4409: {"name": "In-Target Probe (ITP)"},
@@ -29907,16 +28705,10 @@ V = {
             1553: {"name": "Dino-Lite Digital Microscope (SN9C201 + " "HV7131R)"},
             1554: {"name": "Dino-Lite Digital Microscope (SN9C120 + " "HV7131R)"},
             1555: {"name": "Dino-Lite Digital Microscope (SN9C201 + " "HV7131R)"},
-            1556: {
-                "name": "Dino-Lite Digital Microscope (SN9C201 + " "MI1310/MT9M111)"
-            },
-            1557: {
-                "name": "Dino-Lite Digital Microscope (SN9C201 + " "MI1310/MT9M111)"
-            },
+            1556: {"name": "Dino-Lite Digital Microscope (SN9C201 + " "MI1310/MT9M111)"},
+            1557: {"name": "Dino-Lite Digital Microscope (SN9C201 + " "MI1310/MT9M111)"},
             1558: {"name": "Dino-Lite Digital Microscope (SN9C120 + " "HV7131R)"},
-            1559: {
-                "name": "Dino-Lite Digital Microscope (SN9C201 + " "MI1310/MT9M111)"
-            },
+            1559: {"name": "Dino-Lite Digital Microscope (SN9C201 + " "MI1310/MT9M111)"},
             1560: {"name": "Dino-Lite Digital Microscope (SN9C201 + " "HV7131R)"},
         },
         "name": "AnMo Electronics Corp. / Dino-Lite (?)",
@@ -29956,10 +28748,7 @@ V = {
     },
     42791: {
         "children": {
-            26771: {
-                "name": "3CRUSB20075 OfficeConnect Wireless "
-                "108Mbps 11g Adapter [Atheros AR5523]"
-            },
+            26771: {"name": "3CRUSB20075 OfficeConnect Wireless " "108Mbps 11g Adapter [Atheros AR5523]"},
             26773: {"name": "AR5523"},
             26775: {"name": "AR5523"},
         },
@@ -30123,9 +28912,7 @@ V = {
     },
     65280: {"name": "Power Delivery"},
     65518: {
-        "children": {
-            256: {"name": "Card Reader Controller " "RTS5101/RTS5111/RTS5116"}
-        },
+        "children": {256: {"name": "Card Reader Controller " "RTS5101/RTS5111/RTS5116"}},
         "name": "FNK Tech",
     },
 }
@@ -30778,9 +29565,7 @@ HUT = {
             47: {"name": "[ and { (Bracket and Braces Left)"},
             48: {"name": "] and } (Bracket and Braces Right)"},
             49: {"name": "\\ and | (Backslash and Bar)"},
-            50: {
-                "name": "# and ~ (Hash and Tilde, Non-US Keyboard near " "right shift)"
-            },
+            50: {"name": "# and ~ (Hash and Tilde, Non-US Keyboard near " "right shift)"},
             51: {"name": "; and : (Semicolon and Colon)"},
             52: {"name": '´ and " (Accent Acute and Double Quotes)'},
             53: {"name": "` and ~ (Accent Grace and Tilde)"},
@@ -30829,10 +29614,7 @@ HUT = {
             97: {"name": "Keypad 8 and Up Arrow"},
             98: {"name": "Keypad 8 and Page Up"},
             99: {"name": "Keypad . (decimal delimiter) and Delete"},
-            100: {
-                "name": "\\ and | (Backslash and Bar, UK and Non-US "
-                "Keyboard near left shift)"
-            },
+            100: {"name": "\\ and | (Backslash and Bar, UK and Non-US " "Keyboard near left shift)"},
             101: {"name": "Keyboard Application (Windows Key for Win95 " "or Compose)"},
             102: {"name": "Power (not a key)"},
             103: {"name": "Keypad = (Equal Sign)"},

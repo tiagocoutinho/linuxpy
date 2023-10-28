@@ -2,16 +2,16 @@ import enum
 import functools
 
 from .ctypes import (
-    Struct,
     POINTER,
-    pointer,
-    culong,
+    Struct,
+    c,
+    ccharp,
     cint,
     cuint,
-    ccharp,
+    culong,
     fsblkcnt,
     fsfilcnt,
-    c,
+    pointer,
 )
 from .magic import Magic
 

@@ -9,8 +9,8 @@ import time
 
 import gevent
 
-from linuxpy.video.device import Device
 from linuxpy.io import GeventIO
+from linuxpy.video.device import Device
 
 
 def loop(variable):

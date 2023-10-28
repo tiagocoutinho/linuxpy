@@ -9,8 +9,7 @@
 import fcntl
 import logging
 
-from .ctypes import i32, sizeof, calcsize
-
+from .ctypes import calcsize, i32, sizeof
 
 NRBITS = 8
 TYPEBITS = 8

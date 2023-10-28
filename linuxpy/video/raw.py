@@ -12,9 +12,23 @@
 
 import enum
 
+from linuxpy.ctypes import (
+    POINTER,
+    Struct,
+    Union,
+    cchar,
+    cint,
+    cuint,
+    i16,
+    i64,
+    timespec,
+    timeval,
+    u8,
+    u16,
+    u32,
+    u64,
+)
 from linuxpy.ioctl import IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR
-from linuxpy.ctypes import u8, i8, u16, i16, u32, i32, u64, i64, cuint, cint, cchar
-from linuxpy.ctypes import Struct, Union, POINTER, timeval, timespec
 from linuxpy.video.util import v4l2_fourcc, v4l2_fourcc_be
 
 v4l2_std_id = u64
@@ -138,9 +152,7 @@ class PixelFormat(enum.IntEnum):
     XYUV32 = v4l2_fourcc("X", "Y", "U", "V")  # 32  XYUV-8-8-8-8
     VUYA32 = v4l2_fourcc("V", "U", "Y", "A")  # 32  VUYA-8-8-8-8
     VUYX32 = v4l2_fourcc("V", "U", "Y", "X")  # 32  VUYX-8-8-8-8
-    M420 = v4l2_fourcc(
-        "M", "4", "2", "0"
-    )  # 12  YUV 4:2:0 2 lines y, 1 line uvcinterleaved
+    M420 = v4l2_fourcc("M", "4", "2", "0")  # 12  YUV 4:2:0 2 lines y, 1 line uvcinterleaved
     NV12 = v4l2_fourcc("N", "V", "1", "2")  # 12  Y/CbCr 4:2:0
     NV21 = v4l2_fourcc("N", "V", "2", "1")  # 12  Y/CrCb 4:2:0
     NV16 = v4l2_fourcc("N", "V", "1", "6")  # 16  Y/CbCr 4:2:2
@@ -260,13 +272,9 @@ class PixelFormat(enum.IntEnum):
     Y12I = v4l2_fourcc("Y", "1", "2", "I")  # Greyscale 12-bit L/Rcinterleaved
     Z16 = v4l2_fourcc("Z", "1", "6", " ")  # Depth data 16-bit
     MT21C = v4l2_fourcc("M", "T", "2", "1")  # Mediatek compressed block mode
-    INZI = v4l2_fourcc(
-        "I", "N", "Z", "I"
-    )  # Intel Planar Greyscale 10-bit and Depth 16-bit
+    INZI = v4l2_fourcc("I", "N", "Z", "I")  # Intel Planar Greyscale 10-bit and Depth 16-bit
     SUNXI_TILED_NV12 = v4l2_fourcc("S", "T", "1", "2")  # Sunxi Tiled NV12 Format
-    CNF4 = v4l2_fourcc(
-        "C", "N", "F", "4"
-    )  # Intel 4-bit packed depth confidence information
+    CNF4 = v4l2_fourcc("C", "N", "F", "4")  # Intel 4-bit packed depth confidence information
     HI240 = v4l2_fourcc("H", "I", "2", "4")  # BTTV 8-bit dithered RGB
     IPU3_SBGGR10 = v4l2_fourcc("i", "p", "3", "b")  # IPU3 packed 10-bit BGGR bayer
     IPU3_SGBRG10 = v4l2_fourcc("i", "p", "3", "g")  # IPU3 packed 10-bit GBRG bayer

@@ -17,7 +17,6 @@ import xml.etree.ElementTree
 
 import black
 
-
 CTYPES_MAP = {
     "char*": "ccharp",
     "unsigned char": "u8",
@@ -39,17 +38,13 @@ MACRO_RE = re.compile(r"#define[ \t]+(?P<name>[\w]+)[ \t]+(?P<value>.+)\s*")
 
 
 class CEnum:
-    def __init__(
-        self, name, prefixes, klass=None, with_prefix=False, filter=lambda _n, _v: True
-    ):
+    def __init__(self, name, prefixes, klass=None, with_prefix=False, filter=lambda _n, _v: True):
         self.name = name
         if isinstance(prefixes, str):
             prefixes = [prefixes]
         self.prefixes = prefixes
         if klass is None:
-            klass = (
-                "IntFlag" if any("FLAG" in prefix for prefix in prefixes) else "IntEnum"
-            )
+            klass = "IntFlag" if any("FLAG" in prefix for prefix in prefixes) else "IntEnum"
         self.klass = klass
         self.with_prefix = with_prefix
         self.values = None
@@ -226,11 +221,7 @@ def get_structs(header_filename, xml_filename):
     for node in nodes:
         member_ids = node.get("members").split()
         fields = (etree.find(f"*[@id='{member_id}']") for member_id in member_ids)
-        fields = [
-            field
-            for field in fields
-            if field.tag not in {"Union", "Struct", "Unimplemented"}
-        ]
+        fields = [field for field in fields if field.tag not in {"Union", "Struct", "Unimplemented"}]
         pack = int(node.get("align")) == 8
         struct = CStruct(node, fields, pack)
         structs[struct.id] = struct
@@ -323,12 +314,8 @@ def run(name, headers, template, macro_enums, output=None):
 
         get_enums(header, xml_filename, macro_enums)
 
-    structs_body = "\n\n".join(
-        str(struct) for struct in structs if struct.parent is None
-    )
-    enums_body = "\n\n".join(
-        str(enum) for enum in macro_enums if "IOC" not in enum.name
-    )
+    structs_body = "\n\n".join(str(struct) for struct in structs if struct.parent is None)
+    enums_body = "\n\n".join(str(enum) for enum in macro_enums if "IOC" not in enum.name)
     iocs_body = "\n\n".join(str(enum) for enum in macro_enums if "IOC" in enum.name)
 
     fields = {

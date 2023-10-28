@@ -8,33 +8,37 @@ import asyncio
 import collections
 import enum
 import functools
+import os
 import pathlib
 import select
-import os
 from typing import Union
 
-from linuxpy.ctypes import cint, cuint, i32, cvoidp, sizeof, create_string_buffer, cast
-from linuxpy.device import iter_device_files, BaseDevice
-from linuxpy.ioctl import ioctl, IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR
+from linuxpy.ctypes import cast, cint, create_string_buffer, cuint, cvoidp, i32, sizeof
+from linuxpy.device import BaseDevice, iter_device_files
+from linuxpy.ioctl import IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR, ioctl
 from linuxpy.util import add_reader_asyncio
+
 from .raw import (
+    UIOC,
+    Absolute,
+    AutoRepeat,
     Bus,
+    EventType,
+    ForceFeedback,
     Key,
     Led,
+    Miscelaneous,
+    Relative,
     Sound,
     Switch,
     Synchronization,
-    Relative,
-    Absolute,
-    Miscelaneous,
-    AutoRepeat,
-    ForceFeedback,
+    ff_effect,
+    input_absinfo,
+    input_event,
+    input_id,
+    input_mask,
+    uinput_setup,
 )
-from .raw import EventType
-from .raw import input_id, input_absinfo, input_mask, input_event
-from .raw import ff_effect
-from .raw import UIOC, uinput_setup
-
 
 EVENT_SIZE = sizeof(input_event)
 
@@ -210,10 +214,7 @@ def auto_repeat_settings(fd):
 
 def capabilities(fd):
     event_types = available_event_types(fd)
-    return {
-        event_type: event_type_capabilities(fd, event_type)
-        for event_type in event_types
-    }
+    return {event_type: event_type_capabilities(fd, event_type) for event_type in event_types}
 
 
 def capabilities_str(caps, indent=""):
@@ -260,10 +261,7 @@ def _build_struct_type(struct, funcs=None):
         return v
 
     def from_struct(s):
-        fields = {
-            name: funcs.get(name, _identity)(s, getattr(s, name))
-            for name in field_names
-        }
+        fields = {name: funcs.get(name, _identity)(s, getattr(s, name)) for name in field_names}
         return klass(**fields)
 
     klass.from_struct = from_struct
@@ -547,7 +545,7 @@ def is_keyboard(device: Device) -> bool:
 def is_mouse(device: Device) -> bool:
     with device:
         caps = device.capabilities
-    if not EventType.ABS in caps and not EventType.REL in caps:
+    if EventType.ABS not in caps and EventType.REL not in caps:
         return False
     key_caps = caps.get(EventType.KEY, ())
     return Key.BTN_MOUSE in key_caps
@@ -573,9 +571,7 @@ def is_uinput_available():
     return BaseUDevice.PATH.exists()
 
 
-def u_device_setup(
-    fd, bus: Bus, vendor: int, product: int, name: Union[str, bytes]
-) -> None:
+def u_device_setup(fd, bus: Bus, vendor: int, product: int, name: Union[str, bytes]) -> None:
     setup = uinput_setup()
     setup.id.bustype = bus
     setup.id.vendor = vendor
@@ -664,9 +660,7 @@ class BaseUDevice(BaseDevice):
 
     def setup(self):
         self.set_capabilities(self.CAPABILITIES)
-        u_device_setup(
-            self.fileno(), self.bustype, self.vendor_id, self.product_id, self.name
-        )
+        u_device_setup(self.fileno(), self.bustype, self.vendor_id, self.product_id, self.name)
 
     def set_capabilities(self, caps: dict):
         for event_type, capabilities in caps.items():
@@ -732,16 +726,11 @@ def main():
 
     with Device(sys.argv[1]) as dev:
         print("version:", version(dev))
-        print(
-            "ID: bus={0.bustype} vendor={0.vendor} product={0.product} "
-            "version={0.version}".format(device_id(dev))
-        )
+        print("ID: bus={0.bustype} vendor={0.vendor} product={0.product} " "version={0.version}".format(device_id(dev)))
         print("name:", read_name(dev))
         print("physical_location:", physical_location(dev))
         #    print('UID:', uid(fd))
-        print(
-            "capabilities:\n{}".format(capabilities_str(capabilities(dev), indent="  "))
-        )
+        print("capabilities:\n{}".format(capabilities_str(capabilities(dev), indent="  ")))
         print("key state:", active_keys(dev))
 
     return dev

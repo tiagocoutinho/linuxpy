@@ -1,11 +1,11 @@
 # run with:
 #
 
+import datetime
 import logging
 import pathlib
-import pprint
-import datetime
 import platform
+import pprint
 
 import black
 import requests
@@ -27,7 +27,7 @@ def get(url: str = USB_IDS) -> dict[int,]:
     raw = get_raw(url=url)
 
     items = {}
-
+    l0, l1 = None, None
     for line in raw.splitlines():
         if line.startswith("#"):
             continue
@@ -80,9 +80,7 @@ def dump_items(items, output=this_dir.parent / "usb" / "usbids.py"):
         "version": platform.version(),
     }
     text = HEADER.format(**fields)
-    fields = [
-        f"{item} = {pprint.pformat(values)}\n\n" for item, values in items.items()
-    ]
+    fields = [f"{item} = {pprint.pformat(values)}\n\n" for item, values in items.items()]
     text += "\n".join(fields)
 
     logging.info("  Applying black to usbids...")

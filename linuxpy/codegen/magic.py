@@ -8,7 +8,6 @@ import pathlib
 
 from .base import CEnum, run
 
-
 HEADERS = [
     "/usr/include/linux/magic.h",
 ]
