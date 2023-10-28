@@ -33,17 +33,16 @@ build = [
     "build>=0.10.0",
     "twine>=4.0.2",
 ]
-dev = [
-    "black>=23.3.0",
-    "build>=0.10.0",
-    "ruff>=0.0.261",
-    "twine>=4.0.2",
+test = [
     "ward>=0.67.0b0",
     "ward-coverage>=0.3.0",
 ]
-test = [ 
+dev = [
+    "build>=0.10.0",
+    "twine>=4.0.2",
     "ward>=0.67.0b0",
     "ward-coverage>=0.3.0",
+    "ruff>=0.0.261",
 ]
 examples = [
     "flask>=2,<4",
