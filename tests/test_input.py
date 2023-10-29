@@ -3,13 +3,15 @@ import pathlib
 import uuid
 from contextlib import contextmanager
 
-from ward import each, fixture, skip, test
+from ward import each, fixture, raises, skip, test
 
 from linuxpy.input.device import (
     Device,
     EventType,
+    Key,
     UGamepad,
     UMouse,
+    async_event_batch_stream,
     find_gamepads,
     find_mice,
     is_uinput_available,
@@ -39,6 +41,16 @@ async def gamepad():
     name = uuid.uuid4().hex
     with wait_for_new_device() as device_finder:
         with UGamepad(name=name) as simulator:
+            assert not simulator.closed
+            device = await device_finder()
+            yield device, simulator
+
+
+@fixture
+async def mouse():
+    name = uuid.uuid4().hex
+    with wait_for_new_device() as device_finder:
+        with UMouse(name=name) as simulator:
             assert not simulator.closed
             device = await device_finder()
             yield device, simulator
@@ -132,6 +144,16 @@ def _(pair_dev_simulator=gamepad):
 
 
 @skip(when=not is_uinput_available(), reason="uinput is not available")
+@test("device with no capability")
+def _(pair_dev_simulator=mouse):
+    dev, simulator = pair_dev_simulator
+    with dev:
+        with raises(ValueError) as error:
+            _ = dev.absolute.x
+        assert "device has no 'absolute' capability" in str(error.raised)
+
+
+@skip(when=not is_uinput_available(), reason="uinput is not available")
 @test("async button event")
 async def _(pair_dev_simulator=gamepad):
     dev, simulator = pair_dev_simulator
@@ -143,3 +165,17 @@ async def _(pair_dev_simulator=gamepad):
             assert event.type == EventType.KEY
             event = await stream.__anext__()
             assert event.type == EventType.SYN
+
+
+@skip(when=not is_uinput_available(), reason="uinput is not available")
+@test("async event batch stream")
+async def _(pair_dev_simulator=gamepad):
+    dev, simulator = pair_dev_simulator
+    with dev:
+        stream = async_event_batch_stream(dev.fileno())
+        simulator.emit(EventType.KEY, Key.BTN_GAMEPAD, 1)
+        batch = await stream.__anext__()
+        assert len(batch) == 1
+        event = batch[0]
+        assert event.type == EventType.KEY
+        assert event.code == Key.BTN_GAMEPAD
