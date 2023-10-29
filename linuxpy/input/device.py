@@ -719,22 +719,3 @@ class UGamepad(BaseUDevice):
         EventType.ABS: {Absolute.X, Absolute.Y, Absolute.RX, Absolute.RY, Absolute.RZ},
         EventType.MSC: {Miscelaneous.SCAN},
     }
-
-
-def main():
-    import sys
-
-    with Device(sys.argv[1]) as dev:
-        print("version:", version(dev))
-        print("ID: bus={0.bustype} vendor={0.vendor} product={0.product} " "version={0.version}".format(device_id(dev)))
-        print("name:", read_name(dev))
-        print("physical_location:", physical_location(dev))
-        #    print('UID:', uid(fd))
-        print("capabilities:\n{}".format(capabilities_str(capabilities(dev), indent="  ")))
-        print("key state:", active_keys(dev))
-
-    return dev
-
-
-if __name__ == "__main__":
-    dev = main()
