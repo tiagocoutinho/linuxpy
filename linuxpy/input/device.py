@@ -627,7 +627,7 @@ def u_emit(fd, event_type, event_code, value, syn=True):
     event.value = value
     os.write(fd, bytes(event))
     if syn:
-        u_emit(fd, EventType.SYN, Synchronization.REPORT, 0, syn=False)
+        u_emit(fd, EventType.SYN, Synchronization.REPORT, Synchronization.REPORT, syn=False)
 
 
 class BaseUDevice(BaseDevice):
