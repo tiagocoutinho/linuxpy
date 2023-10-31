@@ -15,6 +15,7 @@ import logging
 import mmap
 import os
 import select
+import time
 from collections import UserDict
 
 from linuxpy.ctypes import cenum
@@ -354,6 +355,10 @@ def read_info(fd):
     )
 
 
+MICROSEC_PER_SEC = 1_000_000
+NANOSEC_PER_MICROSEC = 1_000
+
+
 def query_buffer(fd, buffer_type: BufferType, memory: Memory, index: int) -> raw.v4l2_buffer:
     buff = raw.v4l2_buffer()
     buff.type = buffer_type
@@ -364,14 +369,24 @@ def query_buffer(fd, buffer_type: BufferType, memory: Memory, index: int) -> raw
     return buff
 
 
-def enqueue_buffer(fd, buffer_type: BufferType, memory: Memory, index: int) -> raw.v4l2_buffer:
+def enqueue_buffer_raw(fd, buff: raw.v4l2_buffer) -> raw.v4l2_buffer:
+    if not buff.timestamp.secs:
+        microsecs = time.monotonic_ns() // NANOSEC_PER_MICROSEC
+        buff.timestamp.secs = microsecs // MICROSEC_PER_SEC
+        buff.timestamp.usecs = microsecs % MICROSEC_PER_SEC
+    ioctl(fd, IOC.QBUF, buff)
+    return buff
+
+
+def enqueue_buffer(fd, buffer_type: BufferType, memory: Memory, size: int, index: int) -> raw.v4l2_buffer:
     buff = raw.v4l2_buffer()
     buff.type = buffer_type
     buff.memory = memory
+    buff.bytesused = size
     buff.index = index
+    buff.field = Field.NONE
     buff.reserved = 0
-    ioctl(fd, IOC.QBUF, buff)
-    return buff
+    return enqueue_buffer_raw(fd, buff)
 
 
 def dequeue_buffer(fd, buffer_type: BufferType, memory: Memory) -> raw.v4l2_buffer:
@@ -404,18 +419,22 @@ def free_buffers(fd, buffer_type: BufferType, memory: Memory) -> raw.v4l2_reques
     return req
 
 
+def set_raw_format(fd, fmt: raw.v4l2_format):
+    ioctl(fd, IOC.S_FMT, fmt)
+
+
 def set_format(fd, buffer_type: BufferType, width: int, height: int, pixel_format: str = "MJPG"):
-    f = raw.v4l2_format()
+    fmt = raw.v4l2_format()
     if isinstance(pixel_format, str):
         pixel_format = raw.v4l2_fourcc(*pixel_format.upper())
-    f.type = buffer_type
-    f.fmt.pix.pixelformat = pixel_format
-    f.fmt.pix.field = Field.ANY
-    f.fmt.pix.width = width
-    f.fmt.pix.height = height
-    f.fmt.pix.bytesperline = 0
-    f.fmt.pix.sizeimage = 0
-    return ioctl(fd, IOC.S_FMT, f)
+    fmt.type = buffer_type
+    fmt.fmt.pix.pixelformat = pixel_format
+    fmt.fmt.pix.field = Field.ANY
+    fmt.fmt.pix.width = width
+    fmt.fmt.pix.height = height
+    fmt.fmt.pix.bytesperline = 0
+    fmt.fmt.pix.sizeimage = 0
+    return set_raw_format(fd, fmt)
 
 
 def get_raw_format(fd, buffer_type):
@@ -600,7 +619,7 @@ def create_mmap_buffer(fd, buffer_type: BufferType, memory: Memory) -> mmap.mmap
 
 
 def enqueue_buffers(fd, buffer_type: BufferType, memory: Memory, count: int) -> list[raw.v4l2_buffer]:
-    return [enqueue_buffer(fd, buffer_type, memory, index) for index in range(count)]
+    return [enqueue_buffer(fd, buffer_type, memory, 0, index) for index in range(count)]
 
 
 class Device(BaseDevice):
@@ -627,8 +646,8 @@ class Device(BaseDevice):
     def query_buffer(self, buffer_type, memory, index):
         return query_buffer(self.fileno(), buffer_type, memory, index)
 
-    def enqueue_buffer(self, buffer_type: BufferType, memory: Memory, index: int) -> raw.v4l2_buffer:
-        return enqueue_buffer(self.fileno(), buffer_type, memory, index)
+    def enqueue_buffer(self, buffer_type: BufferType, memory: Memory, size: int, index: int) -> raw.v4l2_buffer:
+        return enqueue_buffer(self.fileno(), buffer_type, memory, size, index)
 
     def dequeue_buffer(self, buffer_type: BufferType, memory: Memory) -> raw.v4l2_buffer:
         return dequeue_buffer(self.fileno(), buffer_type, memory)
@@ -1106,8 +1125,8 @@ class BufferManager(DeviceHelper):
     def query_buffer(self, memory, index):
         return self.device.query_buffer(self.type, memory, index)
 
-    def enqueue_buffer(self, memory: Memory, index: int) -> raw.v4l2_buffer:
-        return self.device.enqueue_buffer(self.type, memory, index)
+    def enqueue_buffer(self, memory: Memory, size: int, index: int) -> raw.v4l2_buffer:
+        return self.device.enqueue_buffer(self.type, memory, size, index)
 
     def dequeue_buffer(self, memory: Memory) -> raw.v4l2_buffer:
         return self.device.dequeue_buffer(self.type, memory)
@@ -1152,9 +1171,6 @@ class BufferManager(DeviceHelper):
 
     start = stream_on
     stop = stream_off
-
-    def write(self, data: bytes) -> None:
-        self.device.write(data)
 
 
 class Frame:
@@ -1267,8 +1283,10 @@ class VideoCapture(BufferManager):
             self.device.log.info("Preparing for video capture...")
             source = self.device.info.capabilities if self.source is None else self.source
             if Capability.STREAMING in source:
-                self.buffer = MemoryMapStreamReader(self)
+                self.device.log.info("Video capture using memory map")
+                self.buffer = MemoryMap(self)
             elif Capability.READWRITE in source:
+                self.device.log.info("Video capture using read")
                 self.buffer = Read(self)
             else:
                 raise OSError("Device needs to support STREAMING or READWRITE capability")
@@ -1335,13 +1353,14 @@ class Read(ReentrantContextManager):
         return self.read()
 
 
-class MemoryMapStreamReader(ReentrantContextManager):
+class MemoryMap(ReentrantContextManager):
     def __init__(self, buffer_manager: BufferManager):
         super().__init__()
         self.buffer_manager = buffer_manager
         self.buffers = None
-        self.reader = QueueReader(buffer_manager, Memory.MMAP)
+        self.queue = BufferQueue(buffer_manager, Memory.MMAP)
         self.frame_reader = FrameReader(self.device, self.raw_read)
+        self.format = None
 
     def __iter__(self):
         with self.frame_reader:
@@ -1378,7 +1397,7 @@ class MemoryMapStreamReader(ReentrantContextManager):
             self.device.log.info("Buffers freed")
 
     def raw_grab(self):
-        with self.reader as buff:
+        with self.queue as buff:
             return self.buffers[buff.index][: buff.bytesused], buff
 
     def raw_read(self):
@@ -1400,6 +1419,30 @@ class MemoryMapStreamReader(ReentrantContextManager):
         else:
             self.read = self.wait_read
         return self.read()
+
+    def raw_write(self, data):
+        with self.queue as buff:
+            size = getattr(data, "nbytes", len(data))
+            memory = self.buffers[buff.index]
+            memory[:size] = data
+            buff.bytesused = size
+        return buff
+
+    def wait_write(self, data):
+        device = self.device
+        if device.io.select is not None:
+            _, r, _ = device.io.select((), (device,), ())
+        return self.raw_write(data)
+
+    def write(self, data: bytes):
+        # first time we check what mode device was opened (blocking vs non-blocking)
+        # if file was opened with O_NONBLOCK: DQBUF will not block until a buffer
+        # is available for write. So we need to do it here
+        if self.device.is_blocking:
+            self.write = self.raw_write
+        else:
+            self.write = self.wait_write
+        return self.write(data)
 
 
 class EventReader:
@@ -1527,27 +1570,103 @@ class FrameReader:
         return await task
 
 
-class QueueReader:
+class BufferQueue:
     def __init__(self, buffer_manager: BufferManager, memory: Memory):
         self.buffer_manager = buffer_manager
         self.memory = memory
-        self.index = None
+        self.raw_buffer = None
 
-    def __enter__(self):
+    def __enter__(self) -> raw.v4l2_buffer:
         # get next buffer that has some data in it
-        buffer = self.buffer_manager.dequeue_buffer(self.memory)
-        self.index = buffer.index
-        return buffer
+        self.raw_buffer = self.buffer_manager.dequeue_buffer(self.memory)
+        return self.raw_buffer
 
     def __exit__(self, *exc):
-        self.buffer_manager.enqueue_buffer(self.memory, self.index)
-        self.index = None
+        enqueue_buffer_raw(self.buffer_manager.device.fileno(), self.raw_buffer)
+
+
+class Write(ReentrantContextManager):
+    def __init__(self, buffer_manager: BufferManager):
+        super().__init__()
+        self.buffer_manager = buffer_manager
+
+    @property
+    def device(self) -> Device:
+        return self.buffer_manager.device
+
+    def raw_write(self, data):
+        self.device.write(data)
+
+    def wait_write(self, data):
+        device = self.device
+        if device.io.select is not None:
+            _, w, _ = device.io.select((), (device,), ())
+        if not w:
+            raise OSError("Closed")
+        return self.raw_write(data)
+
+    def write(self, data: bytes):
+        # first time we check what mode device was opened (blocking vs non-blocking)
+        # if file was opened with O_NONBLOCK: DQBUF will not block until a buffer
+        # is available for write. So we need to do it here
+        if self.device.is_blocking:
+            self.write = self.raw_write
+        else:
+            self.write = self.wait_write
+        return self.write(data)
+
+    def open(self):
+        pass
+
+    def close(self):
+        pass
 
 
 class VideoOutput(BufferManager):
-    def __init__(self, device: Device, size: int = 2):
+    def __init__(self, device: Device, size: int = 2, sink: Capability = None):
         super().__init__(device, BufferType.VIDEO_OUTPUT, size)
         self.buffer = None
+        self.sink = sink
+
+    def __enter__(self):
+        self.open()
+        return self
+
+    def __exit__(self, *exc):
+        self.close()
+
+    def open(self):
+        if self.buffer is not None:
+            return
+        self.device.log.info("Preparing for video output...")
+        capabilities = self.device.info.capabilities
+        # Don't check for output capability. Some drivers (ex: v4l2loopback) don't
+        # report being output capable so that apps like zoom recognize them
+        # if Capability.VIDEO_OUTPUT not in capabilities:
+        #    raise OSError("device lacks VIDEO_OUTPUT capability")
+        sink = capabilities if self.sink is None else self.sink
+        if Capability.STREAMING in sink:
+            self.device.log.info("Video output using memory map")
+            self.buffer = MemoryMap(self)
+        elif Capability.READWRITE in sink:
+            self.device.log.info("Video output using write")
+            self.buffer = Write(self)
+        else:
+            raise OSError("Device needs to support STREAMING or READWRITE capability")
+        self.buffer.open()
+        self.stream_on()
+        self.device.log.info("Video output started!")
+
+    def close(self):
+        if self.buffer:
+            self.device.log.info("Closing video output...")
+            self.stream_off()
+            self.buffer.close()
+            self.buffer = None
+            self.device.log.info("Video output closed")
+
+    def write(self, data):
+        self.buffer.write(data)
 
 
 def iter_video_files(path="/dev"):
@@ -1569,3 +1688,16 @@ def iter_video_capture_files(path="/dev"):
 
 def iter_video_capture_devices(path="/dev", **kwargs):
     return (Device(name, **kwargs) for name in iter_video_capture_files(path))
+
+
+def iter_video_output_files(path="/dev"):
+    def filt(filename):
+        with IO.open(filename) as fobj:
+            caps = read_capabilities(fobj.fileno())
+            return Capability.VIDEO_OUTPUT in Capability(caps.device_caps)
+
+    return filter(filt, iter_video_files(path))
+
+
+def iter_video_output_devices(path="/dev", **kwargs):
+    return (Device(name, **kwargs) for name in iter_video_output_files(path))
