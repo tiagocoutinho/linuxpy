@@ -153,16 +153,19 @@ It is possible to write to a video output capable device (ex: v4l2loopback).
 The following example shows how to grab frames from device 0 and write them
 to device 20
 
+```bash
 >>> from linuxpy.video.device import Device, VideoOutput, BufferType
->>> source = Device.from_id(0)
->>> target = Device.from_id(20)
->>> source.set_format(BufferType.VIDEO_CAPTURE, 640, 480, "MJPG")
->>> target.set_format(BufferType.VIDEO_OUTPUT, 640, 480, "MJPG")
->>> output = VideoOutput(target)
->>> with source, target:
-        for frame in source:
-            output.write(frame.data)
-
+>>> dev_source = Device.from_id(0)
+>>> dev_sink = Device.from_id(10)
+>>> with dev_source, dev_target:
+>>>     source = VideoCapture(dev_source)
+>>>     sink = VideoOutput(dev_sink)
+>>>     source.set_format(640, 480, "MJPG")
+>>>     sink.set_format(640, 480, "MJPG")
+>>>     with source, sink:
+>>>         for frame in source:
+>>>             sink.write(frame.data)
+```
 
 #### Bonus track
 
