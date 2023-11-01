@@ -22,7 +22,7 @@ from pathlib import Path
 from linuxpy.ctypes import cenum, memcpy
 from linuxpy.device import (
     BaseDevice,
-    ReentrantContextManager,
+    ReentrantOpen,
     iter_device_files,
 )
 from linuxpy.io import IO
@@ -1308,7 +1308,7 @@ class VideoCapture(BufferManager):
             self.device.log.info("Video capture closed")
 
 
-class Read(ReentrantContextManager):
+class Read(ReentrantOpen):
     def __init__(self, buffer_manager: BufferManager):
         super().__init__()
         self.buffer_manager = buffer_manager
@@ -1359,7 +1359,7 @@ class Read(ReentrantContextManager):
         return self.read()
 
 
-class MemoryMap(ReentrantContextManager):
+class MemoryMap(ReentrantOpen):
     def __init__(self, buffer_manager: BufferManager):
         super().__init__()
         self.buffer_manager = buffer_manager
@@ -1595,7 +1595,7 @@ class BufferQueue:
         enqueue_buffer_raw(self.buffer_manager.device.fileno(), raw_buffer)
 
 
-class Write(ReentrantContextManager):
+class Write(ReentrantOpen):
     def __init__(self, buffer_manager: BufferManager):
         super().__init__()
         self.buffer_manager = buffer_manager

@@ -1,3 +1,4 @@
+import contextlib
 import logging
 import os
 import pathlib
@@ -11,7 +12,7 @@ DEV_PATH = pathlib.Path("/dev")
 log = logging.getLogger(__name__)
 
 
-class ReentrantContextManager:
+class ReentrantOpen(contextlib.AbstractContextManager):
     def __init__(self):
         self._context_level = 0
 
@@ -62,7 +63,7 @@ def iter_device_files(path="/dev", pattern="*"):
     return filter(is_device_file, items)
 
 
-class BaseDevice(ReentrantContextManager):
+class BaseDevice(ReentrantOpen):
     PREFIX = None
 
     def __init__(self, name_or_file, read_write=True, io=IO):
