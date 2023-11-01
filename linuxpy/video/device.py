@@ -17,6 +17,7 @@ import os
 import select
 import time
 from collections import UserDict
+from pathlib import Path
 
 from linuxpy.ctypes import cenum
 from linuxpy.device import (
@@ -26,6 +27,7 @@ from linuxpy.device import (
 )
 from linuxpy.io import IO
 from linuxpy.ioctl import ioctl
+from linuxpy.types import AsyncIterator, Buffer, Iterable, Iterator, PathLike, Self
 
 from . import raw
 
@@ -1281,7 +1283,10 @@ class VideoCapture(BufferManager):
     def open(self):
         if self.buffer is None:
             self.device.log.info("Preparing for video capture...")
-            source = self.device.info.capabilities if self.source is None else self.source
+            capabilities = self.device.info.capabilities
+            if Capability.VIDEO_CAPTURE not in capabilities:
+                raise V4L2Error("device lacks VIDEO_CAPTURE capability")
+            source = capabilities if self.source is None else self.source
             if Capability.STREAMING in source:
                 self.device.log.info("Video capture using memory map")
                 self.buffer = MemoryMap(self)
@@ -1308,41 +1313,42 @@ class Read(ReentrantContextManager):
         super().__init__()
         self.buffer_manager = buffer_manager
         self.frame_reader = FrameReader(self.device, self.raw_read)
+        self.format = None
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Frame]:
         with self.frame_reader:
             while True:
                 yield self.frame_reader.read()
 
-    async def __aiter__(self):
+    async def __aiter__(self) -> AsyncIterator[Frame]:
         async with self.frame_reader:
             while True:
                 yield await self.frame_reader.aread()
 
-    def open(self):
+    def open(self) -> None:
         self.format = self.buffer_manager.get_format()
 
-    def close(self):
-        pass
+    def close(self) -> None:
+        self.format = None
 
     @property
     def device(self) -> Device:
         return self.buffer_manager.device
 
-    def raw_grab(self):
+    def raw_grab(self) -> tuple[bytes, raw.v4l2_buffer]:
         return os.read(self.device.fileno(), 2**31 - 1), raw.v4l2_buffer()
 
-    def raw_read(self):
+    def raw_read(self) -> Frame:
         data, buff = self.raw_grab()
         return Frame(data, buff, self.format)
 
-    def wait_read(self):
+    def wait_read(self) -> Frame:
         device = self.device
         if device.io.select is not None:
             device.io.select((device,), (), ())
         return self.raw_read()
 
-    def read(self):
+    def read(self) -> Frame:
         # first time we check what mode device was opened (blocking vs non-blocking)
         # if file was opened with O_NONBLOCK: DQBUF will not block until a buffer
         # is available for read. So we need to do it here
@@ -1362,12 +1368,12 @@ class MemoryMap(ReentrantContextManager):
         self.frame_reader = FrameReader(self.device, self.raw_read)
         self.format = None
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Frame]:
         with self.frame_reader:
             while True:
                 yield self.frame_reader.read()
 
-    async def __aiter__(self):
+    async def __aiter__(self) -> AsyncIterator[Frame]:
         async with self.frame_reader:
             while True:
                 yield await self.frame_reader.aread()
@@ -1376,7 +1382,7 @@ class MemoryMap(ReentrantContextManager):
     def device(self) -> Device:
         return self.buffer_manager.device
 
-    def open(self):
+    def open(self) -> None:
         if self.buffers is None:
             self.device.log.info("Reserving buffers...")
             fd = self.device.fileno()
@@ -1386,7 +1392,7 @@ class MemoryMap(ReentrantContextManager):
             self.format = self.buffer_manager.get_format()
             self.buffer_manager.device.log.info("Buffers reserved")
 
-    def close(self):
+    def close(self) -> None:
         if self.buffers:
             self.device.log.info("Freeing buffers...")
             for mem in self.buffers:
@@ -1396,21 +1402,21 @@ class MemoryMap(ReentrantContextManager):
             self.format = None
             self.device.log.info("Buffers freed")
 
-    def raw_grab(self):
+    def raw_grab(self) -> tuple[Buffer, raw.v4l2_buffer]:
         with self.queue as buff:
             return self.buffers[buff.index][: buff.bytesused], buff
 
-    def raw_read(self):
+    def raw_read(self) -> Frame:
         data, buff = self.raw_grab()
         return Frame(data, buff, self.format)
 
-    def wait_read(self):
+    def wait_read(self) -> Frame:
         device = self.device
         if device.io.select is not None:
             device.io.select((device,), (), ())
         return self.raw_read()
 
-    def read(self):
+    def read(self) -> Frame:
         # first time we check what mode device was opened (blocking vs non-blocking)
         # if file was opened with O_NONBLOCK: DQBUF will not block until a buffer
         # is available for read. So we need to do it here
@@ -1420,7 +1426,7 @@ class MemoryMap(ReentrantContextManager):
             self.read = self.wait_read
         return self.read()
 
-    def raw_write(self, data):
+    def raw_write(self, data: Buffer) -> raw.v4l2_buffer:
         with self.queue as buff:
             size = getattr(data, "nbytes", len(data))
             memory = self.buffers[buff.index]
@@ -1428,13 +1434,13 @@ class MemoryMap(ReentrantContextManager):
             buff.bytesused = size
         return buff
 
-    def wait_write(self, data):
+    def wait_write(self, data: Buffer) -> raw.v4l2_buffer:
         device = self.device
         if device.io.select is not None:
             _, r, _ = device.io.select((), (device,), ())
         return self.raw_write(data)
 
-    def write(self, data: bytes):
+    def write(self, data: Buffer) -> raw.v4l2_buffer:
         # first time we check what mode device was opened (blocking vs non-blocking)
         # if file was opened with O_NONBLOCK: DQBUF will not block until a buffer
         # is available for write. So we need to do it here
@@ -1628,14 +1634,14 @@ class VideoOutput(BufferManager):
         self.buffer = None
         self.sink = sink
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
         self.open()
         return self
 
-    def __exit__(self, *exc):
+    def __exit__(self, *exc) -> None:
         self.close()
 
-    def open(self):
+    def open(self) -> None:
         if self.buffer is not None:
             return
         self.device.log.info("Preparing for video output...")
@@ -1643,7 +1649,7 @@ class VideoOutput(BufferManager):
         # Don't check for output capability. Some drivers (ex: v4l2loopback) don't
         # report being output capable so that apps like zoom recognize them
         # if Capability.VIDEO_OUTPUT not in capabilities:
-        #    raise OSError("device lacks VIDEO_OUTPUT capability")
+        #    raise V4L2Error("device lacks VIDEO_OUTPUT capability")
         sink = capabilities if self.sink is None else self.sink
         if Capability.STREAMING in sink:
             self.device.log.info("Video output using memory map")
@@ -1657,7 +1663,7 @@ class VideoOutput(BufferManager):
         self.stream_on()
         self.device.log.info("Video output started!")
 
-    def close(self):
+    def close(self) -> None:
         if self.buffer:
             self.device.log.info("Closing video output...")
             self.stream_off()
@@ -1665,19 +1671,19 @@ class VideoOutput(BufferManager):
             self.buffer = None
             self.device.log.info("Video output closed")
 
-    def write(self, data):
+    def write(self, data: Buffer):
         self.buffer.write(data)
 
 
-def iter_video_files(path="/dev"):
+def iter_video_files(path: PathLike = "/dev") -> Iterable[Path]:
     return iter_device_files(path=path, pattern="video*")
 
 
-def iter_devices(path="/dev", **kwargs):
+def iter_devices(path: PathLike = "/dev", **kwargs) -> Iterable[Device]:
     return (Device(name, **kwargs) for name in iter_video_files(path=path))
 
 
-def iter_video_capture_files(path="/dev"):
+def iter_video_capture_files(path: PathLike = "/dev") -> Iterable[Path]:
     def filt(filename):
         with IO.open(filename) as fobj:
             caps = read_capabilities(fobj.fileno())
@@ -1686,11 +1692,17 @@ def iter_video_capture_files(path="/dev"):
     return filter(filt, iter_video_files(path))
 
 
-def iter_video_capture_devices(path="/dev", **kwargs):
+def iter_video_capture_devices(path: PathLike = "/dev", **kwargs) -> Iterable[Device]:
     return (Device(name, **kwargs) for name in iter_video_capture_files(path))
 
 
-def iter_video_output_files(path="/dev"):
+def iter_video_output_files(path: PathLike = "/dev") -> Iterable[Path]:
+    """
+    Some drivers (ex: v4l2loopback) don't report being output capable so that
+    apps like zoom recognize them as valid capture devices so some results might
+    be missing
+    """
+
     def filt(filename):
         with IO.open(filename) as fobj:
             caps = read_capabilities(fobj.fileno())
@@ -1699,5 +1711,5 @@ def iter_video_output_files(path="/dev"):
     return filter(filt, iter_video_files(path))
 
 
-def iter_video_output_devices(path="/dev", **kwargs):
+def iter_video_output_devices(path: PathLike = "/dev", **kwargs) -> Iterable[Device]:
     return (Device(name, **kwargs) for name in iter_video_output_files(path))
