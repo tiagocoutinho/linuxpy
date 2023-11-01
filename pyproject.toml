@@ -27,7 +27,7 @@ classifiers = [
     "Topic :: Multimedia :: Video :: Capture",
 ]
 dependencies = [
-    "typing_extensions ; python_version < '3.11'"
+    "typing_extensions>=4.6,<5 ; python_version < '3.12'"
 ]
 dynamic = ["version", "readme"]
 
