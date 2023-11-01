@@ -38,6 +38,7 @@ fsfilcnt = culong
 
 cast = ctypes.cast
 sizeof = ctypes.sizeof
+byref = ctypes.byref
 
 calcsize = struct.calcsize
 
@@ -48,6 +49,12 @@ POINTER = ctypes.POINTER
 
 create_string_buffer = ctypes.create_string_buffer
 cast = ctypes.cast
+memmove = ctypes.memmove
+
+
+def memcpy(dst, src):
+    typ = type(dst)
+    return memmove(byref(dst), byref(src), sizeof(typ))
 
 
 class Struct(ctypes.Structure):

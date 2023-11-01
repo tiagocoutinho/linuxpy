@@ -19,7 +19,7 @@ import time
 from collections import UserDict
 from pathlib import Path
 
-from linuxpy.ctypes import cenum
+from linuxpy.ctypes import cenum, memcpy
 from linuxpy.device import (
     BaseDevice,
     ReentrantContextManager,
@@ -1588,7 +1588,11 @@ class BufferQueue:
         return self.raw_buffer
 
     def __exit__(self, *exc):
-        enqueue_buffer_raw(self.buffer_manager.device.fileno(), self.raw_buffer)
+        # Make a copy of buffer. We need the original buffer that was sent to
+        # dequeue in to keep frame info like frame number, timestamp, etc
+        raw_buffer = raw.v4l2_buffer()
+        memcpy(raw_buffer, self.raw_buffer)
+        enqueue_buffer_raw(self.buffer_manager.device.fileno(), raw_buffer)
 
 
 class Write(ReentrantContextManager):
