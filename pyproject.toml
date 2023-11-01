@@ -1,3 +1,9 @@
+#
+# This file is part of the linuxpy project
+#
+# Copyright (c) 2023 Tiago Coutinho
+# Distributed under the GPLv3 license. See LICENSE for more info.
+
 [project]
 name = "linuxpy"
 description = "Human friendly interface to linux subsystems using python"
@@ -20,7 +26,9 @@ classifiers = [
     "Topic :: Multimedia :: Video",
     "Topic :: Multimedia :: Video :: Capture",
 ]
-dependencies = []
+dependencies = [
+    "typing_extensions ; python_version < '3.11'"
+]
 dynamic = ["version", "readme"]
 
 [project.urls]
@@ -29,14 +37,6 @@ Homepage = "https://github.com/tiagocoutinho/linuxpy"
 Source = "https://github.com/tiagocoutinho/linuxpy"
 
 [project.optional-dependencies]
-build = [
-    "build>=0.10.0",
-    "twine>=4.0.2",
-]
-test = [
-    "ward>=0.67.0b0",
-    "ward-coverage>=0.3.0",
-]
 dev = [
     "build>=0.10.0",
     "twine>=4.0.2",
@@ -53,6 +53,8 @@ examples = [
     "gunicorn",
     "gevent",
     "uvicorn",
+    "numpy",
+    "Pillow",
 ]
 
 [build-system]
@@ -76,10 +78,11 @@ hook_module = ["ward_coverage"]
 show-slowest = 3
 
 [tool.ward.plugins.coverage]
-report_type = ["term", "html"]
-omit = ["*test*"]
-report = {skip_empty = true}
 branch = true
+omit = ["*test*"]
+report_type = ["term", "html"]
+report = {skip_empty = true, show_missing = true}
+
 
 [tool.ruff]
 select = [

@@ -13,7 +13,7 @@ A two purpose API:
 * raw python binding for the linux userspace API, using ctypes (don't even
   bother wasting your time here. You probably won't use it)
 
-Only works on python >= 3.8.
+Only works on python >= 3.9.
 
 ## Installation
 
@@ -22,6 +22,19 @@ From within your favorite python environment:
 ```bash
 $ pip install linuxpy
 ```
+
+To run the examples you'll need:
+
+```bash
+$ pip install linuxpy[examples]
+```
+
+To develop, run tests, build package, lint, etc you'll need:
+
+```bash
+$ pip install linuxpy[dev]
+```
+
 
 ## Subsystems
 
@@ -151,7 +164,7 @@ frame 10136
 
 It is possible to write to a video output capable device (ex: v4l2loopback).
 The following example shows how to grab frames from device 0 and write them
-to device 20
+to device 10
 
 ```bash
 >>> from linuxpy.video.device import Device, VideoOutput, BufferType
