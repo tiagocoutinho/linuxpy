@@ -5,6 +5,7 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 import logging
+import subprocess
 
 from linuxpy.video.device import Device, VideoCapture, VideoOutput
 
@@ -22,6 +23,7 @@ def main():
         source.set_format(640, 480, "MJPG")
         sink.set_format(640, 480, "MJPG")
         with source, sink:
+            subprocess.Popen(["cvlc", f"v4l2://{sink_dev.filename}"])
             for frame in source:
                 sink.write(frame.data)
 
