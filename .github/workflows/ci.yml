@@ -26,10 +26,6 @@ jobs:
         cat /etc/udev/rules.d/99-$USER.rules
         sudo udevadm control --reload-rules
         sudo udevadm trigger
-    - name: Setup v4l2loopback
-      uses: awalsh128/cache-apt-pkgs-action@latest
-      with:
-        packages: v4l2loopback-dkms
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
