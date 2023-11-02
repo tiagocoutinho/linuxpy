@@ -24,6 +24,7 @@ jobs:
         packages: v4l2loopback-dkms
     - name: Setup v4l2loopback
       run: |
+        sudo depmod -a
         sudo modprobe v4l2loopback video_nr=89 card_label="Loopback 89"
         ls -la /dev/video*
     - name: Setup udev device correctly
