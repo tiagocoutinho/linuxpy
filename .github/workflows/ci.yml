@@ -18,6 +18,14 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+    - name: Install v4l2loopback
+      uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: v4l2loopback-dkms
+    - name: Setup v4l2loopback
+      run: |
+        sudo modprobe v4l2loopback video_nr=89 card_label="Loopback 89"
+        ls -la /dev/video*
     - name: Setup udev device correctly
       run: |
         sudo modprobe -i uinput
@@ -26,10 +34,6 @@ jobs:
         cat /etc/udev/rules.d/99-$USER.rules
         sudo udevadm control --reload-rules
         sudo udevadm trigger
-    - name: Setup v4l2loopback
-      uses: awalsh128/cache-apt-pkgs-action@latest
-      with:
-        packages: v4l2loopback-dkms
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
