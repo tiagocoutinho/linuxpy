@@ -25,6 +25,7 @@ jobs:
     - name: Setup v4l2loopback
       run: |
         sudo depmod -a
+        ls -la /lib/modules/6.2.0-1015-azure/kernel
         sudo modprobe v4l2loopback video_nr=89 card_label="Loopback 89"
         ls -la /dev/video*
     - name: Setup udev device correctly
