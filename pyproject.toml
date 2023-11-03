@@ -32,7 +32,7 @@ dependencies = [
 dynamic = ["version", "readme"]
 
 [project.urls]
-Documentation = "https://github.com/tiagocoutinho/linuxpy"
+Documentation = "https://tiagocoutinho.github.io/linuxpy/"
 Homepage = "https://github.com/tiagocoutinho/linuxpy"
 Source = "https://github.com/tiagocoutinho/linuxpy"
 
