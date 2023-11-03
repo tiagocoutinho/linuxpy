@@ -1522,19 +1522,25 @@ class FrameReader:
         self._selector = None
         self._buffer = None
         self._max_queue_size = max_queue_size
+        self._device_fd = None
 
     async def __aenter__(self):
         if self.device.is_blocking:
             raise V4L2Error("Cannot use async frame reader on blocking device")
+        self._device_fd = self.device.fileno()
         self._buffer = asyncio.Queue(maxsize=self._max_queue_size)
         self._selector = select.epoll()
         self._loop = asyncio.get_event_loop()
         self._loop.add_reader(self._selector.fileno(), self._on_event)
-        self._selector.register(self.device.fileno(), select.POLLIN)
+        self._selector.register(self._device_fd, select.POLLIN)
         return self
 
     async def __aexit__(self, exc_type, exc_value, traceback):
-        self._selector.unregister(self.device.fileno())
+        try:
+            # device may have been closed by now
+            self._selector.unregister(self._device_fd)
+        except OSError:
+            pass
         self._loop.remove_reader(self._selector.fileno())
         self._selector.close()
         self._selector = None
