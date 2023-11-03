@@ -27,6 +27,7 @@ from linuxpy.video import raw
 from linuxpy.video.device import (
     BufferType,
     Capability,
+    ControlClass,
     Device,
     Memory,
     PixelFormat,
@@ -412,3 +413,24 @@ def _():
     with Device(V4L2_LOOPBACK_TEST_DEVICE) as device:
         controls = device.controls
         assert controls.keep_format is controls["keep_format"]
+        current_value = controls.keep_format.value
+        assert current_value in {True, False}
+        try:
+            controls.keep_format.value = not current_value
+            assert controls.keep_format.value == (not current_value)
+        finally:
+            controls.keep_format.value = current_value
+
+        with raises(AttributeError):
+            _ = controls.unknown_field
+
+        assert ControlClass.USER in controls.used_classes()
+        assert controls.keep_format in controls.with_class("user")
+        assert controls.keep_format in controls.with_class(ControlClass.USER)
+
+        assert "<BooleanControl keep_format" in repr(controls.keep_format)
+        with raises(ValueError):
+            _ = list(controls.with_class("unknown class"))
+
+        with raises(TypeError):
+            _ = list(controls.with_class(55))
