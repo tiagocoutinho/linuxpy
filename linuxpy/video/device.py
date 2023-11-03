@@ -373,7 +373,7 @@ def query_buffer(fd, buffer_type: BufferType, memory: Memory, index: int) -> raw
 
 def enqueue_buffer_raw(fd, buff: raw.v4l2_buffer) -> raw.v4l2_buffer:
     if not buff.timestamp.secs:
-        microsecs = time.monotonic_ns() // NANOSEC_PER_MICROSEC
+        microsecs = time.time_ns() // NANOSEC_PER_MICROSEC
         buff.timestamp.secs = microsecs // MICROSEC_PER_SEC
         buff.timestamp.usecs = microsecs % MICROSEC_PER_SEC
     ioctl(fd, IOC.QBUF, buff)
