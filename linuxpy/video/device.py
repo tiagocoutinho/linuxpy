@@ -357,10 +357,6 @@ def read_info(fd):
     )
 
 
-MICROSEC_PER_SEC = 1_000_000
-NANOSEC_PER_MICROSEC = 1_000
-
-
 def query_buffer(fd, buffer_type: BufferType, memory: Memory, index: int) -> raw.v4l2_buffer:
     buff = raw.v4l2_buffer()
     buff.type = buffer_type
@@ -373,9 +369,7 @@ def query_buffer(fd, buffer_type: BufferType, memory: Memory, index: int) -> raw
 
 def enqueue_buffer_raw(fd, buff: raw.v4l2_buffer) -> raw.v4l2_buffer:
     if not buff.timestamp.secs:
-        microsecs = time.time_ns() // NANOSEC_PER_MICROSEC
-        buff.timestamp.secs = microsecs // MICROSEC_PER_SEC
-        buff.timestamp.usecs = microsecs % MICROSEC_PER_SEC
+        buff.timestamp.set_ns()
     ioctl(fd, IOC.QBUF, buff)
     return buff
 
@@ -1336,7 +1330,12 @@ class Read(ReentrantOpen):
         return self.buffer_manager.device
 
     def raw_grab(self) -> tuple[bytes, raw.v4l2_buffer]:
-        return os.read(self.device.fileno(), 2**31 - 1), raw.v4l2_buffer()
+        data = os.read(self.device.fileno(), 2**31 - 1)
+        ns = time.time_ns()
+        buff = raw.v4l2_buffer()
+        buff.bytesused = len(data)
+        buff.timestamp.set_ns(ns)
+        return data, buff
 
     def raw_read(self) -> Frame:
         data, buff = self.raw_grab()

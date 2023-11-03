@@ -7,6 +7,9 @@
 import collections
 import ctypes
 import struct
+import time
+
+from .constants import MICROSEC_PER_SEC, NANOSEC_PER_MICROSEC
 
 i8 = ctypes.c_int8
 i16 = ctypes.c_int16
@@ -79,6 +82,13 @@ class timeval(Struct):
         ("secs", ctypes.c_long),
         ("usecs", ctypes.c_long),
     ]
+
+    def set_ns(self, value=None):
+        if value is None:
+            value = time.time_ns()
+        microsecs = time.time_ns() // NANOSEC_PER_MICROSEC
+        self.secs = microsecs // MICROSEC_PER_SEC
+        self.usecs = microsecs % MICROSEC_PER_SEC
 
 
 class timespec(Struct):
