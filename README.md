@@ -7,11 +7,7 @@
 
 Human friendly interface to linux subsystems using python.
 
-A two purpose API:
-
-* high level Device API for humans to play with :-)
-* raw python binding for the linux userspace API, using ctypes (don't even
-  bother wasting your time here. You probably won't use it)
+Provides python access to several linux subsystems like V4L2, input and USB (still in progress).
 
 Only works on python >= 3.9.
 
