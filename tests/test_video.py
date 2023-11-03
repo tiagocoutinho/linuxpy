@@ -5,15 +5,17 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 import os
+import subprocess
 from contextlib import ExitStack, contextmanager
 from errno import EINVAL
+from functools import cache
 from inspect import isgenerator
 from math import isclose
 from pathlib import Path
 from random import randint
 from unittest import mock
 
-from ward import each, fixture, raises, test
+from ward import each, fixture, raises, skip, test
 
 try:
     import numpy
@@ -24,9 +26,12 @@ from linuxpy.device import device_number
 from linuxpy.video import raw
 from linuxpy.video.device import (
     BufferType,
+    Capability,
     Device,
+    Memory,
     PixelFormat,
     VideoCapture,
+    VideoOutput,
     iter_devices,
     iter_video_files,
 )
@@ -295,3 +300,115 @@ def _(camera=hardware):
             for frame in video_capture:
                 assert_frame(frame, camera)
                 break
+
+
+V4L2_LOOPBACK_TEST_DEVICE = Path("/dev/video199")
+
+
+@cache
+def is_v4l2loopback_installed():
+    result = subprocess.run("lsmod", capture_output=True, check=False, timeout=1)
+    return result.returncode == 0 and b"v4l2loopback" in result.stdout
+
+
+def is_v4l2looback_prepared():
+    return V4L2_LOOPBACK_TEST_DEVICE.exists()
+
+
+for output_type in (None, Capability.STREAMING, Capability.READWRITE):
+    oname = "auto" if output_type is None else output_type.name
+    for input_type in (None, Capability.STREAMING, Capability.READWRITE):
+        iname = "auto" if input_type is None else input_type.name
+
+        @skip(when=not is_v4l2looback_prepared(), reason="v4l2loopback is not prepared")
+        @skip(when=not is_v4l2loopback_installed(), reason="v4l2loopback is not installed")
+        @test(f"output({oname}) and capture({iname}) with v4l2loopback")
+        def _(sink=output_type, source=input_type):
+            with Device(V4L2_LOOPBACK_TEST_DEVICE) as outp, Device(V4L2_LOOPBACK_TEST_DEVICE) as inp:
+                assert outp.info.card == "Loopback 199"
+                assert Capability.STREAMING in outp.info.capabilities
+                assert Capability.VIDEO_OUTPUT in outp.info.capabilities
+
+                width, height, pixel_format = 320, 240, PixelFormat.RGB24
+                size = width * height * 3
+                output = VideoOutput(outp, sink=sink)
+                output.set_format(width, height, pixel_format)
+                fmt = output.get_format()
+                assert fmt.width == width
+                assert fmt.height == height
+                assert fmt.pixel_format == pixel_format
+
+                with output:
+                    assert inp.info.card == "Loopback 199"
+                    assert Capability.STREAMING in inp.info.capabilities
+                    assert Capability.VIDEO_OUTPUT in inp.info.capabilities
+
+                    with VideoCapture(inp, source=source) as capture:
+                        fmt = capture.get_format()
+                        assert fmt.width == width
+                        assert fmt.height == height
+                        assert fmt.pixel_format == pixel_format
+
+                        data = os.urandom(size)
+                        output.write(data)
+
+                        stream = iter(capture)
+                        frame = next(stream)
+                        assert frame.data == data
+                        assert frame.nbytes == size
+                        assert frame.memory == Memory.MMAP if source is None else source
+                        assert frame.pixel_format == pixel_format
+
+
+for output_type in (None, Capability.STREAMING, Capability.READWRITE):
+    oname = "auto" if output_type is None else output_type.name
+    for input_type in (None, Capability.STREAMING, Capability.READWRITE):
+        iname = "auto" if input_type is None else input_type.name
+
+        @skip(when=not is_v4l2looback_prepared(), reason="v4l2loopback is not prepared")
+        @skip(when=not is_v4l2loopback_installed(), reason="v4l2loopback is not installed")
+        @test(f"output({oname}) and async capture({iname}) with v4l2loopback")
+        async def _(sink=output_type, source=input_type):
+            with Device(V4L2_LOOPBACK_TEST_DEVICE) as outp, Device(V4L2_LOOPBACK_TEST_DEVICE) as inp:
+                assert outp.info.card == "Loopback 199"
+                assert Capability.STREAMING in outp.info.capabilities
+                assert Capability.VIDEO_OUTPUT in outp.info.capabilities
+
+                width, height, pixel_format = 320, 240, PixelFormat.RGB24
+                size = width * height * 3
+                output = VideoOutput(outp, sink=sink)
+                output.set_format(width, height, pixel_format)
+                fmt = output.get_format()
+                assert fmt.width == width
+                assert fmt.height == height
+                assert fmt.pixel_format == pixel_format
+
+                with output:
+                    assert inp.info.card == "Loopback 199"
+                    assert Capability.STREAMING in inp.info.capabilities
+                    assert Capability.VIDEO_OUTPUT in inp.info.capabilities
+
+                    with VideoCapture(inp, source=source) as capture:
+                        fmt = capture.get_format()
+                        assert fmt.width == width
+                        assert fmt.height == height
+                        assert fmt.pixel_format == pixel_format
+
+                        data = os.urandom(size)
+                        output.write(data)
+
+                        async for frame in capture:
+                            assert frame.data == data
+                            assert frame.nbytes == size
+                            assert frame.memory == Memory.MMAP if source is None else source
+                            assert frame.pixel_format == pixel_format
+                            break
+
+
+@skip(when=not is_v4l2looback_prepared(), reason="v4l2loopback is not prepared")
+@skip(when=not is_v4l2loopback_installed(), reason="v4l2loopback is not installed")
+@test("controls with v4l2loopback")
+def _():
+    with Device(V4L2_LOOPBACK_TEST_DEVICE) as device:
+        controls = device.controls
+        assert controls.keep_format is controls["keep_format"]
