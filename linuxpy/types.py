@@ -25,9 +25,11 @@ else:
 
 
 Union = typing.Union
+Optional = typing.Optional
 PathLike = Union[str, pathlib.Path, os.PathLike]
 
 Iterable = collections.abc.Iterable
 Iterator = collections.abc.Iterator
 AsyncIterable = collections.abc.AsyncIterable
 AsyncIterator = collections.abc.AsyncIterator
+Callable = collections.abc.Callable
