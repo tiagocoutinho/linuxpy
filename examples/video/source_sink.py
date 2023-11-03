@@ -22,10 +22,14 @@ def main():
         sink = VideoOutput(sink_dev)
         source.set_format(640, 480, "MJPG")
         sink.set_format(640, 480, "MJPG")
+        sink.set_fps(2)
         with source, sink:
-            subprocess.Popen(["cvlc", f"v4l2://{sink_dev.filename}"])
-            for frame in source:
-                sink.write(frame.data)
+            proc = subprocess.Popen(["cvlc", f"v4l2://{sink_dev.filename}"])
+            try:
+                for frame in source:
+                    sink.write(frame.data)
+            finally:
+                proc.terminate()
 
 
 try:
