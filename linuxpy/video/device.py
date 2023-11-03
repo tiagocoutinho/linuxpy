@@ -446,7 +446,7 @@ def get_raw_format(fd, buffer_type):
     return fmt
 
 
-def get_format(fd, buffer_type):
+def get_format(fd, buffer_type) -> Format:
     f = get_raw_format(fd, buffer_type)
     return Format(
         width=f.fmt.pix.width,
@@ -675,7 +675,7 @@ class Device(BaseDevice):
     ):
         return set_format(self.fileno(), buffer_type, width, height, pixel_format=pixel_format)
 
-    def get_format(self, buffer_type):
+    def get_format(self, buffer_type) -> Format:
         return get_format(self.fileno(), buffer_type)
 
     def set_fps(self, buffer_type, fps):
@@ -1150,7 +1150,7 @@ class BufferManager(DeviceHelper):
     def set_format(self, width, height, pixel_format="MJPG"):
         return self.device.set_format(self.type, width, height, pixel_format)
 
-    def get_format(self):
+    def get_format(self) -> Format:
         return self.device.get_format(self.type)
 
     def set_fps(self, fps):
