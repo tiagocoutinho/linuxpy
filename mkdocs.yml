@@ -1,0 +1,41 @@
+site_name: LinuxPy
+# site_url: https://tiagocoutinho.github.io/linuxpy
+site_description: Human friendly interface to linux subsystems using python.
+site_author: Tiago Coutinho
+copyright: "© 2023 Tiago Coutinho"
+
+repo_url: https://github.com/tiagocoutinho/linuxpy
+repo_name: tiagocoutinho/linuxpy
+
+# disable editing code link
+edit_uri: ''
+
+theme:
+  name: material
+  language: en
+  palette:
+    primary: blue grey
+    accent: light blue
+  font:
+    text: Roboto
+    code: 'Roboto Mono'
+  logo: img/logo-128x128.png
+  favicon: img/logo-128x128.png
+  feature:
+    tabs: true
+
+markdown_extensions:
+  - meta
+  - admonition
+  - codehilite
+  - toc:
+      permalink: "#"
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+
+nav:
+  - Home: index.md
+  - User guide:
+    - Video: video.md
+    - Input: input.md

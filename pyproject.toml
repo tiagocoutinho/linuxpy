@@ -56,6 +56,12 @@ examples = [
     "numpy",
     "Pillow",
 ]
+docs = [
+    "mkdocs",
+    "mkdocs-material",
+    "pygments",
+    "pymdown-extensions",
+]
 
 [build-system]
 requires = ["setuptools >= 40.9.0"]
