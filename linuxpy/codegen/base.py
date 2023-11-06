@@ -98,9 +98,8 @@ class CStruct:
     def context_id(self):
         return self.node.get("context")
 
-    def __repr__(self):
-        fields = ", ".join(f'("{fname}", {ftype})' for fname, ftype in self.fields)
-
+    @property
+    def class_text(self):
         text = f"class {self.name}({self.type}):\n"
         if self.pack:
             text += "    _pack_ = True\n"
@@ -110,10 +109,17 @@ class CStruct:
             text += "\n"
         if self.anonymous_fields:
             text += f"    _anonymous_ = {tuple(self.anonymous_fields)}\n"
-        if not self.children and not self.anonymous_fields:
+        if not any((self.pack, self.children, self.anonymous_fields)):
             text += "    pass"
-        text += f"\n{self.name}._fields_ = [{fields}]\n"
         return text
+
+    @property
+    def fields_text(self):
+        fields = ", ".join(f'("{fname}", {ftype})' for fname, ftype in self.fields)
+        return f"{self.name}._fields_ = [{fields}]"
+
+    def __repr__(self):
+        return f"{self.class_text}\n{self.fields_text}\n"
 
 
 def lines(filename):
@@ -314,6 +320,9 @@ def run(name, headers, template, macro_enums, output=None):
 
         get_enums(header, xml_filename, macro_enums)
 
+    structs_definition = "\n\n".join(struct.class_text for struct in structs if struct.parent is None)
+    structs_fields = "\n".join(struct.fields_text for struct in structs if struct.parent is None)
+
     structs_body = "\n\n".join(str(struct) for struct in structs if struct.parent is None)
     enums_body = "\n\n".join(str(enum) for enum in macro_enums if "IOC" not in enum.name)
     iocs_body = "\n\n".join(str(enum) for enum in macro_enums if "IOC" in enum.name)
@@ -326,6 +335,8 @@ def run(name, headers, template, macro_enums, output=None):
         "version": platform.version(),
         "enums_body": enums_body,
         "structs_body": structs_body,
+        "structs_definition": structs_definition,
+        "structs_fields": structs_fields,
         "iocs_body": iocs_body,
     }
     text = template.format(**fields)
