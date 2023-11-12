@@ -67,12 +67,12 @@ docs = [
 requires = ["setuptools >= 40.9.0"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = ["linuxpy"]
-
 [tool.setuptools.dynamic]
 version = {attr = "linuxpy.__version__"}
 readme = {file = ["README.md"], content-type = "text/markdown"}
+
+[tool.setuptools.packages.find]
+include = ["linuxpy"]
 
 [tool.ward]
 order = "standard"
