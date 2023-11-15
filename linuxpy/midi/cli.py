@@ -7,41 +7,12 @@
 import argparse
 
 from linuxpy.midi.device import (
-    EVENT_TYPE_INFO,
-    EventType,
     PortCapability,
     Sequencer,
     event_stream,
     iter_read_clients,
     iter_read_ports,
 )
-
-
-def struct_str(obj):
-    fields = []
-    for field_name, _ in obj._fields_:
-        value = getattr(obj, field_name)
-        if hasattr(value, "_fields_"):
-            value = f"({struct_str(value)})"
-        else:
-            value = str(value)
-        fields.append(f"{field_name}={value}")
-    return ", ".join(fields)
-
-
-def event_text(event):
-    data = EVENT_TYPE_INFO.get(event.type)
-    if data is None:
-        return event.type.name
-    name, member_name = data
-    src = f"{event.source_client_id:>3}:{event.source_port_id:<3}"
-    result = f"{src} {name:<20} "
-    if event.type == EventType.SYSEX:
-        result += " ".join(f"{i:02X}" for i in event.data)
-    elif member_name:
-        member = getattr(event.event.data, member_name)
-        result += struct_str(member)
-    return result
 
 
 def address(text):
@@ -54,8 +25,7 @@ def listen(seq, args):
         port = seq.create_port(f"listen on {addr}")
         port.connect_from(*addr)
     for event in event_stream(seq):
-        text = event_text(event)
-        print(text)
+        print(event)
 
 
 def ls(seq, _):

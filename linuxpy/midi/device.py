@@ -7,7 +7,8 @@
 import asyncio
 import select
 
-from linuxpy.ctypes import cint, sizeof
+from linuxpy import ctypes
+from linuxpy.ctypes import Struct, cint, sizeof
 from linuxpy.device import DEV_PATH, BaseDevice
 from linuxpy.ioctl import ioctl
 from linuxpy.midi.raw import (
@@ -392,13 +393,41 @@ EVENT_TYPE_INFO = {
 }
 
 
+def struct_text(obj):
+    fields = []
+    for field_name, _, value in obj:
+        if isinstance(value, Struct):
+            value = f"({struct_text(value)})"
+        elif isinstance(value, ctypes.Union):
+            continue
+        else:
+            value = str(value)
+        fields.append(f"{field_name}={value}")
+    return ", ".join(fields)
+
+
 class Event:
     def __init__(self, event: snd_seq_event):
         self.event = event
         self.data = b""
 
     def __repr__(self):
-        return f"<{type(self).__name__} type={self.type.name}>"
+        cname = type(self).__name__
+        return f"<{cname} type={self.type.name}>"
+
+    def __str__(self):
+        data = EVENT_TYPE_INFO.get(self.type)
+        if data is None:
+            return self.type.name
+        name, member_name = data
+        src = f"{self.source_client_id:>3}:{self.source_port_id:<3}"
+        result = f"{src} {name:<20} "
+        if self.type == EventType.SYSEX:
+            result += " ".join(f"{i:02X}" for i in self.data)
+        elif member_name:
+            member = getattr(self.event.data, member_name)
+            result += struct_text(member)
+        return result
 
     @classmethod
     def new(cls, etype: Union[str, int, EventType], **kwargs):

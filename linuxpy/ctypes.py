@@ -67,13 +67,15 @@ class Struct(ctypes.Structure):
         return f"{name}({fields})"
 
     def __iter__(self):
-        for fname, _ in self._fields_:
-            yield getattr(self, fname)
+        for fname, ftype in self._fields_:
+            yield fname, ftype, getattr(self, fname)
 
     def asdict(self):
         r = collections.OrderedDict()
-        for field_name, _ in self._fields_:
-            r[field_name] = getattr(self, field_name)
+        for name, _, value in self:
+            if hasattr(value, "_fields_"):
+                value = value.asdict()
+            r[name] = value
         return r
 
 
