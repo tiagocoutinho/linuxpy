@@ -37,5 +37,6 @@ markdown_extensions:
 nav:
   - Home: index.md
   - User guide:
-    - Video: video.md
     - Input: input.md
+    - MIDI Sequencer: midi.md
+    - Video: video.md

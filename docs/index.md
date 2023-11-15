@@ -2,7 +2,9 @@
 
 Human friendly interface to linux subsystems using python.
 
-Provides python access to several linux subsystems like V4L2 and input
+Provides python access to several linux subsystems like V4L2, input and MIDI.
+
+There is experimental, incomplete and unstable access to USB.
 
 Only works on python >= 3.9.
 
@@ -31,11 +33,6 @@ To run docs you'll need:
 ```bash
 $ pip install linuxpy[docs]
 ```
-
-## Subsystems
-
-
-
 
 
 

@@ -7,18 +7,18 @@
 
 Human friendly interface to linux subsystems using python.
 
-Provides python access to several linux subsystems like V4L2, input, MIDI
-and, in the future, USB.
+Provides python access to several linux subsystems like V4L2, input and MIDI.
+
+There is experimental, incomplete and unstable access to USB.
 
 Requirements:
 * python >= 3.9
 * Fairly recent linux kernel
 * Installed kernel modules you want to access
 
-There are no python libraries required!
-
-Also there are no C libraries required. Everything is done here through
-direct ioctl, read and write calls.
+And yes, it is true: there are no python libraries required! Also there are no
+C libraries required. Everything is done here through direct ioctl, read and
+write calls. Ain't linux wonderful?
 
 ## Installation
 

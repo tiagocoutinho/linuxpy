@@ -25,6 +25,50 @@ frame #9: 40714 bytes
 frame #10: 40662 bytes
 ```
 
+## Capture
+
+Simple capture without any configuration is possible using the Device object
+as an iterator:
+
+```python
+from linuxpy.video.device import Device, VideoCapture
+
+with Device.from_id(0) as cam:
+    for frame in cam:
+        ...
+```
+
+To be able to configure the next acquisition, you will need to use the
+`VideoCapture` helper. Here is an example with image size and format configuration:
+
+```python
+from linuxpy.video.device import Device, VideoCapture
+
+with Device.from_id(0) as cam:
+    capture = VideoCapture(cam)
+    capture.set_format(640, 480, "MJPG")
+    with VideoCapture(cam) as capture:
+        for frame in capture:
+            ...
+```
+
+By default, VideoCapture will use memory map if the device has STREAMING
+capability and falls back to standard read if not. It is also possible to
+force a specific reader:
+
+```python
+from linuxpy.video.device import Capability, Device, VideoCapture
+
+with Device.from_id(0) as cam:
+    capture = VideoCapture(cam, source=Capability.READWRITE)
+    capture.set_format(640, 480, "MJPG")
+    with VideoCapture(cam) as capture:
+        for frame in capture:
+            ...
+```
+
+## Information
+
 Getting information about the device:
 
 ```python
@@ -124,7 +168,7 @@ frame 10136
 
 It is possible to write to a video output capable device (ex: v4l2loopback).
 The following example shows how to grab frames from device 0 and write them
-to device 10
+to device 10:
 
 ```bash
 >>> from linuxpy.video.device import Device, VideoOutput, BufferType
@@ -140,7 +184,13 @@ to device 10
 >>>             sink.write(frame.data)
 ```
 
+By default, VideoOutput will use memory map if the device has STREAMING
+capability and falls back to standard write if not. It is also possible to
+force a specific writer with `VideoOutput(cam, sink=Capability.READWRITE)`:
+
 ## v4l2loopback
+
+This is just an example on how to setup v4l2loopback.
 
 Start from scratch:
 ```bash
