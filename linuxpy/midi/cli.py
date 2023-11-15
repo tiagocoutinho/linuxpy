@@ -5,10 +5,12 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 import argparse
+import asyncio
 
 from linuxpy.midi.device import (
     PortCapability,
     Sequencer,
+    async_event_stream,
     event_stream,
     iter_read_clients,
     iter_read_ports,
@@ -25,6 +27,14 @@ def listen(seq, args):
         port = seq.create_port(f"listen on {addr}")
         port.connect_from(*addr)
     for event in event_stream(seq):
+        print(event)
+
+
+async def async_listen(seq, args):
+    for addr in args.addr:
+        port = seq.create_port(f"listen on {addr}")
+        port.connect_from(*addr)
+    async for event in async_event_stream(seq):
         print(event)
 
 
@@ -45,6 +55,8 @@ def cli(args=None):
     )
     listen = sub_parsers.add_parser("listen", aliases=["dump"], help="listen for events on selected port(s)")
     listen.add_argument("addr", help="address(es)", type=address, nargs="+")
+    alisten = sub_parsers.add_parser("alisten", aliases=["adump"], help="listen for events on selected port(s)")
+    alisten.add_argument("addr", help="address(es)", type=address, nargs="+")
     sub_parsers.add_parser("ls", help="list clients and ports")
     return parser
 
@@ -52,6 +64,8 @@ def cli(args=None):
 def run(seq, args):
     if args.command in {"listen", "dump"}:
         listen(seq, args)
+    elif args.command in {"alisten", "adump"}:
+        asyncio.run(async_listen(seq, args))
     elif args.command == "ls":
         ls(seq, args)
 

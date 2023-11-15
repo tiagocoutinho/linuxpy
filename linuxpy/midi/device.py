@@ -573,7 +573,7 @@ def event_stream(seq):
         yield from seq.read()
 
 
-async def async_event_stream(seq, maxsize=2):
+async def async_event_stream(seq, maxsize=10):
     queue = asyncio.Queue(maxsize=maxsize)
 
     def feed():
