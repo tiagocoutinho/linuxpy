@@ -5,6 +5,7 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 import collections.abc
+import io
 import os
 import pathlib
 import typing
@@ -23,7 +24,7 @@ else:
 
     Buffer = typing_extensions.Buffer
 
-
+File = io.FileIO
 Union = typing.Union
 Optional = typing.Optional
 PathLike = Union[str, pathlib.Path, os.PathLike]
@@ -33,3 +34,4 @@ Iterator = collections.abc.Iterator
 AsyncIterable = collections.abc.AsyncIterable
 AsyncIterator = collections.abc.AsyncIterator
 Callable = collections.abc.Callable
+Sequence = collections.abc.Sequence

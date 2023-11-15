@@ -1,3 +1,9 @@
+#
+# This file is part of the linuxpy project
+#
+# Copyright (c) 2023 Tiago Coutinho
+# Distributed under the GPLv3 license. See LICENSE for more info.
+
 import asyncio
 import select
 
@@ -6,9 +12,13 @@ from linuxpy.device import DEV_PATH, BaseDevice
 from linuxpy.ioctl import ioctl
 from linuxpy.midi.raw import (
     IOC,
+    EventLength,
     EventType,
     PortCapability,
     PortType,
+    TimeMode,
+    TimeStamp,
+    snd_seq_addr,
     snd_seq_client_info,
     snd_seq_event,
     snd_seq_port_info,
@@ -16,12 +26,14 @@ from linuxpy.midi.raw import (
     snd_seq_running_info,
     snd_seq_system_info,
 )
-from linuxpy.types import Iterable, Optional
+from linuxpy.types import Iterable, Optional, Sequence, Union
 from linuxpy.util import add_reader_asyncio
 
 ALSA_PATH = DEV_PATH / "snd"
 SEQUENCER_PATH = ALSA_PATH / "seq"
 
+SYSEX_START = 0xF0
+SYSEX_END = 0xF7
 
 EVENT_SIZE = sizeof(snd_seq_event)
 
@@ -81,6 +93,14 @@ def iter_read_clients(seq) -> Iterable[snd_seq_client_info]:
         next_client_id = client.client
 
 
+def read_port_info(seq, client_id: int, port_id: int) -> snd_seq_port_info:
+    port = snd_seq_port_info(client=client_id)
+    port.addr.client = client_id
+    port.addr.port = port_id
+    ioctl(seq, IOC.GET_PORT_INFO, port)
+    return port
+
+
 def next_port(seq, client_id: int, port_id: int) -> Optional[snd_seq_port_info]:
     port = snd_seq_port_info(client=client_id)
     port.addr.client = client_id
@@ -97,24 +117,6 @@ def iter_read_ports(seq, client_id: int) -> Iterable[snd_seq_port_info]:
     while port := next_port(seq, client_id, next_port_id):
         yield port
         next_port_id = port.addr.port
-
-
-def print_port(client, port):
-    cname = client.name.decode()
-    pname = port.name.decode()
-    caps = repr(PortCapability(port.capability))
-    caps = caps.removeprefix("<PortCapability.").rsplit(":", 1)[0]
-    print(f" {port.addr.client:2}:{port.addr.port}  {cname:<24}  {pname:<24}  {caps}")
-
-
-def print_client_ports(client, ports):
-    for port in ports:
-        print_port(client, port)
-
-
-def print_ports(seq):
-    for client in iter_read_clients(seq):
-        print_client_ports(client, iter_read_ports(seq, client.client))
 
 
 def create_port(seq, port: snd_seq_port_info):
@@ -150,37 +152,64 @@ def unsubscribe(seq, src_client_id: int, src_port_id: int, dest_client_id: int, 
 class Version:
     def __init__(self, number: int):
         self.number = number
+        self.tuple = version_tuple(number)
 
     def __int__(self):
         return self.number
 
-    @property
-    def tuple(self):
-        return version_tuple(self.number)
-
-    def __str__(self):
+    def __repr__(self):
         return "{}.{}.{}".format(*self.tuple)
+
+    def __getitem__(self, item):
+        return self.tuple[item]
+
+    def __eq__(self, other):
+        if not isinstance(other, Version):
+            return False
+        return self.tuple == other.tuple
+
+    def __lt__(self, other):
+        if isinstance(other, Version):
+            seq = other.tuple
+        elif isinstance(other, Sequence):
+            seq = tuple(other)
+        else:
+            raise ValueError("Comparison with non-Version object")
+        return self.tuple < seq
+
+    @property
+    def major(self):
+        return self[0]
+
+    @property
+    def minor(self):
+        return self[1]
+
+    @property
+    def patch(self):
+        return self[2]
 
 
 class Sequencer(BaseDevice):
     def __init__(self, name: str = "linuxpy client", **kwargs):
         self.name = name
-        self.client_id: Optional[int] = None
+        self.client_id = -1
         self.version: Optional[Version] = None
         self.ports = {}
+        self.subscriptions = set()
         super().__init__(SEQUENCER_PATH, **kwargs)
 
     def _on_open(self):
         self.client_id = read_client_id(self)
         client_info = read_client_info(self, self.client_id)
-        self.version_number = Version(read_pversion(self))
+        self.version = Version(read_pversion(self))
         client_info.name = self.name.encode()
         write_client_info(self, client_info)
 
     def _on_close(self):
         # TODO: delete all open ports
         for port in self.ports.values():
-            delete_port(self, port.info)
+            self.delete_port(port)
 
     @property
     def client_info(self):
@@ -198,7 +227,9 @@ class Sequencer(BaseDevice):
         port_info = snd_seq_port_info()
         port_info.name = name.encode()
         port_info.addr.client = self.client_id
-        port_info.capability = PortCapability.WRITE | PortCapability.SUBS_WRITE
+        port_info.capability = (
+            PortCapability.WRITE | PortCapability.SUBS_WRITE | PortCapability.READ | PortCapability.SUBS_READ
+        )
         port_info.type = PortType.MIDI_GENERIC | PortType.APPLICATION
         port_info.midi_channels = 16
         port_info.midi_voices = 64
@@ -208,28 +239,63 @@ class Sequencer(BaseDevice):
         self.ports[port_info.addr.port] = port
         return port
 
-    def raw_read(self) -> snd_seq_event:
-        event = snd_seq_event()
-        self._fobj.readinto(event)
-        return event
+    def delete_port(self, port: Union[int, "Port"]):
+        if isinstance(port, int):
+            addr = self.client_id, port
+            port_info = snd_seq_port_info(addr=snd_seq_addr(client=self.client_id, port=port))
+        else:
+            port_info = port.info
+            addr = port_info.addr.client, port_info.addr.port
+        # unsubscribe first
+        for uid in set(self.subscriptions):
+            if addr == uid[0:2] or addr == uid[2:4]:
+                self.unsubscribe(*uid)
+        delete_port(self, port_info)
 
-    def wait_read(self) -> snd_seq_event:
+    def subscribe(self, src_client_id: int, src_port_id: int, dest_client_id: int, dest_port_id: int):
+        uid = (src_client_id, src_port_id, dest_client_id, dest_port_id)
+        self.subscriptions.add(uid)
+        subscribe(self, src_client_id, src_port_id, dest_client_id, dest_port_id)
+
+    def unsubscribe(self, src_client_id: int, src_port_id: int, dest_client_id: int, dest_port_id: int):
+        uid = src_client_id, src_port_id, dest_client_id, dest_port_id
+        self.subscriptions.remove(uid)
+        unsubscribe(self, src_client_id, src_port_id, dest_client_id, dest_port_id)
+
+    def iter_raw_read(self, max_nb_packets=64) -> Iterable["Event"]:
+        payload = self._fobj.read(max_nb_packets * EVENT_SIZE)
+        nb_packets = len(payload) // EVENT_SIZE
+        i = 0
+        while i < nb_packets:
+            start = i * EVENT_SIZE
+            packet = payload[start : start + EVENT_SIZE]
+            event = Event(snd_seq_event.from_buffer_copy(packet))
+            i += 1
+            if event.is_variable_length_type:
+                size = event.event.data.ext.len
+                nb = (size + EVENT_SIZE - 1) // EVENT_SIZE
+                event.data = payload[i * EVENT_SIZE : i * EVENT_SIZE + size]
+                i += nb
+            yield event
+
+    def raw_read(self, max_nb_packets=64) -> Sequence["Event"]:
+        return tuple(self.iter_raw_read(max_nb_packets=max_nb_packets))
+
+    def wait_read(self) -> Sequence["Event"]:
         if self.io.select is not None:
             self.io.select((self,), (), ())
         return self.raw_read()
 
-    def read(self) -> snd_seq_event:
+    def read(self) -> Sequence["Event"]:
         # first time we check what mode device was opened (blocking vs non-blocking)
-        # if file was opened with O_NONBLOCK: DQBUF will not block until a buffer
-        # is available for read. So we need to do it here
         if self.is_blocking:
             self.read = self.raw_read
         else:
             self.read = self.wait_read
         return self.read()
 
-    async def aread(self):
-        ...
+    def write(self, event: "Event"):
+        self._fobj.write(bytes(event))
 
 
 class Port:
@@ -249,16 +315,24 @@ class Port:
     def port_id(self):
         return self.info.addr.port
 
+    @property
+    def type(self) -> PortType:
+        return PortType(self.info.type)
+
+    @property
+    def capability(self) -> PortCapability:
+        return PortCapability(self.info.capability)
+
     # MIDI In
     def connect_from(self, src_client_id, src_port_id):
         if not self.is_local:
             raise MidiError("Can only connect local port")
-        subscribe(self.sequencer, src_client_id, src_port_id, self.client_id, self.port_id)
+        self.sequencer.subscribe(src_client_id, src_port_id, self.client_id, self.port_id)
 
     def disconnect_from(self, src_client_id, src_port_id):
         if not self.is_local:
             raise MidiError("Can only connect local port")
-        unsubscribe(self.sequencer, src_client_id, src_port_id, self.client_id, self.port_id)
+        self.sequencer.unsubscribe(src_client_id, src_port_id, self.client_id, self.port_id)
 
     # MIDI Out
     def connect_to(self, dest_client_id, dest_port_id):
@@ -271,14 +345,142 @@ class Port:
             raise MidiError("Can only connect local port")
         unsubscribe(self.sequencer, self.client_id, self.port_id, dest_client_id, dest_port_id)
 
+    def delete(self):
+        self.sequencer.delete_port(self)
 
-class Message:
+
+EVENT_TYPE_INFO = {
+    EventType.SYSTEM: ("System", "result"),
+    EventType.RESULT: ("Result", "result"),
+    EventType.NOTE: ("Note", "note"),
+    EventType.NOTEON: ("Note on", "note"),
+    EventType.NOTEOFF: ("Note off", "note"),
+    EventType.KEYPRESS: ("Polyphonic aftertouch", "note"),
+    EventType.CONTROLLER: ("Control change", "control"),
+    EventType.PGMCHANGE: ("Program change", "control"),
+    EventType.CHANPRESS: ("Channel aftertouch", "control"),
+    EventType.PITCHBEND: ("Pitch bend", "control"),
+    EventType.CONTROL14: ("Control change", "control"),
+    EventType.NONREGPARAM: ("Non-reg. param.", "control"),
+    EventType.REGPARAM: ("Reg param.", "control"),
+    EventType.SONGPOS: ("Song position ptr", "control"),
+    EventType.SONGSEL: ("Song select", "control"),
+    EventType.QFRAME: ("MTC Quarter frame", "control"),
+    EventType.TIMESIGN: ("SMF time signature", "control"),
+    EventType.KEYSIGN: ("SMF key signature", "control"),
+    EventType.START: ("Start", "queue"),
+    EventType.CONTINUE: ("Continue", "queue"),
+    EventType.STOP: ("Stop", "queue"),
+    EventType.SETPOS_TICK: ("Set tick queue pos.", "queue"),
+    EventType.SETPOS_TIME: ("Set rt queue pos.", "queue"),
+    EventType.TEMPO: ("Set queue tempo", "queue"),
+    EventType.CLOCK: ("Clock", "queue"),
+    EventType.TICK: ("Tick", "queue"),
+    EventType.QUEUE_SKEW: ("Queue timer skew", "queue"),
+    EventType.TUNE_REQUEST: ("Tune request", None),
+    EventType.RESET: ("Reset", None),
+    EventType.SENSING: ("Active sensing", None),
+    EventType.CLIENT_START: ("Client start", "addr"),
+    EventType.CLIENT_EXIT: ("Client exit", "addr"),
+    EventType.CLIENT_CHANGE: ("Client change", "addr"),
+    EventType.PORT_START: ("Port start", "addr"),
+    EventType.PORT_EXIT: ("Port exit", "addr"),
+    EventType.PORT_CHANGE: ("Port change", "addr"),
+    EventType.PORT_SUBSCRIBED: ("Port subscribed", "connect"),
+    EventType.PORT_UNSUBSCRIBED: ("Port unsubscribed", "connect"),
+    EventType.SYSEX: ("System exclusive", "ext"),
+}
+
+
+class Event:
     def __init__(self, event: snd_seq_event):
         self.event = event
+        self.data = b""
+
+    def __repr__(self):
+        return f"<{type(self).__name__} type={self.type.name}>"
+
+    @classmethod
+    def new(cls, etype: Union[str, int, EventType], **kwargs):
+        event = snd_seq_event()
+        if isinstance(etype, int):
+            etype = EventType(etype)
+        elif isinstance(etype, str):
+            etype = etype.replace(" ", "").replace("_", "").upper()
+            try:
+                etype = EventType[etype]
+            except KeyError:
+                pass
+        event.type = etype
+        event_info = EVENT_TYPE_INFO.get(etype)
+        if event_info:
+            _, member_name = event_info
+            member = getattr(event.data, member_name)
+            allowed = {name for name, _ in member._fields_}
+            not_allowed = set(kwargs) - allowed
+            if not_allowed:
+                raise ValueError(f"These fields are not allowed for {etype.name}: {', '.join(not_allowed)}")
+            for key, value in kwargs.items():
+                setattr(member, key, value)
+        return cls(event)
 
     @property
-    def type(self):
+    def type(self) -> EventType:
         return EventType(self.event.type)
+
+    @property
+    def length_type(self) -> EventLength:
+        return EventLength(self.event.flags & EventLength.MASK.value)
+
+    @property
+    def is_variable_length_type(self) -> bool:
+        return self.length_type == EventLength.VARIABLE
+
+    @property
+    def timestamp_type(self) -> TimeStamp:
+        return TimeStamp(self.event.flags & TimeStamp.MASK.value)
+
+    @property
+    def time_mode(self) -> TimeMode:
+        return TimeMode(self.event.flags & TimeMode.MASK.value)
+
+    @property
+    def timestamp(self) -> Union[float, int]:
+        if self.timestamp_type == TimeStamp.REAL:
+            return self.event.data.time.time.tv_sec + self.event.data.time.time.tv_nsec * 1e-9
+        else:
+            return self.event.data.time.tick
+
+    @property
+    def note(self):
+        return self.event.data.note
+
+    @property
+    def control(self):
+        return self.event.data.control
+
+    @property
+    def connect(self):
+        return self.event.data.connect
+
+    @property
+    def source_client_id(self) -> int:
+        return self.event.source.client
+
+    @property
+    def source_port_id(self) -> int:
+        return self.event.source.port
+
+    @property
+    def dest_client_id(self) -> int:
+        return self.event.dest.client
+
+    @property
+    def dest_port_id(self) -> int:
+        return self.event.dest.port
+
+    client_id = source_client_id
+    port_id = source_port_id
 
 
 class EventReader:
@@ -317,7 +519,7 @@ class EventReader:
         task = self._loop.create_future()
         try:
             self._selector.poll(0)  # avoid blocking
-            data = self.device.raw_read()
+            data = self.device.read()
             task.set_result(data)
         except Exception as error:
             task.set_exception(error)
@@ -329,11 +531,7 @@ class EventReader:
         buffer.put_nowait(task)
 
     def read(self, timeout=None):
-        if not self.device.is_blocking:
-            read, _, _ = self.device.io.select((self.device,), (), (), timeout)
-            if not read:
-                return
-        return self.device.raw_read()
+        return self.device.read()
 
     async def aread(self):
         """Wait for next event or return last event"""
@@ -343,13 +541,17 @@ class EventReader:
 
 def event_stream(seq):
     while True:
-        seq.io.select((seq,), (), ())
-        yield seq.raw_read()
+        yield from seq.read()
 
 
-async def async_event_stream(seq, maxsize=1000):
+async def async_event_stream(seq, maxsize=2):
     queue = asyncio.Queue(maxsize=maxsize)
-    with add_reader_asyncio(seq.fileno(), lambda: queue.put_nowait(seq.raw_read())):
+
+    def feed():
+        for event in seq.read():
+            queue.put_nowait(event)
+
+    with add_reader_asyncio(seq.fileno(), feed):
         while True:
             yield await queue.get()
 
