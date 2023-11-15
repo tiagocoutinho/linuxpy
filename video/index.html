@@ -13,14 +13,12 @@
       
       
       
-        <link rel="prev" href="..">
+        <link rel="prev" href="../midi/">
       
-      
-        <link rel="next" href="../input/">
       
       
       <link rel="icon" href="../img/logo-128x128.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.7">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
     
     
       
@@ -279,6 +277,46 @@
                 
   
   
+  
+    <li class="md-nav__item">
+      <a href="../input/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Input
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../midi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MIDI Sequencer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -327,6 +365,20 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#capture" class="md-nav__link">
+    Capture
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#information" class="md-nav__link">
+    Information
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#asyncio" class="md-nav__link">
     asyncio
   </a>
@@ -370,26 +422,6 @@
 
               
             
-              
-                
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../input/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Input
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -422,6 +454,20 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#capture" class="md-nav__link">
+    Capture
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#information" class="md-nav__link">
+    Information
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#asyncio" class="md-nav__link">
@@ -495,6 +541,39 @@
 <span class="n">frame</span> <span class="c1">#9: 40714 bytes</span>
 <span class="n">frame</span> <span class="c1">#10: 40662 bytes</span>
 </code></pre></div>
+<h2 id="capture">Capture<a class="headerlink" href="#capture" title="Permanent link">#</a></h2>
+<p>Simple capture without any configuration is possible using the Device object
+as an iterator:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">VideoCapture</span>
+
+<span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">cam</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">cam</span><span class="p">:</span>
+        <span class="o">...</span>
+</code></pre></div>
+<p>To be able to configure the next acquisition, you will need to use the
+<code>VideoCapture</code> helper. Here is an example with image size and format configuration:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">VideoCapture</span>
+
+<span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">cam</span><span class="p">:</span>
+    <span class="n">capture</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">cam</span><span class="p">)</span>
+    <span class="n">capture</span><span class="o">.</span><span class="n">set_format</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="s2">&quot;MJPG&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">cam</span><span class="p">)</span> <span class="k">as</span> <span class="n">capture</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">capture</span><span class="p">:</span>
+            <span class="o">...</span>
+</code></pre></div>
+<p>By default, VideoCapture will use memory map if the device has STREAMING
+capability and falls back to standard read if not. It is also possible to
+force a specific reader:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Capability</span><span class="p">,</span> <span class="n">Device</span><span class="p">,</span> <span class="n">VideoCapture</span>
+
+<span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">cam</span><span class="p">:</span>
+    <span class="n">capture</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">cam</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">Capability</span><span class="o">.</span><span class="n">READWRITE</span><span class="p">)</span>
+    <span class="n">capture</span><span class="o">.</span><span class="n">set_format</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="s2">&quot;MJPG&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">cam</span><span class="p">)</span> <span class="k">as</span> <span class="n">capture</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">capture</span><span class="p">:</span>
+            <span class="o">...</span>
+</code></pre></div>
+<h2 id="information">Information<a class="headerlink" href="#information" title="Permanent link">#</a></h2>
 <p>Getting information about the device:</p>
 <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">BufferType</span>
 
@@ -579,7 +658,7 @@ frame 10136
 <h2 id="video-output">Video output<a class="headerlink" href="#video-output" title="Permanent link">#</a></h2>
 <p>It is possible to write to a video output capable device (ex: v4l2loopback).
 The following example shows how to grab frames from device 0 and write them
-to device 10</p>
+to device 10:</p>
 <div class="highlight"><pre><span></span><code>&gt;&gt;&gt;<span class="w"> </span>from<span class="w"> </span>linuxpy.video.device<span class="w"> </span>import<span class="w"> </span>Device,<span class="w"> </span>VideoOutput,<span class="w"> </span>BufferType
 &gt;&gt;&gt;<span class="w"> </span><span class="nv">dev_source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Device.from_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
 &gt;&gt;&gt;<span class="w"> </span><span class="nv">dev_sink</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Device.from_id<span class="o">(</span><span class="m">10</span><span class="o">)</span>
@@ -592,7 +671,11 @@ to device 10</p>
 &gt;&gt;&gt;<span class="w">         </span><span class="k">for</span><span class="w"> </span>frame<span class="w"> </span><span class="k">in</span><span class="w"> </span>source:
 &gt;&gt;&gt;<span class="w">             </span>sink.write<span class="o">(</span>frame.data<span class="o">)</span>
 </code></pre></div>
+<p>By default, VideoOutput will use memory map if the device has STREAMING
+capability and falls back to standard write if not. It is also possible to
+force a specific writer with <code>VideoOutput(cam, sink=Capability.READWRITE)</code>:</p>
 <h2 id="v4l2loopback">v4l2loopback<a class="headerlink" href="#v4l2loopback" title="Permanent link">#</a></h2>
+<p>This is just an example on how to setup v4l2loopback.</p>
 <p>Start from scratch:
 <div class="highlight"><pre><span></span><code><span class="c1"># Remove kernel module and all devices (no client can be connected at this point)</span>
 sudo<span class="w"> </span>modprobe<span class="w"> </span>-r<span class="w"> </span>v4l2loopback
@@ -651,7 +734,7 @@ sudo<span class="w"> </span>modprobe<span class="w"> </span>v4l2loopback<span cl
     <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.aecac24b.min.js"></script>
+      <script src="../assets/javascripts/bundle.81fa17fe.min.js"></script>
       
     
   </body>
