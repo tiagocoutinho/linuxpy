@@ -20,8 +20,6 @@ There are no python libraries required!
 Also there are no C libraries required. Everything is done here through
 direct ioctl, read and write calls.
 
-To be able to update generated files you do need black and requests.
-
 ## Installation
 
 From within your favorite python environment:
@@ -41,7 +39,6 @@ To develop, run tests, build package, lint, etc you'll need:
 ```bash
 $ pip install linuxpy[dev]
 ```
-
 
 ## Subsystems
 
@@ -97,25 +94,8 @@ Format(width=640, height=480, pixelformat=<PixelFormat.MJPEG: 1196444237>}
 >>> for ctrl in cam.controls.values(): print(ctrl)
 <IntegerControl brightness min=0 max=255 step=1 default=128 value=128>
 <IntegerControl contrast min=0 max=255 step=1 default=32 value=32>
-<IntegerControl saturation min=0 max=100 step=1 default=64 value=64>
-<IntegerControl hue min=-180 max=180 step=1 default=0 value=0>
-<BooleanControl white_balance_automatic default=True value=True>
-<IntegerControl gamma min=90 max=150 step=1 default=120 value=120>
-<MenuControl power_line_frequency default=1 value=1>
-<IntegerControl white_balance_temperature min=2800 max=6500 step=1 default=4000 value=4000 flags=inactive>
-<IntegerControl sharpness min=0 max=7 step=1 default=2 value=2>
-<IntegerControl backlight_compensation min=0 max=2 step=1 default=1 value=1>
-<MenuControl auto_exposure default=3 value=3>
-<IntegerControl exposure_time_absolute min=4 max=1250 step=1 default=156 value=156 flags=inactive>
+...
 <BooleanControl exposure_dynamic_framerate default=False value=False>
-
->>> cam.controls["saturation"]
-<IntegerControl saturation min=0 max=100 step=1 default=64 value=64>
-
->>> cam.controls["saturation"].id
-9963778
->>> cam.controls[9963778]
-<IntegerControl saturation min=0 max=100 step=1 default=64 value=64>
 
 >>> cam.controls.brightness
 <IntegerControl brightness min=0 max=255 step=1 default=128 value=128>
@@ -296,6 +276,79 @@ InputEvent(time=1697520475.424895, type=<EventType.SYN: 0>, code=<Synchronizatio
 * [Input (Latest)](https://www.kernel.org/doc/html/latest/input/)
 * [Input 6.2](https://www.kernel.org/doc/html/v6.2/input/)
 
+### MIDI Sequencer
+
+```bash
+$ python
+
+>>> from linuxpy.midi.device import Sequencer, event_stream
+
+>>> seq = Sequencer()
+>>> with seq:
+        port = seq.create_port()
+        port.connect_from(14, 0)
+        for event in event_stream(seq):
+            print(event)
+ 14:0   Note on              channel=0, note=100, velocity=3, off_velocity=0, duration=0
+ 14:0   Clock                queue=0, pad=b''
+ 14:0   System exclusive     F0 61 62 63 F7
+ 14:0   Note off             channel=0, note=55, velocity=3, off_velocity=0, duration=0
+```
+
+#### asyncio
+
+asyncio is a first class citizen to linuxpy.midi:
+
+```bash
+$ python -m asyncio
+
+>>> from linuxpy.midi.device import Sequencer, async_event_stream
+
+>>> seq = Sequencer()
+>>> with seq:
+        port = seq.create_port()
+        port.connect_from(14, 0)
+        async for event in async_event_stream(seq):
+            print(event)
+ 14:0   Note on              channel=0, note=100, velocity=3, off_velocity=0, duration=0
+ 14:0   Clock                queue=0, pad=b''
+ 14:0   System exclusive     F0 61 62 63 F7
+ 14:0   Note off             channel=0, note=55, velocity=3, off_velocity=0, duration=0
+```
+
+#### CLI
+
+A basic CLI is provided that allows listing MIDI clients & ports
+and dumping MIDI sequencer events:
+
+```bash
+$ python -m linuxpy.midi.cli ls
+   0:0  System                    Timer                     SUBS_READ|WRITE|READ
+   0:1  System                    Announce                  SUBS_READ|READ
+  14:0  Midi Through              Midi Through Port-0       SUBS_WRITE|SUBS_READ|WRITE|READ
+ 128:0  aseqdump                  aseqdump                  SUBS_WRITE|WRITE
+```
+
+```bash
+$ python -m linuxpy.midi.cli 0:1 14:0
+  0:1   Port subscribed      sender=(client=0, port=1), dest=(client=128, port=0)
+  0:1   Port start           client=128, port=1
+  0:1   Port subscribed      sender=(client=14, port=0), dest=(client=128, port=1)
+  0:1   Client start         client=130, port=0
+  0:1   Port start           client=130, port=0
+  0:1   Port subscribed      sender=(client=130, port=0), dest=(client=14, port=0)
+ 14:0   Note on              channel=0, note=100, velocity=3, off_velocity=0, duration=0
+  0:1   Port unsubscribed    sender=(client=130, port=0), dest=(client=14, port=0)
+  0:1   Port exit            client=130, port=0
+  0:1   Client exit          client=130, port=0
+  0:1   Port exit            client=129, port=0
+  0:1   Client exit          client=129, port=0
+  0:1   Client start         client=129, port=0
+  0:1   Port start           client=129, port=0
+ 14:0   Note on              channel=0, note=100, velocity=3, off_velocity=0, duration=0
+ 14:0   Note on              channel=0, note=0, velocity=255, off_velocity=0, duration=0
+ 14:0   Note on              channel=0, note=0, velocity=255, off_velocity=0, duration=0
+```
 
 [pypi-python-versions]: https://img.shields.io/pypi/pyversions/linuxpy.svg
 [pypi-version]: https://img.shields.io/pypi/v/linuxpy.svg
