@@ -12,7 +12,7 @@
 
 import enum
 
-from linuxpy.ctypes import POINTER, Struct, Union, cchar, cint, cuint, u8, u16
+from linuxpy.ctypes import POINTER, Struct, Union, cchar, cint, cuint, cvoidp, u8, u16
 from linuxpy.ioctl import IOR as _IOR, IOW as _IOW, IOWR as _IOWR
 
 
@@ -273,7 +273,7 @@ class snd_seq_ev_ext(Struct):
     _pack_ = True
 
 
-snd_seq_ev_ext._fields_ = [("len", cuint), ("ptr", POINTER(None))]
+snd_seq_ev_ext._fields_ = [("len", cuint), ("ptr", cvoidp)]
 
 
 class snd_seq_result(Struct):
