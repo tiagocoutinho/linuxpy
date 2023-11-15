@@ -1,11 +1,12 @@
 import uuid
 
-from ward import test
+from ward import skip, test
 
 from linuxpy.midi.device import SEQUENCER_PATH, Sequencer, iter_read_clients
 from linuxpy.midi.raw import snd_seq_client_info
 
 
+@skip(when=not SEQUENCER_PATH.exists(), reason="MIDI sequencer is not prepared")
 @test("read_clients")
 def _():
     with SEQUENCER_PATH.open("rb") as seq:
@@ -19,6 +20,7 @@ def _():
         assert name in {client.name.decode() for client in clients}
 
 
+@skip(when=not SEQUENCER_PATH.exists(), reason="MIDI sequencer is not prepared")
 @test("test open/close sequencer")
 def _():
     dev = Sequencer()
