@@ -200,6 +200,10 @@ class Sequencer(BaseDevice):
         self.subscriptions = set()
         super().__init__(SEQUENCER_PATH, **kwargs)
 
+    def __iter__(self):
+        while True:
+            yield from self.read()
+
     def _on_open(self):
         self.client_id = read_client_id(self)
         client_info = read_client_info(self, self.client_id)

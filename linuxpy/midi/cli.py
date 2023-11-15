@@ -11,7 +11,6 @@ from linuxpy.midi.device import (
     PortCapability,
     Sequencer,
     async_event_stream,
-    event_stream,
     iter_read_clients,
     iter_read_ports,
 )
@@ -26,7 +25,7 @@ def listen(seq, args):
     for addr in args.addr:
         port = seq.create_port(f"listen on {addr}")
         port.connect_from(*addr)
-    for event in event_stream(seq):
+    for event in seq:
         print(event)
 
 
