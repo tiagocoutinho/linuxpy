@@ -10,7 +10,6 @@ import asyncio
 from linuxpy.midi.device import (
     PortCapability,
     Sequencer,
-    async_event_stream,
     iter_read_clients,
     iter_read_ports,
 )
@@ -33,7 +32,7 @@ async def async_listen(seq, args):
     for addr in args.addr:
         port = seq.create_port(f"listen on {addr}")
         port.connect_from(*addr)
-    async for event in async_event_stream(seq):
+    async for event in seq:
         print(event)
 
 
