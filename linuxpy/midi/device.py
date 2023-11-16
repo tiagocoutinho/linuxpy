@@ -357,12 +357,12 @@ class Port:
     def connect_to(self, dest_client_id, dest_port_id):
         if not self.is_local:
             raise MidiError("Can only connect local port")
-        subscribe(self.sequencer, self.client_id, self.port_id, dest_client_id, dest_port_id)
+        self.sequencer.subscribe(self.client_id, self.port_id, dest_client_id, dest_port_id)
 
     def disconnect_to(self, dest_client_id, dest_port_id):
         if not self.is_local:
             raise MidiError("Can only connect local port")
-        unsubscribe(self.sequencer, self.client_id, self.port_id, dest_client_id, dest_port_id)
+        self.sequencer.unsubscribe(self.client_id, self.port_id, dest_client_id, dest_port_id)
 
     def delete(self):
         if not self.is_local:
