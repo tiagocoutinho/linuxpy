@@ -38,6 +38,10 @@ SYSEX_END = 0xF7
 
 EVENT_SIZE = sizeof(snd_seq_event)
 
+READ = PortCapability.READ | PortCapability.SUBS_READ
+WRITE = PortCapability.WRITE | PortCapability.SUBS_WRITE
+READ_WRITE = READ | WRITE
+
 
 class MidiError(Exception):
     pass
@@ -228,14 +232,17 @@ class Sequencer(BaseDevice):
     def system_info(self):
         return read_system_info(self)
 
-    def create_port(self, name: str = "linuxpy port") -> "Port":
+    def create_port(
+        self,
+        name: str = "linuxpy port",
+        capabilities: PortCapability = READ_WRITE,
+        type: PortType = PortType.MIDI_GENERIC | PortType.APPLICATION,
+    ) -> "Port":
         port_info = snd_seq_port_info()
         port_info.name = name.encode()
         port_info.addr.client = self.client_id
-        port_info.capability = (
-            PortCapability.WRITE | PortCapability.SUBS_WRITE | PortCapability.READ | PortCapability.SUBS_READ
-        )
-        port_info.type = PortType.MIDI_GENERIC | PortType.APPLICATION
+        port_info.capability = capabilities
+        port_info.type = type
         port_info.midi_channels = 16
         port_info.midi_voices = 64
         port_info.synth_voices = 0
