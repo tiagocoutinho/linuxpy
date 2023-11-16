@@ -209,6 +209,12 @@ class Sequencer(BaseDevice):
         while True:
             yield from self.read()
 
+    async def __aiter__(self):
+        async with EventReader(self, max_queue_size=10) as reader:
+            while True:
+                for event in await reader.aread():
+                    yield event
+
     def _on_open(self):
         self.client_id = read_client_id(self)
         client_info = read_client_info(self, self.client_id)
