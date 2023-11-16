@@ -287,7 +287,7 @@ $ python
 >>> with seq:
         port = seq.create_port()
         port.connect_from(14, 0)
-        for event in event_stream(seq):
+        for event in seq:
             print(event)
  14:0   Note on              channel=0, note=100, velocity=3, off_velocity=0, duration=0
  14:0   Clock                queue=0, pad=b''

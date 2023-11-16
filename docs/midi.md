@@ -5,19 +5,43 @@ Without further ado:
 ```bash
 $ python
 
->>> from linuxpy.midi.device import Sequencer, event_stream
-
->>> seq = Sequencer()
->>> with seq:
+>>> from linuxpy.midi.device import Sequencer
+>>> with Sequencer() as seq:
         port = seq.create_port()
         port.connect_from(14, 0)
-        for event in event_stream(seq):
+        for event in seq:
             print(event)
  14:0   Note on              channel=0, note=100, velocity=3, off_velocity=0, duration=0
  14:0   Clock                queue=0, pad=b''
  14:0   System exclusive     F0 61 62 63 F7
  14:0   Note off             channel=0, note=55, velocity=3, off_velocity=0, duration=0
 ```
+
+## System information
+
+```bash
+$ python
+
+>>> from linuxpy.midi.device import Sequencer
+>>> seq = Sequencer("a midi client")
+>>> seq.open()
+
+>>> seq.version
+1.0.2
+
+>>> seq.client_info
+snd_seq_client_info(client=128, type=1, name=b'a midi client', filter=0, multicast_filter=b'', event_filter=b'', num_ports=0, event_lost=0, card=-1, pid=1288570, reserved=b'')
+
+>>> seq.running_mode
+snd_seq_running_info(client=0, big_endian=0, cpu_mode=0, pad=0, reserved=b'')
+
+>>> seq.system_info
+snd_seq_system_info(queues=32, clients=192, ports=254, channels=256, cur_clients=3, cur_queues=0, reserved=b'')
+
+
+## Listing ports and clients
+
+
 
 ## asyncio
 
@@ -26,19 +50,19 @@ asyncio is a first class citizen to linuxpy.midi:
 ```bash
 $ python -m asyncio
 
->>> from linuxpy.midi.device import Sequencer, async_event_stream
-
->>> seq = Sequencer()
->>> with seq:
+>>> from linuxpy.midi.device import Sequencer
+>>> with Sequencer() as seq:
         port = seq.create_port()
         port.connect_from(14, 0)
-        async for event in async_event_stream(seq):
+        async for event in seq:
             print(event)
  14:0   Note on              channel=0, note=100, velocity=3, off_velocity=0, duration=0
  14:0   Clock                queue=0, pad=b''
  14:0   System exclusive     F0 61 62 63 F7
  14:0   Note off             channel=0, note=55, velocity=3, off_velocity=0, duration=0
 ```
+
+
 
 ## CLI
 
