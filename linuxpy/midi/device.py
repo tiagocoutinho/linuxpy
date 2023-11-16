@@ -201,7 +201,7 @@ class Sequencer(BaseDevice):
         self.name = name
         self.client_id = -1
         self.version: Optional[Version] = None
-        self.ports = {}
+        self._local_ports = {}
         self.subscriptions = set()
         super().__init__(SEQUENCER_PATH, **kwargs)
 
@@ -224,7 +224,7 @@ class Sequencer(BaseDevice):
 
     def _on_close(self):
         # TODO: delete all open ports
-        for port in self.ports.values():
+        for port in self._local_ports.values():
             self.delete_port(port)
 
     @property
@@ -238,6 +238,12 @@ class Sequencer(BaseDevice):
     @property
     def system_info(self):
         return read_system_info(self)
+
+    @property
+    def ports(self) -> Iterable["Port"]:
+        for client in iter_read_clients(self):
+            for port in iter_read_ports(self, client.client):
+                yield Port(self, port)
 
     def create_port(
         self,
@@ -255,7 +261,7 @@ class Sequencer(BaseDevice):
         port_info.synth_voices = 0
         create_port(self, port_info)
         port = Port(self, port_info)
-        self.ports[port_info.addr.port] = port
+        self._local_ports[port_info.addr.port] = port
         return port
 
     def delete_port(self, port: Union[int, "Port"]):
