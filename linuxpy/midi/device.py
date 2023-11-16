@@ -365,6 +365,8 @@ class Port:
         unsubscribe(self.sequencer, self.client_id, self.port_id, dest_client_id, dest_port_id)
 
     def delete(self):
+        if not self.is_local:
+            raise MidiError("Can only delete local port")
         self.sequencer.delete_port(self)
 
 
