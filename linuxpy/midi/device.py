@@ -132,10 +132,6 @@ def delete_port(seq, port: snd_seq_port_info):
     ioctl(seq, IOC.DELETE_PORT, port)
 
 
-def version_tuple(version_number):
-    return ((version_number >> 16) & 0xFF, (version_number >> 8) & 0xFF, (version_number) & 0xFF)
-
-
 def subscribe(seq, src_client_id: int, src_port_id: int, dest_client_id: int, dest_port_id: int):
     subs = snd_seq_port_subscribe()
     subs.sender.client = src_client_id
@@ -155,15 +151,28 @@ def unsubscribe(seq, src_client_id: int, src_port_id: int, dest_client_id: int, 
 
 
 class Version:
-    def __init__(self, number: int):
-        self.number = number
-        self.tuple = version_tuple(number)
+    def __init__(self, major: int, minor: int, patch: int):
+        self.major = major
+        self.minor = minor
+        self.patch = patch
+
+    @classmethod
+    def from_tuple(cls, sequence: Iterable[str | int]):
+        return cls(*map(int, sequence))
+
+    @classmethod
+    def from_str(cls, text):
+        return cls.from_tuple(text.split(".", 2))
+
+    @classmethod
+    def from_number(cls, number: int):
+        return cls((number >> 16) & 0xFF, (number >> 8) & 0xFF, number & 0xFF)
 
     def __int__(self):
-        return self.number
+        return (self.major << 16) + (self.minor << 8) + self.patch
 
     def __repr__(self):
-        return "{}.{}.{}".format(*self.tuple)
+        return f"{self.major}.{self.minor}.{self.patch}"
 
     def __getitem__(self, item):
         return self.tuple[item]
@@ -183,16 +192,8 @@ class Version:
         return self.tuple < seq
 
     @property
-    def major(self):
-        return self[0]
-
-    @property
-    def minor(self):
-        return self[1]
-
-    @property
-    def patch(self):
-        return self[2]
+    def tuple(self):
+        return self.major, self.minor, self.patch
 
 
 class Sequencer(BaseDevice):
@@ -211,7 +212,7 @@ class Sequencer(BaseDevice):
     def _on_open(self):
         self.client_id = read_client_id(self)
         client_info = read_client_info(self, self.client_id)
-        self.version = Version(read_pversion(self))
+        self.version = Version.from_number(read_pversion(self))
         client_info.name = self.name.encode()
         write_client_info(self, client_info)
 
