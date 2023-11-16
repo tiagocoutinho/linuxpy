@@ -328,6 +328,24 @@ class Port:
         self.sequencer = sequencer
         self.info = port
 
+    def __repr__(self):
+        prefix = self.is_local and "Local" or ""
+        name = f"{prefix}{type(self).__name__}"
+        client = self.client_id
+        port = self.port_id
+        ptype = str(self.type).split(".", 1)[-1]
+        caps = str(self.capability).split(".", 1)[-1]
+        return f"<{name} {client=}, {port=}, type={ptype}, {caps=}>"
+
+    def __str__(self):
+        ptype = str(self.type).split(".", 1)[-1]
+        caps = str(self.capability).split(".", 1)[-1]
+        return f"{self.client_id:3}:{self.port_id:<3}  {self.name}  {ptype}  {caps}"
+
+    @property
+    def name(self):
+        return self.info.name.decode()
+
     @property
     def is_local(self):
         return self.sequencer.client_id == self.info.addr.client
