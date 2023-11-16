@@ -9,6 +9,7 @@ import asyncio
 
 from linuxpy.midi.device import (
     PortCapability,
+    PortType,
     Sequencer,
     iter_read_clients,
     iter_read_ports,
@@ -37,13 +38,16 @@ async def async_listen(seq, args):
 
 
 def ls(seq, _):
+    print(f"{'Port':^7} {'Client':<24} {'Port':<24} {'Type':<30} {'Capabilities'}")
     for client in iter_read_clients(seq):
         cname = client.name.decode()
         for port in iter_read_ports(seq, client.client):
             pname = port.name.decode()
-            caps = repr(PortCapability(port.capability))
-            caps = caps.removeprefix("<PortCapability.").rsplit(":", 1)[0]
-            print(f" {port.addr.client:3}:{port.addr.port}  {cname:<24}  {pname:<24}  {caps}")
+            capability = PortCapability(port.capability)
+            caps = str(capability).split(".", 1)[-1]
+            caps = caps.replace("SUBS_", "S").replace("READ", "R").replace("WRITE", "W").replace("|", ", ")
+            ptype = str(PortType(port.type)).split(".", 1)[-1].replace("|", ", ")
+            print(f"{port.addr.client:3}:{port.addr.port:<3} {cname:<24} {pname:<24} {ptype:<30} {caps}")
 
 
 def cli(args=None):

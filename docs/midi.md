@@ -71,14 +71,14 @@ and dumping MIDI sequencer events:
 
 ```bash
 $ python -m linuxpy.midi.cli ls
-   0:0  System                    Timer                     SUBS_READ|WRITE|READ
-   0:1  System                    Announce                  SUBS_READ|READ
-  14:0  Midi Through              Midi Through Port-0       SUBS_WRITE|SUBS_READ|WRITE|READ
- 128:0  aseqdump                  aseqdump                  SUBS_WRITE|WRITE
+ Port   Client                   Port                     Type                           Capabilities
+  0:0   System                   Timer                    0                              SR, W, R
+  0:1   System                   Announce                 0                              SR, R
+ 14:0   Midi Through             Midi Through Port-0      PORT, SOFTWARE, MIDI_GENERIC   SW, SR, W, R
 ```
 
 ```bash
-$ python -m linuxpy.midi.cli 0:1 14:0
+$ python -m linuxpy.midi.cli listen 0:1 14:0
   0:1   Port subscribed      sender=(client=0, port=1), dest=(client=128, port=0)
   0:1   Port start           client=128, port=1
   0:1   Port subscribed      sender=(client=14, port=0), dest=(client=128, port=1)
