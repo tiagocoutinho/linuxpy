@@ -497,6 +497,7 @@ class Event:
 
     @classmethod
     def new(cls, etype: Union[str, int, EventType], **kwargs):
+        data = kwargs.pop("data", b"")
         event = snd_seq_event()
         if isinstance(etype, int):
             etype = EventType(etype)
@@ -517,7 +518,9 @@ class Event:
                 raise ValueError(f"These fields are not allowed for {etype.name}: {', '.join(not_allowed)}")
             for key, value in kwargs.items():
                 setattr(member, key, value)
-        return cls(event)
+        result = cls(event)
+        result.data = data
+        return result
 
     @property
     def type(self) -> EventType:
