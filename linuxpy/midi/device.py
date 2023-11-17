@@ -48,6 +48,9 @@ ADDRESS_SUBSCRIBERS = 254
 #: send event to all queues/clients/ports/channels
 ADDRESS_BROADCAST = 255
 
+SUBSCRIBERS = (ADDRESS_SUBSCRIBERS, ADDRESS_UNKNOWN)
+BROADCAST = (ADDRESS_BROADCAST, ADDRESS_BROADCAST)
+
 #: size of event (bytes)
 EVENT_SIZE = sizeof(snd_seq_event)
 
@@ -59,6 +62,10 @@ WRITE = PortCapability.WRITE | PortCapability.SUBS_WRITE
 
 #: full READ + WRITE port capabilities
 READ_WRITE = READ | WRITE
+
+
+PortT = Union[int, "Port"]
+AddressT = Union[snd_seq_addr, tuple[int, PortT]]
 
 
 class MidiError(Exception):
