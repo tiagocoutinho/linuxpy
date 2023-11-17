@@ -495,6 +495,15 @@ class Event:
             result += struct_text(member)
         return result
 
+    def __bytes__(self):
+        payload = bytes(self.event)
+        if self.is_variable_length_type:
+            if self.data:
+                size = len(self.data)
+                total_size = (size + EVENT_SIZE - 1) // EVENT_SIZE * EVENT_SIZE
+                payload += self.data + (total_size - size) * b"\x00"
+        return payload
+
     @classmethod
     def new(cls, etype: Union[str, int, EventType], **kwargs):
         data = kwargs.pop("data", b"")
