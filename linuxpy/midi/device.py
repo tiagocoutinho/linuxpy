@@ -559,6 +559,26 @@ class Event:
         return self.event.data.connect
 
     @property
+    def source(self) -> snd_seq_addr:
+        return self.event.source
+
+    @source.setter
+    def source(self, address: Union[snd_seq_addr, tuple[int, int]]):
+        if isinstance(address, Sequence):
+            address = snd_seq_addr(*address)
+        self.event.source = address
+
+    @property
+    def dest(self) -> snd_seq_addr:
+        return self.event.dest
+
+    @dest.setter
+    def dest(self, address: Union[snd_seq_addr, tuple[int, int]]):
+        if isinstance(address, Sequence):
+            address = snd_seq_addr(*address)
+        self.event.dest = address
+
+    @property
     def source_client_id(self) -> int:
         return self.event.source.client
 
@@ -573,6 +593,14 @@ class Event:
     @property
     def dest_port_id(self) -> int:
         return self.event.dest.port
+
+    @property
+    def queue(self):
+        return self.event.queue
+
+    @queue.setter
+    def queue(self, queue: int):
+        self.info.queue = queue
 
     client_id = source_client_id
     port_id = source_port_id
