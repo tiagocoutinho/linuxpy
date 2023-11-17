@@ -189,8 +189,12 @@ def to_event_type(event_type: EventT) -> EventType:
     elif isinstance(event_type, int):
         return EventType(event_type)
     else:
-        event_type = event_type.replace(" ", "").replace("_", "").upper()
-        return EventType[event_type]
+        try:
+            event_type = event_type.upper().replace(" ", "_")
+            return EventType[event_type]
+        except KeyError:
+            event_type = event_type.replace("_", "").upper()
+            return EventType[event_type]
 
 
 class Version:
