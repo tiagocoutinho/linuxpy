@@ -67,6 +67,7 @@ READ_WRITE = READ | WRITE
 PortT = Union[int, "Port"]
 AddressT = Union[snd_seq_addr, tuple[int, PortT]]
 EventT = Union[str, int, EventType]
+AddressesT = Sequence[AddressT]
 
 
 class MidiError(Exception):
@@ -370,15 +371,20 @@ class Sequencer(BaseDevice):
         self,
         port: PortT,
         event_type: Union[str, int, EventType],
-        queue=QUEUE_DIRECT,
-        to: AddressT = SUBSCRIBERS,
+        queue: int = QUEUE_DIRECT,
+        to: AddressT | AddressesT = SUBSCRIBERS,
         **kwargs,
     ):
         event = Event.new(event_type, **kwargs)
         event.queue = queue
         event.source = to_address((self.client_id, port))
-        event.dest = to_address(to)
-        self.write(event)
+        if isinstance(to, Sequence) and isinstance(to[0], Sequence):
+            to_list = to
+        else:
+            to_list = (to,)
+        for dest in to_list:
+            event.dest = to_address(dest)
+            self.write(event)
 
 
 class Port:

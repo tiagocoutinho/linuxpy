@@ -35,3 +35,4 @@ AsyncIterable = collections.abc.AsyncIterable
 AsyncIterator = collections.abc.AsyncIterator
 Callable = collections.abc.Callable
 Sequence = collections.abc.Sequence
+Collection = collections.abc.Collection
