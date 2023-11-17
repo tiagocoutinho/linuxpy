@@ -175,6 +175,13 @@ def unsubscribe(seq, src_client_id: int, src_port_id: int, dest_client_id: int, 
     ioctl(seq, IOC.UNSUBSCRIBE_PORT, subs)
 
 
+def to_address(addr: AddressT) -> snd_seq_addr:
+    """Convert to low level snd_seq_addr"""
+    if isinstance(addr, snd_seq_addr):
+        return addr
+    return snd_seq_addr(*map(int, addr))
+
+
 class Version:
     def __init__(self, major: int, minor: int, patch: int):
         self.major = major
