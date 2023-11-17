@@ -1,6 +1,7 @@
 import asyncio
 import contextlib
-from typing import Optional
+
+from .types import Callable, Optional
 
 
 def ichunks(lst, size):
@@ -23,7 +24,7 @@ def bcd_version(bcd: int) -> str:
 
 
 @contextlib.contextmanager
-def add_reader_asyncio(fd: int, callback: callable, *args, loop: Optional[asyncio.AbstractEventLoop] = None):
+def add_reader_asyncio(fd: int, callback: Callable[[], None], *args, loop: Optional[asyncio.AbstractEventLoop] = None):
     """Add reader during the context and remove it after"""
     if loop is None:
         loop = asyncio.get_event_loop()
