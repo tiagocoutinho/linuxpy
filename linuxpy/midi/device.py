@@ -361,19 +361,19 @@ class Port:
         return f"{self.client_id:3}:{self.port_id:<3}  {self.name}  {ptype}  {caps}"
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.info.name.decode()
 
     @property
-    def is_local(self):
+    def is_local(self) -> bool:
         return self.sequencer.client_id == self.info.addr.client
 
     @property
-    def client_id(self):
+    def client_id(self) -> int:
         return self.info.addr.client
 
     @property
-    def port_id(self):
+    def port_id(self) -> int:
         return self.info.addr.port
 
     @property
@@ -383,6 +383,10 @@ class Port:
     @property
     def capability(self) -> PortCapability:
         return PortCapability(self.info.capability)
+
+    @property
+    def address(self) -> snd_seq_addr:
+        return self.info.addr
 
     # MIDI In
     def connect_from(self, src_client_id, src_port_id):
