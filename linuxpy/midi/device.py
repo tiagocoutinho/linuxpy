@@ -371,6 +371,9 @@ class Port:
         caps = str(self.capability).split(".", 1)[-1]
         return f"{self.client_id:3}:{self.port_id:<3}  {self.name}  {ptype}  {caps}"
 
+    def __int__(self):
+        return self.port_id
+
     @property
     def name(self) -> str:
         return self.info.name.decode()
