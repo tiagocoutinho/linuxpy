@@ -36,10 +36,28 @@ SEQUENCER_PATH = ALSA_PATH / "seq"
 SYSEX_START = 0xF0
 SYSEX_END = 0xF7
 
+#: unknown source
+ADDRESS_UNKNOWN = 253
+
+#: direct dispatch
+QUEUE_DIRECT = 253
+
+#: send event to all subscribed ports
+ADDRESS_SUBSCRIBERS = 254
+
+#: send event to all queues/clients/ports/channels
+ADDRESS_BROADCAST = 255
+
+#: size of event (bytes)
 EVENT_SIZE = sizeof(snd_seq_event)
 
+#: READ + SUBSCRIBE READ port capabilities
 READ = PortCapability.READ | PortCapability.SUBS_READ
+
+#: WRITE + SUBSCRIBE WRITE port capabilities
 WRITE = PortCapability.WRITE | PortCapability.SUBS_WRITE
+
+#: full READ + WRITE port capabilities
 READ_WRITE = READ | WRITE
 
 
