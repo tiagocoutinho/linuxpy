@@ -224,14 +224,11 @@ class Sequencer(BaseDevice):
         super().__init__(SEQUENCER_PATH, **kwargs)
 
     def __iter__(self):
-        while True:
-            yield from self.read()
+        return event_stream(self)
 
     async def __aiter__(self):
-        async with EventReader(self, max_queue_size=10) as reader:
-            while True:
-                for event in await reader.aread():
-                    yield event
+        async for event in async_event_stream(self, maxsize=10):
+            yield event
 
     def _on_open(self):
         self.client_id = read_client_id(self)
