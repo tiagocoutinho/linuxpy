@@ -429,6 +429,9 @@ class Port:
             raise MidiError("Can only delete local port")
         self.sequencer.delete_port(self)
 
+    def send(self, event_type: Union[str, int, EventType], **kwargs):
+        self.sequencer.send(self, event_type, **kwargs)
+
 
 EVENT_TYPE_INFO = {
     EventType.SYSTEM: ("System", "result"),
@@ -500,7 +503,7 @@ class Event:
         if data is None:
             return self.type.name
         name, member_name = data
-        src = f"{self.source_client_id:>3}:{self.source_port_id:<3}"
+        src = f"{self.source_client_id:>3}:{self.source_port_id:<3} {self.dest_client_id:>3}:{self.dest_port_id:<3}"
         result = f"{src} {name:<20} "
         if self.type == EventType.SYSEX:
             result += " ".join(f"{i:02X}" for i in self.data)
