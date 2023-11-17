@@ -629,7 +629,7 @@ class Event:
 
     @queue.setter
     def queue(self, queue: int):
-        self.info.queue = queue
+        self.event.queue = queue
 
     client_id = source_client_id
     port_id = source_port_id
