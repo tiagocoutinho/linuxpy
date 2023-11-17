@@ -66,6 +66,7 @@ READ_WRITE = READ | WRITE
 
 PortT = Union[int, "Port"]
 AddressT = Union[snd_seq_addr, tuple[int, PortT]]
+EventT = Union[str, int, EventType]
 
 
 class MidiError(Exception):
@@ -180,6 +181,16 @@ def to_address(addr: AddressT) -> snd_seq_addr:
     if isinstance(addr, snd_seq_addr):
         return addr
     return snd_seq_addr(*map(int, addr))
+
+
+def to_event_type(event_type: EventT) -> EventType:
+    if isinstance(event_type, EventType):
+        return event_type
+    elif isinstance(event_type, int):
+        return EventType(event_type)
+    else:
+        event_type = event_type.replace(" ", "").replace("_", "").upper()
+        return EventType[event_type]
 
 
 class Version:
@@ -522,17 +533,10 @@ class Event:
         return payload
 
     @classmethod
-    def new(cls, etype: Union[str, int, EventType], **kwargs):
+    def new(cls, etype: EventT, **kwargs):
         data = kwargs.pop("data", b"")
         event = snd_seq_event()
-        if isinstance(etype, int):
-            etype = EventType(etype)
-        elif isinstance(etype, str):
-            etype = etype.replace(" ", "").replace("_", "").upper()
-            try:
-                etype = EventType[etype]
-            except KeyError:
-                pass
+        etype = to_event_type(etype)
         event.type = etype
         event_info = EVENT_TYPE_INFO.get(etype)
         if event_info:
