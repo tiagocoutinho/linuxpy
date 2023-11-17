@@ -362,6 +362,20 @@ class Sequencer(BaseDevice):
     def write(self, event: "Event"):
         self._fobj.write(bytes(event))
 
+    def send(
+        self,
+        port: PortT,
+        event_type: Union[str, int, EventType],
+        queue=QUEUE_DIRECT,
+        to: AddressT = SUBSCRIBERS,
+        **kwargs,
+    ):
+        event = Event.new(event_type, **kwargs)
+        event.queue = queue
+        event.source = to_address((self.client_id, port))
+        event.dest = to_address(to)
+        self.write(event)
+
 
 class Port:
     def __init__(self, sequencer: Sequencer, port: snd_seq_port_info):
