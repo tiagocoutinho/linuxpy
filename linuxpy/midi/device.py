@@ -5,7 +5,6 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 import asyncio
-import select
 
 from linuxpy import ctypes
 from linuxpy.ctypes import Struct, cint, sizeof
@@ -681,62 +680,6 @@ class Event:
 
     client_id = source_client_id
     port_id = source_port_id
-
-
-class EventReader:
-    def __init__(self, device: Sequencer, max_queue_size=1):
-        self.device = device
-        self._loop: Optional[asyncio.AbstractEventLoop] = None
-        self._selector: Optional[select.epoll] = None
-        self._buffer: Optional[asyncio.Queue] = None
-        self._max_queue_size = max_queue_size
-
-    async def __aenter__(self):
-        if self.device.is_blocking:
-            raise MidiError("Cannot use async event reader on blocking device")
-        self._buffer = asyncio.Queue(maxsize=self._max_queue_size)
-        self._selector = select.epoll()
-        self._loop = asyncio.get_event_loop()
-        self._loop.add_reader(self._selector.fileno(), self._on_event)
-        self._selector.register(self.device.fileno(), select.POLLIN)
-        return self
-
-    async def __aexit__(self, exc_type, exc_value, traceback):
-        self._selector.unregister(self.device.fileno())
-        self._loop.remove_reader(self._selector.fileno())
-        self._selector.close()
-        self._selector = None
-        self._loop = None
-        self._buffer = None
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, tb):
-        pass
-
-    def _on_event(self):
-        task = self._loop.create_future()
-        try:
-            self._selector.poll(0)  # avoid blocking
-            data = self.device.read()
-            task.set_result(data)
-        except Exception as error:
-            task.set_exception(error)
-
-        buffer = self._buffer
-        if buffer.full():
-            self.device.log.warn("missed event")
-            buffer.get_nowait()
-        buffer.put_nowait(task)
-
-    def read(self, timeout=None):
-        return self.device.read()
-
-    async def aread(self):
-        """Wait for next event or return last event"""
-        task = await self._buffer.get()
-        return await task
 
 
 def event_stream(seq):
