@@ -12,6 +12,8 @@
         <meta name="author" content="Tiago Coutinho">
       
       
+        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/midi/">
+      
       
         <link rel="prev" href="../input/">
       
@@ -19,8 +21,8 @@
         <link rel="next" href="../video/">
       
       
-      <link rel="icon" href="../img/logo-128x128.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.7">
     
     
       
@@ -347,8 +349,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#asyncio" class="md-nav__link">
-    asyncio
+  <a href="#system-information" class="md-nav__link">
+    System information
   </a>
   
 </li>
@@ -423,8 +425,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#asyncio" class="md-nav__link">
-    asyncio
+  <a href="#system-information" class="md-nav__link">
+    System information
   </a>
   
 </li>
@@ -455,30 +457,53 @@
 <p>Without further ado:</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>python
 
-&gt;&gt;&gt;<span class="w"> </span>from<span class="w"> </span>linuxpy.midi.device<span class="w"> </span>import<span class="w"> </span>Sequencer,<span class="w"> </span>event_stream
-
-&gt;&gt;&gt;<span class="w"> </span><span class="nv">seq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Sequencer<span class="o">()</span>
-&gt;&gt;&gt;<span class="w"> </span>with<span class="w"> </span>seq:
+&gt;&gt;&gt;<span class="w"> </span>from<span class="w"> </span>linuxpy.midi.device<span class="w"> </span>import<span class="w"> </span>Sequencer
+&gt;&gt;&gt;<span class="w"> </span>with<span class="w"> </span>Sequencer<span class="o">()</span><span class="w"> </span>as<span class="w"> </span>seq:
 <span class="w">        </span><span class="nv">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>seq.create_port<span class="o">()</span>
 <span class="w">        </span>port.connect_from<span class="o">(</span><span class="m">14</span>,<span class="w"> </span><span class="m">0</span><span class="o">)</span>
-<span class="w">        </span><span class="k">for</span><span class="w"> </span>event<span class="w"> </span><span class="k">in</span><span class="w"> </span>event_stream<span class="o">(</span>seq<span class="o">)</span>:
+<span class="w">        </span><span class="k">for</span><span class="w"> </span>event<span class="w"> </span><span class="k">in</span><span class="w"> </span>seq:
 <span class="w">            </span>print<span class="o">(</span>event<span class="o">)</span>
 <span class="w"> </span><span class="m">14</span>:0<span class="w">   </span>Note<span class="w"> </span>on<span class="w">              </span><span class="nv">channel</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">note</span><span class="o">=</span><span class="m">100</span>,<span class="w"> </span><span class="nv">velocity</span><span class="o">=</span><span class="m">3</span>,<span class="w"> </span><span class="nv">off_velocity</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">duration</span><span class="o">=</span><span class="m">0</span>
 <span class="w"> </span><span class="m">14</span>:0<span class="w">   </span>Clock<span class="w">                </span><span class="nv">queue</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">pad</span><span class="o">=</span>b<span class="s1">&#39;&#39;</span>
 <span class="w"> </span><span class="m">14</span>:0<span class="w">   </span>System<span class="w"> </span>exclusive<span class="w">     </span>F0<span class="w"> </span><span class="m">61</span><span class="w"> </span><span class="m">62</span><span class="w"> </span><span class="m">63</span><span class="w"> </span>F7
 <span class="w"> </span><span class="m">14</span>:0<span class="w">   </span>Note<span class="w"> </span>off<span class="w">             </span><span class="nv">channel</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">note</span><span class="o">=</span><span class="m">55</span>,<span class="w"> </span><span class="nv">velocity</span><span class="o">=</span><span class="m">3</span>,<span class="w"> </span><span class="nv">off_velocity</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">duration</span><span class="o">=</span><span class="m">0</span>
 </code></pre></div>
-<h2 id="asyncio">asyncio<a class="headerlink" href="#asyncio" title="Permanent link">#</a></h2>
-<p>asyncio is a first class citizen to linuxpy.midi:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>asyncio
+<h2 id="system-information">System information<a class="headerlink" href="#system-information" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>python
 
-&gt;&gt;&gt;<span class="w"> </span>from<span class="w"> </span>linuxpy.midi.device<span class="w"> </span>import<span class="w"> </span>Sequencer,<span class="w"> </span>async_event_stream
+&gt;&gt;&gt;<span class="w"> </span>from<span class="w"> </span>linuxpy.midi.device<span class="w"> </span>import<span class="w"> </span>Sequencer
+&gt;&gt;&gt;<span class="w"> </span><span class="nv">seq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Sequencer<span class="o">(</span><span class="s2">&quot;a midi client&quot;</span><span class="o">)</span>
+&gt;&gt;&gt;<span class="w"> </span>seq.open<span class="o">()</span>
 
-&gt;&gt;&gt;<span class="w"> </span><span class="nv">seq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Sequencer<span class="o">()</span>
-&gt;&gt;&gt;<span class="w"> </span>with<span class="w"> </span>seq:
+&gt;&gt;&gt;<span class="w"> </span>seq.version
+<span class="m">1</span>.0.2
+
+&gt;&gt;&gt;<span class="w"> </span>seq.client_info
+snd_seq_client_info<span class="o">(</span><span class="nv">client</span><span class="o">=</span><span class="m">128</span>,<span class="w"> </span><span class="nv">type</span><span class="o">=</span><span class="m">1</span>,<span class="w"> </span><span class="nv">name</span><span class="o">=</span>b<span class="s1">&#39;a midi client&#39;</span>,<span class="w"> </span><span class="nv">filter</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">multicast_filter</span><span class="o">=</span>b<span class="s1">&#39;&#39;</span>,<span class="w"> </span><span class="nv">event_filter</span><span class="o">=</span>b<span class="s1">&#39;&#39;</span>,<span class="w"> </span><span class="nv">num_ports</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">event_lost</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">card</span><span class="o">=</span>-1,<span class="w"> </span><span class="nv">pid</span><span class="o">=</span><span class="m">1288570</span>,<span class="w"> </span><span class="nv">reserved</span><span class="o">=</span>b<span class="s1">&#39;&#39;</span><span class="o">)</span>
+
+&gt;&gt;&gt;<span class="w"> </span>seq.running_mode
+snd_seq_running_info<span class="o">(</span><span class="nv">client</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">big_endian</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">cpu_mode</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">pad</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">reserved</span><span class="o">=</span>b<span class="s1">&#39;&#39;</span><span class="o">)</span>
+
+&gt;&gt;&gt;<span class="w"> </span>seq.system_info
+snd_seq_system_info<span class="o">(</span><span class="nv">queues</span><span class="o">=</span><span class="m">32</span>,<span class="w"> </span><span class="nv">clients</span><span class="o">=</span><span class="m">192</span>,<span class="w"> </span><span class="nv">ports</span><span class="o">=</span><span class="m">254</span>,<span class="w"> </span><span class="nv">channels</span><span class="o">=</span><span class="m">256</span>,<span class="w"> </span><span class="nv">cur_clients</span><span class="o">=</span><span class="m">3</span>,<span class="w"> </span><span class="nv">cur_queues</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">reserved</span><span class="o">=</span>b<span class="s1">&#39;&#39;</span><span class="o">)</span>
+
+
+<span class="c1">## Listing ports and clients</span>
+
+
+
+<span class="c1">## asyncio</span>
+
+asyncio<span class="w"> </span>is<span class="w"> </span>a<span class="w"> </span>first<span class="w"> </span>class<span class="w"> </span>citizen<span class="w"> </span>to<span class="w"> </span>linuxpy.midi:
+
+<span class="sb">```</span>bash
+$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>asyncio
+
+&gt;&gt;&gt;<span class="w"> </span>from<span class="w"> </span>linuxpy.midi.device<span class="w"> </span>import<span class="w"> </span>Sequencer
+&gt;&gt;&gt;<span class="w"> </span>with<span class="w"> </span>Sequencer<span class="o">()</span><span class="w"> </span>as<span class="w"> </span>seq:
 <span class="w">        </span><span class="nv">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>seq.create_port<span class="o">()</span>
 <span class="w">        </span>port.connect_from<span class="o">(</span><span class="m">14</span>,<span class="w"> </span><span class="m">0</span><span class="o">)</span>
-<span class="w">        </span>async<span class="w"> </span><span class="k">for</span><span class="w"> </span>event<span class="w"> </span><span class="k">in</span><span class="w"> </span>async_event_stream<span class="o">(</span>seq<span class="o">)</span>:
+<span class="w">        </span>async<span class="w"> </span><span class="k">for</span><span class="w"> </span>event<span class="w"> </span><span class="k">in</span><span class="w"> </span>seq:
 <span class="w">            </span>print<span class="o">(</span>event<span class="o">)</span>
 <span class="w"> </span><span class="m">14</span>:0<span class="w">   </span>Note<span class="w"> </span>on<span class="w">              </span><span class="nv">channel</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">note</span><span class="o">=</span><span class="m">100</span>,<span class="w"> </span><span class="nv">velocity</span><span class="o">=</span><span class="m">3</span>,<span class="w"> </span><span class="nv">off_velocity</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">duration</span><span class="o">=</span><span class="m">0</span>
 <span class="w"> </span><span class="m">14</span>:0<span class="w">   </span>Clock<span class="w">                </span><span class="nv">queue</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">pad</span><span class="o">=</span>b<span class="s1">&#39;&#39;</span>
@@ -489,12 +514,12 @@
 <p>A basic CLI is provided that allows listing MIDI clients &amp; ports
 and dumping MIDI sequencer events:</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>linuxpy.midi.cli<span class="w"> </span>ls
-<span class="w">   </span><span class="m">0</span>:0<span class="w">  </span>System<span class="w">                    </span>Timer<span class="w">                     </span>SUBS_READ<span class="p">|</span>WRITE<span class="p">|</span>READ
-<span class="w">   </span><span class="m">0</span>:1<span class="w">  </span>System<span class="w">                    </span>Announce<span class="w">                  </span>SUBS_READ<span class="p">|</span>READ
-<span class="w">  </span><span class="m">14</span>:0<span class="w">  </span>Midi<span class="w"> </span>Through<span class="w">              </span>Midi<span class="w"> </span>Through<span class="w"> </span>Port-0<span class="w">       </span>SUBS_WRITE<span class="p">|</span>SUBS_READ<span class="p">|</span>WRITE<span class="p">|</span>READ
-<span class="w"> </span><span class="m">128</span>:0<span class="w">  </span>aseqdump<span class="w">                  </span>aseqdump<span class="w">                  </span>SUBS_WRITE<span class="p">|</span>WRITE
+<span class="w"> </span>Port<span class="w">   </span>Client<span class="w">                   </span>Port<span class="w">                     </span>Type<span class="w">                           </span>Capabilities
+<span class="w">  </span><span class="m">0</span>:0<span class="w">   </span>System<span class="w">                   </span>Timer<span class="w">                    </span><span class="m">0</span><span class="w">                              </span>SR,<span class="w"> </span>W,<span class="w"> </span>R
+<span class="w">  </span><span class="m">0</span>:1<span class="w">   </span>System<span class="w">                   </span>Announce<span class="w">                 </span><span class="m">0</span><span class="w">                              </span>SR,<span class="w"> </span>R
+<span class="w"> </span><span class="m">14</span>:0<span class="w">   </span>Midi<span class="w"> </span>Through<span class="w">             </span>Midi<span class="w"> </span>Through<span class="w"> </span>Port-0<span class="w">      </span>PORT,<span class="w"> </span>SOFTWARE,<span class="w"> </span>MIDI_GENERIC<span class="w">   </span>SW,<span class="w"> </span>SR,<span class="w"> </span>W,<span class="w"> </span>R
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>linuxpy.midi.cli<span class="w"> </span><span class="m">0</span>:1<span class="w"> </span><span class="m">14</span>:0
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>linuxpy.midi.cli<span class="w"> </span>listen<span class="w"> </span><span class="m">0</span>:1<span class="w"> </span><span class="m">14</span>:0
 <span class="w">  </span><span class="m">0</span>:1<span class="w">   </span>Port<span class="w"> </span>subscribed<span class="w">      </span><span class="nv">sender</span><span class="o">=(</span><span class="nv">client</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="m">1</span><span class="o">)</span>,<span class="w"> </span><span class="nv">dest</span><span class="o">=(</span><span class="nv">client</span><span class="o">=</span><span class="m">128</span>,<span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="m">0</span><span class="o">)</span>
 <span class="w">  </span><span class="m">0</span>:1<span class="w">   </span>Port<span class="w"> </span>start<span class="w">           </span><span class="nv">client</span><span class="o">=</span><span class="m">128</span>,<span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="m">1</span>
 <span class="w">  </span><span class="m">0</span>:1<span class="w">   </span>Port<span class="w"> </span>subscribed<span class="w">      </span><span class="nv">sender</span><span class="o">=(</span><span class="nv">client</span><span class="o">=</span><span class="m">14</span>,<span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="m">0</span><span class="o">)</span>,<span class="w"> </span><span class="nv">dest</span><span class="o">=(</span><span class="nv">client</span><span class="o">=</span><span class="m">128</span>,<span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="m">1</span><span class="o">)</span>
@@ -558,7 +583,7 @@ and dumping MIDI sequencer events:</p>
     <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.81fa17fe.min.js"></script>
+      <script src="../assets/javascripts/bundle.aecac24b.min.js"></script>
       
     
   </body>
