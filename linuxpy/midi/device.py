@@ -219,7 +219,7 @@ class Version:
         self.patch = patch
 
     @classmethod
-    def from_tuple(cls, sequence: Iterable[str | int]):
+    def from_tuple(cls, sequence: Iterable[Union[str, int]]):
         return cls(*map(int, sequence))
 
     @classmethod
@@ -398,7 +398,7 @@ class Sequencer(BaseDevice):
         port: PortT,
         event_type: Union[str, int, EventType],
         queue: int = QUEUE_DIRECT,
-        to: AddressT | AddressesT = SUBSCRIBERS,
+        to: Union[AddressT, AddressesT] = SUBSCRIBERS,
         **kwargs,
     ):
         """
