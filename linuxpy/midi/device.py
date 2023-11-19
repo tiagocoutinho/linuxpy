@@ -227,17 +227,22 @@ class Version:
 
     def __eq__(self, other):
         if not isinstance(other, Version):
-            return False
+            raise ValueError("Comparison with non-Version object")
         return self.tuple == other.tuple
 
     def __lt__(self, other):
-        if isinstance(other, Version):
-            seq = other.tuple
-        elif isinstance(other, Sequence):
-            seq = tuple(other)
-        else:
+        if not isinstance(other, Version):
             raise ValueError("Comparison with non-Version object")
-        return self.tuple < seq
+        return self.tuple < other.tuple
+
+    def __le__(self, other):
+        return self == other or self < other
+
+    def __gt__(self, other):
+        return not self <= other
+
+    def __ge__(self, other):
+        return not self < other
 
     @property
     def tuple(self):
