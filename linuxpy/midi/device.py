@@ -254,7 +254,7 @@ class Sequencer(BaseDevice):
         self.name = name
         self.client_id = -1
         self.version: Optional[Version] = None
-        self._local_ports = {}
+        self._local_ports = set()
         self.subscriptions = set()
         super().__init__(SEQUENCER_PATH, **kwargs)
 
@@ -274,7 +274,7 @@ class Sequencer(BaseDevice):
 
     def _on_close(self):
         # TODO: delete all open ports
-        for port in self._local_ports.values():
+        for port in set(self._local_ports):
             self.delete_port(port)
 
     @property
@@ -290,10 +290,14 @@ class Sequencer(BaseDevice):
         return read_system_info(self)
 
     @property
-    def ports(self) -> Iterable["Port"]:
+    def iter_ports(self) -> Iterable["Port"]:
         for client in iter_read_clients(self):
             for port in iter_read_ports(self, client.client):
                 yield Port(self, port)
+
+    @property
+    def ports(self) -> Sequence["Port"]:
+        return list(self.iter_ports)
 
     def create_port(
         self,
@@ -311,7 +315,7 @@ class Sequencer(BaseDevice):
         port_info.synth_voices = 0
         create_port(self, port_info)
         port = Port(self, port_info)
-        self._local_ports[port_info.addr.port] = port
+        self._local_ports.add(port_info.addr.port)
         return port
 
     def delete_port(self, port: Union[int, "Port"]):
@@ -320,11 +324,14 @@ class Sequencer(BaseDevice):
             port_info = snd_seq_port_info(addr=snd_seq_addr(client=self.client_id, port=port))
         else:
             port_info = port.info
+            if port_info.addr.client != self.client_id:
+                raise MidiError("Cannot delete non local port")
             addr = port_info.addr.client, port_info.addr.port
         # unsubscribe first
         for uid in set(self.subscriptions):
             if addr == uid[0:2] or addr == uid[2:4]:
                 self.unsubscribe(*uid)
+        self._local_ports.remove(addr[1])
         delete_port(self, port_info)
 
     def subscribe(self, src_client_id: int, src_port_id: int, dest_client_id: int, dest_port_id: int):
@@ -380,6 +387,12 @@ class Sequencer(BaseDevice):
         to: AddressT | AddressesT = SUBSCRIBERS,
         **kwargs,
     ):
+        """
+        Send a message from a specific port to the destination address(es)
+
+        event_type can be an instance of EventType or the equivalent number or
+        a string matching the event type (ex: "noteon", "NOTEON" "note)
+        """
         event = Event.new(event_type, **kwargs)
         event.queue = queue
         event.source = to_address((self.client_id, port))
@@ -396,6 +409,7 @@ class Port:
     def __init__(self, sequencer: Sequencer, port: snd_seq_port_info):
         self.sequencer = sequencer
         self.info = port
+        # self.connected_to: set[tuple[int, int]] = set()
 
     def __repr__(self):
         prefix = self.is_local and "Local" or ""
@@ -450,18 +464,23 @@ class Port:
 
     def disconnect_from(self, src_client_id, src_port_id):
         if not self.is_local:
-            raise MidiError("Can only connect local port")
+            raise MidiError("Can only disconnect local port")
         self.sequencer.unsubscribe(src_client_id, src_port_id, self.client_id, self.port_id)
 
     # MIDI Out
     def connect_to(self, dest_client_id, dest_port_id):
         if not self.is_local:
             raise MidiError("Can only connect local port")
+        # self.connected_to.add((dest_client_id, dest_port_id))
         self.sequencer.subscribe(self.client_id, self.port_id, dest_client_id, dest_port_id)
 
     def disconnect_to(self, dest_client_id, dest_port_id):
         if not self.is_local:
-            raise MidiError("Can only connect local port")
+            raise MidiError("Can only disconnect local port")
+        # addr = dest_client_id, dest_port_id
+        # if addr not in self.connected_to:
+        #    raise MidiError(f"Port is not connected to {dest_client_id}:{dest_port_id}")
+        # self.connected_to.remove(addr)
         self.sequencer.unsubscribe(self.client_id, self.port_id, dest_client_id, dest_port_id)
 
     def delete(self):
@@ -625,20 +644,16 @@ class Event:
         return self.event.source
 
     @source.setter
-    def source(self, address: Union[snd_seq_addr, tuple[int, int]]):
-        if isinstance(address, Sequence):
-            address = snd_seq_addr(*address)
-        self.event.source = address
+    def source(self, address: AddressT):
+        self.event.source = to_address(address)
 
     @property
     def dest(self) -> snd_seq_addr:
         return self.event.dest
 
     @dest.setter
-    def dest(self, address: Union[snd_seq_addr, tuple[int, int]]):
-        if isinstance(address, Sequence):
-            address = snd_seq_addr(*address)
-        self.event.dest = address
+    def dest(self, address: AddressT):
+        self.event.dest = to_address(address)
 
     @property
     def source_client_id(self) -> int:
