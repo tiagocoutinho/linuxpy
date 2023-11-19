@@ -104,7 +104,7 @@ class EventType(enum.IntEnum):
     NONE = 0xFF
 
 
-class Client(enum.IntEnum):
+class ClientType(enum.IntEnum):
     SYSTEM = 0x0
     DUMMY = 14  # midi through
     OSS = 15  # oss sequencer emulator

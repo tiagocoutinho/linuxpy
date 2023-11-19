@@ -78,7 +78,7 @@ MACRO_ENUMS = [
     CEnum("TimeMode", "SNDRV_SEQ_TIME_MODE_", klass="IntFlag"),
     CEnum("Priority", "SNDRV_SEQ_PRIORITY_", klass="IntFlag"),
     CEnum("EventType", "SNDRV_SEQ_EVENT_"),
-    CEnum("Client", "SNDRV_SEQ_CLIENT_"),
+    CEnum("ClientType", "SNDRV_SEQ_CLIENT_"),
     CEnum("Filter", "SNDRV_SEQ_FILTER_", klass="IntFlag"),
     CEnum("Remove", "SNDRV_SEQ_REMOVE_", klass="IntFlag"),
     CEnum("PortSystem", "SNDRV_SEQ_PORT_SYSTEM_", klass="IntFlag"),
