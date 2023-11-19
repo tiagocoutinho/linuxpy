@@ -5,9 +5,10 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 import asyncio
+from enum import IntEnum
 
 from linuxpy import ctypes
-from linuxpy.ctypes import Struct, cint, sizeof
+from linuxpy.ctypes import Struct, cint, cvoidp, sizeof
 from linuxpy.device import DEV_PATH, BaseDevice
 from linuxpy.ioctl import ioctl
 from linuxpy.midi.raw import (
@@ -32,8 +33,22 @@ from linuxpy.util import add_reader_asyncio
 ALSA_PATH = DEV_PATH / "snd"
 SEQUENCER_PATH = ALSA_PATH / "seq"
 
-SYSEX_START = 0xF0
-SYSEX_END = 0xF7
+
+class RealtimeStatusCode(IntEnum):
+    REALTIME = 0xF0
+    SYSEX_START = 0xF0
+    MIDI_TIME_CODE = 0xF1
+    SONG_POSITION = 0xF2
+    SONG_SELECT = 0xF3
+    TUNE_REQUEST = 0xF6
+    SYSEX_END = 0xF7
+    TIMING_CLOCK = 0xF8
+    START = 0xFA
+    CONTINUE = 0xFB
+    STOP = 0xFC
+    ACTIVE_SENSING = 0xFE
+    RESET = 0xFF
+
 
 #: unknown source
 ADDRESS_UNKNOWN = 253
@@ -355,7 +370,7 @@ class Sequencer(BaseDevice):
             if event.is_variable_length_type:
                 size = event.event.data.ext.len
                 nb = (size + EVENT_SIZE - 1) // EVENT_SIZE
-                event.data = payload[i * EVENT_SIZE : i * EVENT_SIZE + size]
+                event.data = payload[i * EVENT_SIZE : i * EVENT_SIZE + size][1:-1]
                 i += nb
             yield event
 
@@ -548,6 +563,9 @@ def struct_text(obj):
 
 
 class Event:
+    SIXEX_START = RealtimeStatusCode.SYSEX_START.to_bytes(1, "big")
+    SIXEX_END = RealtimeStatusCode.SYSEX_END.to_bytes(1, "big")
+
     def __init__(self, event: snd_seq_event):
         self.event = event
         self.data = b""
@@ -564,20 +582,22 @@ class Event:
         src = f"{self.source_client_id:>3}:{self.source_port_id:<3} {self.dest_client_id:>3}:{self.dest_port_id:<3}"
         result = f"{src} {name:<20} "
         if self.type == EventType.SYSEX:
-            result += " ".join(f"{i:02X}" for i in self.data)
+            result += " ".join(f"{i:02X}" for i in self.raw_data)
         elif member_name:
             member = getattr(self.event.data, member_name)
             result += struct_text(member)
         return result
 
     def __bytes__(self):
-        payload = bytes(self.event)
+        if self.type == EventType.SYSEX:
+            self.event.flags = EventLength.VARIABLE
         if self.is_variable_length_type:
-            if self.data:
-                size = len(self.data)
-                total_size = (size + EVENT_SIZE - 1) // EVENT_SIZE * EVENT_SIZE
-                payload += self.data + (total_size - size) * b"\x00"
-        return payload
+            data = self.raw_data
+            self.event.data.ext.len = len(data)
+            self.event.data.ext.ptr = cvoidp()
+            return bytes(self.event) + data
+        else:
+            return bytes(self.event)
 
     @classmethod
     def new(cls, etype: EventT, **kwargs):
@@ -598,6 +618,12 @@ class Event:
         result = cls(event)
         result.data = data
         return result
+
+    @property
+    def raw_data(self) -> bytes:
+        if self.type == EventType.SYSEX and not self.data.startswith(self.SIXEX_START):
+            return self.SIXEX_START + self.data + self.SIXEX_END
+        return self.data
 
     @property
     def type(self) -> EventType:

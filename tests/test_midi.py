@@ -197,6 +197,27 @@ def assert_noteon_event(event, source_port, target_port):
     assert "<Event type=NOTEON>" == repr(event)
 
 
+def assert_sysex_event(event, source_port, target_port):
+    assert event.type == EventType.SYSEX
+    assert event.client_id == event.event.source.client
+    assert event.port_id == event.event.source.port
+    assert event.source_client_id == source_port.client_id
+    assert event.source_port_id == source_port.port_id
+    assert event.dest_client_id == target_port.client_id
+    assert event.dest_port_id == target_port.port_id
+    assert event.source.client == source_port.client_id
+    assert event.source.port == source_port.port_id
+    assert event.dest.client == target_port.client_id
+    assert event.dest.port == target_port.port_id
+
+    assert event.queue == QUEUE_DIRECT
+    assert event.is_variable_length_type
+    assert event.data == b"123"
+    assert event.raw_data == b"\xf0123\xf7"
+    assert f"{event.client_id}:{event.port_id}" in str(event)
+    assert "<Event type=SYSEX>" == repr(event)
+
+
 @skip(when=not is_sequencer_available(), reason="MIDI sequencer is not prepared")
 @test("delete port")
 def _():
@@ -298,6 +319,12 @@ def _():
         # object gets garbage collectecd
         for event in local:
             assert_noteon_event(event, remote_port, local_port)
+            break
+
+        remote_port.send("sysex", data=b"123")
+
+        for event in local:
+            assert_sysex_event(event, remote_port, local_port)
             break
 
 
