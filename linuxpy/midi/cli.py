@@ -8,11 +8,14 @@ import argparse
 import asyncio
 
 from linuxpy.midi.device import (
+    EVENT_TYPE_INFO,
+    EventType,
     PortCapability,
     PortType,
     Sequencer,
     iter_read_clients,
     iter_read_ports,
+    struct_text,
 )
 
 
@@ -21,12 +24,31 @@ def address(text):
     return int(client), int(port)
 
 
+def event_text(event):
+    data = EVENT_TYPE_INFO.get(event.type)
+    if data is None:
+        return event.type.name
+    name, member_name = data
+    result = f"{event.client_id:>3}:{event.port_id:<3} {name:<20} "
+    if event.type == EventType.SYSEX:
+        result += " ".join(f"{i:02X}" for i in event.raw_data)
+    elif event.type == EventType.CLOCK:
+        queue_ctrl = event.queue_ctrl
+        real_time = queue_ctrl.param.time.time
+        timestamp = real_time.tv_sec + real_time.tv_nsec * 1e-9
+        result += f"queue={queue_ctrl.queue} {timestamp=}"
+    elif member_name:
+        member = getattr(event.event.data, member_name)
+        result += struct_text(member)
+    return result
+
+
 def listen(seq, args):
     for addr in args.addr:
         port = seq.create_port(f"listen on {addr}")
         port.connect_from(*addr)
     for event in seq:
-        print(event)
+        print(event_text(event))
 
 
 async def async_listen(seq, args):
@@ -34,7 +56,7 @@ async def async_listen(seq, args):
         port = seq.create_port(f"listen on {addr}")
         port.connect_from(*addr)
     async for event in seq:
-        print(event)
+        print(event_text(event))
 
 
 def ls(seq, _):
