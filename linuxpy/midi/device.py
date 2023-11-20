@@ -5,6 +5,7 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 import asyncio
+import itertools
 from enum import IntEnum
 
 from linuxpy import ctypes
@@ -24,6 +25,10 @@ from linuxpy.midi.raw import (
     snd_seq_event,
     snd_seq_port_info,
     snd_seq_port_subscribe,
+    snd_seq_query_subs,
+    snd_seq_queue_client,
+    snd_seq_queue_info,
+    snd_seq_queue_status,
     snd_seq_running_info,
     snd_seq_system_info,
 )
@@ -89,47 +94,34 @@ class MidiError(Exception):
 
 
 def read_pversion(seq) -> int:
-    pversion = cint()
-    ioctl(seq, IOC.PVERSION, pversion)
-    return pversion.value
+    return ioctl(seq, IOC.PVERSION, cint()).value
 
 
 def read_system_info(seq) -> snd_seq_system_info:
-    info = snd_seq_system_info()
-    ioctl(seq, IOC.SYSTEM_INFO, info)
-    return info
+    return ioctl(seq, IOC.SYSTEM_INFO, snd_seq_system_info())
 
 
 def read_running_mode(seq) -> snd_seq_running_info:
-    info = snd_seq_running_info()
-    ioctl(seq, IOC.RUNNING_MODE, info)
-    return info
+    return ioctl(seq, IOC.RUNNING_MODE, snd_seq_running_info())
 
 
 def read_client_id(seq) -> int:
-    client_id = cint()
-    ioctl(seq, IOC.CLIENT_ID, client_id)
-    return client_id.value
+    return ioctl(seq, IOC.CLIENT_ID, cint()).value
 
 
 def read_client_info(seq, client_id: int) -> snd_seq_client_info:
-    client = snd_seq_client_info(client=client_id)
-    ioctl(seq, IOC.GET_CLIENT_INFO, client)
-    return client
+    return ioctl(seq, IOC.GET_CLIENT_INFO, snd_seq_client_info(client=client_id))
 
 
 def write_client_info(seq, client: snd_seq_client_info):
-    ioctl(seq, IOC.SET_CLIENT_INFO, client)
-    return client
+    return ioctl(seq, IOC.SET_CLIENT_INFO, client)
 
 
 def next_client(seq, client_id: int) -> Optional[snd_seq_client_info]:
-    client = snd_seq_client_info(client=client_id)
     try:
-        ioctl(seq, IOC.QUERY_NEXT_CLIENT, client)
+        return ioctl(seq, IOC.QUERY_NEXT_CLIENT, snd_seq_client_info(client=client_id))
     except FileNotFoundError:
-        return None
-    return client
+        pass
 
 
 def iter_read_clients(seq) -> Iterable[snd_seq_client_info]:
@@ -143,8 +135,7 @@ def read_port_info(seq, client_id: int, port_id: int) -> snd_seq_port_info:
     port = snd_seq_port_info(client=client_id)
     port.addr.client = client_id
     port.addr.port = port_id
-    ioctl(seq, IOC.GET_PORT_INFO, port)
-    return port
+    return ioctl(seq, IOC.GET_PORT_INFO, port)
 
 
 def next_port(seq, client_id: int, port_id: int) -> Optional[snd_seq_port_info]:
@@ -152,10 +143,9 @@ def next_port(seq, client_id: int, port_id: int) -> Optional[snd_seq_port_info]:
     port.addr.client = client_id
     port.addr.port = port_id
     try:
-        ioctl(seq, IOC.QUERY_NEXT_PORT, port)
+        return ioctl(seq, IOC.QUERY_NEXT_PORT, port)
     except FileNotFoundError:
-        return None
-    return port
+        pass
 
 
 def iter_read_ports(seq, client_id: int) -> Iterable[snd_seq_port_info]:
@@ -166,11 +156,11 @@ def iter_read_ports(seq, client_id: int) -> Iterable[snd_seq_port_info]:
 
 
 def create_port(seq, port: snd_seq_port_info):
-    ioctl(seq, IOC.CREATE_PORT, port)
+    return ioctl(seq, IOC.CREATE_PORT, port)
 
 
 def delete_port(seq, port: snd_seq_port_info):
-    ioctl(seq, IOC.DELETE_PORT, port)
+    return ioctl(seq, IOC.DELETE_PORT, port)
 
 
 def subscribe(seq, src_client_id: int, src_port_id: int, dest_client_id: int, dest_port_id: int):
@@ -179,7 +169,7 @@ def subscribe(seq, src_client_id: int, src_port_id: int, dest_client_id: int, de
     subs.sender.port = src_port_id
     subs.dest.client = dest_client_id
     subs.dest.port = dest_port_id
-    ioctl(seq, IOC.SUBSCRIBE_PORT, subs)
+    return ioctl(seq, IOC.SUBSCRIBE_PORT, subs)
 
 
 def unsubscribe(seq, src_client_id: int, src_port_id: int, dest_client_id: int, dest_port_id: int):
@@ -188,7 +178,41 @@ def unsubscribe(seq, src_client_id: int, src_port_id: int, dest_client_id: int, 
     subs.sender.port = src_port_id
     subs.dest.client = dest_client_id
     subs.dest.port = dest_port_id
-    ioctl(seq, IOC.UNSUBSCRIBE_PORT, subs)
+    return ioctl(seq, IOC.UNSUBSCRIBE_PORT, subs)
+
+
+def iter_read_subscribers(seq, client_id: int, port_id: int):
+    for i in itertools.count():
+        value = snd_seq_query_subs()
+        value.root.client = client_id
+        value.root.port = port_id
+        value.index = i
+        ioctl(seq, IOC.QUERY_SUBS, value)
+        if value.index == value.num_subs:
+            break
+        yield value
+        if value.index + 1 == value.num_subs:
+            break
+
+
+def create_queue(seq) -> snd_seq_queue_info:
+    return ioctl(seq, IOC.CREATE_QUEUE, snd_seq_queue_info())
+
+
+def delete_queue(seq, queue: int) -> snd_seq_queue_info:
+    return ioctl(seq, IOC.DELETE_QUEUE, snd_seq_queue_info(queue=queue))
+
+
+def write_queue_info(seq, queue: snd_seq_queue_info):
+    return ioctl(seq, IOC.SET_QUEUE_INFO, queue)
+
+
+def read_queue_status(seq, queue: int):
+    return ioctl(seq, IOC.GET_QUEUE_STATUS, snd_seq_queue_status(queue=queue))
+
+
+def read_queue_client(seq, queue: int):
+    return ioctl(seq, IOC.GET_QUEUE_CLIENT, snd_seq_queue_client(queue=queue))
 
 
 def to_address(addr: AddressT) -> snd_seq_addr:
@@ -579,10 +603,15 @@ class Event:
         if data is None:
             return self.type.name
         name, member_name = data
-        src = f"{self.source_client_id:>3}:{self.source_port_id:<3} {self.dest_client_id:>3}:{self.dest_port_id:<3}"
-        result = f"{src} {name:<20} "
+        addr = f"{self.source_client_id:}:{self.source_port_id:} {self.dest_client_id:}:{self.dest_port_id:}"
+        result = f"{addr} {name} "
         if self.type == EventType.SYSEX:
             result += " ".join(f"{i:02X}" for i in self.raw_data)
+        elif self.type == EventType.CLOCK:
+            queue_ctrl = self.queue_ctrl
+            real_time = queue_ctrl.param.time.time
+            timestamp = real_time.tv_sec + real_time.tv_nsec * 1e-9
+            result += f"queue={queue_ctrl.queue} {timestamp=}"
         elif member_name:
             member = getattr(self.event.data, member_name)
             result += struct_text(member)
@@ -663,6 +692,10 @@ class Event:
     @property
     def connect(self):
         return self.event.data.connect
+
+    @property
+    def queue_ctrl(self):
+        return self.event.data.queue
 
     @property
     def source(self) -> snd_seq_addr:
