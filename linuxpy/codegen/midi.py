@@ -46,14 +46,6 @@ class snd_seq_real_time(Struct):
     ]
 
 
-# It's a Union so not automatically generated
-class snd_seq_timestamp(Union):
-    _fields_ = [
-        ("tick", snd_seq_tick_time_t),
-        ("time", snd_seq_real_time),
-    ]
-
-
 # Defined in /usr/include/sound/asound.h
 class snd_timer_id(Struct):
     _fields_ = [
@@ -85,7 +77,7 @@ MACRO_ENUMS = [
     CEnum("PortCapability", "SNDRV_SEQ_PORT_CAP_", klass="IntFlag"),
     CEnum("PortType", "SNDRV_SEQ_PORT_TYPE_", klass="IntFlag"),
     CEnum("PortFlag", "SNDRV_SEQ_PORT_FLG_", klass="IntFlag"),
-    CEnum("QueueFlga", "SNDRV_SEQ_QUEUE_FLG_", klass="IntFlag"),
+    CEnum("QueueFlag", "SNDRV_SEQ_QUEUE_FLG_", klass="IntFlag"),
     CEnum("Timer", "SNDRV_SEQ_TIMER_"),
     CEnum("QuerySubscription", "SNDRV_SEQ_QUERY_SUBS_"),
     CEnum("IOC", "SNDRV_SEQ_IOCTL_"),

@@ -37,11 +37,9 @@ snd_seq_running_info(client=0, big_endian=0, cpu_mode=0, pad=0, reserved=b'')
 
 >>> seq.system_info
 snd_seq_system_info(queues=32, clients=192, ports=254, channels=256, cur_clients=3, cur_queues=0, reserved=b'')
-
+```
 
 ## Listing ports and clients
-
-
 
 ## asyncio
 

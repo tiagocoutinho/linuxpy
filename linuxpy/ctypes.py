@@ -99,5 +99,8 @@ class timespec(Struct):
         ("nsecs", ctypes.c_long),
     ]
 
+    def timestamp(self):
+        return self.secs + self.nsecs * 1e-9
+
 
 c = ctypes.cdll.LoadLibrary("libc.so.6")
