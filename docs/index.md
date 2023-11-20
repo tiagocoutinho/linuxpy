@@ -1,5 +1,11 @@
 # Welcome to linuxpy
 
+[![linuxpy][pypi-version]](https://pypi.python.org/pypi/linuxpy)
+[![Python Versions][pypi-python-versions]](https://pypi.python.org/pypi/linuxpy)
+![License][license]
+[![CI][CI]](https://github.com/tiagocoutinho/linuxpy/actions/workflows/ci.yml)
+
+
 Human friendly interface to linux subsystems using python.
 
 Provides python access to several linux subsystems like V4L2, input and MIDI.
@@ -33,8 +39,6 @@ To run docs you'll need:
 ```bash
 $ pip install linuxpy[docs]
 ```
-
-
 
 [pypi-python-versions]: https://img.shields.io/pypi/pyversions/linuxpy.svg
 [pypi-version]: https://img.shields.io/pypi/v/linuxpy.svg
