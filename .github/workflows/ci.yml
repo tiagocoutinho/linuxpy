@@ -29,6 +29,7 @@ jobs:
         sudo udevadm control --reload-rules
         sudo udevadm trigger
     - name: Set up Python ${{ matrix.python-version }}
+      id: setuppy
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
@@ -53,11 +54,6 @@ jobs:
         python -m build
         twine check dist/*
     - name: Tests
+      id: tests
       run: |
-        pwd
-        sudo -s -u $USER bash -c pwd
-        type python
-        sudo -s -E -u $USER bash -c 'type python'
-        sudo -s -E -u $USER bash -c 'python -m ward'
-    - name: Tests under bash
-      run: sudo -s -u $USER bash -c ward
+        sudo -s -E -u $USER bash -c '${{ steps.setuppy.outputs.python-path }} -m ward'
