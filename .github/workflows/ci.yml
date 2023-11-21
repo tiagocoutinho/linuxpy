@@ -56,6 +56,8 @@ jobs:
       run: |
         pwd
         sudo -s -u $USER bash -c pwd
-        sudo -s -E -u $USER bash -c ward
+        type python
+        sudo -s -E -u $USER bash -c 'type python'
+        sudo -s -E -u $USER bash -c 'python -m ward'
     - name: Tests under bash
       run: sudo -s -u $USER bash -c ward
