@@ -56,6 +56,6 @@ jobs:
       run: |
         pwd
         sudo -s -u $USER bash -c pwd
-        sudo -s -E -u $USER ward
+        sudo -s -E -u $USER bash -c ward
     - name: Tests under bash
       run: sudo -s -u $USER bash -c ward
