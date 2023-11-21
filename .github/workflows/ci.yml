@@ -53,4 +53,6 @@ jobs:
         python -m build
         twine check dist/*
     - name: Tests
-      run: ward
+      run: |
+        pwd
+        sudo -s -u $USER pwd
