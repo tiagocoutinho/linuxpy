@@ -29,6 +29,7 @@ jobs:
         cat /etc/udev/rules.d/99-$USER.rules
         sudo udevadm control --reload-rules
         sudo udevadm trigger
+        ls -lsa /dev/snd
     - name: Set up Python ${{ matrix.python-version }}
       id: setuppy
       uses: actions/setup-python@v4
