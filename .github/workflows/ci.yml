@@ -97,7 +97,7 @@ jobs:
     - name: Create and switch to gh-pages branch
       run: |
         git checkout gh-pages
-        #git fetch origin gh-pages:gh-pages
+        git fetch origin gh-pages:gh-pages
 
     - name: Copy coverage HTML report from artifact
       run: |
