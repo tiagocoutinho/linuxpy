@@ -30,13 +30,13 @@ $ python
 1.0.2
 
 >>> seq.client_info
-snd_seq_client_info(client=128, type=1, name=b'a midi client', filter=0, multicast_filter=b'', event_filter=b'', num_ports=0, event_lost=0, card=-1, pid=1288570, reserved=b'')
+snd_seq_client_info(client=128, type=1, name=b'a midi client', filter=0, multicast_filter=b'', event_filter=b'', num_ports=0, event_lost=0, card=-1, pid=1288570)
 
 >>> seq.running_mode
-snd_seq_running_info(client=0, big_endian=0, cpu_mode=0, pad=0, reserved=b'')
+snd_seq_running_info(client=0, big_endian=0, cpu_mode=0, pad=0)
 
 >>> seq.system_info
-snd_seq_system_info(queues=32, clients=192, ports=254, channels=256, cur_clients=3, cur_queues=0, reserved=b'')
+snd_seq_system_info(queues=32, clients=192, ports=254, channels=256, cur_clients=3, cur_queues=0)
 ```
 
 ## Listing ports and clients

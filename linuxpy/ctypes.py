@@ -63,7 +63,8 @@ def memcpy(dst, src):
 class Struct(ctypes.Structure):
     def __repr__(self):
         name = type(self).__name__
-        fields = ", ".join(f"{field[0]}={getattr(self, field[0])}" for field in self._fields_)
+        fields = filter(lambda field: field[0] != "reserved", self._fields_)
+        fields = ", ".join(f"{field[0]}={getattr(self, field[0])}" for field in fields)
         return f"{name}({fields})"
 
     def __iter__(self):
