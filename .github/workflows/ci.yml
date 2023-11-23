@@ -79,5 +79,6 @@ jobs:
       if: github.event_name == 'pull_request'
       with:
         path: code-coverage-results.md
+        recreate: true
     - name: Write to Job Summary
       run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
