@@ -77,7 +77,6 @@ jobs:
       permissions:
         pull-requests: write
       with:
-        recreate: true
         path: code-coverage-results.md
     - name: Write to Job Summary
       run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
