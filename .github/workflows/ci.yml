@@ -74,8 +74,6 @@ jobs:
     - name: Add Coverage PR Comment
       uses: marocchino/sticky-pull-request-comment@v2
       if: github.event_name == 'pull_request'
-      permissions:
-        pull-requests: write
       with:
         path: code-coverage-results.md
     - name: Write to Job Summary
