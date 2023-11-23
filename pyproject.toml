@@ -86,7 +86,7 @@ show-slowest = 3
 [tool.ward.plugins.coverage]
 branch = true
 omit = ["*test*"]
-report_type = ["term", "html"]
+report_type = ["term", "html", "json", "xml"]
 report = {skip_empty = true, show_missing = true}
 
 

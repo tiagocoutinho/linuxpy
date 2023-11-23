@@ -9,7 +9,7 @@ on:
 jobs:
   tests:
     name: "Python ${{ matrix.python-version }}"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-latest"
 
     strategy:
       matrix:
@@ -17,17 +17,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
-    - name: Setup udev device correctly
+      uses: actions/checkout@v4
+    - name: Setup user groups
       run: |
         sudo usermod -aG input,audio $USER
-        sudo -s -u ${USER} bash -c 'whoami && groups'
-        sudo modprobe -i uinput
-        echo KERNEL==\"uinput\", SUBSYSTEM==\"misc\" GROUP=\"docker\", MODE:=\"0666\" | sudo tee /etc/udev/rules.d/99-$USER.rules
-        echo KERNEL==\"event[0-9]*\", SUBSYSTEM==\"input\" GROUP=\"docker\", MODE:=\"0666\" | sudo tee -a /etc/udev/rules.d/99-$USER.rules
-        cat /etc/udev/rules.d/99-$USER.rules
-        sudo udevadm control --reload-rules
-        sudo udevadm trigger
     - name: Set up Python ${{ matrix.python-version }}
       id: setuppy
       uses: actions/setup-python@v4
@@ -48,7 +41,8 @@ jobs:
         pip install --disable-pip-version-check -e .[dev]
     - name: Linting
       run: |
-        scripts/lint.sh
+        ruff check --diff --output-format=github linuxpy tests examples
+        ruff format linuxpy tests examples --check
     - name: Build package
       run: |
         python -m build
@@ -57,3 +51,25 @@ jobs:
       id: tests
       run: |
         sudo -s -E -u $USER bash -c '${{ steps.setuppy.outputs.python-path }} -m ward'
+
+    - name: Upload coverage data
+      uses: actions/upload-artifact@v3
+      with:
+        name: html_report
+        path: ./htmlcov/
+    - name: Code Coverage Summary Report
+      uses: irongut/CodeCoverageSummary@v1.3.0
+      with:
+        filename: coverage.xml
+        badge: true
+        format: 'markdown'
+        output: 'both'
+    - name: Add Coverage PR Comment
+      uses: marocchino/sticky-pull-request-comment@v2
+      if: github.event_name == 'pull_request'
+      with:
+
+        recreate: true
+        path: code-coverage-results.md
+    - name: Write to Job Summary
+      run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
