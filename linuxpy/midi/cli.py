@@ -19,11 +19,6 @@ from linuxpy.midi.device import (
 )
 
 
-def address(text):
-    client, port = text.split(":", 1)
-    return int(client), int(port)
-
-
 def event_text(event):
     data = EVENT_TYPE_INFO.get(event.type)
     if data is None:
@@ -59,6 +54,11 @@ async def async_listen(seq, args):
         print(event_text(event))
 
 
+def iter_all_ports(seq):
+    for client in iter_read_clients(seq):
+        yield from iter_read_ports(seq, client.client)
+
+
 def ls(seq, _):
     print(f"{'Port':^7} {'Client':<24} {'Port':<24} {'Type':<30} {'Capabilities'}")
     for client in iter_read_clients(seq):
@@ -72,7 +72,16 @@ def ls(seq, _):
             print(f"{port.addr.client:3}:{port.addr.port:<3} {cname:<24} {pname:<24} {ptype:<30} {caps}")
 
 
-def cli(args=None):
+def cli(seq, args=None):
+    ports = {(port.addr.client, port.addr.port) for port in iter_all_ports(seq)}
+
+    def address(text):
+        client, port = text.split(":", 1)
+        addr = int(client), int(port)
+        if addr not in ports:
+            raise ValueError(f"Port {text} not found")
+        return addr
+
     parser = argparse.ArgumentParser()
     sub_parsers = parser.add_subparsers(
         title="sub-commands", description="valid sub-commands", help="select one command", required=True, dest="command"
@@ -95,9 +104,9 @@ def run(seq, args):
 
 
 def main(args=None):
-    parser = cli(args)
-    args = parser.parse_args(args=args)
     with Sequencer("linuxpy midi cli") as seq:
+        parser = cli(seq, args)
+        args = parser.parse_args(args=args)
         try:
             run(seq, args)
         except KeyboardInterrupt:
