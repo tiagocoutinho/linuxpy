@@ -72,7 +72,7 @@ def ls(seq, _):
             print(f"{port.addr.client:3}:{port.addr.port:<3} {cname:<24} {pname:<24} {ptype:<30} {caps}")
 
 
-def cli(seq, args=None):
+def cli(seq):
     ports = {(port.addr.client, port.addr.port) for port in iter_all_ports(seq)}
 
     def address(text):
@@ -105,7 +105,7 @@ def run(seq, args):
 
 def main(args=None):
     with Sequencer("linuxpy midi cli") as seq:
-        parser = cli(seq, args)
+        parser = cli(seq)
         args = parser.parse_args(args=args)
         try:
             run(seq, args)

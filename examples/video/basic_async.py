@@ -4,6 +4,7 @@
 # Copyright (c) 2023 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
+import argparse
 import asyncio
 import logging
 import time
@@ -17,14 +18,11 @@ async def loop(variable):
         variable[0] += 1
 
 
-async def main():
-    fmt = "%(threadName)-10s %(asctime)-15s %(levelname)-5s %(name)s: %(message)s"
-    logging.basicConfig(level="INFO", format=fmt)
-
+async def run(device):
     data = [0]
     asyncio.create_task(loop(data))
 
-    with Device.from_id(0) as device:
+    with device:
         capture = VideoCapture(device)
         capture.set_format(640, 480, "MJPG")
         with capture as stream:
@@ -43,7 +41,31 @@ async def main():
                     last_update = new
 
 
-try:
-    asyncio.run(main())
-except KeyboardInterrupt:
-    logging.info("Ctrl-C pressed. Bailing out")
+def device_text(text):
+    try:
+        return Device.from_id(int(text))
+    except ValueError:
+        return Device(text)
+
+
+def cli():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--log-level", choices=["debug", "info", "warning", "error"], default="info")
+    parser.add_argument("device", type=device_text)
+    return parser
+
+
+def main(args=None):
+    parser = cli()
+    args = parser.parse_args(args=args)
+    fmt = "%(threadName)-10s %(asctime)-15s %(levelname)-5s %(name)s: %(message)s"
+    logging.basicConfig(level=args.log_level.upper(), format=fmt)
+
+    try:
+        asyncio.run(run(args.device))
+    except KeyboardInterrupt:
+        logging.info("Ctrl-C pressed. Bailing out")
+
+
+if __name__ == "__main__":
+    main()

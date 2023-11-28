@@ -4,6 +4,7 @@
 # Copyright (c) 2023 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
+import argparse
 import logging
 import time
 
@@ -19,14 +20,11 @@ def loop(variable):
         variable[0] += 1
 
 
-def main():
-    fmt = "%(threadName)-10s %(asctime)-15s %(levelname)-5s %(name)s: %(message)s"
-    logging.basicConfig(level="INFO", format=fmt)
-
+def run(device):
     data = [0]
     gevent.spawn(loop, data)
 
-    with Device.from_id(0, io=GeventIO) as stream:
+    with device as stream:
         start = last = time.monotonic()
         last_update = 0
         for frame in stream:
@@ -42,7 +40,31 @@ def main():
                 last_update = new
 
 
-try:
+def device_text(text):
+    try:
+        return Device.from_id(int(text), io=GeventIO)
+    except ValueError:
+        return Device(text, io=GeventIO)
+
+
+def cli():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--log-level", choices=["debug", "info", "warning", "error"], default="info")
+    parser.add_argument("device", type=device_text)
+    return parser
+
+
+def main(args=None):
+    parser = cli()
+    args = parser.parse_args(args=args)
+    fmt = "%(threadName)-10s %(asctime)-15s %(levelname)-5s %(name)s: %(message)s"
+    logging.basicConfig(level=args.log_level.upper(), format=fmt)
+
+    try:
+        run(args.device)
+    except KeyboardInterrupt:
+        logging.info("Ctrl-C pressed. Bailing out")
+
+
+if __name__ == "__main__":
     main()
-except KeyboardInterrupt:
-    logging.info("Ctrl-C pressed. Bailing out")
