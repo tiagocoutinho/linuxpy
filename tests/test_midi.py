@@ -257,17 +257,16 @@ def _():
         remote_port = remote.create_port()
         local_port = local.create_port()
 
-        addr = remote_port.client_id, remote_port.port_id
         uid = remote_port.client_id, remote_port.port_id, local_port.client_id, local_port.port_id
-        local_port.connect_from(*addr)
+        local_port.connect_from(remote_port.address)
         assert uid in local.subscriptions
-        local_port.disconnect_from(*addr)
+        local_port.disconnect_from(remote_port.address)
         assert uid not in local.subscriptions
 
         uid = local_port.client_id, local_port.port_id, remote_port.client_id, remote_port.port_id
-        local_port.connect_to(*addr)
+        local_port.connect_to(remote_port.address)
         assert uid in local.subscriptions
-        local_port.disconnect_to(*addr)
+        local_port.disconnect_to(remote_port.address)
         assert uid not in local.subscriptions
 
 
@@ -282,19 +281,19 @@ def _():
                 break
 
         with raises(MidiError) as error:
-            port.connect_from(0, 1)
+            port.connect_from((0, 1))
         assert "Can only connect local port" == error.raised.args[0]
 
         with raises(MidiError) as error:
-            port.connect_to(0, 1)
+            port.connect_to((0, 1))
         assert "Can only connect local port" == error.raised.args[0]
 
         with raises(MidiError) as error:
-            port.disconnect_from(0, 1)
+            port.disconnect_from((0, 1))
         assert "Can only disconnect local port" == error.raised.args[0]
 
         with raises(MidiError) as error:
-            port.disconnect_to(0, 1)
+            port.disconnect_to((0, 1))
         assert "Can only disconnect local port" == error.raised.args[0]
 
         with raises(MidiError) as error:
@@ -309,7 +308,7 @@ def _():
         remote_port = remote.create_port()
         local_port = local.create_port()
 
-        local_port.connect_from(remote_port.client_id, remote_port.port_id)
+        local_port.connect_from(remote_port.address)
 
         remote_port.send("note on", velocity=44)
 
@@ -335,7 +334,7 @@ async def _():
         remote_port = remote.create_port()
         local_port = local.create_port()
 
-        local_port.connect_from(remote_port.client_id, remote_port.port_id)
+        local_port.connect_from(remote_port.address)
 
         remote_port.send("note on", velocity=44)
 

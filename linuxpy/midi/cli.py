@@ -41,7 +41,7 @@ def event_text(event):
 def listen(seq, args):
     for addr in args.addr:
         port = seq.create_port(f"listen on {addr}")
-        port.connect_from(*addr)
+        port.connect_from(addr)
     for event in seq:
         print(event_text(event))
 
@@ -49,7 +49,7 @@ def listen(seq, args):
 async def async_listen(seq, args):
     for addr in args.addr:
         port = seq.create_port(f"listen on {addr}")
-        port.connect_from(*addr)
+        port.connect_from(addr)
     async for event in seq:
         print(event_text(event))
 

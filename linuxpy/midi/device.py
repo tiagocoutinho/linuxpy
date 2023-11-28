@@ -163,21 +163,17 @@ def delete_port(seq, port: snd_seq_port_info):
     return ioctl(seq, IOC.DELETE_PORT, port)
 
 
-def subscribe(seq, src_client_id: int, src_port_id: int, dest_client_id: int, dest_port_id: int):
+def subscribe(seq, src: AddressT, dest: AddressT):
     subs = snd_seq_port_subscribe()
-    subs.sender.client = src_client_id
-    subs.sender.port = src_port_id
-    subs.dest.client = dest_client_id
-    subs.dest.port = dest_port_id
+    subs.sender = to_address(src)
+    subs.dest = to_address(dest)
     return ioctl(seq, IOC.SUBSCRIBE_PORT, subs)
 
 
-def unsubscribe(seq, src_client_id: int, src_port_id: int, dest_client_id: int, dest_port_id: int):
+def unsubscribe(seq, src: AddressT, dest: AddressT):
     subs = snd_seq_port_subscribe()
-    subs.sender.client = src_client_id
-    subs.sender.port = src_port_id
-    subs.dest.client = dest_client_id
-    subs.dest.port = dest_port_id
+    subs.sender = to_address(src)
+    subs.dest = to_address(dest)
     return ioctl(seq, IOC.UNSUBSCRIBE_PORT, subs)
 
 
@@ -368,19 +364,23 @@ class Sequencer(BaseDevice):
         # unsubscribe first
         for uid in set(self.subscriptions):
             if addr == uid[0:2] or addr == uid[2:4]:
-                self.unsubscribe(*uid)
+                self.unsubscribe(uid[0:2], uid[2:4])
         self._local_ports.remove(addr[1])
         delete_port(self, port_info)
 
-    def subscribe(self, src_client_id: int, src_port_id: int, dest_client_id: int, dest_port_id: int):
-        uid = (src_client_id, src_port_id, dest_client_id, dest_port_id)
+    def subscribe(self, src: AddressT, dest: AddressT):
+        src = to_address(src)
+        dest = to_address(dest)
+        uid = (src.client, src.port, dest.client, dest.port)
         self.subscriptions.add(uid)
-        subscribe(self, src_client_id, src_port_id, dest_client_id, dest_port_id)
+        subscribe(self, src, dest)
 
-    def unsubscribe(self, src_client_id: int, src_port_id: int, dest_client_id: int, dest_port_id: int):
-        uid = src_client_id, src_port_id, dest_client_id, dest_port_id
+    def unsubscribe(self, src: AddressT, dest: AddressT):
+        src = to_address(src)
+        dest = to_address(dest)
+        uid = (src.client, src.port, dest.client, dest.port)
         self.subscriptions.remove(uid)
-        unsubscribe(self, src_client_id, src_port_id, dest_client_id, dest_port_id)
+        unsubscribe(self, src, dest)
 
     def iter_raw_read(self, max_nb_packets=64) -> Iterable["Event"]:
         payload = self._fobj.read(max_nb_packets * EVENT_SIZE)
@@ -495,31 +495,26 @@ class Port:
         return self.info.addr
 
     # MIDI In
-    def connect_from(self, src_client_id, src_port_id):
+    def connect_from(self, src: AddressT):
         if not self.is_local:
             raise MidiError("Can only connect local port")
-        self.sequencer.subscribe(src_client_id, src_port_id, self.client_id, self.port_id)
+        self.sequencer.subscribe(src, self.address)
 
-    def disconnect_from(self, src_client_id, src_port_id):
+    def disconnect_from(self, src: AddressT):
         if not self.is_local:
             raise MidiError("Can only disconnect local port")
-        self.sequencer.unsubscribe(src_client_id, src_port_id, self.client_id, self.port_id)
+        self.sequencer.unsubscribe(src, self.address)
 
     # MIDI Out
-    def connect_to(self, dest_client_id, dest_port_id):
+    def connect_to(self, dest: AddressT):
         if not self.is_local:
             raise MidiError("Can only connect local port")
-        # self.connected_to.add((dest_client_id, dest_port_id))
-        self.sequencer.subscribe(self.client_id, self.port_id, dest_client_id, dest_port_id)
+        self.sequencer.subscribe(self.address, dest)
 
-    def disconnect_to(self, dest_client_id, dest_port_id):
+    def disconnect_to(self, dest):
         if not self.is_local:
             raise MidiError("Can only disconnect local port")
-        # addr = dest_client_id, dest_port_id
-        # if addr not in self.connected_to:
-        #    raise MidiError(f"Port is not connected to {dest_client_id}:{dest_port_id}")
-        # self.connected_to.remove(addr)
-        self.sequencer.unsubscribe(self.client_id, self.port_id, dest_client_id, dest_port_id)
+        self.sequencer.unsubscribe(self.address, dest)
 
     def delete(self):
         if not self.is_local:
