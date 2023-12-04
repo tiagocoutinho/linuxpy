@@ -447,7 +447,6 @@ class Port:
     def __init__(self, sequencer: Sequencer, port: snd_seq_port_info):
         self.sequencer = sequencer
         self.info = port
-        # self.connected_to: set[tuple[int, int]] = set()
 
     def __repr__(self):
         prefix = self.is_local and "Local" or ""

@@ -28,6 +28,7 @@ from linuxpy.device import (
 from linuxpy.io import IO
 from linuxpy.ioctl import ioctl
 from linuxpy.types import AsyncIterator, Buffer, Callable, Iterable, Iterator, Optional, PathLike, Self
+from linuxpy.util import make_find
 
 from . import raw
 
@@ -1722,3 +1723,6 @@ def iter_video_output_files(path: PathLike = "/dev") -> Iterable[Path]:
 
 def iter_video_output_devices(path: PathLike = "/dev", **kwargs) -> Iterable[Device]:
     return (Device(name, **kwargs) for name in iter_video_output_files(path))
+
+
+find = make_find(iter_devices)

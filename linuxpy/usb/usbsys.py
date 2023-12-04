@@ -4,7 +4,7 @@ import pathlib
 
 from .. import sysfs
 from ..ctypes import sizeof
-from ..util import bcd_version
+from ..util import bcd_version, make_find
 from . import raw
 from .base import USB_DEV_TMPFS_PATH, BaseDevice, DescriptorType
 
@@ -168,17 +168,7 @@ def iter_devices():
         yield Device(path)
 
 
-def find(find_all=False, custom_match=None, **kwargs):
-    idevs = iter_devices()
-    if custom_match:
-        idevs = filter(custom_match, idevs)
-    if kwargs:
-
-        def accept(d):
-            return all(getattr(d, key) == value for key, value in kwargs.items())
-
-        idevs = filter(accept, idevs)
-    return idevs if find_all else next(idevs, None)
+find = make_find(iter_devices)
 
 
 def lsusb():

@@ -1,7 +1,7 @@
 import asyncio
 import contextlib
 
-from .types import Callable, Optional
+from .types import Callable, Iterator, Optional
 
 
 def ichunks(lst, size):
@@ -33,3 +33,19 @@ def add_reader_asyncio(fd: int, callback: Callable[[], None], *args, loop: Optio
         yield loop
     finally:
         loop.remove_reader(fd)
+
+
+def make_find(iter_devices: Callable[[], Iterator]) -> Callable:
+    def find(find_all=False, custom_match=None, **kwargs):
+        idevs = iter_devices()
+        if custom_match:
+            idevs = filter(custom_match, idevs)
+        if kwargs:
+
+            def accept(d):
+                return all(getattr(d, key) == value for key, value in kwargs.items())
+
+            idevs = filter(accept, idevs)
+        return idevs if find_all else next(idevs, None)
+
+    return find

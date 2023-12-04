@@ -16,7 +16,7 @@ from typing import Union
 from linuxpy.ctypes import cast, cint, create_string_buffer, cuint, cvoidp, i32, sizeof
 from linuxpy.device import BaseDevice, iter_device_files
 from linuxpy.ioctl import IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR, ioctl
-from linuxpy.util import add_reader_asyncio
+from linuxpy.util import add_reader_asyncio, make_find
 
 from .raw import (
     UIOC,
@@ -526,6 +526,9 @@ async def async_event_batch_stream(fd, maxsize=1000):
 
 def iter_devices(path="/dev/input", **kwargs):
     return (Device(path, **kwargs) for path in iter_input_files(path=path))
+
+
+find = make_find(iter_devices)
 
 
 def is_gamepad(device: Device) -> bool:
