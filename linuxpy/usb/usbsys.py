@@ -67,13 +67,37 @@ def _product_alternative(device):
     return V.get(vendor_id, {}).get("children", {}).get(product_id, {}).get("name")
 
 
+def usb_video_control_descriptor(data, offset=0):
+    vc = data[offset + 2]
+    if vc == raw.VideoControl.HEADER:
+        return raw.uvc_header_descriptor.from_buffer_copy(data, offset)
+    elif vc == raw.VideoControl.INPUT_TERMINAL:
+        return raw.uvc_input_terminal_descriptor.from_buffer_copy(data, offset)
+    elif vc == raw.VideoControl.OUTPUT_TERMINAL:
+        return raw.uvc_output_terminal_descriptor.from_buffer_copy(data, offset)
+    elif vc == raw.VideoControl.EXTENSION_UNIT:
+        return raw.uvc_extension_unit_descriptor.from_buffer_copy(data, offset)
+    elif vc == raw.VideoControl.PROCESSING_UNIT:
+        return raw.uvc_processing_unit_descriptor.from_buffer_copy(data, offset)
+    elif vc == raw.VideoControl.SELECTOR_UNIT:
+        return raw.uvc_selector_unit_descriptor.from_buffer_copy(data, offset)
+    if offset:
+        return data[offset:]
+    return data
+
+
 DESCRIPTOR_STRUCT_MAP = {
     DescriptorType.DEVICE: raw.usb_device_descriptor,
     DescriptorType.CONFIG: raw.usb_config_descriptor,
     DescriptorType.STRING: raw.usb_string_descriptor,
     DescriptorType.INTERFACE: raw.usb_interface_descriptor,
+    DescriptorType.INTERFACE_ASSOCIATION: raw.usb_interface_assoc_descriptor,
     DescriptorType.ENDPOINT: raw.usb_endpoint_descriptor,
     DescriptorType.HID: raw.usb_hid_descriptor,
+}
+
+DESCRIPTOR_CALL_MAP = {
+    DescriptorType.VIDEO_CONTROL: usb_video_control_descriptor,
 }
 
 
@@ -83,18 +107,12 @@ class DeviceDescriptor:
         self = cls()
         self.usb_version = bcd_version(struct.bcdUSB)
         self.version = bcd_version(struct.bcdDevice)
-        self.class_name = struct.bDeviceClass
-        self.sub_class_name = struct.bDeviceSubClass
+        self.class_id = struct.bDeviceClass
+        self.sub_class_id = struct.bDeviceSubClass
         self.vendor_id = struct.idVendor
         self.product_id = struct.idProduct
         self.nb_configurations = struct.bNumConfigurations
         return self
-
-
-def _parse_device_descriptor(data, offset=0):
-    assert data[offset] == sizeof(raw.usb_device_descriptor)
-    assert data[offset + 1] == DescriptorType.DEVICE
-    raw.usb_device_descriptor.from_buffer_copy(data, offset)
 
 
 def _iter_decode_descriptors(data):
@@ -102,15 +120,22 @@ def _iter_decode_descriptors(data):
     while offset < size:
         length = data[offset]
         dtype = data[offset + 1]
-        dclass = DESCRIPTOR_STRUCT_MAP[dtype]
-        extra = sizeof(dclass) - length
-        if extra:
-            local = data[offset : offset + length] + extra * b"\x00"
-            descriptor = dclass.from_buffer_copy(local)
+        dclass = DESCRIPTOR_STRUCT_MAP.get(dtype)
+        if dclass is None:
+            dfunc = DESCRIPTOR_CALL_MAP.get(dtype)
+            if dfunc is None:
+                yield data[offset : offset + length]
+            else:
+                yield dfunc(data, offset)
         else:
-            descriptor = dclass.from_buffer_copy(data, offset)
+            extra = sizeof(dclass) - length
+            if extra:
+                local = data[offset : offset + length] + extra * b"\x00"
+                descriptor = dclass.from_buffer_copy(local)
+            else:
+                descriptor = dclass.from_buffer_copy(data, offset)
+            yield descriptor
         offset += length
-        yield descriptor
 
 
 class Device(BaseDevice):
@@ -140,7 +165,7 @@ class Device(BaseDevice):
         )
 
     def _on_open(self):
-        pass
+        self._raw_descriptors = list(_iter_decode_descriptors(self._fobj.read()))
 
 
 class Configuration:
@@ -174,7 +199,7 @@ find = make_find(iter_devices)
 def lsusb():
     for dev in iter_devices():
         print(
-            f"Bus {dev.bus_number:03d} Device {dev.device_address:03d}: ID {dev.vendor_id:04x}:{dev.product_id:04x} {dev.manufacturer} {dev.product}"
+            f"Bus {dev.bus_number:03d} Device {dev.device_address:03d}: ID {dev.vendor_id:04x}:{dev.product_id:04x} {dev.manufacturer} {dev.product} {dev.filename}"
         )
 
 

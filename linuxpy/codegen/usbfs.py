@@ -13,6 +13,7 @@ HEADERS = [
     "/usr/include/linux/usbip.h",
     "/usr/include/linux/usb/ch9.h",
     "/usr/include/linux/usb/ch11.h",
+    "/usr/include/linux/usb/video.h",
 ]
 
 
@@ -82,13 +83,18 @@ MACRO_ENUMS = [
     CEnum("Device", "USB_DEVICE_"),
     CEnum("Test", "USB_TEST_"),
     CEnum("StatusType", "USB_STATUS_TYPE_"),
+    CEnum("VideoSubClass", "UVC_SC_"),
+    CEnum("VideoProtocol", "UVC_PC_PROTOCOL_"),
+    CEnum("VideoControl", "UVC_VC_"),
+    CEnum("VideoStreaming", "UVC_VS_"),
+    CEnum("VideoEndPoint", "UVC_EP_"),
 ]
 
 
 this_dir = pathlib.Path(__file__).parent
 
 
-def main(output=this_dir.parent / "usb" / "usbfs.py"):
+def main(output=this_dir.parent / "usb" / "raw.py"):
     run(__name__, HEADERS, TEMPLATE, MACRO_ENUMS, output=output)
 
 

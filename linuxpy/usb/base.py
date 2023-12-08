@@ -46,6 +46,7 @@ class DescriptorType(enum.IntEnum):
     HID = 0x21
     REPORT = 0x22
     PHYSICAL = 0x23
+    VIDEO_CONTROL = 0x24
     HUB = 0x29
     SUPERSPEED_HUB = 0x2A
     SS_ENDPOINT_COMPANION = 0x30
