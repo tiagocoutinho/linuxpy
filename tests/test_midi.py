@@ -5,8 +5,8 @@ from functools import cache
 from ward import raises, skip, test
 
 from linuxpy.midi.device import (
+    INPUT_OUTPUT,
     QUEUE_DIRECT,
-    READ_WRITE,
     SEQUENCER_PATH,
     EventType,
     MidiError,
@@ -170,7 +170,7 @@ def _():
         ports_after = local.ports
         assert len(ports_after) == len(ports_before) + 1
         assert port.type == PortType.MIDI_GENERIC | PortType.APPLICATION
-        assert READ_WRITE in port.capability
+        assert INPUT_OUTPUT in port.capability
         assert port.address.client == remote.client_id
         assert "LocalPort" in repr(port)
         assert "linuxpy port" in str(port)

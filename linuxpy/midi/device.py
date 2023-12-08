@@ -75,13 +75,13 @@ BROADCAST = (ADDRESS_BROADCAST, ADDRESS_BROADCAST)
 EVENT_SIZE = sizeof(snd_seq_event)
 
 #: READ + SUBSCRIBE READ port capabilities
-READ = PortCapability.READ | PortCapability.SUBS_READ
+INPUT = PortCapability.READ | PortCapability.SUBS_READ
 
 #: WRITE + SUBSCRIBE WRITE port capabilities
-WRITE = PortCapability.WRITE | PortCapability.SUBS_WRITE
+OUTPUT = PortCapability.WRITE | PortCapability.SUBS_WRITE
 
 #: full READ + WRITE port capabilities
-READ_WRITE = READ | WRITE
+INPUT_OUTPUT = INPUT | OUTPUT
 
 
 PortT = Union[int, "Port"]
@@ -337,7 +337,7 @@ class Sequencer(BaseDevice):
     def create_port(
         self,
         name: str = "linuxpy port",
-        capabilities: PortCapability = READ_WRITE,
+        capabilities: PortCapability = INPUT_OUTPUT,
         type: PortType = PortType.MIDI_GENERIC | PortType.APPLICATION,
     ) -> "Port":
         port_info = snd_seq_port_info()
