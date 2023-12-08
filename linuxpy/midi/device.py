@@ -5,6 +5,7 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 import asyncio
+import errno
 import itertools
 from enum import IntEnum
 
@@ -380,7 +381,13 @@ class Sequencer(BaseDevice):
         dest = to_address(dest)
         uid = (src.client, src.port, dest.client, dest.port)
         self.subscriptions.remove(uid)
-        unsubscribe(self, src, dest)
+        try:
+            unsubscribe(self, src, dest)
+        except OSError as error:
+            if error.errno == errno.ENXIO:
+                self.log.info("Could not delete port (maybe device was unplugged)")
+            else:
+                raise
 
     def iter_raw_read(self, max_nb_packets=64) -> Iterable["Event"]:
         payload = self._fobj.read(max_nb_packets * EVENT_SIZE)
