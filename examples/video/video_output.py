@@ -12,29 +12,56 @@ import time
 
 import numpy
 
-from linuxpy.video.device import Device, PixelFormat, VideoOutput
+from linuxpy.video.device import Capability, Device, PixelFormat, VideoOutput
+
+MODES = {
+    "auto": None,
+    "mmap": Capability.STREAMING,
+    "write": Capability.READWRITE,
+}
 
 
-def run(device):
-    fmt = "%(threadName)-10s %(asctime)-15s %(levelname)-5s %(name)s: %(message)s"
-    logging.basicConfig(level="INFO", format=fmt)
+def run(args):
+    device = args.device
+    frame_rate = args.frame_rate
+    width, height = args.frame_size
+    gui = args.gui
 
-    width, height = (640, 480)
-    N = 24
+    N = min(100, int(frame_rate // 2))
 
     frames = tuple(numpy.random.randint(0, high=256, size=(height, width, 3), dtype=numpy.uint8) for _ in range(N))
 
     with device:
-        sink = VideoOutput(device)
+        sink = VideoOutput(device, sink=MODES[args.mode], size=args.nb_buffers)
         sink.set_format(width, height, PixelFormat.RGB24)
         with sink:
-            proc = subprocess.Popen(["cvlc", f"v4l2://{device.filename}"])
+            if gui:
+                proc = subprocess.Popen(["cvlc", f"v4l2://{device.filename}"])
+            start = time.monotonic()
+            last, last_n, skipped = 0, 0, 0
             try:
                 for i in itertools.count():
+                    frame_n = i + 1
                     sink.write(frames[i % N].data)
-                    time.sleep(0.1)
+                    next = start + (frame_n / frame_rate)
+                    now = time.monotonic()
+                    if now - last > 0.1:
+                        elapsed = now - last
+                        n = frame_n - last_n
+                        rate = n / elapsed
+                        print(
+                            f"Frame: {i:>8} | Elapsed: {elapsed:>8.1f} s | Rate: {rate:>8.1f} fps | Skipped: {skipped:>8}",
+                            end="\r",
+                        )
+                        last = now
+                        last_n = frame_n
+                    if now < next:
+                        time.sleep(next - now)
+                    else:
+                        skipped += 1
             finally:
-                proc.terminate()
+                if gui:
+                    proc.terminate()
 
 
 def device_text(text):
@@ -44,9 +71,19 @@ def device_text(text):
         return Device(text)
 
 
+def frame_size(text):
+    w, h = text.split("x", 1)
+    return int(w), int(h)
+
+
 def cli():
     parser = argparse.ArgumentParser()
     parser.add_argument("--log-level", choices=["debug", "info", "warning", "error"], default="info")
+    parser.add_argument("--frame-rate", type=float, default=10)
+    parser.add_argument("--frame-size", type=frame_size, default="640x480")
+    parser.add_argument("--nb-buffers", type=int, default=2)
+    parser.add_argument("--mode", choices=["auto", "mmap", "write"], default="auto")
+    parser.add_argument("--gui", type=bool, default=True, action=argparse.BooleanOptionalAction)
     parser.add_argument("device", type=device_text)
     return parser
 
@@ -58,7 +95,7 @@ def main(args=None):
     logging.basicConfig(level=args.log_level.upper(), format=fmt)
 
     try:
-        run(args.device)
+        run(args)
     except KeyboardInterrupt:
         logging.info("Ctrl-C pressed. Bailing out")
 

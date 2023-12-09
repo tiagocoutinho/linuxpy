@@ -11,7 +11,8 @@ import time
 from linuxpy.video.device import Device
 
 
-def run(device):
+def run(args):
+    device = args.device
     with device as stream:
         start = last = time.monotonic()
         last_update = 0
@@ -48,7 +49,7 @@ def main(args=None):
     logging.basicConfig(level=args.log_level.upper(), format=fmt)
 
     try:
-        run(args.device)
+        run(args)
     except KeyboardInterrupt:
         logging.info("Ctrl-C pressed. Bailing out")
 
