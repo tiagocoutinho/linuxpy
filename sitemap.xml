@@ -2,22 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/</loc>
-         <lastmod>2023-11-20</lastmod>
+         <lastmod>2023-12-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://tiagocoutinho.github.io/linuxpy/develop/</loc>
+         <lastmod>2023-12-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/input/</loc>
-         <lastmod>2023-11-20</lastmod>
+         <lastmod>2023-12-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/midi/</loc>
-         <lastmod>2023-11-20</lastmod>
+         <lastmod>2023-12-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/video/</loc>
-         <lastmod>2023-11-20</lastmod>
+         <lastmod>2023-12-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://tiagocoutinho.github.io/linuxpy/api/input/</loc>
+         <lastmod>2023-12-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://tiagocoutinho.github.io/linuxpy/api/midi/</loc>
+         <lastmod>2023-12-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://tiagocoutinho.github.io/linuxpy/api/video/</loc>
+         <lastmod>2023-12-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

@@ -18,6 +18,8 @@
         <link rel="prev" href="../midi/">
       
       
+        <link rel="next" href="../api/input/">
+      
       
       <link rel="icon" href="../img/favicon.ico">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
@@ -49,6 +51,8 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -367,6 +371,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#device-creation" class="md-nav__link">
+    Device creation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#capture" class="md-nav__link">
     Capture
   </a>
@@ -431,6 +442,128 @@
   
 
     
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    API Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/input/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Input
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/midi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MIDI Sequencer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/video/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Video
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../develop/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Developers corner
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -456,6 +589,13 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#device-creation" class="md-nav__link">
+    Device creation
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#capture" class="md-nav__link">
@@ -543,21 +683,49 @@
 <span class="n">frame</span> <span class="c1">#9: 40714 bytes</span>
 <span class="n">frame</span> <span class="c1">#10: 40662 bytes</span>
 </code></pre></div>
+<h2 id="device-creation">Device creation<a class="headerlink" href="#device-creation" title="Permanent link">#</a></h2>
+<p>Create a device object from an ID:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span>
+<span class="n">camera</span> <span class="o">=</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</code></pre></div>
+<p>from a filename:
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span>
+<span class="n">camera</span> <span class="o">=</span> <span class="n">Device</span><span class="p">(</span><span class="s2">&quot;/dev/video10&quot;</span><span class="p">)</span>
+</code></pre></div></p>
+<p>or from an existing file object:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/dev/video10&quot;</span><span class="p">,</span> <span class="s2">&quot;rb+&quot;</span><span class="p">,</span> <span class="n">buffering</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+    <span class="n">camera</span> <span class="o">=</span> <span class="n">Device</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
+</code></pre></div>
+<p>Before using video <code>Device</code> object you need to open it.
+You can either use the device object as a context manager (prefered):</p>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">as</span> <span class="n">camera</span><span class="p">:</span>
+    <span class="o">...</span>
+</code></pre></div>
+<p>... or manage call <code>Device.open()</code>/<code>Device.close()</code> manually:</p>
+<div class="highlight"><pre><span></span><code><span class="n">camera</span> <span class="o">=</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">camera</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="o">...</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">camera</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div>
 <h2 id="capture">Capture<a class="headerlink" href="#capture" title="Permanent link">#</a></h2>
 <p>Simple capture without any configuration is possible using the Device object
-as an iterator:</p>
+as an infinite iterator:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">VideoCapture</span>
 
-<span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">cam</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">cam</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">camera</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">camera</span><span class="p">:</span>
         <span class="o">...</span>
 </code></pre></div>
-<p>To be able to configure the next acquisition, you will need to use the
+<p>The resulting <code>Frame</code> objects can safely and efficiently be converted to bytes.</p>
+<p>To be able to configure the acquisition, you will need to use the
 <code>VideoCapture</code> helper. Here is an example with image size and format configuration:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">VideoCapture</span>
 
-<span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">cam</span><span class="p">:</span>
-    <span class="n">capture</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">cam</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">camera</span><span class="p">:</span>
+    <span class="n">capture</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">camera</span><span class="p">)</span>
     <span class="n">capture</span><span class="o">.</span><span class="n">set_format</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="s2">&quot;MJPG&quot;</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">cam</span><span class="p">)</span> <span class="k">as</span> <span class="n">capture</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">capture</span><span class="p">:</span>
@@ -678,13 +846,13 @@ capability and falls back to standard write if not. It is also possible to
 force a specific writer with <code>VideoOutput(cam, sink=Capability.READWRITE)</code>:</p>
 <h2 id="v4l2loopback">v4l2loopback<a class="headerlink" href="#v4l2loopback" title="Permanent link">#</a></h2>
 <p>This is just an example on how to setup v4l2loopback.</p>
-<p>Start from scratch:
+<p>Start from scratch:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Remove kernel module and all devices (no client can be connected at this point)</span>
 sudo<span class="w"> </span>modprobe<span class="w"> </span>-r<span class="w"> </span>v4l2loopback
 
 <span class="c1"># Install some devices</span>
 sudo<span class="w"> </span>modprobe<span class="w"> </span>v4l2loopback<span class="w"> </span><span class="nv">video_nr</span><span class="o">=</span><span class="m">20</span>,21<span class="w"> </span><span class="nv">card_label</span><span class="o">=</span><span class="s2">&quot;Loopback 0&quot;</span>,<span class="s2">&quot;Loopback 1&quot;</span>
-</code></pre></div></p>
+</code></pre></div>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">#</a></h2>
 <p>See the <code>linux/videodev2.h</code> header file for details.</p>
 <ul>

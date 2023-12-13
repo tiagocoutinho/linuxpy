@@ -52,6 +52,8 @@
       
     
     
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -412,6 +414,128 @@
   
 
     
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    API Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/input/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Input
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/midi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MIDI Sequencer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/video/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Video
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../develop/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Developers corner
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -507,13 +631,13 @@
 <span class="m">1</span>.0.2
 
 &gt;&gt;&gt;<span class="w"> </span>seq.client_info
-snd_seq_client_info<span class="o">(</span><span class="nv">client</span><span class="o">=</span><span class="m">128</span>,<span class="w"> </span><span class="nv">type</span><span class="o">=</span><span class="m">1</span>,<span class="w"> </span><span class="nv">name</span><span class="o">=</span>b<span class="s1">&#39;a midi client&#39;</span>,<span class="w"> </span><span class="nv">filter</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">multicast_filter</span><span class="o">=</span>b<span class="s1">&#39;&#39;</span>,<span class="w"> </span><span class="nv">event_filter</span><span class="o">=</span>b<span class="s1">&#39;&#39;</span>,<span class="w"> </span><span class="nv">num_ports</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">event_lost</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">card</span><span class="o">=</span>-1,<span class="w"> </span><span class="nv">pid</span><span class="o">=</span><span class="m">1288570</span>,<span class="w"> </span><span class="nv">reserved</span><span class="o">=</span>b<span class="s1">&#39;&#39;</span><span class="o">)</span>
+snd_seq_client_info<span class="o">(</span><span class="nv">client</span><span class="o">=</span><span class="m">128</span>,<span class="w"> </span><span class="nv">type</span><span class="o">=</span><span class="m">1</span>,<span class="w"> </span><span class="nv">name</span><span class="o">=</span>b<span class="s1">&#39;a midi client&#39;</span>,<span class="w"> </span><span class="nv">filter</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">multicast_filter</span><span class="o">=</span>b<span class="s1">&#39;&#39;</span>,<span class="w"> </span><span class="nv">event_filter</span><span class="o">=</span>b<span class="s1">&#39;&#39;</span>,<span class="w"> </span><span class="nv">num_ports</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">event_lost</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">card</span><span class="o">=</span>-1,<span class="w"> </span><span class="nv">pid</span><span class="o">=</span><span class="m">1288570</span><span class="o">)</span>
 
 &gt;&gt;&gt;<span class="w"> </span>seq.running_mode
-snd_seq_running_info<span class="o">(</span><span class="nv">client</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">big_endian</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">cpu_mode</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">pad</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">reserved</span><span class="o">=</span>b<span class="s1">&#39;&#39;</span><span class="o">)</span>
+snd_seq_running_info<span class="o">(</span><span class="nv">client</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">big_endian</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">cpu_mode</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">pad</span><span class="o">=</span><span class="m">0</span><span class="o">)</span>
 
 &gt;&gt;&gt;<span class="w"> </span>seq.system_info
-snd_seq_system_info<span class="o">(</span><span class="nv">queues</span><span class="o">=</span><span class="m">32</span>,<span class="w"> </span><span class="nv">clients</span><span class="o">=</span><span class="m">192</span>,<span class="w"> </span><span class="nv">ports</span><span class="o">=</span><span class="m">254</span>,<span class="w"> </span><span class="nv">channels</span><span class="o">=</span><span class="m">256</span>,<span class="w"> </span><span class="nv">cur_clients</span><span class="o">=</span><span class="m">3</span>,<span class="w"> </span><span class="nv">cur_queues</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">reserved</span><span class="o">=</span>b<span class="s1">&#39;&#39;</span><span class="o">)</span>
+snd_seq_system_info<span class="o">(</span><span class="nv">queues</span><span class="o">=</span><span class="m">32</span>,<span class="w"> </span><span class="nv">clients</span><span class="o">=</span><span class="m">192</span>,<span class="w"> </span><span class="nv">ports</span><span class="o">=</span><span class="m">254</span>,<span class="w"> </span><span class="nv">channels</span><span class="o">=</span><span class="m">256</span>,<span class="w"> </span><span class="nv">cur_clients</span><span class="o">=</span><span class="m">3</span>,<span class="w"> </span><span class="nv">cur_queues</span><span class="o">=</span><span class="m">0</span><span class="o">)</span>
 </code></pre></div>
 <h2 id="listing-ports-and-clients">Listing ports and clients<a class="headerlink" href="#listing-ports-and-clients" title="Permanent link">#</a></h2>
 <h2 id="asyncio">asyncio<a class="headerlink" href="#asyncio" title="Permanent link">#</a></h2>
