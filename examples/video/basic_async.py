@@ -9,7 +9,7 @@ import asyncio
 import logging
 import time
 
-from linuxpy.video.device import Device, VideoCapture
+from linuxpy.video.device import Device
 
 
 async def loop(variable):
@@ -23,22 +23,19 @@ async def run(device):
     asyncio.create_task(loop(data))
 
     with device:
-        capture = VideoCapture(device)
-        capture.set_format(640, 480, "MJPG")
-        with capture as stream:
-            start = last = time.monotonic()
-            last_update = 0
-            async for frame in stream:
-                new = time.monotonic()
-                fps, last = 1 / (new - last), new
-                if new - last_update > 0.1:
-                    elapsed = new - start
-                    print(
-                        f"frame {frame.frame_nb:04d} {len(frame)/1000:.1f} Kb at {fps:.1f} fps ; "
-                        f" data={data[0]}; {elapsed=:.2f} s;",
-                        end="\r",
-                    )
-                    last_update = new
+        start = last = time.monotonic()
+        last_update = 0
+        async for frame in device:
+            new = time.monotonic()
+            fps, last = 1 / (new - last), new
+            if new - last_update > 0.1:
+                elapsed = new - start
+                print(
+                    f"frame {frame.frame_nb:04d} {len(frame)/1000:.1f} Kb at {fps:.1f} fps ; "
+                    f" data={data[0]}; {elapsed=:.2f} s;",
+                    end="\r",
+                )
+                last_update = new
 
 
 def device_text(text):

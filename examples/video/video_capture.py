@@ -30,7 +30,7 @@ def run(args):
         with capture:
             fmt = capture.get_format()
             fps = capture.get_fps()
-            logging.info(f"Starting capture {fmt.width}x{fmt.height} at {fps} fps in {fmt.pixel_format.name}")
+            device.log.info(f"Starting capture {fmt.width}x{fmt.height} at {fps} fps in {fmt.pixel_format.name}")
             for frame in capture:
                 new = time.monotonic()
                 fps, last = 1 / (new - last), new

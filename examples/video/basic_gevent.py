@@ -24,10 +24,10 @@ def run(device):
     data = [0]
     gevent.spawn(loop, data)
 
-    with device as stream:
+    with device:
         start = last = time.monotonic()
         last_update = 0
-        for frame in stream:
+        for frame in device:
             new = time.monotonic()
             fps, last = 1 / (new - last), new
             if new - last_update > 0.1:
