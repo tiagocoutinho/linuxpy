@@ -30,7 +30,13 @@ import enum
 
 from linuxpy.ioctl import IOR as _IOR, IOW as _IOW, IOWR as _IOWR
 from linuxpy.ctypes import u8, u16, cuint, cint, cchar
-from linuxpy.ctypes import Struct, Union, POINTER
+from linuxpy.ctypes import Struct, Union, POINTER, cvoidp
+
+
+class ClientType(enum.IntEnum):
+    NO_CLIENT = 0
+    USER = 1
+    KERNEL = 2
 
 
 {enums_body}
@@ -70,7 +76,7 @@ MACRO_ENUMS = [
     CEnum("TimeMode", "SNDRV_SEQ_TIME_MODE_", klass="IntFlag"),
     CEnum("Priority", "SNDRV_SEQ_PRIORITY_", klass="IntFlag"),
     CEnum("EventType", "SNDRV_SEQ_EVENT_"),
-    CEnum("ClientType", "SNDRV_SEQ_CLIENT_"),
+    CEnum("ClientNumber", "SNDRV_SEQ_CLIENT_"),
     CEnum("Filter", "SNDRV_SEQ_FILTER_", klass="IntFlag"),
     CEnum("Remove", "SNDRV_SEQ_REMOVE_", klass="IntFlag"),
     CEnum("PortSystem", "SNDRV_SEQ_PORT_SYSTEM_", klass="IntFlag"),

@@ -4,6 +4,46 @@
 # Copyright (c) 2023 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
+"""
+Human API to linux MIDI subsystem.
+
+The heart of linuxpy MIDI library is the [`Sequencer`][linuxpy.midi.device.Sequencer]
+class.
+Usually you need only one instance of Sequencer for your application.
+The recommended way is to use it within a context manager like:
+
+```python
+with Sequencer("My MIDI App") as midi:
+    print(f"MIDI version: {midi.version}")
+```
+
+which is roughly equivalent to:
+
+```python
+midi = Sequencer("My MIDI App")
+midi.open()
+try:
+    print(f"MIDI version: {midi.version}")
+finally:
+    midi.close()
+```
+
+Here's a real world example:
+
+```python
+from linuxpy.midi.device import Sequencer
+
+with Sequencer("My MIDI App") as midi:
+    print(f"I'm client {midi.client_id}")
+    print(f"MIDI version: {midi.version}")
+    port = midi.create_port()
+    port.connect_from((0, 1))
+    for event in midi:
+        print(event)
+```
+"""
+
+
 import asyncio
 import errno
 import itertools
@@ -15,6 +55,7 @@ from linuxpy.device import DEV_PATH, BaseDevice
 from linuxpy.ioctl import ioctl
 from linuxpy.midi.raw import (
     IOC,
+    ClientType,
     EventLength,
     EventType,
     PortCapability,
@@ -33,7 +74,7 @@ from linuxpy.midi.raw import (
     snd_seq_running_info,
     snd_seq_system_info,
 )
-from linuxpy.types import Iterable, Optional, Sequence, Union
+from linuxpy.types import AsyncIterable, Iterable, Optional, Sequence, Union
 from linuxpy.util import add_reader_asyncio
 
 ALSA_PATH = DEV_PATH / "snd"
@@ -84,10 +125,10 @@ OUTPUT = PortCapability.WRITE | PortCapability.SUBS_WRITE
 INPUT_OUTPUT = INPUT | OUTPUT
 
 
-PortT = Union[int, "Port"]
-AddressT = Union[snd_seq_addr, tuple[int, PortT]]
+PortAddress = Union[int, "Port"]
+FullPortAddress = Union[snd_seq_addr, tuple[int, PortAddress]]
 EventT = Union[str, int, EventType]
-AddressesT = Sequence[AddressT]
+FullPortAddresses = Sequence[FullPortAddress]
 
 
 class MidiError(Exception):
@@ -164,14 +205,14 @@ def delete_port(seq, port: snd_seq_port_info):
     return ioctl(seq, IOC.DELETE_PORT, port)
 
 
-def subscribe(seq, src: AddressT, dest: AddressT):
+def subscribe(seq, src: FullPortAddress, dest: FullPortAddress):
     subs = snd_seq_port_subscribe()
     subs.sender = to_address(src)
     subs.dest = to_address(dest)
     return ioctl(seq, IOC.SUBSCRIBE_PORT, subs)
 
 
-def unsubscribe(seq, src: AddressT, dest: AddressT):
+def unsubscribe(seq, src: FullPortAddress, dest: FullPortAddress):
     subs = snd_seq_port_subscribe()
     subs.sender = to_address(src)
     subs.dest = to_address(dest)
@@ -204,15 +245,15 @@ def write_queue_info(seq, queue: snd_seq_queue_info):
     return ioctl(seq, IOC.SET_QUEUE_INFO, queue)
 
 
-def read_queue_status(seq, queue: int):
+def read_queue_status(seq, queue: int) -> snd_seq_queue_status:
     return ioctl(seq, IOC.GET_QUEUE_STATUS, snd_seq_queue_status(queue=queue))
 
 
-def read_queue_client(seq, queue: int):
+def read_queue_client(seq, queue: int) -> snd_seq_queue_client:
     return ioctl(seq, IOC.GET_QUEUE_CLIENT, snd_seq_queue_client(queue=queue))
 
 
-def to_address(addr: AddressT) -> snd_seq_addr:
+def to_address(addr: FullPortAddress) -> snd_seq_addr:
     """Convert to low level snd_seq_addr"""
     if isinstance(addr, snd_seq_addr):
         return addr
@@ -285,6 +326,22 @@ class Version:
 
 
 class Sequencer(BaseDevice):
+    """
+    Central MIDI object.
+
+    ```python
+    from linuxpy.midi.device import Sequencer
+
+    with Sequencer("My MIDI App") as midi:
+        print(f"I'm client {midi.client_id}")
+        print(f"MIDI version: {midi.version}")
+        port = midi.create_port()
+        port.connect_from((0, 1))
+        for event in midi:
+            print(event)
+    ```
+    """
+
     def __init__(self, name: str = "linuxpy client", **kwargs):
         self.name = name
         self.client_id = -1
@@ -293,10 +350,44 @@ class Sequencer(BaseDevice):
         self.subscriptions = set()
         super().__init__(SEQUENCER_PATH, **kwargs)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterable["Event"]:
+        """
+        Build an infinite iterator that streams MIDI events from the
+        subscribed ports.
+        You'll need an open sequencer before using it:
+
+        ```python
+        from linuxpy.midi.device import Sequencer
+
+        with Sequencer() as midi:
+            port = midi.create_port()
+            port.connect_from((0, 1))
+            for event in midi:
+                print(event)
+        ```
+        """
         return event_stream(self)
 
-    async def __aiter__(self):
+    async def __aiter__(self) -> AsyncIterable["Event"]:
+        """
+        Build an infinite async iterator that streams MIDI events from the
+        subscribed ports.
+        You'll need an open sequencer before using it:
+
+        ```python
+        import asyncio
+        from linuxpy.midi.device import Sequencer
+
+        async def main():
+            with Sequencer() as midi:
+                port = midi.create_port()
+                port.connect_from((0, 1))
+                async for event in midi:
+                    print(event)
+
+        asyncio.run(main())
+        ```
+        """
         async for event in async_event_stream(self, maxsize=10):
             yield event
 
@@ -313,38 +404,87 @@ class Sequencer(BaseDevice):
             self.delete_port(port)
 
     @property
-    def client_info(self):
+    def client_info(self) -> snd_seq_client_info:
+        """Current Client information"""
         return read_client_info(self, self.client_id)
 
     @property
-    def running_mode(self):
+    def client(self) -> "Client":
+        """Current Client information"""
+        return self.get_client(self.client_id)
+
+    @property
+    def running_mode(self) -> snd_seq_running_info:
+        """Current running mode"""
         return read_running_mode(self)
 
     @property
-    def system_info(self):
+    def system_info(self) -> snd_seq_system_info:
+        """Current system information"""
         return read_system_info(self)
+
+    def get_client(self, client_id: int) -> "Client":
+        """
+        Returns a Client for the given ID or raises an error if the client
+        doesn't exist.
+        It returns new Client object each time
+        """
+        info = read_client_info(self, client_id)
+        return Client(self, info)
+
+    @property
+    def iter_clients(self) -> Iterable["Client"]:
+        """An iterator over all open clients on the system. It returns new Client each time"""
+        return (Client(self, client_info) for client_info in iter_read_clients(self))
+
+    @property
+    def clients(self) -> Sequence["Client"]:
+        """Returns a new list of all clients on the system"""
+        return list(self.iter_clients)
 
     @property
     def iter_ports(self) -> Iterable["Port"]:
-        for client in iter_read_clients(self):
-            for port in iter_read_ports(self, client.client):
+        """
+        An iterator over all open ports on the system.
+        It returns new Port objects each time
+        """
+        for client in self.iter_clients:
+            for port in iter_read_ports(self, client.client_id):
                 yield Port(self, port)
 
     @property
     def ports(self) -> Sequence["Port"]:
+        """
+        Returns a new list of all open ports on the system.
+        It returns new Port objects each time
+        """
         return list(self.iter_ports)
+
+    def get_port(self, address: FullPortAddress) -> "Port":
+        """
+        Returns a Port for the given address or raises an error if the port
+        doesn't exist.
+        It returns new Port object each time
+        """
+        port_address = to_address(address)
+        info = read_port_info(self, port_address.client, port_address.port)
+        return Port(self, info)
 
     def create_port(
         self,
         name: str = "linuxpy port",
         capabilities: PortCapability = INPUT_OUTPUT,
-        type: PortType = PortType.MIDI_GENERIC | PortType.APPLICATION,
+        port_type: PortType = PortType.MIDI_GENERIC | PortType.APPLICATION,
     ) -> "Port":
+        """
+        Create a new local port. By default it will create a MIDI generic
+        application Input/Output port.
+        """
         port_info = snd_seq_port_info()
         port_info.name = name.encode()
         port_info.addr.client = self.client_id
         port_info.capability = capabilities
-        port_info.type = type
+        port_info.type = port_type
         port_info.midi_channels = 16
         port_info.midi_voices = 64
         port_info.synth_voices = 0
@@ -354,6 +494,10 @@ class Sequencer(BaseDevice):
         return port
 
     def delete_port(self, port: Union[int, "Port"]):
+        """
+        Delete a previously created local port. If the port has any
+        subscriptions they will be closed before the port is deleted
+        """
         if isinstance(port, int):
             addr = self.client_id, port
             port_info = snd_seq_port_info(addr=snd_seq_addr(client=self.client_id, port=port))
@@ -369,14 +513,20 @@ class Sequencer(BaseDevice):
         self._local_ports.remove(addr[1])
         delete_port(self, port_info)
 
-    def subscribe(self, src: AddressT, dest: AddressT):
+    def subscribe(self, src: FullPortAddress, dest: FullPortAddress):
+        """
+        Subscribe a source port to a destination port
+        """
         src = to_address(src)
         dest = to_address(dest)
         uid = (src.client, src.port, dest.client, dest.port)
         self.subscriptions.add(uid)
         subscribe(self, src, dest)
 
-    def unsubscribe(self, src: AddressT, dest: AddressT):
+    def unsubscribe(self, src: FullPortAddress, dest: FullPortAddress):
+        """
+        Unsubscribe a previously subscribed source port to a destination port
+        """
         src = to_address(src)
         dest = to_address(dest)
         uid = (src.client, src.port, dest.client, dest.port)
@@ -389,7 +539,15 @@ class Sequencer(BaseDevice):
             else:
                 raise
 
-    def iter_raw_read(self, max_nb_packets=64) -> Iterable["Event"]:
+    def iter_raw_read(self, max_nb_packets: int = 64) -> Iterable["Event"]:
+        """
+        Read list of pending events. If the sequencer is opened in blocking
+        mode and there are no events it blocks until at least one event occurs
+        otherwise as OSError is raised.
+
+        Use the `read()` call instead because it handles blocking vs
+        non-blocking variants transperently.
+        """
         payload = self._fobj.read(max_nb_packets * EVENT_SIZE)
         nb_packets = len(payload) // EVENT_SIZE
         i = 0
@@ -406,14 +564,34 @@ class Sequencer(BaseDevice):
             yield event
 
     def raw_read(self, max_nb_packets=64) -> Sequence["Event"]:
+        """
+        Read list of pending events. If there are no events it blocks until at
+        least one event occurs and returns it.
+
+        Use the `read()` call instead because it handles blocking vs
+        non-blocking variants transperently.
+        """
         return tuple(self.iter_raw_read(max_nb_packets=max_nb_packets))
 
     def wait_read(self) -> Sequence["Event"]:
+        """
+        Read list of pending events. If there are no events it blocks until at
+        least one event occurs and returns it.
+        This method assumes the internal file descriptior was opened in
+        non-blocking mode.
+
+        Use the `read()` call instead because it handles blocking vs
+        non-blocking variants transperently
+        """
         if self.io.select is not None:
             self.io.select((self,), (), ())
         return self.raw_read()
 
     def read(self) -> Sequence["Event"]:
+        """
+        Read list of pending events. If there are no events it blocks until at
+        least one event occurs and returns it
+        """
         # first time we check what mode device was opened (blocking vs non-blocking)
         if self.is_blocking:
             self.read = self.raw_read
@@ -422,21 +600,31 @@ class Sequencer(BaseDevice):
         return self.read()
 
     def write(self, event: "Event"):
+        """Send an event message"""
         self._fobj.write(bytes(event))
 
     def send(
         self,
-        port: PortT,
+        port: PortAddress,
         event_type: Union[str, int, EventType],
         queue: int = QUEUE_DIRECT,
-        to: Union[AddressT, AddressesT] = SUBSCRIBERS,
+        to: Union[FullPortAddress, FullPortAddresses] = SUBSCRIBERS,
         **kwargs,
     ):
         """
-        Send a message from a specific port to the destination address(es)
+        Send a message of the given type from a specific port to the destination
+        address(es). Use kwargs to pass specific event arguments like velocity in
+        a "note on" event.
 
         event_type can be an instance of EventType or the equivalent number or
-        a string matching the event type (ex: "noteon", "NOTEON" "note)
+        a case insensitive string matching the event type (ex: "noteon", "NOTEON",
+        "note-on" or "note on").
+
+        The following example sends "note on" with velocity 45 on port 0 of client 14:
+
+        ```python
+        midi.send((14, 0), "note on", velocity=45)
+        ```
         """
         event = Event.new(event_type, **kwargs)
         event.queue = queue
@@ -450,7 +638,65 @@ class Sequencer(BaseDevice):
             self.write(event)
 
 
+class Client:
+    """
+    MIDI sequencer client. Don't instantiate this object directly
+    Use instead `Sequencer.get_client()`
+    """
+
+    def __init__(self, sequencer: Sequencer, client: snd_seq_client_info):
+        self.sequencer = sequencer
+        self.info = client
+
+    def __int__(self):
+        "The client ID"
+        return self.client_id
+
+    @property
+    def name(self) -> str:
+        "Client name"
+        return self.info.name.decode()
+
+    @property
+    def client_id(self):
+        return self.info.client
+
+    @property
+    def type(self):
+        return ClientType(self.info.type)
+
+    @property
+    def is_local(self) -> bool:
+        """
+        True if the client was created by the MIDI sequencer that it
+        references or False otherwise"
+        """
+        return self.sequencer.client_id == self.info.client
+
+    @property
+    def iter_ports(self) -> Iterable["Port"]:
+        """An iterator over all open ports for this client. It returns new Port each time"""
+        for port in iter_read_ports(self.sequencer, self.client_id):
+            yield Port(self.sequencer, port)
+
+    @property
+    def ports(self) -> Sequence["Port"]:
+        """Returns a new list of all open ports for this client"""
+        return list(self.iter_ports)
+
+    def get_port(self, port_id: int) -> "Port":
+        return self.sequencer.get_port((self.client_id, port_id))
+
+    def refresh(self):
+        self.info = read_client_info(self.sequencer, self.client_id)
+
+
 class Port:
+    """
+    MIDI sequencer port. Don't instantiate this object directly
+    Use instead `Sequencer.get_port()`
+    """
+
     def __init__(self, sequencer: Sequencer, port: snd_seq_port_info):
         self.sequencer = sequencer
         self.info = port
@@ -470,64 +716,133 @@ class Port:
         return f"{self.client_id:3}:{self.port_id:<3}  {self.name}  {ptype}  {caps}"
 
     def __int__(self):
+        "The port ID"
         return self.port_id
 
     @property
     def name(self) -> str:
+        "Port name"
         return self.info.name.decode()
 
     @property
     def is_local(self) -> bool:
+        """
+        True if the port was created by the MIDI sequencer that it
+        references or False otherwise"
+        """
         return self.sequencer.client_id == self.info.addr.client
 
     @property
     def client_id(self) -> int:
+        """The client ID"""
         return self.info.addr.client
 
     @property
     def port_id(self) -> int:
+        """The port ID"""
         return self.info.addr.port
 
     @property
     def type(self) -> PortType:
+        """The port type"""
         return PortType(self.info.type)
 
     @property
     def capability(self) -> PortCapability:
+        """The port capabilities"""
         return PortCapability(self.info.capability)
 
     @property
     def address(self) -> snd_seq_addr:
+        """The port address"""
         return self.info.addr
 
     # MIDI In
-    def connect_from(self, src: AddressT):
+    def connect_from(self, src: FullPortAddress):
+        """
+        Connect this port to a remote port. After connecting, this port will
+        receive events originating from the source port.
+
+        Example:
+
+        ```python
+        from linuxpy.midi.device import Sequencer
+
+        with Sequencer() as midi:
+            port = midi.create_port()
+            port.connect_from((0, 1))
+            for event in midi:
+                print(event)
+        ```
+        """
         if not self.is_local:
             raise MidiError("Can only connect local port")
         self.sequencer.subscribe(src, self.address)
 
-    def disconnect_from(self, src: AddressT):
+    def disconnect_from(self, src: FullPortAddress):
+        """
+        Disconnect this port from a previously connected source port.
+        """
         if not self.is_local:
             raise MidiError("Can only disconnect local port")
         self.sequencer.unsubscribe(src, self.address)
 
     # MIDI Out
-    def connect_to(self, dest: AddressT):
+    def connect_to(self, dest: FullPortAddress):
+        """
+        Connect this port to a remote port. After connecting, events
+        originating from this port will be sent to the destination port.
+
+        Example:
+
+        ```python
+        from linuxpy.midi.device import Sequencer
+
+        with Sequencer() as midi:
+            port = midi.create_port()
+            # Assume 14:0 is Midi Through
+            port.connect_to((14, 0))
+            port.send("note on", note=11, velocity=10)
+        ```
+
+        """
         if not self.is_local:
             raise MidiError("Can only connect local port")
         self.sequencer.subscribe(self.address, dest)
 
-    def disconnect_to(self, dest):
+    def disconnect_to(self, dest: FullPortAddress):
+        """
+        Disconnect this port from a previously connected destination port.
+        """
         if not self.is_local:
             raise MidiError("Can only disconnect local port")
         self.sequencer.unsubscribe(self.address, dest)
 
     def delete(self):
+        """
+        Delete this port. Raises MidiError if port is not local.
+        Any subscriptions are canceled before the port is deleted.
+        """
         if not self.is_local:
             raise MidiError("Can only delete local port")
         self.sequencer.delete_port(self)
 
     def send(self, event_type: Union[str, int, EventType], **kwargs):
+        """
+        Send a message of the given type from to the destination address(es).
+        Use kwargs to pass specific event arguments like velocity in a
+        "note on" event.
+
+        event_type can be an instance of EventType or the equivalent number or
+        a case insensitive string matching the event type (ex: "noteon", "NOTEON",
+        "note-on" or "note on").
+
+        The following example sends "note on" on note 42, with velocity 45:
+
+        ```python
+        port.send("note on", note=42, velocity=45)
+        ```
+        """
         self.sequencer.send(self, event_type, **kwargs)
 
 
@@ -588,6 +903,8 @@ def struct_text(obj):
 
 
 class Event:
+    """Event message object result of listening on a sequencer"""
+
     SIXEX_START = RealtimeStatusCode.SYSEX_START.to_bytes(1, "big")
     SIXEX_END = RealtimeStatusCode.SYSEX_END.to_bytes(1, "big")
 
@@ -619,6 +936,7 @@ class Event:
         return result
 
     def __bytes__(self):
+        """Serialize the Event in a bytes ready to be sent"""
         if self.type == EventType.SYSEX:
             self.event.flags = EventLength.VARIABLE
         if self.is_variable_length_type:
@@ -631,6 +949,7 @@ class Event:
 
     @classmethod
     def new(cls, etype: EventT, **kwargs):
+        """Create new Event of the given type"""
         data = kwargs.pop("data", b"")
         event = snd_seq_event()
         etype = to_event_type(etype)
@@ -703,7 +1022,7 @@ class Event:
         return self.event.source
 
     @source.setter
-    def source(self, address: AddressT):
+    def source(self, address: FullPortAddress):
         self.event.source = to_address(address)
 
     @property
@@ -711,7 +1030,7 @@ class Event:
         return self.event.dest
 
     @dest.setter
-    def dest(self, address: AddressT):
+    def dest(self, address: FullPortAddress):
         self.event.dest = to_address(address)
 
     @property
@@ -742,19 +1061,21 @@ class Event:
     port_id = source_port_id
 
 
-def event_stream(seq):
+def event_stream(sequencer: Sequencer) -> Iterable[Event]:
+    """Infinite stream of events coming from the given sequencer"""
     while True:
-        yield from seq.read()
+        yield from sequencer.read()
 
 
-async def async_event_stream(seq, maxsize=10):
+async def async_event_stream(sequencer: Sequencer, maxsize: int = 10) -> AsyncIterable[Event]:
+    """Infinite async stream of events coming from the given sequencer"""
     queue = asyncio.Queue(maxsize=maxsize)
 
     def feed():
-        for event in seq.read():
+        for event in sequencer.read():
             queue.put_nowait(event)
 
-    with add_reader_asyncio(seq.fileno(), feed):
+    with add_reader_asyncio(sequencer.fileno(), feed):
         while True:
             yield await queue.get()
 
