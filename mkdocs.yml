@@ -10,6 +10,23 @@ repo_name: tiagocoutinho/linuxpy
 # disable editing code link
 edit_uri: ''
 
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            show_source: false
+            show_bases: true
+            show_root_heading: true
+            members_order: source
+            show_submodules: true
+            docstring_style: google
+            docstring_section_style: table
+            show_signature_annotations: true
+            separate_signature: false
+
 theme:
   name: material
   language: en
@@ -40,3 +57,8 @@ nav:
     - Input: input.md
     - MIDI Sequencer: midi.md
     - Video: video.md
+  - API Reference:
+    - Input: api/input.md
+    - MIDI Sequencer: api/midi.md
+    - Video: api/video.md
+  - Developers corner: develop.md

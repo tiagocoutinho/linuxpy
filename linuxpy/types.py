@@ -33,6 +33,7 @@ Iterable = collections.abc.Iterable
 Iterator = collections.abc.Iterator
 AsyncIterable = collections.abc.AsyncIterable
 AsyncIterator = collections.abc.AsyncIterator
+Generator = typing.Generator
 Callable = collections.abc.Callable
 Sequence = collections.abc.Sequence
 Collection = collections.abc.Collection

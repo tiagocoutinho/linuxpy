@@ -60,6 +60,7 @@ examples = [
 docs = [
     "mkdocs",
     "mkdocs-material",
+    "mkdocstrings[python]",
     "pygments",
     "pymdown-extensions",
 ]

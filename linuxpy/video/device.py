@@ -4,6 +4,8 @@
 # Copyright (c) 2023 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
+"""Human API to V4L2 (Video 4 Linux 2)."""
+
 import asyncio
 import collections
 import copy
@@ -1171,6 +1173,8 @@ class BufferManager(DeviceHelper):
 
 
 class Frame:
+    """The resulting object from an acquisition."""
+
     __slots__ = ["format", "buff", "data"]
 
     def __init__(self, data: bytes, buff: raw.v4l2_buffer, format: Format):

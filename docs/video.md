@@ -25,27 +25,72 @@ frame #9: 40714 bytes
 frame #10: 40662 bytes
 ```
 
+## Device creation
+
+Create a device object from an ID:
+
+```python
+from linuxpy.video.device import Device
+camera = Device.from_id(10)
+```
+
+from a filename:
+```python
+from linuxpy.video.device import Device
+camera = Device("/dev/video10")
+```
+
+or from an existing file object:
+
+```python
+from linuxpy.video.device import Device
+with open("/dev/video10", "rb+", buffering=0) as fd:
+    camera = Device(fd)
+```
+
+Before using video `Device` object you need to open it.
+You can either use the device object as a context manager (prefered):
+
+```python
+with Device.from_id(10) as camera:
+    ...
+```
+
+... or manage call `Device.open()`/`Device.close()` manually:
+
+```python
+
+camera = Device.from_id(10)
+camera.open()
+try:
+    ...
+finally:
+    camera.close()
+```
+
 ## Capture
 
 Simple capture without any configuration is possible using the Device object
-as an iterator:
+as an infinite iterator:
 
 ```python
 from linuxpy.video.device import Device, VideoCapture
 
-with Device.from_id(0) as cam:
-    for frame in cam:
+with Device.from_id(0) as camera:
+    for frame in camera:
         ...
 ```
 
-To be able to configure the next acquisition, you will need to use the
+The resulting `Frame` objects can safely and efficiently be converted to bytes.
+
+To be able to configure the acquisition, you will need to use the
 `VideoCapture` helper. Here is an example with image size and format configuration:
 
 ```python
 from linuxpy.video.device import Device, VideoCapture
 
-with Device.from_id(0) as cam:
-    capture = VideoCapture(cam)
+with Device.from_id(0) as camera:
+    capture = VideoCapture(camera)
     capture.set_format(640, 480, "MJPG")
     with VideoCapture(cam) as capture:
         for frame in capture:
@@ -193,6 +238,7 @@ force a specific writer with `VideoOutput(cam, sink=Capability.READWRITE)`:
 This is just an example on how to setup v4l2loopback.
 
 Start from scratch:
+
 ```bash
 # Remove kernel module and all devices (no client can be connected at this point)
 sudo modprobe -r v4l2loopback

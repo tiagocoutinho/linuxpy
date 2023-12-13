@@ -41,6 +41,8 @@ snd_seq_system_info(queues=32, clients=192, ports=254, channels=256, cur_clients
 
 ## Listing ports and clients
 
+
+
 ## asyncio
 
 asyncio is a first class citizen to linuxpy.midi:

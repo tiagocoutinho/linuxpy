@@ -2,9 +2,8 @@
 
 [![linuxpy][pypi-version]](https://pypi.python.org/pypi/linuxpy)
 [![Python Versions][pypi-python-versions]](https://pypi.python.org/pypi/linuxpy)
-![License][license]
+[![License][license]]()]]
 [![CI][CI]](https://github.com/tiagocoutinho/linuxpy/actions/workflows/ci.yml)
-
 
 Human friendly interface to linux subsystems using python.
 
