@@ -627,7 +627,7 @@
         
   
   <span class="md-ellipsis">
-    Input
+    Input API
   </span>
   
 
@@ -647,7 +647,7 @@
         
   
   <span class="md-ellipsis">
-    MIDI API reference
+    MIDI API
   </span>
   
 
@@ -667,7 +667,7 @@
         
   
   <span class="md-ellipsis">
-    Video
+    Video API
   </span>
   
 
@@ -801,9 +801,9 @@
 
 
 <h1 id="video">Video<a class="headerlink" href="#video" title="Permanent link">&para;</a></h1>
-<p>Video for Linux 2 (V4L2).</p>
+<p>Human friendly interface to the Video for Linux 2 (V4L2) subsystem.</p>
 <p>Without further ado:</p>
-<div class="termy" data-termynal data-ty-macos data-ty-title="bash"><span data-ty="input" data-ty-prompt="&gt;&gt;&gt;">from linuxpy.video.device import Device</span><span data-ty="input" data-ty-prompt="&gt;&gt;&gt;">with Device.from_id(0) as cam:</span><span data-ty="input" data-ty-prompt="&gt;&gt;&gt;">    for i, frame in enumerate(cam):</span><span data-ty="input" data-ty-prompt="...">        print(f&quot;frame #{i}: {len(frame)} bytes&quot;)</span><span data-ty="input" data-ty-prompt="...">        if i &gt; 9:</span><span data-ty="input" data-ty-prompt="...">            break</span><span data-ty>...<br>frame #0: 54630 bytes<br>frame #1: 50184 bytes<br>frame #2: 44054 bytes<br>frame #3: 42822 bytes<br>frame #4: 42116 bytes<br>frame #5: 41868 bytes<br>frame #6: 41322 bytes<br>frame #7: 40896 bytes<br>frame #8: 40844 bytes<br>frame #9: 40714 bytes<br>frame #10: 40662 bytes<br></span></div>
+<div class="termy" data-termynal data-ty-macos data-ty-title="bash"><span data-ty="input" data-ty-prompt="&gt;&gt;&gt;">from linuxpy.video.device import Device</span><span data-ty="input" data-ty-prompt="&gt;&gt;&gt;">with Device.from_id(0) as cam:</span><span data-ty="input" data-ty-prompt="...">    for i, frame in enumerate(cam):</span><span data-ty="input" data-ty-prompt="...">        print(f&quot;frame #{i}: {len(frame)} bytes&quot;)</span><span data-ty="input" data-ty-prompt="...">        if i &gt; 9:</span><span data-ty="input" data-ty-prompt="...">            break</span><span data-ty>...<br>frame #0: 54630 bytes<br>frame #1: 50184 bytes<br>frame #2: 44054 bytes<br>frame #3: 42822 bytes<br>frame #4: 42116 bytes<br>frame #5: 41868 bytes<br>frame #6: 41322 bytes<br>frame #7: 40896 bytes<br>frame #8: 40844 bytes<br>frame #9: 40714 bytes<br>frame #10: 40662 bytes<br></span></div>
 
 <h2 id="device-creation">Device creation<a class="headerlink" href="#device-creation" title="Permanent link">&para;</a></h2>
 <p>Create a device object from an ID:</p>

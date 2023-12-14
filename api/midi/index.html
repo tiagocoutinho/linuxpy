@@ -26,7 +26,7 @@
     
     
       
-        <title>MIDI API reference - LinuxPy</title>
+        <title>MIDI API - LinuxPy</title>
       
     
     
@@ -81,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#midi-api-reference" class="md-skip">
+        <a href="#midi-api" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              MIDI API reference
+              MIDI API
             
           </span>
         </div>
@@ -531,7 +531,7 @@
         
   
   <span class="md-ellipsis">
-    Input
+    Input API
   </span>
   
 
@@ -560,7 +560,7 @@
           
   
   <span class="md-ellipsis">
-    MIDI API reference
+    MIDI API
   </span>
   
 
@@ -571,7 +571,7 @@
         
   
   <span class="md-ellipsis">
-    MIDI API reference
+    MIDI API
   </span>
   
 
@@ -599,6 +599,13 @@
   
     <nav class="md-nav" aria-label="device">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.midi.device.MidiError" class="md-nav__link">
+    MidiError
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#linuxpy.midi.device.Sequencer" class="md-nav__link">
@@ -998,7 +1005,7 @@
         
   
   <span class="md-ellipsis">
-    Video
+    Video API
   </span>
   
 
@@ -1067,6 +1074,13 @@
   
     <nav class="md-nav" aria-label="device">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.midi.device.MidiError" class="md-nav__link">
+    MidiError
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#linuxpy.midi.device.Sequencer" class="md-nav__link">
@@ -1462,7 +1476,7 @@
                   
 
 
-<h1 id="midi-api-reference">MIDI API reference<a class="headerlink" href="#midi-api-reference" title="Permanent link">&para;</a></h1>
+<h1 id="midi-api">MIDI API<a class="headerlink" href="#midi-api" title="Permanent link">&para;</a></h1>
 
 
 <div class="doc doc-object doc-module">
@@ -1478,7 +1492,7 @@
 
   <div class="doc doc-contents first">
   
-      <p>Human API to linux MIDI subsystem.</p>
+      <p>Human friendly interface to linux MIDI subsystem.</p>
 <p>The heart of linuxpy MIDI library is the <a class="autorefs autorefs-internal" href="#linuxpy.midi.device.Sequencer"><code>Sequencer</code></a>
 class.
 Usually you need only one instance of Sequencer for your application.
@@ -1522,6 +1536,30 @@ The recommended way is to use it within a context manager like:</p>
 
 
 
+<h3 id="linuxpy.midi.device.MidiError" class="doc doc-heading">
+          <code>MidiError</code>
+
+
+<a href="#linuxpy.midi.device.MidiError" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+  <div class="doc doc-contents ">
+          <p class="doc doc-class-bases">
+            Bases: <code>Exception</code></p>
+
+  
+      <p>MIDI error</p>
+
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+
 <h3 id="linuxpy.midi.device.Sequencer" class="doc doc-heading">
             <code class=" language-python"><span class="n">Sequencer</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;linuxpy client&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
@@ -1533,7 +1571,7 @@ The recommended way is to use it within a context manager like:</p>
             Bases: <code><span title="linuxpy.device.BaseDevice">BaseDevice</span></code></p>
 
   
-      <p>Central MIDI object.</p>
+      <p>Central MIDI class.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.midi.device</span> <span class="kn">import</span> <span class="n">Sequencer</span>
 
 <span class="k">with</span> <span class="n">Sequencer</span><span class="p">(</span><span class="s2">&quot;My MIDI App&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">midi</span><span class="p">:</span>
