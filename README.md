@@ -24,19 +24,19 @@ write calls. Ain't linux wonderful?
 
 From within your favorite python environment:
 
-```bash
+```console
 $ pip install linuxpy
 ```
 
 To run the examples you'll need:
 
-```bash
+```console
 $ pip install linuxpy[examples]
 ```
 
 To develop, run tests, build package, lint, etc you'll need:
 
-```bash
+```console
 $ pip install linuxpy[dev]
 ```
 
@@ -110,7 +110,7 @@ Format(width=640, height=480, pixelformat=<PixelFormat.MJPEG: 1196444237>}
 
 linuxpy.video is asyncio friendly:
 
-```bash
+```console
 $ python -m asyncio
 
 >>> from linuxpy.video.device import Device
@@ -153,7 +153,7 @@ It is possible to write to a video output capable device (ex: v4l2loopback).
 The following example shows how to grab frames from device 0 and write them
 to device 10
 
-```bash
+```console
 >>> from linuxpy.video.device import Device, VideoOutput, BufferType
 >>> dev_source = Device.from_id(0)
 >>> dev_sink = Device.from_id(10)
@@ -172,7 +172,7 @@ to device 10
 You've been patient enough to read until here so, just for you,
 a 20 line gem: a flask web server displaying your device on the web:
 
-```bash
+```console
 $ pip install flask
 ```
 
@@ -201,7 +201,7 @@ def stream():
 
 run with:
 
-```bash
+```console
 $ FLASK_APP=web flask run -h 0.0.0.0
 ```
 
@@ -211,7 +211,7 @@ your camera rolling!
 #### v4l2loopback
 
 Start from scratch:
-```bash
+```console
 # Remove kernel module and all devices (no client can be connected at this point)
 sudo modprobe -r v4l2loopback
 
@@ -247,7 +247,7 @@ with pad:
 
 #### asyncio
 
-```bash
+```console
 $ python -m asyncio
 
 >>> from linuxpy.input.device import find_gamepads
@@ -278,7 +278,7 @@ InputEvent(time=1697520475.424895, type=<EventType.SYN: 0>, code=<Synchronizatio
 
 ### MIDI Sequencer
 
-```bash
+```console
 $ python
 
 >>> from linuxpy.midi.device import Sequencer, event_stream
@@ -299,7 +299,7 @@ $ python
 
 asyncio is a first class citizen to linuxpy.midi:
 
-```bash
+```console
 $ python -m asyncio
 
 >>> from linuxpy.midi.device import Sequencer, async_event_stream
@@ -321,7 +321,7 @@ $ python -m asyncio
 A basic CLI is provided that allows listing MIDI clients & ports
 and dumping MIDI sequencer events:
 
-```bash
+```console
 $ python -m linuxpy.midi.cli ls
  Port   Client                   Port                     Type                           Capabilities
   0:0   System                   Timer                    0                              SR, W, R
@@ -329,7 +329,7 @@ $ python -m linuxpy.midi.cli ls
  14:0   Midi Through             Midi Through Port-0      PORT, SOFTWARE, MIDI_GENERIC   SW, SR, W, R
 ```
 
-```bash
+```console
 $ python -m linuxpy.midi.cli listen 0:1 14:0
   0:1   Port subscribed      sender=(client=0, port=1), dest=(client=128, port=0)
   0:1   Port start           client=128, port=1

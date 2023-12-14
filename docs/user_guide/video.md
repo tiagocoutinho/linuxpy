@@ -4,7 +4,9 @@ Video for Linux 2 (V4L2).
 
 Without further ado:
 
-```python
+<!-- termynal -->
+
+```console
 >>> from linuxpy.video.device import Device
 >>> with Device.from_id(0) as cam:
 >>>     for i, frame in enumerate(cam):
@@ -92,10 +94,13 @@ from linuxpy.video.device import Device, VideoCapture
 with Device.from_id(0) as camera:
     capture = VideoCapture(camera)
     capture.set_format(640, 480, "MJPG")
-    with VideoCapture(cam) as capture:
+    with capture:
         for frame in capture:
             ...
 ```
+
+Note that `VideoCapture` configuration must be done **before** the capture is started
+(ie, the the `with capture:` statement.)
 
 By default, VideoCapture will use memory map if the device has STREAMING
 capability and falls back to standard read if not. It is also possible to
@@ -105,9 +110,7 @@ force a specific reader:
 from linuxpy.video.device import Capability, Device, VideoCapture
 
 with Device.from_id(0) as cam:
-    capture = VideoCapture(cam, source=Capability.READWRITE)
-    capture.set_format(640, 480, "MJPG")
-    with VideoCapture(cam) as capture:
+    with VideoCapture(cam, source=Capability.READWRITE):
         for frame in capture:
             ...
 ```
@@ -172,7 +175,9 @@ Format(width=640, height=480, pixelformat=<PixelFormat.MJPEG: 1196444237>}
 
 linuxpy.video is asyncio friendly:
 
-```bash
+<!-- termynal -->
+
+```console
 $ python -m asyncio
 
 >>> from linuxpy.video.device import Device
@@ -215,7 +220,7 @@ It is possible to write to a video output capable device (ex: v4l2loopback).
 The following example shows how to grab frames from device 0 and write them
 to device 10:
 
-```bash
+```console
 >>> from linuxpy.video.device import Device, VideoOutput, BufferType
 >>> dev_source = Device.from_id(0)
 >>> dev_sink = Device.from_id(10)
@@ -239,7 +244,7 @@ This is just an example on how to setup v4l2loopback.
 
 Start from scratch:
 
-```bash
+```console
 # Remove kernel module and all devices (no client can be connected at this point)
 sudo modprobe -r v4l2loopback
 

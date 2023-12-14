@@ -6,7 +6,7 @@ A linux OS and python >= 3.9.
 
 From within your favorite python environment:
 
-```bash
+```console
 $ pip install linuxpy[dev]
 ```
 
@@ -15,7 +15,7 @@ on your system.
 
 On a debian based run:
 
-```bash
+```console
 $ apt install castxml
 ```
 
@@ -30,7 +30,7 @@ you'll need linux header files installed on your system + black.
 
 To launch the tool call:
 
-```bash
+```console
 $ python -m linuxpy.codegen.cli
 ```
 
@@ -38,7 +38,7 @@ $ python -m linuxpy.codegen.cli
 
 Some video tests will only run with a properly configured `v4l2loopback`.
 
-```bash
+```console
 $ sudo modprobe v4l2loopback video_nr=199 card_label="Loopback 199"
 ```
 
@@ -46,7 +46,7 @@ Additionally the user which runs the tests will need read/write access to
 `/dev/video199`.
 On most systems this can be achieved by adding the user to the `video` group:
 
-```bash
+```console
 $ sudo addgroup $USER video
 ```
 
@@ -54,6 +54,6 @@ Some input tests require the user which runs the tests to have read/write
 access to `/dev/uinput`.
 On most systems this can be achieved by adding the user to the `input` group:
 
-```bash
+```console
 $ sudo addgroup $USER input
 ```
