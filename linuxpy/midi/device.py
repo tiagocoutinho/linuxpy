@@ -5,7 +5,7 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 """
-Human API to linux MIDI subsystem.
+Human friendly interface to linux MIDI subsystem.
 
 The heart of linuxpy MIDI library is the [`Sequencer`][linuxpy.midi.device.Sequencer]
 class.

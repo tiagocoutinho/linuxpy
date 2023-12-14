@@ -4,7 +4,7 @@
 # Copyright (c) 2023 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
-"""Human API to V4L2 (Video 4 Linux 2)."""
+"""Human friendly interface to V4L2 (Video 4 Linux 2) subsystem."""
 
 import asyncio
 import collections

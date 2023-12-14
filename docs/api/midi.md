@@ -1,3 +1,3 @@
-# MIDI API reference
+# MIDI API
 
 ::: linuxpy.midi.device

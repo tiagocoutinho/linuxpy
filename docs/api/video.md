@@ -1,3 +1,3 @@
-## Video API reference
+# Video API
 
 ::: linuxpy.video.device

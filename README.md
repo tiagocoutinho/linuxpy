@@ -9,7 +9,7 @@ Human friendly interface to linux subsystems using python.
 
 Provides python access to several linux subsystems like V4L2, input and MIDI.
 
-There is experimental, incomplete and unstable access to USB.
+There is experimental, undocumented, incomplete and unstable access to USB.
 
 Requirements:
 * python >= 3.9
@@ -260,14 +260,6 @@ InputEvent(time=1697520475.361564, type=<EventType.REL: 2>, code=<Relative.Y: 1>
 InputEvent(time=1697520475.361564, type=<EventType.SYN: 0>, code=<Synchronization.REPORT: 0>, value=0)
 InputEvent(time=1697520475.371128, type=<EventType.REL: 2>, code=<Relative.X: 0>, value=-1)
 InputEvent(time=1697520475.371128, type=<EventType.SYN: 0>, code=<Synchronization.REPORT: 0>, value=0)
-InputEvent(time=1697520475.384468, type=<EventType.REL: 2>, code=<Relative.X: 0>, value=-1)
-InputEvent(time=1697520475.384468, type=<EventType.REL: 2>, code=<Relative.Y: 1>, value=1)
-InputEvent(time=1697520475.384468, type=<EventType.SYN: 0>, code=<Synchronization.REPORT: 0>, value=0)
-InputEvent(time=1697520475.398041, type=<EventType.REL: 2>, code=<Relative.X: 0>, value=-2)
-InputEvent(time=1697520475.398041, type=<EventType.REL: 2>, code=<Relative.Y: 1>, value=1)
-InputEvent(time=1697520475.398041, type=<EventType.SYN: 0>, code=<Synchronization.REPORT: 0>, value=0)
-InputEvent(time=1697520475.424895, type=<EventType.REL: 2>, code=<Relative.X: 0>, value=-1)
-InputEvent(time=1697520475.424895, type=<EventType.SYN: 0>, code=<Synchronization.REPORT: 0>, value=0)
 ...
 ```
 

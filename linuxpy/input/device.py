@@ -5,7 +5,7 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 """
-Human API to linux Input subsystem.
+Human friendly interface to linux Input subsystem.
 
 The heart of linuxpy MIDI library is the [`Device`][linuxpy.input.device.Device]
 class.
@@ -13,12 +13,11 @@ The recommended way is to use one of the find methods to create a Device object
 and use it within a context manager like:
 
 ```python
-with Device("/dev/input/event11") as gamepad:
+from linuxpy.input.device import find_gamepad
+
+with find_gamepad() as gamepad:
     print(f"Gamepad name: {gamepad.name}")
 ```
-
-
-
 """
 
 
@@ -29,11 +28,11 @@ import functools
 import os
 import pathlib
 import select
-from typing import Union
 
 from linuxpy.ctypes import cast, cint, create_string_buffer, cuint, cvoidp, i32, sizeof
 from linuxpy.device import BaseDevice, iter_device_files
 from linuxpy.ioctl import IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR, ioctl
+from linuxpy.types import AsyncIterable, Callable, Iterable, Optional, Union
 from linuxpy.util import Version, add_reader_asyncio, make_find
 
 from .raw import (
@@ -304,7 +303,7 @@ class InputError(Exception):
 class _Type:
     _event_type = None
 
-    def __init__(self, device=None):
+    def __init__(self, device: Optional["Device"] = None):
         self.device = device
 
     def __get__(self, obj, type=None):
@@ -374,10 +373,6 @@ class Device(BaseDevice):
 
     track_point = find(name="TPPS/2 Elan TrackPoint")
     ```
-
-    Helpers exist to find by capability
-
-    ```
     """
 
     PREFIX = "/dev/input/event"
@@ -389,12 +384,40 @@ class Device(BaseDevice):
         self._caps = None
         super().__init__(*args, **kwargs)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterable[InputEvent]:
+        """
+        Build an infinite iterator that streams input events
+        You'll need an open Device before using it:
+
+        ```python
+        from linuxpy.input.device import find_mouse
+
+        with find_mouse() as mouse:
+            for event in mouse:
+                print(event)
+        ```
+        """
         with EventReader(self) as reader:
             while True:
                 yield reader.read()
 
-    async def __aiter__(self):
+    async def __aiter__(self) -> AsyncIterable[InputEvent]:
+        """
+        Build an infinite async iterator that streams input events
+        You'll need an open Device before using it:
+
+        ```python
+        import asyncio
+        from linuxpy.input.device import find_mouse
+
+        async def main():
+            with find_mouse() as mouse:
+                async for event in mouse:
+                    print(event)
+
+        asyncio.run(main())
+        ```
+        """
         async with EventReader(self) as reader:
             while True:
                 yield await reader.aread()
@@ -403,60 +426,73 @@ class Device(BaseDevice):
         pass
 
     @functools.cached_property
-    def uid(self):
+    def uid(self) -> str:
         return uid(self.fileno())
 
     @functools.cached_property
-    def name(self):
+    def name(self) -> str:
+        """The device name"""
         return read_name(self.fileno())
 
     @functools.cached_property
-    def version(self):
+    def version(self) -> Version:
+        """The version"""
         return Version.from_number(version(self.fileno()))
 
     @functools.cached_property
-    def physical_location(self):
+    def physical_location(self) -> str:
+        """The physical location"""
         return physical_location(self.fileno())
 
     @functools.cached_property
-    def device_id(self):
+    def device_id(self) -> input_id:
+        """The device input ID"""
         return device_id(self.fileno())
 
     @functools.cached_property
     def capabilities(self):
+        """The device capabilities"""
         if self._caps is None:
             self._caps = capabilities(self.fileno())
         return self._caps
 
     @property
     def active_keys(self):
+        """All active keys at the moment of calling this"""
         return active_keys(self.fileno())
 
     def get_abs_info(self, abs_code):
+        """Absolute information for the given abs code"""
         return abs_info(self.fileno(), abs_code)
 
     @property
     def x(self):
+        """Current absolute X value"""
         return self.get_abs_info(Absolute.X).value
 
     @property
     def y(self):
+        """Current absolute Y value"""
         return self.get_abs_info(Absolute.Y).value
 
     @property
     def z(self):
+        """Current absolute Z value"""
         return self.get_abs_info(Absolute.Z).value
 
     @property
     def rx(self):
+        """Current relative X value"""
         return self.get_abs_info(Absolute.RX).value
 
     @property
     def ry(self):
+        """Current relative Y value"""
         return self.get_abs_info(Absolute.RY).value
 
     @property
     def rz(self):
+        """Current relative Z value"""
         return self.get_abs_info(Absolute.RZ).value
 
     def read_event(self):
@@ -595,10 +631,30 @@ def is_mouse(device: Device) -> bool:
     return Key.BTN_MOUSE in key_caps
 
 
-find = make_find(iter_devices)
+_find = make_find(iter_devices)
 
 
-def _make_find(func):
+def find(
+    find_all: bool = False, custom_match: Optional[Callable] = None, **kwargs
+) -> Union[Device, Iterable[Device], None]:
+    """
+    If find_all is False:
+
+    Find a device follwing the criteria matched by custom_match and kwargs.
+    If no device is found matching the criteria it returns None.
+    Default is to return a random first device.
+
+    If find_all is True:
+
+    The result is an iterator.
+    Find all devices that match the criteria custom_match and kwargs.
+    If no device is found matching the criteria it returns an empty iterator.
+    Default is to return an iterator over all input devices found on the system.
+    """
+    return _find(find_all, custom_match, **kwargs)
+
+
+def _make_find_input(func):
     def _find(find_all=False, custom_match=None, **kwargs):
         if custom_match:
 
@@ -611,9 +667,73 @@ def _make_find(func):
     return _find
 
 
-find_gamepad = _make_find(is_gamepad)
-find_keyboard = _make_find(is_keyboard)
-find_mouse = _make_find(is_mouse)
+_find_gamepad = _make_find_input(is_gamepad)
+
+
+def find_gamepad(
+    find_all: bool = False, custom_match: Optional[Callable] = None, **kwargs
+) -> Union[Device, Iterable[Device], None]:
+    """
+    If find_all is False:
+
+    Find a gamepad device follwing the criteria matched by custom_match and kwargs.
+    If no device is found matching the criteria it returns None.
+    Default is to return a random first gamepad.
+
+    If find_all is True:
+
+    The result is an iterator.
+    Find all gamepad devices that match the criteria custom_match and kwargs.
+    If no gamepad is found matching the criteria it returns an empty iterator.
+    Default is to return an iterator over all gamepad devices found on the system.
+    """
+    return _find_gamepad(find_all, custom_match, **kwargs)
+
+
+_find_keyboard = _make_find_input(is_keyboard)
+
+
+def find_keyboard(
+    find_all: bool = False, custom_match: Optional[Callable] = None, **kwargs
+) -> Union[Device, Iterable[Device], None]:
+    """
+    If find_all is False:
+
+    Find a keyboard device follwing the criteria matched by custom_match and kwargs.
+    If no device is found matching the criteria it returns None.
+    Default is to return a random first keyboard.
+
+    If find_all is True:
+
+    The result is an iterator.
+    Find all keyboard devices that match the criteria custom_match and kwargs.
+    If no keyboard is found matching the criteria it returns an empty iterator.
+    Default is to return an iterator over all keyboard devices found on the system.
+    """
+    return _find_keyboard(find_all, custom_match, **kwargs)
+
+
+_find_mouse = _make_find_input(is_mouse)
+
+
+def find_mouse(
+    find_all: bool = False, custom_match: Optional[Callable] = None, **kwargs
+) -> Union[Device, Iterable[Device], None]:
+    """
+    If find_all is False:
+
+    Find a mouse device follwing the criteria matched by custom_match and kwargs.
+    If no device is found matching the criteria it returns None.
+    Default is to return a random first mouse.
+
+    If find_all is True:
+
+    The result is an iterator.
+    Find all mouse devices that match the criteria custom_match and kwargs.
+    If no mouse is found matching the criteria it returns an empty iterator.
+    Default is to return an iterator over all mouse devices found on the system.
+    """
+    return _find_mouse(find_all, custom_match, **kwargs)
 
 
 def is_uinput_available():

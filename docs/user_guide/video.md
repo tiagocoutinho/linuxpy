@@ -1,6 +1,6 @@
 # Video
 
-Video for Linux 2 (V4L2).
+Human friendly interface to the Video for Linux 2 (V4L2) subsystem.
 
 Without further ado:
 
@@ -9,7 +9,7 @@ Without further ado:
 ```console
 >>> from linuxpy.video.device import Device
 >>> with Device.from_id(0) as cam:
->>>     for i, frame in enumerate(cam):
+...     for i, frame in enumerate(cam):
 ...         print(f"frame #{i}: {len(frame)} bytes")
 ...         if i > 9:
 ...             break

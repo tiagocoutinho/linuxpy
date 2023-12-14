@@ -1,5 +1,7 @@
 # Input
 
+Human friendly interface to the Linux Input subsystem.
+
 API not documented yet. Just this example:
 
 ```python
@@ -32,14 +34,6 @@ InputEvent(time=1697520475.361564, type=<EventType.REL: 2>, code=<Relative.Y: 1>
 InputEvent(time=1697520475.361564, type=<EventType.SYN: 0>, code=<Synchronization.REPORT: 0>, value=0)
 InputEvent(time=1697520475.371128, type=<EventType.REL: 2>, code=<Relative.X: 0>, value=-1)
 InputEvent(time=1697520475.371128, type=<EventType.SYN: 0>, code=<Synchronization.REPORT: 0>, value=0)
-InputEvent(time=1697520475.384468, type=<EventType.REL: 2>, code=<Relative.X: 0>, value=-1)
-InputEvent(time=1697520475.384468, type=<EventType.REL: 2>, code=<Relative.Y: 1>, value=1)
-InputEvent(time=1697520475.384468, type=<EventType.SYN: 0>, code=<Synchronization.REPORT: 0>, value=0)
-InputEvent(time=1697520475.398041, type=<EventType.REL: 2>, code=<Relative.X: 0>, value=-2)
-InputEvent(time=1697520475.398041, type=<EventType.REL: 2>, code=<Relative.Y: 1>, value=1)
-InputEvent(time=1697520475.398041, type=<EventType.SYN: 0>, code=<Synchronization.REPORT: 0>, value=0)
-InputEvent(time=1697520475.424895, type=<EventType.REL: 2>, code=<Relative.X: 0>, value=-1)
-InputEvent(time=1697520475.424895, type=<EventType.SYN: 0>, code=<Synchronization.REPORT: 0>, value=0)
 ...
 ```
 

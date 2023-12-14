@@ -1,3 +1,3 @@
-## Input API reference
+# Input API
 
 ::: linuxpy.input.device
