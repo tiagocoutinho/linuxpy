@@ -803,25 +803,8 @@
 <h1 id="video">Video<a class="headerlink" href="#video" title="Permanent link">&para;</a></h1>
 <p>Video for Linux 2 (V4L2).</p>
 <p>Without further ado:</p>
-<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">cam</span><span class="p">:</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cam</span><span class="p">):</span>
-<span class="o">...</span>         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;frame #</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
-<span class="o">...</span>         <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">9</span><span class="p">:</span>
-<span class="o">...</span>             <span class="k">break</span>
-<span class="o">...</span>
-<span class="n">frame</span> <span class="c1">#0: 54630 bytes</span>
-<span class="n">frame</span> <span class="c1">#1: 50184 bytes</span>
-<span class="n">frame</span> <span class="c1">#2: 44054 bytes</span>
-<span class="n">frame</span> <span class="c1">#3: 42822 bytes</span>
-<span class="n">frame</span> <span class="c1">#4: 42116 bytes</span>
-<span class="n">frame</span> <span class="c1">#5: 41868 bytes</span>
-<span class="n">frame</span> <span class="c1">#6: 41322 bytes</span>
-<span class="n">frame</span> <span class="c1">#7: 40896 bytes</span>
-<span class="n">frame</span> <span class="c1">#8: 40844 bytes</span>
-<span class="n">frame</span> <span class="c1">#9: 40714 bytes</span>
-<span class="n">frame</span> <span class="c1">#10: 40662 bytes</span>
-</code></pre></div>
+<div class="termy" data-termynal data-ty-macos data-ty-title="bash"><span data-ty="input" data-ty-prompt="&gt;&gt;&gt;">from linuxpy.video.device import Device</span><span data-ty="input" data-ty-prompt="&gt;&gt;&gt;">with Device.from_id(0) as cam:</span><span data-ty="input" data-ty-prompt="&gt;&gt;&gt;">    for i, frame in enumerate(cam):</span><span data-ty="input" data-ty-prompt="...">        print(f&quot;frame #{i}: {len(frame)} bytes&quot;)</span><span data-ty="input" data-ty-prompt="...">        if i &gt; 9:</span><span data-ty="input" data-ty-prompt="...">            break</span><span data-ty>...<br>frame #0: 54630 bytes<br>frame #1: 50184 bytes<br>frame #2: 44054 bytes<br>frame #3: 42822 bytes<br>frame #4: 42116 bytes<br>frame #5: 41868 bytes<br>frame #6: 41322 bytes<br>frame #7: 40896 bytes<br>frame #8: 40844 bytes<br>frame #9: 40714 bytes<br>frame #10: 40662 bytes<br></span></div>
+
 <h2 id="device-creation">Device creation<a class="headerlink" href="#device-creation" title="Permanent link">&para;</a></h2>
 <p>Create a device object from an ID:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span>
@@ -866,19 +849,19 @@ as an infinite iterator:</p>
 <span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">camera</span><span class="p">:</span>
     <span class="n">capture</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">camera</span><span class="p">)</span>
     <span class="n">capture</span><span class="o">.</span><span class="n">set_format</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="s2">&quot;MJPG&quot;</span><span class="p">)</span>
-    <span class="k">with</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">cam</span><span class="p">)</span> <span class="k">as</span> <span class="n">capture</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">capture</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">capture</span><span class="p">:</span>
             <span class="o">...</span>
 </code></pre></div>
+<p>Note that <code>VideoCapture</code> configuration must be done <strong>before</strong> the capture is started
+(ie, the the <code>with capture:</code> statement.)</p>
 <p>By default, VideoCapture will use memory map if the device has STREAMING
 capability and falls back to standard read if not. It is also possible to
 force a specific reader:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Capability</span><span class="p">,</span> <span class="n">Device</span><span class="p">,</span> <span class="n">VideoCapture</span>
 
 <span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">cam</span><span class="p">:</span>
-    <span class="n">capture</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">cam</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">Capability</span><span class="o">.</span><span class="n">READWRITE</span><span class="p">)</span>
-    <span class="n">capture</span><span class="o">.</span><span class="n">set_format</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="s2">&quot;MJPG&quot;</span><span class="p">)</span>
-    <span class="k">with</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">cam</span><span class="p">)</span> <span class="k">as</span> <span class="n">capture</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">cam</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">Capability</span><span class="o">.</span><span class="n">READWRITE</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">capture</span><span class="p">:</span>
             <span class="o">...</span>
 </code></pre></div>
@@ -935,18 +918,8 @@ force a specific reader:</p>
 <p>(see also <a href="examples/video/v4l2py-ctl.py">v4l2py-ctl</a> example)</p>
 <h2 id="asyncio">asyncio<a class="headerlink" href="#asyncio" title="Permanent link">&para;</a></h2>
 <p>linuxpy.video is asyncio friendly:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>asyncio
+<div class="termy" data-termynal data-ty-macos data-ty-title="bash"><span data-ty="input" data-ty-prompt="$">python -m asyncio</span><span data-ty></span><span data-ty="input" data-ty-prompt="&gt;&gt;&gt;">from linuxpy.video.device import Device</span><span data-ty="input" data-ty-prompt="&gt;&gt;&gt;">with Device.from_id(0) as camera:</span><span data-ty="input" data-ty-prompt="...">    async for frame in camera:</span><span data-ty="input" data-ty-prompt="...">        print(f&quot;frame {len(frame)}&quot;)</span><span data-ty>frame 10224<br>frame 10304<br>frame 10224<br>frame 10136<br>...<br></span></div>
 
-&gt;&gt;&gt;<span class="w"> </span>from<span class="w"> </span>linuxpy.video.device<span class="w"> </span>import<span class="w"> </span>Device
-&gt;&gt;&gt;<span class="w"> </span>with<span class="w"> </span>Device.from_id<span class="o">(</span><span class="m">0</span><span class="o">)</span><span class="w"> </span>as<span class="w"> </span>camera:
-...<span class="w">     </span>async<span class="w"> </span><span class="k">for</span><span class="w"> </span>frame<span class="w"> </span><span class="k">in</span><span class="w"> </span>camera:
-...<span class="w">         </span>print<span class="o">(</span>f<span class="s2">&quot;frame {len(frame)}&quot;</span><span class="o">)</span>
-frame<span class="w"> </span><span class="m">10224</span>
-frame<span class="w"> </span><span class="m">10304</span>
-frame<span class="w"> </span><span class="m">10224</span>
-frame<span class="w"> </span><span class="m">10136</span>
-...
-</code></pre></div>
 <p>(check <a href="examples/video/basic_async.py">basic async</a> and <a href="examples/video/web/async.py">web async</a> examples)</p>
 <h2 id="gevent">gevent<a class="headerlink" href="#gevent" title="Permanent link">&para;</a></h2>
 <p>linuxpy.video is also gevent friendly:</p>
@@ -968,17 +941,17 @@ frame 10136
 <p>It is possible to write to a video output capable device (ex: v4l2loopback).
 The following example shows how to grab frames from device 0 and write them
 to device 10:</p>
-<div class="highlight"><pre><span></span><code>&gt;&gt;&gt;<span class="w"> </span>from<span class="w"> </span>linuxpy.video.device<span class="w"> </span>import<span class="w"> </span>Device,<span class="w"> </span>VideoOutput,<span class="w"> </span>BufferType
-&gt;&gt;&gt;<span class="w"> </span><span class="nv">dev_source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Device.from_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
-&gt;&gt;&gt;<span class="w"> </span><span class="nv">dev_sink</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Device.from_id<span class="o">(</span><span class="m">10</span><span class="o">)</span>
-&gt;&gt;&gt;<span class="w"> </span>with<span class="w"> </span>dev_source,<span class="w"> </span>dev_target:
-&gt;&gt;&gt;<span class="w">     </span><span class="nb">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>VideoCapture<span class="o">(</span>dev_source<span class="o">)</span>
-&gt;&gt;&gt;<span class="w">     </span><span class="nv">sink</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>VideoOutput<span class="o">(</span>dev_sink<span class="o">)</span>
-&gt;&gt;&gt;<span class="w">     </span>source.set_format<span class="o">(</span><span class="m">640</span>,<span class="w"> </span><span class="m">480</span>,<span class="w"> </span><span class="s2">&quot;MJPG&quot;</span><span class="o">)</span>
-&gt;&gt;&gt;<span class="w">     </span>sink.set_format<span class="o">(</span><span class="m">640</span>,<span class="w"> </span><span class="m">480</span>,<span class="w"> </span><span class="s2">&quot;MJPG&quot;</span><span class="o">)</span>
-&gt;&gt;&gt;<span class="w">     </span>with<span class="w"> </span>source,<span class="w"> </span>sink:
-&gt;&gt;&gt;<span class="w">         </span><span class="k">for</span><span class="w"> </span>frame<span class="w"> </span><span class="k">in</span><span class="w"> </span>source:
-&gt;&gt;&gt;<span class="w">             </span>sink.write<span class="o">(</span>frame.data<span class="o">)</span>
+<div class="highlight"><pre><span></span><code><span class="go">&gt;&gt;&gt; from linuxpy.video.device import Device, VideoOutput, BufferType</span>
+<span class="go">&gt;&gt;&gt; dev_source = Device.from_id(0)</span>
+<span class="go">&gt;&gt;&gt; dev_sink = Device.from_id(10)</span>
+<span class="go">&gt;&gt;&gt; with dev_source, dev_target:</span>
+<span class="go">&gt;&gt;&gt;     source = VideoCapture(dev_source)</span>
+<span class="go">&gt;&gt;&gt;     sink = VideoOutput(dev_sink)</span>
+<span class="go">&gt;&gt;&gt;     source.set_format(640, 480, &quot;MJPG&quot;)</span>
+<span class="go">&gt;&gt;&gt;     sink.set_format(640, 480, &quot;MJPG&quot;)</span>
+<span class="go">&gt;&gt;&gt;     with source, sink:</span>
+<span class="go">&gt;&gt;&gt;         for frame in source:</span>
+<span class="go">&gt;&gt;&gt;             sink.write(frame.data)</span>
 </code></pre></div>
 <p>By default, VideoOutput will use memory map if the device has STREAMING
 capability and falls back to standard write if not. It is also possible to
@@ -986,11 +959,11 @@ force a specific writer with <code>VideoOutput(cam, sink=Capability.READWRITE)</
 <h2 id="v4l2loopback">v4l2loopback<a class="headerlink" href="#v4l2loopback" title="Permanent link">&para;</a></h2>
 <p>This is just an example on how to setup v4l2loopback.</p>
 <p>Start from scratch:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Remove kernel module and all devices (no client can be connected at this point)</span>
-sudo<span class="w"> </span>modprobe<span class="w"> </span>-r<span class="w"> </span>v4l2loopback
+<div class="highlight"><pre><span></span><code><span class="gp"># </span>Remove<span class="w"> </span>kernel<span class="w"> </span>module<span class="w"> </span>and<span class="w"> </span>all<span class="w"> </span>devices<span class="w"> </span><span class="o">(</span>no<span class="w"> </span>client<span class="w"> </span>can<span class="w"> </span>be<span class="w"> </span>connected<span class="w"> </span>at<span class="w"> </span>this<span class="w"> </span>point<span class="o">)</span>
+<span class="go">sudo modprobe -r v4l2loopback</span>
 
-<span class="c1"># Install some devices</span>
-sudo<span class="w"> </span>modprobe<span class="w"> </span>v4l2loopback<span class="w"> </span><span class="nv">video_nr</span><span class="o">=</span><span class="m">20</span>,21<span class="w"> </span><span class="nv">card_label</span><span class="o">=</span><span class="s2">&quot;Loopback 0&quot;</span>,<span class="s2">&quot;Loopback 1&quot;</span>
+<span class="gp"># </span>Install<span class="w"> </span>some<span class="w"> </span>devices
+<span class="go">sudo modprobe v4l2loopback video_nr=20,21 card_label=&quot;Loopback 0&quot;,&quot;Loopback 1&quot;</span>
 </code></pre></div>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <p>See the <code>linux/videodev2.h</code> header file for details.</p>
