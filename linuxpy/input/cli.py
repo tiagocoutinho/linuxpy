@@ -11,22 +11,26 @@ from linuxpy.input.device import Device, async_event_batch_stream, event_batch_s
 
 
 def ls(_):
-    print(f"{'Name':^32} {'Location':<32} {'Version':<6} {'Filename':<32}")
+    print(f"{'Name':32} {'Location':32} {'Version':8} {'Filename':32}")
     for inp in sorted(find(find_all=True), key=lambda d: d.index):
         with inp:
-            print(f"{inp.name:>32} {inp.physical_location:>32} {inp.version:6} {inp.filename}")
+            print(f"{inp.name:<32} {inp.physical_location:<32} {inp.version:<8} {inp.filename}")
+
+
+def print_event(device, event):
+    print(f"{device.index:2} {device.name:32} {event.type.name:6} {event.code.name:16} {event.value}")
 
 
 def listen(args):
-    print(f" # {'Name':^32} {'Type':^6} {'Code':<16} {'Value':<6}")
+    print(f" # {'Name':32} {'Type':6} {'Code':16} {'Value':6}")
     with Device.from_id(args.addr) as device:
         for batch in event_batch_stream(device.fileno()):
             for event in batch:
-                print(f"{device.index:<2} {device.name:>32} {event.type.name:<6} {event.code.name:<16} {event.value}")
+                print_event(device, event)
 
 
 async def async_listen(args):
-    print(f" # {'Name':^32} {'Type':^6} {'Code':<16} {'Value':<6}")
+    print(f" # {'Name':32} {'Type':6} {'Code':16} {'Value':6}")
     queue = asyncio.Queue()
 
     async def go(addr):
@@ -34,12 +38,12 @@ async def async_listen(args):
             async for event in async_event_batch_stream(device.fileno()):
                 await queue.put((device, event))
 
-    [asyncio.create_task(go(addr)) for addr in args.addr]
+    _ = [asyncio.create_task(go(addr)) for addr in args.addr]
 
     while True:
         device, batch = await queue.get()
         for event in batch:
-            print(f"{device.index:<2} {device.name:>32} {event.type.name:<6} {event.code.name:<16} {event.value}")
+            print_event(device, event)
 
 
 def cli():

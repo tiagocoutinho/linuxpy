@@ -75,7 +75,7 @@ from linuxpy.midi.raw import (
     snd_seq_system_info,
 )
 from linuxpy.types import AsyncIterable, Iterable, Optional, Sequence, Union
-from linuxpy.util import add_reader_asyncio
+from linuxpy.util import Version, add_reader_asyncio
 
 ALSA_PATH = DEV_PATH / "snd"
 SEQUENCER_PATH = ALSA_PATH / "seq"
@@ -132,7 +132,7 @@ FullPortAddresses = Sequence[FullPortAddress]
 
 
 class MidiError(Exception):
-    pass
+    """MIDI error"""
 
 
 def read_pversion(seq) -> int:
@@ -274,60 +274,9 @@ def to_event_type(event_type: EventT) -> EventType:
             return EventType[event_type]
 
 
-class Version:
-    def __init__(self, major: int, minor: int, patch: int):
-        self.major = major
-        self.minor = minor
-        self.patch = patch
-
-    @classmethod
-    def from_tuple(cls, sequence: Iterable[Union[str, int]]):
-        return cls(*map(int, sequence))
-
-    @classmethod
-    def from_str(cls, text):
-        return cls.from_tuple(text.split(".", 2))
-
-    @classmethod
-    def from_number(cls, number: int):
-        return cls((number >> 16) & 0xFF, (number >> 8) & 0xFF, number & 0xFF)
-
-    def __int__(self):
-        return (self.major << 16) + (self.minor << 8) + self.patch
-
-    def __repr__(self):
-        return f"{self.major}.{self.minor}.{self.patch}"
-
-    def __getitem__(self, item):
-        return self.tuple[item]
-
-    def __eq__(self, other):
-        if not isinstance(other, Version):
-            raise ValueError("Comparison with non-Version object")
-        return self.tuple == other.tuple
-
-    def __lt__(self, other):
-        if not isinstance(other, Version):
-            raise ValueError("Comparison with non-Version object")
-        return self.tuple < other.tuple
-
-    def __le__(self, other):
-        return self == other or self < other
-
-    def __gt__(self, other):
-        return not self <= other
-
-    def __ge__(self, other):
-        return not self < other
-
-    @property
-    def tuple(self):
-        return self.major, self.minor, self.patch
-
-
 class Sequencer(BaseDevice):
     """
-    Central MIDI object.
+    Central MIDI class.
 
     ```python
     from linuxpy.midi.device import Sequencer

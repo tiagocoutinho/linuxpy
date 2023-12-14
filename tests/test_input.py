@@ -1,3 +1,9 @@
+#
+# This file is part of the linuxpy project
+#
+# Copyright (c) 2023 Tiago Coutinho
+# Distributed under the GPLv3 license. See LICENSE for more info.
+
 import asyncio
 import pathlib
 import uuid
@@ -12,8 +18,8 @@ from linuxpy.input.device import (
     UGamepad,
     UMouse,
     async_event_batch_stream,
-    find_gamepads,
-    find_mice,
+    find_gamepad,
+    find_mouse,
     is_uinput_available,
 )
 
@@ -58,20 +64,12 @@ async def mouse():
 
 @skip(when=not is_uinput_available(), reason="uinput is not available")
 @test("find device")
-async def _(find=each(find_gamepads, find_mice), uclass=each(UGamepad, UMouse)):
+async def _(find=each(find_gamepad, find_mouse), uclass=each(UGamepad, UMouse)):
     name = uuid.uuid4().hex
     with wait_for_new_device() as device_finder:
         with uclass(name=name) as simulator:
             await device_finder()
-            devices = list(find())
-            assert devices
-            devs = []
-            for device in devices:
-                with device:
-                    if device.name == name:
-                        devs.append(device)
-            assert len(devs) == 1
-            device = devs[0]
+            device = find(name=name)
             caps = device.capabilities
             del caps[EventType.SYN]
             assert device.name == simulator.name

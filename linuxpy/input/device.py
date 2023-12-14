@@ -4,6 +4,24 @@
 # Copyright (c) 2023 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
+"""
+Human API to linux Input subsystem.
+
+The heart of linuxpy MIDI library is the [`Device`][linuxpy.input.device.Device]
+class.
+The recommended way is to use one of the find methods to create a Device object
+and use it within a context manager like:
+
+```python
+with Device("/dev/input/event11") as gamepad:
+    print(f"Gamepad name: {gamepad.name}")
+```
+
+
+
+"""
+
+
 import asyncio
 import collections
 import enum
@@ -16,7 +34,7 @@ from typing import Union
 from linuxpy.ctypes import cast, cint, create_string_buffer, cuint, cvoidp, i32, sizeof
 from linuxpy.device import BaseDevice, iter_device_files
 from linuxpy.ioctl import IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR, ioctl
-from linuxpy.util import add_reader_asyncio, make_find
+from linuxpy.util import Version, add_reader_asyncio, make_find
 
 from .raw import (
     UIOC,
@@ -280,7 +298,7 @@ InputEvent = _build_struct_type(
 
 
 class InputError(Exception):
-    pass
+    """Input error"""
 
 
 class _Type:
@@ -336,6 +354,32 @@ class _Keys(_Type):
 
 
 class Device(BaseDevice):
+    """
+    Central linux input subsystem class.
+
+    You can create an instance directly if you know the device name:
+
+    ```python
+    from linuxpy.input.device import Device
+
+    with Device("/dev/input11") as i11:
+        print(i11.name)
+    ```
+
+    ... but it is generally easier to use the [`find`][linuxpy.input.device.find]
+    helper to get a device with a certain condition. Example:
+
+    ```python
+    from linuxpy.input.device import find
+
+    track_point = find(name="TPPS/2 Elan TrackPoint")
+    ```
+
+    Helpers exist to find by capability
+
+    ```
+    """
+
     PREFIX = "/dev/input/event"
 
     absolute = _Abs()
@@ -368,7 +412,7 @@ class Device(BaseDevice):
 
     @functools.cached_property
     def version(self):
-        return version(self.fileno())
+        return Version.from_number(version(self.fileno()))
 
     @functools.cached_property
     def physical_location(self):
@@ -528,9 +572,6 @@ def iter_devices(path="/dev/input", **kwargs):
     return (Device(path, **kwargs) for path in iter_input_files(path=path))
 
 
-find = make_find(iter_devices)
-
-
 def is_gamepad(device: Device) -> bool:
     with device:
         caps = device.capabilities
@@ -554,20 +595,25 @@ def is_mouse(device: Device) -> bool:
     return Key.BTN_MOUSE in key_caps
 
 
-def _filter_devices(func):
-    return filter(func, iter_devices())
+find = make_find(iter_devices)
 
 
-def find_gamepads():
-    return _filter_devices(is_gamepad)
+def _make_find(func):
+    def _find(find_all=False, custom_match=None, **kwargs):
+        if custom_match:
+
+            def matches(dev):
+                return func(dev) and custom_match(dev)
+        else:
+            matches = func
+        return find(find_all=find_all, custom_match=matches, **kwargs)
+
+    return _find
 
 
-def find_keyboards():
-    return _filter_devices(is_keyboard)
-
-
-def find_mice():
-    return _filter_devices(is_mouse)
+find_gamepad = _make_find(is_gamepad)
+find_keyboard = _make_find(is_keyboard)
+find_mouse = _make_find(is_mouse)
 
 
 def is_uinput_available():

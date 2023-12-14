@@ -7,7 +7,7 @@
 import asyncio
 import contextlib
 
-from .types import Callable, Iterator, Optional
+from .types import Callable, Iterable, Iterator, Optional, Union
 
 
 def ichunks(lst, size):
@@ -44,14 +44,115 @@ def add_reader_asyncio(fd: int, callback: Callable[[], None], *args, loop: Optio
 def make_find(iter_devices: Callable[[], Iterator]) -> Callable:
     def find(find_all=False, custom_match=None, **kwargs):
         idevs = iter_devices()
-        if custom_match:
-            idevs = filter(custom_match, idevs)
-        if kwargs:
+        if kwargs or custom_match:
 
-            def accept(d):
-                return all(getattr(d, key) == value for key, value in kwargs.items())
+            def accept(dev):
+                with dev:
+                    result = all(getattr(dev, key) == value for key, value in kwargs.items())
+                    if result and custom_match:
+                        return custom_match(dev)
+                    return result
 
             idevs = filter(accept, idevs)
         return idevs if find_all else next(idevs, None)
 
     return find
+
+
+class Version:
+    """Simple version supporting only a.b.c format"""
+
+    def __init__(self, major: int, minor: int, patch: int):
+        self.major = major
+        self.minor = minor
+        self.patch = patch
+
+    @classmethod
+    def from_tuple(cls, sequence: Iterable[Union[str, int]]):
+        """
+        Create a Version from any sequence/iterable of 3 elements
+
+        Examples that create a Version "3.2.1" object:
+        ```python
+        Version.from_tuple([3, 2, 1])
+        Version.from_tuple(["3", 2, "1"])
+        Version.from_tuple(range(3, 0, -1))
+
+        # This will work although not recommended since it will not work
+        # when any of the members is bigger than 9
+        Version.from_tuple("321")
+        ```
+        """
+        return cls(*map(int, sequence))
+
+    @classmethod
+    def from_str(cls, text):
+        """
+        Create a Version from text
+
+        Example that create a Version "3.2.1" object:
+        ```python
+        Version.from_str("3.2.1")
+        ```
+        """
+        return cls.from_tuple(text.split(".", 2))
+
+    @classmethod
+    def from_number(cls, number: int):
+        """
+        Create a Version from an integer where each member corresponds to
+        one byte in the integer so that 0xFFFEFD corresponds to 255.254.253
+
+        Example that create a Version "3.2.1" object:
+        ```python
+        Version.from_number((3<<16) + (2<<8) + 1)
+        ```
+        """
+        return cls((number >> 16) & 0xFF, (number >> 8) & 0xFF, number & 0xFF)
+
+    def __int__(self):
+        return (self.major << 16) + (self.minor << 8) + self.patch
+
+    def __repr__(self):
+        return f"{self.major}.{self.minor}.{self.patch}"
+
+    def __format__(self, fmt):
+        return format(repr(self), fmt)
+
+    def __getitem__(self, item):
+        return self.tuple[item]
+
+    def __eq__(self, other):
+        return self.tuple == self._try_convert(other).tuple
+
+    def __lt__(self, other):
+        return self.tuple < self._try_convert(other).tuple
+
+    def __le__(self, other):
+        return self == other or self < other
+
+    def __gt__(self, other):
+        return not self <= other
+
+    def __ge__(self, other):
+        return not self < other
+
+    @classmethod
+    def _try_convert(cls, value):
+        if isinstance(value, cls):
+            return value
+        elif isinstance(value, int):
+            return cls.from_number(value)
+        elif isinstance(value, str):
+            return cls.from_str(value)
+        elif isinstance(value, (tuple, list)):
+            return cls.from_tuple(value)
+        raise ValueError("Comparison with non-Version object")
+
+    @property
+    def tuple(self):
+        """
+        Returns a 3 element tuple representing the version
+        so `Version(3,2,1).tuple()` yields the tuple `(3, 2, 1)`
+        """
+        return self.major, self.minor, self.patch
