@@ -585,7 +585,7 @@
         
   
   <span class="md-ellipsis">
-    Input
+    Input API
   </span>
   
 
@@ -605,7 +605,7 @@
         
   
   <span class="md-ellipsis">
-    MIDI API reference
+    MIDI API
   </span>
   
 
@@ -625,7 +625,7 @@
         
   
   <span class="md-ellipsis">
-    Video
+    Video API
   </span>
   
 
@@ -717,6 +717,7 @@
 
 
 <h1 id="input">Input<a class="headerlink" href="#input" title="Permanent link">&para;</a></h1>
+<p>Human friendly interface to the Linux Input subsystem.</p>
 <p>API not documented yet. Just this example:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">linuxpy.input.device</span> <span class="kn">import</span> <span class="n">find_gamepads</span>
@@ -730,7 +731,7 @@
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="asyncio">asyncio<a class="headerlink" href="#asyncio" title="Permanent link">&para;</a></h2>
-<div class="termy" data-termynal data-ty-macos data-ty-title="bash"><span data-ty="input" data-ty-prompt="$">python -m asyncio</span><span data-ty></span><span data-ty="input" data-ty-prompt="&gt;&gt;&gt;">from linuxpy.input.device import find_gamepads</span><span data-ty="input" data-ty-prompt="&gt;&gt;&gt;">with next(find_gamepads()) as pad:</span><span data-ty="input" data-ty-prompt="...">    async for event in pad:</span><span data-ty="input" data-ty-prompt="...">        print(event)</span><span data-ty>InputEvent(time=1697520475.348099, type=&lt;EventType.SYN: 0&gt;, code=&lt;Synchronization.REPORT: 0&gt;, value=0)<br>InputEvent(time=1697520475.361564, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.X: 0&gt;, value=-1)<br>InputEvent(time=1697520475.361564, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.Y: 1&gt;, value=1)<br>InputEvent(time=1697520475.361564, type=&lt;EventType.SYN: 0&gt;, code=&lt;Synchronization.REPORT: 0&gt;, value=0)<br>InputEvent(time=1697520475.371128, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.X: 0&gt;, value=-1)<br>InputEvent(time=1697520475.371128, type=&lt;EventType.SYN: 0&gt;, code=&lt;Synchronization.REPORT: 0&gt;, value=0)<br>InputEvent(time=1697520475.384468, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.X: 0&gt;, value=-1)<br>InputEvent(time=1697520475.384468, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.Y: 1&gt;, value=1)<br>InputEvent(time=1697520475.384468, type=&lt;EventType.SYN: 0&gt;, code=&lt;Synchronization.REPORT: 0&gt;, value=0)<br>InputEvent(time=1697520475.398041, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.X: 0&gt;, value=-2)<br>InputEvent(time=1697520475.398041, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.Y: 1&gt;, value=1)<br>InputEvent(time=1697520475.398041, type=&lt;EventType.SYN: 0&gt;, code=&lt;Synchronization.REPORT: 0&gt;, value=0)<br>InputEvent(time=1697520475.424895, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.X: 0&gt;, value=-1)<br>InputEvent(time=1697520475.424895, type=&lt;EventType.SYN: 0&gt;, code=&lt;Synchronization.REPORT: 0&gt;, value=0)<br>...<br></span></div>
+<div class="termy" data-termynal data-ty-macos data-ty-title="bash"><span data-ty="input" data-ty-prompt="$">python -m asyncio</span><span data-ty></span><span data-ty="input" data-ty-prompt="&gt;&gt;&gt;">from linuxpy.input.device import find_gamepads</span><span data-ty="input" data-ty-prompt="&gt;&gt;&gt;">with next(find_gamepads()) as pad:</span><span data-ty="input" data-ty-prompt="...">    async for event in pad:</span><span data-ty="input" data-ty-prompt="...">        print(event)</span><span data-ty>InputEvent(time=1697520475.348099, type=&lt;EventType.SYN: 0&gt;, code=&lt;Synchronization.REPORT: 0&gt;, value=0)<br>InputEvent(time=1697520475.361564, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.X: 0&gt;, value=-1)<br>InputEvent(time=1697520475.361564, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.Y: 1&gt;, value=1)<br>InputEvent(time=1697520475.361564, type=&lt;EventType.SYN: 0&gt;, code=&lt;Synchronization.REPORT: 0&gt;, value=0)<br>InputEvent(time=1697520475.371128, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.X: 0&gt;, value=-1)<br>InputEvent(time=1697520475.371128, type=&lt;EventType.SYN: 0&gt;, code=&lt;Synchronization.REPORT: 0&gt;, value=0)<br>...<br></span></div>
 
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>

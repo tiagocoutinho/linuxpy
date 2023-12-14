@@ -26,7 +26,7 @@
     
     
       
-        <title>Input - LinuxPy</title>
+        <title>Input API - LinuxPy</title>
       
     
     
@@ -81,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#input-api-reference" class="md-skip">
+        <a href="#input-api" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Input
+              Input API
             
           </span>
         </div>
@@ -533,12 +533,14 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
   
   <span class="md-ellipsis">
-    Input
+    Input API
   </span>
   
 
@@ -549,7 +551,7 @@
         
   
   <span class="md-ellipsis">
-    Input
+    Input API
   </span>
   
 
@@ -561,19 +563,14 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#input-api-reference" class="md-nav__link">
-    Input API reference
-  </a>
-  
-</li>
       
         <li class="md-nav__item">
   <a href="#linuxpy.input.device" class="md-nav__link">
@@ -584,12 +581,124 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#linuxpy.input.device.InputError" class="md-nav__link">
+    InputError
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#linuxpy.input.device.Device" class="md-nav__link">
     Device
   </a>
   
     <nav class="md-nav" aria-label="Device">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.name" class="md-nav__link">
+    name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.version" class="md-nav__link">
+    version
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.physical_location" class="md-nav__link">
+    physical_location
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.device_id" class="md-nav__link">
+    device_id
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.capabilities" class="md-nav__link">
+    capabilities
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.active_keys" class="md-nav__link">
+    active_keys
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.x" class="md-nav__link">
+    x
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.y" class="md-nav__link">
+    y
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.z" class="md-nav__link">
+    z
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.rx" class="md-nav__link">
+    rx
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.ry" class="md-nav__link">
+    ry
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.rz" class="md-nav__link">
+    rz
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.__iter__" class="md-nav__link">
+    __iter__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.__aiter__" class="md-nav__link">
+    __aiter__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.get_abs_info" class="md-nav__link">
+    get_abs_info()
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#linuxpy.input.device.Device.read_event" class="md-nav__link">
@@ -651,6 +760,34 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.find" class="md-nav__link">
+    find()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.find_gamepad" class="md-nav__link">
+    find_gamepad()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.find_keyboard" class="md-nav__link">
+    find_keyboard()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.find_mouse" class="md-nav__link">
+    find_mouse()
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -675,7 +812,7 @@
         
   
   <span class="md-ellipsis">
-    MIDI API reference
+    MIDI API
   </span>
   
 
@@ -695,7 +832,7 @@
         
   
   <span class="md-ellipsis">
-    Video
+    Video API
   </span>
   
 
@@ -748,19 +885,14 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#input-api-reference" class="md-nav__link">
-    Input API reference
-  </a>
-  
-</li>
       
         <li class="md-nav__item">
   <a href="#linuxpy.input.device" class="md-nav__link">
@@ -771,12 +903,124 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#linuxpy.input.device.InputError" class="md-nav__link">
+    InputError
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#linuxpy.input.device.Device" class="md-nav__link">
     Device
   </a>
   
     <nav class="md-nav" aria-label="Device">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.name" class="md-nav__link">
+    name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.version" class="md-nav__link">
+    version
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.physical_location" class="md-nav__link">
+    physical_location
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.device_id" class="md-nav__link">
+    device_id
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.capabilities" class="md-nav__link">
+    capabilities
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.active_keys" class="md-nav__link">
+    active_keys
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.x" class="md-nav__link">
+    x
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.y" class="md-nav__link">
+    y
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.z" class="md-nav__link">
+    z
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.rx" class="md-nav__link">
+    rx
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.ry" class="md-nav__link">
+    ry
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.rz" class="md-nav__link">
+    rz
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.__iter__" class="md-nav__link">
+    __iter__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.__aiter__" class="md-nav__link">
+    __aiter__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.Device.get_abs_info" class="md-nav__link">
+    get_abs_info()
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#linuxpy.input.device.Device.read_event" class="md-nav__link">
@@ -838,6 +1082,34 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.find" class="md-nav__link">
+    find()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.find_gamepad" class="md-nav__link">
+    find_gamepad()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.find_keyboard" class="md-nav__link">
+    find_keyboard()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.input.device.find_mouse" class="md-nav__link">
+    find_mouse()
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -858,9 +1130,7 @@
                   
 
 
-  <h1>Input</h1>
-
-<h2 id="input-api-reference">Input API reference<a class="headerlink" href="#input-api-reference" title="Permanent link">&para;</a></h2>
+<h1 id="input-api">Input API<a class="headerlink" href="#input-api" title="Permanent link">&para;</a></h1>
 
 
 <div class="doc doc-object doc-module">
@@ -875,6 +1145,17 @@
 <a href="#linuxpy.input.device" class="headerlink" title="Permanent link">&para;</a></h2>
 
   <div class="doc doc-contents first">
+  
+      <p>Human friendly interface to linux Input subsystem.</p>
+<p>The heart of linuxpy MIDI library is the <a class="autorefs autorefs-internal" href="#linuxpy.input.device.Device"><code>Device</code></a>
+class.
+The recommended way is to use one of the find methods to create a Device object
+and use it within a context manager like:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.input.device</span> <span class="kn">import</span> <span class="n">find_gamepad</span>
+
+<span class="k">with</span> <span class="n">find_gamepad</span><span class="p">()</span> <span class="k">as</span> <span class="n">gamepad</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Gamepad name: </span><span class="si">{</span><span class="n">gamepad</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
 
   
 
@@ -892,6 +1173,30 @@
 
 
 
+<h3 id="linuxpy.input.device.InputError" class="doc doc-heading">
+          <code>InputError</code>
+
+
+<a href="#linuxpy.input.device.InputError" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+  <div class="doc doc-contents ">
+          <p class="doc doc-class-bases">
+            Bases: <code>Exception</code></p>
+
+  
+      <p>Input error</p>
+
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+
 <h3 id="linuxpy.input.device.Device" class="doc doc-heading">
             <code class=" language-python"><span class="n">Device</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
@@ -902,6 +1207,20 @@
           <p class="doc doc-class-bases">
             Bases: <code><span title="linuxpy.device.BaseDevice">BaseDevice</span></code></p>
 
+  
+      <p>Central linux input subsystem class.</p>
+<p>You can create an instance directly if you know the device name:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.input.device</span> <span class="kn">import</span> <span class="n">Device</span>
+
+<span class="k">with</span> <span class="n">Device</span><span class="p">(</span><span class="s2">&quot;/dev/input11&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i11</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">i11</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</code></pre></div>
+<p>... but it is generally easier to use the <a class="autorefs autorefs-internal" href="#linuxpy.input.device.find"><code>find</code></a>
+helper to get a device with a certain condition. Example:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.input.device</span> <span class="kn">import</span> <span class="n">find</span>
+
+<span class="n">track_point</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;TPPS/2 Elan TrackPoint&quot;</span><span class="p">)</span>
+</code></pre></div>
 
 
   
@@ -914,7 +1233,358 @@
 
 
 
+<div class="doc doc-object doc-attribute">
 
+
+
+
+<h4 id="linuxpy.input.device.Device.name" class="doc doc-heading">
+          <code class=" language-python"><span class="n">name</span><span class="p">:</span> <span class="nb">str</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-cached"><code>cached</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.input.device.Device.name" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>The device name</p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h4 id="linuxpy.input.device.Device.version" class="doc doc-heading">
+          <code class=" language-python"><span class="n">version</span><span class="p">:</span> <span class="n">Version</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-cached"><code>cached</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.input.device.Device.version" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>The version</p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h4 id="linuxpy.input.device.Device.physical_location" class="doc doc-heading">
+          <code class=" language-python"><span class="n">physical_location</span><span class="p">:</span> <span class="nb">str</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-cached"><code>cached</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.input.device.Device.physical_location" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>The physical location</p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h4 id="linuxpy.input.device.Device.device_id" class="doc doc-heading">
+          <code class=" language-python"><span class="n">device_id</span><span class="p">:</span> <span class="n">input_id</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-cached"><code>cached</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.input.device.Device.device_id" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>The device input ID</p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h4 id="linuxpy.input.device.Device.capabilities" class="doc doc-heading">
+          <code class=" language-python"><span class="n">capabilities</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-cached"><code>cached</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.input.device.Device.capabilities" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>The device capabilities</p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h4 id="linuxpy.input.device.Device.active_keys" class="doc doc-heading">
+          <code class=" language-python"><span class="n">active_keys</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.input.device.Device.active_keys" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>All active keys at the moment of calling this</p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h4 id="linuxpy.input.device.Device.x" class="doc doc-heading">
+          <code class=" language-python"><span class="n">x</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.input.device.Device.x" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Current absolute X value</p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h4 id="linuxpy.input.device.Device.y" class="doc doc-heading">
+          <code class=" language-python"><span class="n">y</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.input.device.Device.y" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Current absolute Y value</p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h4 id="linuxpy.input.device.Device.z" class="doc doc-heading">
+          <code class=" language-python"><span class="n">z</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.input.device.Device.z" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Current absolute Z value</p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h4 id="linuxpy.input.device.Device.rx" class="doc doc-heading">
+          <code class=" language-python"><span class="n">rx</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.input.device.Device.rx" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Current relative X value</p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h4 id="linuxpy.input.device.Device.ry" class="doc doc-heading">
+          <code class=" language-python"><span class="n">ry</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.input.device.Device.ry" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Current relative Y value</p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h4 id="linuxpy.input.device.Device.rz" class="doc doc-heading">
+          <code class=" language-python"><span class="n">rz</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.input.device.Device.rz" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Current relative Z value</p>
+  </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h4 id="linuxpy.input.device.Device.__iter__" class="doc doc-heading">
+          <code class=" language-python"><span class="fm">__iter__</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">InputEvent</span><span class="p">]</span></code>
+
+<a href="#linuxpy.input.device.Device.__iter__" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Build an infinite iterator that streams input events
+You'll need an open Device before using it:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.input.device</span> <span class="kn">import</span> <span class="n">find_mouse</span>
+
+<span class="k">with</span> <span class="n">find_mouse</span><span class="p">()</span> <span class="k">as</span> <span class="n">mouse</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">mouse</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+</code></pre></div>
+
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h4 id="linuxpy.input.device.Device.__aiter__" class="doc doc-heading">
+          <code class=" language-python"><span class="fm">__aiter__</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">AsyncIterable</span><span class="p">[</span><span class="n">InputEvent</span><span class="p">]</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#linuxpy.input.device.Device.__aiter__" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Build an infinite async iterator that streams input events
+You'll need an open Device before using it:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">linuxpy.input.device</span> <span class="kn">import</span> <span class="n">find_mouse</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">find_mouse</span><span class="p">()</span> <span class="k">as</span> <span class="n">mouse</span><span class="p">:</span>
+        <span class="k">async</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">mouse</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</code></pre></div>
+
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h4 id="linuxpy.input.device.Device.get_abs_info" class="doc doc-heading">
+          <code class=" language-python"><span class="n">get_abs_info</span><span class="p">(</span><span class="n">abs_code</span><span class="p">)</span></code>
+
+<a href="#linuxpy.input.device.Device.get_abs_info" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Absolute information for the given abs code</p>
+
+  </div>
+
+</div>
 
 
 <div class="doc doc-object doc-function">
@@ -1103,6 +1773,118 @@ Event must be available to read or otherwise will raise an error</p>
   <div class="doc doc-contents ">
   
       <p>Yields packets of events occurring at the same moment in time.</p>
+
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="linuxpy.input.device.find" class="doc doc-heading">
+          <code class=" language-python"><span class="n">find</span><span class="p">(</span><span class="n">find_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">custom_match</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Device</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Device</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span></code>
+
+<a href="#linuxpy.input.device.find" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>If find_all is False:</p>
+<p>Find a device follwing the criteria matched by custom_match and kwargs.
+If no device is found matching the criteria it returns None.
+Default is to return a random first device.</p>
+<p>If find_all is True:</p>
+<p>The result is an iterator.
+Find all devices that match the criteria custom_match and kwargs.
+If no device is found matching the criteria it returns an empty iterator.
+Default is to return an iterator over all input devices found on the system.</p>
+
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="linuxpy.input.device.find_gamepad" class="doc doc-heading">
+          <code class=" language-python"><span class="n">find_gamepad</span><span class="p">(</span><span class="n">find_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">custom_match</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Device</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Device</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span></code>
+
+<a href="#linuxpy.input.device.find_gamepad" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>If find_all is False:</p>
+<p>Find a gamepad device follwing the criteria matched by custom_match and kwargs.
+If no device is found matching the criteria it returns None.
+Default is to return a random first gamepad.</p>
+<p>If find_all is True:</p>
+<p>The result is an iterator.
+Find all gamepad devices that match the criteria custom_match and kwargs.
+If no gamepad is found matching the criteria it returns an empty iterator.
+Default is to return an iterator over all gamepad devices found on the system.</p>
+
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="linuxpy.input.device.find_keyboard" class="doc doc-heading">
+          <code class=" language-python"><span class="n">find_keyboard</span><span class="p">(</span><span class="n">find_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">custom_match</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Device</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Device</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span></code>
+
+<a href="#linuxpy.input.device.find_keyboard" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>If find_all is False:</p>
+<p>Find a keyboard device follwing the criteria matched by custom_match and kwargs.
+If no device is found matching the criteria it returns None.
+Default is to return a random first keyboard.</p>
+<p>If find_all is True:</p>
+<p>The result is an iterator.
+Find all keyboard devices that match the criteria custom_match and kwargs.
+If no keyboard is found matching the criteria it returns an empty iterator.
+Default is to return an iterator over all keyboard devices found on the system.</p>
+
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="linuxpy.input.device.find_mouse" class="doc doc-heading">
+          <code class=" language-python"><span class="n">find_mouse</span><span class="p">(</span><span class="n">find_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">custom_match</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Device</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Device</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span></code>
+
+<a href="#linuxpy.input.device.find_mouse" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>If find_all is False:</p>
+<p>Find a mouse device follwing the criteria matched by custom_match and kwargs.
+If no device is found matching the criteria it returns None.
+Default is to return a random first mouse.</p>
+<p>If find_all is True:</p>
+<p>The result is an iterator.
+Find all mouse devices that match the criteria custom_match and kwargs.
+If no mouse is found matching the criteria it returns an empty iterator.
+Default is to return an iterator over all mouse devices found on the system.</p>
 
   </div>
 

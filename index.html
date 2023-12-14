@@ -361,8 +361,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#goals" class="md-nav__link">
+    Goals
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#installation" class="md-nav__link">
     Installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#faq" class="md-nav__link">
+    FAQ
   </a>
   
 </li>
@@ -574,7 +588,7 @@
         
   
   <span class="md-ellipsis">
-    Input
+    Input API
   </span>
   
 
@@ -594,7 +608,7 @@
         
   
   <span class="md-ellipsis">
-    MIDI API reference
+    MIDI API
   </span>
   
 
@@ -614,7 +628,7 @@
         
   
   <span class="md-ellipsis">
-    Video
+    Video API
   </span>
   
 
@@ -677,8 +691,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#goals" class="md-nav__link">
+    Goals
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#installation" class="md-nav__link">
     Installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#faq" class="md-nav__link">
+    FAQ
   </a>
   
 </li>
@@ -705,23 +733,62 @@
 <a href="https://github.com/tiagocoutinho/linuxpy/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/tiagocoutinho/linuxpy/actions/workflows/ci.yml/badge.svg" /></a></p>
 <p>Human friendly interface to linux subsystems using python.</p>
 <p>Provides python access to several linux subsystems like V4L2, input and MIDI.</p>
-<p>There is experimental, incomplete and unstable access to USB.</p>
+<p>There is experimental, undocumented, incomplete and unstable access to USB.</p>
 <p>Need fine control over Webcams, MIDI devices, input devices (joysticks,
 gamepads, keyboards, mice or even the keyboard light on your laptop)?
 Linuxpy has your back.</p>
-<p>Only works on python &gt;= 3.9.</p>
+<p>Requirements:</p>
+<ul>
+<li>python &gt;= 3.9</li>
+<li>Fairly recent linux kernel</li>
+<li>Installed kernel modules you want to access (ex: <em>uinput</em> if you need user space
+created input devices)</li>
+</ul>
+<p>And yes, it is true: there are <strong>no python</strong> dependencies! Also there are <strong>no
+C libraries</strong> dependencies! Everything is done here through direct ioctl, read and
+write calls. Ain't linux wonderful?</p>
+<h2 id="goals">Goals<a class="headerlink" href="#goals" title="Permanent link">&para;</a></h2>
+<ul>
+<li>A <strong>pure</strong> python library (no dependency on other C libraries)</li>
+<li>No third-party python dependencies (not a hard requirement)</li>
+<li>Fine-grain access to low level linux device capabilities</li>
+<li>For video (V4L2) this means:<ul>
+<li>List available devices</li>
+<li>Obtain detailed information about a device (name, driver,
+    capabilities, available formats)</li>
+<li>Fine control over the camera parameters (ex: resolution, format,
+    brightness, contrast, etc)</li>
+<li>Fine control resource management to take profit of memory map, DMA
+    or user pointers (buffers)</li>
+<li>Detailed information about a frame (timestamp, frame number, etc)</li>
+<li>Write to VideoOutput</li>
+<li>Integration with non blocking coroutine based applications (gevent
+    and asyncio) without the usual tricks like using <code>asyncio.to_thread()</code></li>
+</ul>
+</li>
+</ul>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <p>From within your favorite python environment:</p>
 <div class="termy" data-termynal data-ty-macos data-ty-title="bash"><span data-ty="input" data-ty-prompt="$">pip install linuxpy</span><span data-ty="progress"></span><span data-ty></span></div>
 
 <p>To run the examples you'll need:</p>
-<div class="termy" data-termynal data-ty-macos data-ty-title="bash"><span data-ty="input" data-ty-prompt="$">pip install linuxpy[examples]</span><span data-ty="progress"></span><span data-ty></span></div>
-
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>linuxpy<span class="o">[</span>examples<span class="o">]</span>
+</code></pre></div>
 <p>To develop, run tests, build package, lint, etc you'll need:</p>
-<div class="termy" data-termynal data-ty-macos data-ty-title="bash"><span data-ty="input" data-ty-prompt="$">pip install linuxpy[dev]</span><span data-ty="progress"></span><span data-ty></span></div>
-
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>linuxpy<span class="o">[</span>dev<span class="o">]</span>
+</code></pre></div>
 <p>To run docs you'll need:</p>
-<div class="termy" data-termynal data-ty-macos data-ty-title="bash"><span data-ty="input" data-ty-prompt="$">pip install linuxpy[docs]</span><span data-ty="progress"></span><span data-ty></span></div>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>linuxpy<span class="o">[</span>docs<span class="o">]</span>
+</code></pre></div>
+<h2 id="faq">FAQ<a class="headerlink" href="#faq" title="Permanent link">&para;</a></h2>
+<p><em>Most python libraries try as hard as possible to be platform independent.
+Why create a library that is explicitly designed to work only on linux?</em></p>
+<p>Well, first of all, one of the goals is to be able to access low level linux
+device capabilities like video controls. Second, I don't have access to
+proprietary OS like Windows or MacOS.</p>
+<p>If this answer is not enough than think of this library as a low level
+dependency on linux systems of other libraries  that will be concerned
+with providing a common API on different platforms.</p>
 
 
 
