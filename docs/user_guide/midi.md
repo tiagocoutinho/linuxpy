@@ -2,15 +2,16 @@
 
 Without further ado:
 
-```bash
-$ python
+<!-- termynal -->
 
+```console
+$ python
 >>> from linuxpy.midi.device import Sequencer
 >>> with Sequencer() as seq:
-        port = seq.create_port()
-        port.connect_from(14, 0)
-        for event in seq:
-            print(event)
+...     port = seq.create_port()
+...     port.connect_from(14, 0)
+...     for event in seq:
+...         print(event)
  14:0   Note on              channel=0, note=100, velocity=3, off_velocity=0, duration=0
  14:0   Clock                queue=0, pad=b''
  14:0   System exclusive     F0 61 62 63 F7
@@ -19,9 +20,8 @@ $ python
 
 ## System information
 
-```bash
+```python
 $ python
-
 >>> from linuxpy.midi.device import Sequencer
 >>> seq = Sequencer("a midi client")
 >>> seq.open()
@@ -39,37 +39,35 @@ snd_seq_running_info(client=0, big_endian=0, cpu_mode=0, pad=0)
 snd_seq_system_info(queues=32, clients=192, ports=254, channels=256, cur_clients=3, cur_queues=0)
 ```
 
-## Listing ports and clients
-
-
-
 ## asyncio
 
 asyncio is a first class citizen to linuxpy.midi:
 
-```bash
+```python
 $ python -m asyncio
 
 >>> from linuxpy.midi.device import Sequencer
 >>> with Sequencer() as seq:
-        port = seq.create_port()
-        port.connect_from(14, 0)
-        async for event in seq:
-            print(event)
+...     port = seq.create_port()
+...     port.connect_from(14, 0)
+...     async for event in seq:
+...         print(event)
  14:0   Note on              channel=0, note=100, velocity=3, off_velocity=0, duration=0
  14:0   Clock                queue=0, pad=b''
  14:0   System exclusive     F0 61 62 63 F7
  14:0   Note off             channel=0, note=55, velocity=3, off_velocity=0, duration=0
 ```
 
-
-
 ## CLI
 
 A basic CLI is provided that allows listing MIDI clients & ports
 and dumping MIDI sequencer events:
 
-```bash
+List all ports:
+
+<!-- termynal -->
+
+```console
 $ python -m linuxpy.midi.cli ls
  Port   Client                   Port                     Type                           Capabilities
   0:0   System                   Timer                    0                              SR, W, R
@@ -77,7 +75,11 @@ $ python -m linuxpy.midi.cli ls
  14:0   Midi Through             Midi Through Port-0      PORT, SOFTWARE, MIDI_GENERIC   SW, SR, W, R
 ```
 
-```bash
+Listen to events on selected port(s):
+
+<!-- termynal -->
+
+```console
 $ python -m linuxpy.midi.cli listen 0:1 14:0
   0:1   Port subscribed      sender=(client=0, port=1), dest=(client=128, port=0)
   0:1   Port start           client=128, port=1

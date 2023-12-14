@@ -17,7 +17,9 @@ with pad:
 
 ## asyncio
 
-```bash
+<!-- termynal -->
+
+```console
 $ python -m asyncio
 
 >>> from linuxpy.input.device import find_gamepads

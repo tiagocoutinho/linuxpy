@@ -2,7 +2,7 @@
 
 [![linuxpy][pypi-version]](https://pypi.python.org/pypi/linuxpy)
 [![Python Versions][pypi-python-versions]](https://pypi.python.org/pypi/linuxpy)
-[![License][license]]()]]
+[![License][license]]()
 [![CI][CI]](https://github.com/tiagocoutinho/linuxpy/actions/workflows/ci.yml)
 
 Human friendly interface to linux subsystems using python.
@@ -11,32 +11,48 @@ Provides python access to several linux subsystems like V4L2, input and MIDI.
 
 There is experimental, incomplete and unstable access to USB.
 
+Need fine control over Webcams, MIDI devices, input devices (joysticks,
+gamepads, keyboards, mice or even the keyboard light on your laptop)?
+Linuxpy has your back.
+
 Only works on python >= 3.9.
 
 ## Installation
 
 From within your favorite python environment:
 
-```bash
+<!-- termynal -->
+
+```console
 $ pip install linuxpy
+---> 100%
 ```
 
 To run the examples you'll need:
 
-```bash
+<!-- termynal -->
+
+```console
 $ pip install linuxpy[examples]
+---> 100%
 ```
 
 To develop, run tests, build package, lint, etc you'll need:
 
-```bash
+<!-- termynal -->
+
+```console
 $ pip install linuxpy[dev]
+---> 100%
 ```
 
 To run docs you'll need:
 
-```bash
+<!-- termynal -->
+
+```console
 $ pip install linuxpy[docs]
+---> 100%
 ```
 
 [pypi-python-versions]: https://img.shields.io/pypi/pyversions/linuxpy.svg

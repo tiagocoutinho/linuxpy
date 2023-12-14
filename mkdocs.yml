@@ -11,21 +11,31 @@ repo_name: tiagocoutinho/linuxpy
 edit_uri: ''
 
 plugins:
-  - search
   - mkdocstrings:
       default_handler: python
       handlers:
         python:
           options:
+            docstring_style: google
+            docstring_section_style: spacy
+            members_order: source
+            merge_init_into_class: true
+            separate_signature: false
             show_source: false
             show_bases: true
             show_root_heading: true
-            members_order: source
-            show_submodules: true
-            docstring_style: google
-            docstring_section_style: table
             show_signature_annotations: true
-            separate_signature: false
+            show_submodules: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            signature_crossrefs: true
+            unwrap_annotated: true
+  - search
+  - termynal:
+      prompt_literal_start:
+        - "$"
+        - ">>>"
+        - "..."
 
 theme:
   name: material
@@ -38,27 +48,40 @@ theme:
     code: 'Roboto Mono'
   logo: img/logo-128x128.png
   favicon: img/favicon.ico
-  feature:
-    tabs: true
+  features:
+  - search.suggest
+  - search.highlight
+  - content.tabs.link
+  - navigation.indexes
+  - content.tooltips
+  - navigation.path
+  - content.code.annotate
+  - content.code.copy
+  - content.code.select
+  - navigation.tabs
 
 markdown_extensions:
-  - meta
-  - admonition
-  - codehilite
-  - toc:
-      permalink: "#"
-  - pymdownx.details
-  - pymdownx.inlinehilite
-  - pymdownx.superfences
+  meta: null
+  admonition: null
+  codehilite: null
+  toc:
+    permalink: true
+  pymdownx.details: null
+  pymdownx.inlinehilite: null
+  pymdownx.superfences: null
+  pymdownx.tabbed:
+    alternate_style: true
 
 nav:
-  - Home: index.md
+  - Linuxpy: index.md
   - User guide:
-    - Input: input.md
-    - MIDI Sequencer: midi.md
-    - Video: video.md
+    - user_guide/index.md
+    - user_guide/input.md
+    - user_guide/midi.md
+    - user_guide/video.md
   - API Reference:
-    - Input: api/input.md
-    - MIDI Sequencer: api/midi.md
-    - Video: api/video.md
+    - api/index.md
+    - api/input.md
+    - api/midi.md
+    - api/video.md
   - Developers corner: develop.md
