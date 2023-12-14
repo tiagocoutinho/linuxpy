@@ -26,7 +26,7 @@
     
     
       
-        <title>MIDI Sequencer - LinuxPy</title>
+        <title>MIDI API reference - LinuxPy</title>
       
     
     
@@ -53,6 +53,8 @@
     
     
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../termynal.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -91,9 +93,7 @@
     
       
 
-  
-
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="LinuxPy" class="md-header__button md-logo" aria-label="LinuxPy" data-md-component="logo">
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              MIDI Sequencer
+              MIDI API reference
             
           </span>
         </div>
@@ -147,6 +147,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -184,6 +186,91 @@
       
         
           
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Linuxpy
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../user_guide/" class="md-tabs__link">
+          
+  
+    
+  
+  User guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+    
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../develop/" class="md-tabs__link">
+        
+  
+    
+  
+  Developers corner
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
         
       
       <main class="md-main" data-md-component="main">
@@ -197,8 +284,10 @@
                     
 
 
+  
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="LinuxPy" class="md-nav__button md-logo" aria-label="LinuxPy" data-md-component="logo">
       
@@ -232,7 +321,7 @@
         
   
   <span class="md-ellipsis">
-    Home
+    Linuxpy
   </span>
   
 
@@ -248,10 +337,25 @@
   
     
     
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
@@ -259,16 +363,24 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../user_guide/" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     User guide
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
@@ -278,12 +390,14 @@
           <ul class="md-nav__list" data-md-scrollfix>
             
               
+            
+              
                 
   
   
   
     <li class="md-nav__item">
-      <a href="../../input/" class="md-nav__link">
+      <a href="../../user_guide/input/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -303,7 +417,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../midi/" class="md-nav__link">
+      <a href="../../user_guide/midi/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -323,7 +437,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../video/" class="md-nav__link">
+      <a href="../../user_guide/video/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -353,10 +467,25 @@
   
     
     
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
@@ -364,16 +493,24 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     API Reference
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
@@ -381,6 +518,8 @@
             API Reference
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
             
               
                 
@@ -421,7 +560,7 @@
           
   
   <span class="md-ellipsis">
-    MIDI Sequencer
+    MIDI API reference
   </span>
   
 
@@ -432,7 +571,7 @@
         
   
   <span class="md-ellipsis">
-    MIDI Sequencer
+    MIDI API reference
   </span>
   
 
@@ -1323,7 +1462,7 @@
                   
 
 
-<h1 id="midi-api-reference">MIDI API reference<a class="headerlink" href="#midi-api-reference" title="Permanent link">#</a></h1>
+<h1 id="midi-api-reference">MIDI API reference<a class="headerlink" href="#midi-api-reference" title="Permanent link">&para;</a></h1>
 
 
 <div class="doc doc-object doc-module">
@@ -1335,7 +1474,7 @@
           <code>linuxpy.midi.device</code>
 
 
-<a href="#linuxpy.midi.device" class="headerlink" title="Permanent link">#</a></h2>
+<a href="#linuxpy.midi.device" class="headerlink" title="Permanent link">&para;</a></h2>
 
   <div class="doc doc-contents first">
   
@@ -1384,10 +1523,9 @@ The recommended way is to use it within a context manager like:</p>
 
 
 <h3 id="linuxpy.midi.device.Sequencer" class="doc doc-heading">
-          <code>Sequencer</code>
+            <code class=" language-python"><span class="n">Sequencer</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;linuxpy client&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
-
-<a href="#linuxpy.midi.device.Sequencer" class="headerlink" title="Permanent link">#</a></h3>
+<a href="#linuxpy.midi.device.Sequencer" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -1430,7 +1568,7 @@ The recommended way is to use it within a context manager like:</p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Sequencer.client_info" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.client_info" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1452,7 +1590,7 @@ The recommended way is to use it within a context manager like:</p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Sequencer.client" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.client" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1474,7 +1612,7 @@ The recommended way is to use it within a context manager like:</p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Sequencer.running_mode" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.running_mode" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1496,7 +1634,7 @@ The recommended way is to use it within a context manager like:</p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Sequencer.system_info" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.system_info" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1518,7 +1656,7 @@ The recommended way is to use it within a context manager like:</p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Sequencer.iter_clients" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.iter_clients" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1540,7 +1678,7 @@ The recommended way is to use it within a context manager like:</p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Sequencer.clients" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.clients" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1562,7 +1700,7 @@ The recommended way is to use it within a context manager like:</p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Sequencer.iter_ports" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.iter_ports" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1585,7 +1723,7 @@ It returns new Port objects each time</p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Sequencer.ports" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.ports" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1607,7 +1745,7 @@ It returns new Port objects each time</p>
 <h4 id="linuxpy.midi.device.Sequencer.__iter__" class="doc doc-heading">
           <code class=" language-python"><span class="fm">__iter__</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Event</span><span class="p">]</span></code>
 
-<a href="#linuxpy.midi.device.Sequencer.__iter__" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.__iter__" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1641,7 +1779,7 @@ You'll need an open sequencer before using it:</p>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Sequencer.__aiter__" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.__aiter__" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1675,7 +1813,7 @@ You'll need an open sequencer before using it:</p>
 <h4 id="linuxpy.midi.device.Sequencer.get_client" class="doc doc-heading">
           <code class=" language-python"><span class="n">get_client</span><span class="p">(</span><span class="n">client_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Client</span></code>
 
-<a href="#linuxpy.midi.device.Sequencer.get_client" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.get_client" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1697,7 +1835,7 @@ It returns new Client object each time</p>
 <h4 id="linuxpy.midi.device.Sequencer.get_port" class="doc doc-heading">
           <code class=" language-python"><span class="n">get_port</span><span class="p">(</span><span class="n">address</span><span class="p">:</span> <span class="n">FullPortAddress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Port</span></code>
 
-<a href="#linuxpy.midi.device.Sequencer.get_port" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.get_port" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1719,7 +1857,7 @@ It returns new Port object each time</p>
 <h4 id="linuxpy.midi.device.Sequencer.create_port" class="doc doc-heading">
           <code class=" language-python"><span class="n">create_port</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;linuxpy port&#39;</span><span class="p">,</span> <span class="n">capabilities</span><span class="p">:</span> <span class="n">PortCapability</span> <span class="o">=</span> <span class="n">INPUT_OUTPUT</span><span class="p">,</span> <span class="n">port_type</span><span class="p">:</span> <span class="n">PortType</span> <span class="o">=</span> <span class="n">PortType</span><span class="o">.</span><span class="n">MIDI_GENERIC</span> <span class="o">|</span> <span class="n">PortType</span><span class="o">.</span><span class="n">APPLICATION</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Port</span></code>
 
-<a href="#linuxpy.midi.device.Sequencer.create_port" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.create_port" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1740,7 +1878,7 @@ application Input/Output port.</p>
 <h4 id="linuxpy.midi.device.Sequencer.delete_port" class="doc doc-heading">
           <code class=" language-python"><span class="n">delete_port</span><span class="p">(</span><span class="n">port</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Port</span><span class="p">])</span></code>
 
-<a href="#linuxpy.midi.device.Sequencer.delete_port" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.delete_port" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1761,7 +1899,7 @@ subscriptions they will be closed before the port is deleted</p>
 <h4 id="linuxpy.midi.device.Sequencer.subscribe" class="doc doc-heading">
           <code class=" language-python"><span class="n">subscribe</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">FullPortAddress</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">FullPortAddress</span><span class="p">)</span></code>
 
-<a href="#linuxpy.midi.device.Sequencer.subscribe" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.subscribe" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1781,7 +1919,7 @@ subscriptions they will be closed before the port is deleted</p>
 <h4 id="linuxpy.midi.device.Sequencer.unsubscribe" class="doc doc-heading">
           <code class=" language-python"><span class="n">unsubscribe</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">FullPortAddress</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">FullPortAddress</span><span class="p">)</span></code>
 
-<a href="#linuxpy.midi.device.Sequencer.unsubscribe" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.unsubscribe" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1801,7 +1939,7 @@ subscriptions they will be closed before the port is deleted</p>
 <h4 id="linuxpy.midi.device.Sequencer.iter_raw_read" class="doc doc-heading">
           <code class=" language-python"><span class="n">iter_raw_read</span><span class="p">(</span><span class="n">max_nb_packets</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">64</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Event</span><span class="p">]</span></code>
 
-<a href="#linuxpy.midi.device.Sequencer.iter_raw_read" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.iter_raw_read" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1825,7 +1963,7 @@ non-blocking variants transperently.</p>
 <h4 id="linuxpy.midi.device.Sequencer.raw_read" class="doc doc-heading">
           <code class=" language-python"><span class="n">raw_read</span><span class="p">(</span><span class="n">max_nb_packets</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Event</span><span class="p">]</span></code>
 
-<a href="#linuxpy.midi.device.Sequencer.raw_read" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.raw_read" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1848,7 +1986,7 @@ non-blocking variants transperently.</p>
 <h4 id="linuxpy.midi.device.Sequencer.wait_read" class="doc doc-heading">
           <code class=" language-python"><span class="n">wait_read</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Event</span><span class="p">]</span></code>
 
-<a href="#linuxpy.midi.device.Sequencer.wait_read" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.wait_read" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1873,7 +2011,7 @@ non-blocking variants transperently</p>
 <h4 id="linuxpy.midi.device.Sequencer.read" class="doc doc-heading">
           <code class=" language-python"><span class="n">read</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Event</span><span class="p">]</span></code>
 
-<a href="#linuxpy.midi.device.Sequencer.read" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.read" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1894,7 +2032,7 @@ least one event occurs and returns it</p>
 <h4 id="linuxpy.midi.device.Sequencer.write" class="doc doc-heading">
           <code class=" language-python"><span class="n">write</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Event</span><span class="p">)</span></code>
 
-<a href="#linuxpy.midi.device.Sequencer.write" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.write" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1914,7 +2052,7 @@ least one event occurs and returns it</p>
 <h4 id="linuxpy.midi.device.Sequencer.send" class="doc doc-heading">
           <code class=" language-python"><span class="n">send</span><span class="p">(</span><span class="n">port</span><span class="p">:</span> <span class="n">PortAddress</span><span class="p">,</span> <span class="n">event_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">EventType</span><span class="p">],</span> <span class="n">queue</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">QUEUE_DIRECT</span><span class="p">,</span> <span class="n">to</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">FullPortAddress</span><span class="p">,</span> <span class="n">FullPortAddresses</span><span class="p">]</span> <span class="o">=</span> <span class="n">SUBSCRIBERS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
-<a href="#linuxpy.midi.device.Sequencer.send" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Sequencer.send" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -1947,10 +2085,9 @@ a case insensitive string matching the event type (ex: "noteon", "NOTEON",
 
 
 <h3 id="linuxpy.midi.device.Client" class="doc doc-heading">
-          <code>Client</code>
+            <code class=" language-python"><span class="n">Client</span><span class="p">(</span><span class="n">sequencer</span><span class="p">:</span> <span class="n">Sequencer</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">snd_seq_client_info</span><span class="p">)</span></code>
 
-
-<a href="#linuxpy.midi.device.Client" class="headerlink" title="Permanent link">#</a></h3>
+<a href="#linuxpy.midi.device.Client" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -1982,7 +2119,7 @@ Use instead <code>Sequencer.get_client()</code></p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Client.name" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Client.name" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2004,7 +2141,7 @@ Use instead <code>Sequencer.get_client()</code></p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Client.is_local" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Client.is_local" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2027,7 +2164,7 @@ references or False otherwise"</p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Client.iter_ports" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Client.iter_ports" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2049,7 +2186,7 @@ references or False otherwise"</p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Client.ports" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Client.ports" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2070,7 +2207,7 @@ references or False otherwise"</p>
 <h4 id="linuxpy.midi.device.Client.__int__" class="doc doc-heading">
           <code class=" language-python"><span class="fm">__int__</span><span class="p">()</span></code>
 
-<a href="#linuxpy.midi.device.Client.__int__" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Client.__int__" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2095,10 +2232,9 @@ references or False otherwise"</p>
 
 
 <h3 id="linuxpy.midi.device.Port" class="doc doc-heading">
-          <code>Port</code>
+            <code class=" language-python"><span class="n">Port</span><span class="p">(</span><span class="n">sequencer</span><span class="p">:</span> <span class="n">Sequencer</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="n">snd_seq_port_info</span><span class="p">)</span></code>
 
-
-<a href="#linuxpy.midi.device.Port" class="headerlink" title="Permanent link">#</a></h3>
+<a href="#linuxpy.midi.device.Port" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -2130,7 +2266,7 @@ Use instead <code>Sequencer.get_port()</code></p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Port.name" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Port.name" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2152,7 +2288,7 @@ Use instead <code>Sequencer.get_port()</code></p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Port.is_local" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Port.is_local" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2175,7 +2311,7 @@ references or False otherwise"</p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Port.client_id" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Port.client_id" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2197,7 +2333,7 @@ references or False otherwise"</p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Port.port_id" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Port.port_id" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2219,7 +2355,7 @@ references or False otherwise"</p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Port.type" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Port.type" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2241,7 +2377,7 @@ references or False otherwise"</p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Port.capability" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Port.capability" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2263,7 +2399,7 @@ references or False otherwise"</p>
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Port.address" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Port.address" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2284,7 +2420,7 @@ references or False otherwise"</p>
 <h4 id="linuxpy.midi.device.Port.__int__" class="doc doc-heading">
           <code class=" language-python"><span class="fm">__int__</span><span class="p">()</span></code>
 
-<a href="#linuxpy.midi.device.Port.__int__" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Port.__int__" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2304,7 +2440,7 @@ references or False otherwise"</p>
 <h4 id="linuxpy.midi.device.Port.connect_from" class="doc doc-heading">
           <code class=" language-python"><span class="n">connect_from</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">FullPortAddress</span><span class="p">)</span></code>
 
-<a href="#linuxpy.midi.device.Port.connect_from" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Port.connect_from" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2334,7 +2470,7 @@ receive events originating from the source port.</p>
 <h4 id="linuxpy.midi.device.Port.disconnect_from" class="doc doc-heading">
           <code class=" language-python"><span class="n">disconnect_from</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">FullPortAddress</span><span class="p">)</span></code>
 
-<a href="#linuxpy.midi.device.Port.disconnect_from" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Port.disconnect_from" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2354,7 +2490,7 @@ receive events originating from the source port.</p>
 <h4 id="linuxpy.midi.device.Port.connect_to" class="doc doc-heading">
           <code class=" language-python"><span class="n">connect_to</span><span class="p">(</span><span class="n">dest</span><span class="p">:</span> <span class="n">FullPortAddress</span><span class="p">)</span></code>
 
-<a href="#linuxpy.midi.device.Port.connect_to" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Port.connect_to" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2384,7 +2520,7 @@ originating from this port will be sent to the destination port.</p>
 <h4 id="linuxpy.midi.device.Port.disconnect_to" class="doc doc-heading">
           <code class=" language-python"><span class="n">disconnect_to</span><span class="p">(</span><span class="n">dest</span><span class="p">:</span> <span class="n">FullPortAddress</span><span class="p">)</span></code>
 
-<a href="#linuxpy.midi.device.Port.disconnect_to" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Port.disconnect_to" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2404,7 +2540,7 @@ originating from this port will be sent to the destination port.</p>
 <h4 id="linuxpy.midi.device.Port.delete" class="doc doc-heading">
           <code class=" language-python"><span class="n">delete</span><span class="p">()</span></code>
 
-<a href="#linuxpy.midi.device.Port.delete" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Port.delete" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2425,7 +2561,7 @@ Any subscriptions are canceled before the port is deleted.</p>
 <h4 id="linuxpy.midi.device.Port.send" class="doc doc-heading">
           <code class=" language-python"><span class="n">send</span><span class="p">(</span><span class="n">event_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">EventType</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
-<a href="#linuxpy.midi.device.Port.send" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Port.send" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2458,10 +2594,9 @@ a case insensitive string matching the event type (ex: "noteon", "NOTEON",
 
 
 <h3 id="linuxpy.midi.device.Event" class="doc doc-heading">
-          <code>Event</code>
+            <code class=" language-python"><span class="n">Event</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">snd_seq_event</span><span class="p">)</span></code>
 
-
-<a href="#linuxpy.midi.device.Event" class="headerlink" title="Permanent link">#</a></h3>
+<a href="#linuxpy.midi.device.Event" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -2491,7 +2626,7 @@ a case insensitive string matching the event type (ex: "noteon", "NOTEON",
 <h4 id="linuxpy.midi.device.Event.__bytes__" class="doc doc-heading">
           <code class=" language-python"><span class="fm">__bytes__</span><span class="p">()</span></code>
 
-<a href="#linuxpy.midi.device.Event.__bytes__" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Event.__bytes__" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2515,7 +2650,7 @@ a case insensitive string matching the event type (ex: "noteon", "NOTEON",
       <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.Event.new" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#linuxpy.midi.device.Event.new" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
   <div class="doc doc-contents ">
@@ -2544,7 +2679,7 @@ a case insensitive string matching the event type (ex: "noteon", "NOTEON",
 <h3 id="linuxpy.midi.device.to_address" class="doc doc-heading">
           <code class=" language-python"><span class="n">to_address</span><span class="p">(</span><span class="n">addr</span><span class="p">:</span> <span class="n">FullPortAddress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">snd_seq_addr</span></code>
 
-<a href="#linuxpy.midi.device.to_address" class="headerlink" title="Permanent link">#</a></h3>
+<a href="#linuxpy.midi.device.to_address" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -2564,7 +2699,7 @@ a case insensitive string matching the event type (ex: "noteon", "NOTEON",
 <h3 id="linuxpy.midi.device.event_stream" class="doc doc-heading">
           <code class=" language-python"><span class="n">event_stream</span><span class="p">(</span><span class="n">sequencer</span><span class="p">:</span> <span class="n">Sequencer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Event</span><span class="p">]</span></code>
 
-<a href="#linuxpy.midi.device.event_stream" class="headerlink" title="Permanent link">#</a></h3>
+<a href="#linuxpy.midi.device.event_stream" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -2588,7 +2723,7 @@ a case insensitive string matching the event type (ex: "noteon", "NOTEON",
       <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
-<a href="#linuxpy.midi.device.async_event_stream" class="headerlink" title="Permanent link">#</a></h3>
+<a href="#linuxpy.midi.device.async_event_stream" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -2616,6 +2751,8 @@ a case insensitive string matching the event type (ex: "noteon", "NOTEON",
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
         </div>
         
       </main>
@@ -2648,10 +2785,12 @@ a case insensitive string matching the event type (ex: "noteon", "NOTEON",
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.indexes", "content.tooltips", "navigation.path", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.81fa17fe.min.js"></script>
+      
+        <script src="../../termynal.js"></script>
       
     
   </body>

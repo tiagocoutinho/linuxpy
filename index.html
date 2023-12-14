@@ -16,7 +16,7 @@
       
       
       
-        <link rel="next" href="input/">
+        <link rel="next" href="user_guide/">
       
       
       <link rel="icon" href="img/favicon.ico">
@@ -51,6 +51,8 @@
     
     
       <link rel="stylesheet" href="assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="termynal.css">
     
     <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -89,9 +91,7 @@
     
       
 
-  
-
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="." title="LinuxPy" class="md-header__button md-logo" aria-label="LinuxPy" data-md-component="logo">
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              Linuxpy
             
           </span>
         </div>
@@ -145,6 +145,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -182,6 +184,91 @@
       
         
           
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="." class="md-tabs__link">
+        
+  
+    
+  
+  Linuxpy
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="user_guide/" class="md-tabs__link">
+          
+  
+    
+  
+  User guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="api/" class="md-tabs__link">
+          
+  
+    
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="develop/" class="md-tabs__link">
+        
+  
+    
+  
+  Developers corner
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
         
       
       <main class="md-main" data-md-component="main">
@@ -195,8 +282,10 @@
                     
 
 
+  
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="." title="LinuxPy" class="md-nav__button md-logo" aria-label="LinuxPy" data-md-component="logo">
       
@@ -239,7 +328,7 @@
           
   
   <span class="md-ellipsis">
-    Home
+    Linuxpy
   </span>
   
 
@@ -250,7 +339,7 @@
         
   
   <span class="md-ellipsis">
-    Home
+    Linuxpy
   </span>
   
 
@@ -293,10 +382,25 @@
   
     
     
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
@@ -304,16 +408,24 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="user_guide/" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     User guide
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
@@ -323,12 +435,14 @@
           <ul class="md-nav__list" data-md-scrollfix>
             
               
+            
+              
                 
   
   
   
     <li class="md-nav__item">
-      <a href="input/" class="md-nav__link">
+      <a href="user_guide/input/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -348,7 +462,7 @@
   
   
     <li class="md-nav__item">
-      <a href="midi/" class="md-nav__link">
+      <a href="user_guide/midi/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -368,7 +482,7 @@
   
   
     <li class="md-nav__item">
-      <a href="video/" class="md-nav__link">
+      <a href="user_guide/video/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -396,10 +510,25 @@
   
     
     
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
@@ -407,16 +536,24 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="api/" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     API Reference
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
@@ -424,6 +561,8 @@
             API Reference
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
             
               
                 
@@ -455,7 +594,7 @@
         
   
   <span class="md-ellipsis">
-    MIDI Sequencer
+    MIDI API reference
   </span>
   
 
@@ -559,28 +698,30 @@
                   
 
 
-<h1 id="welcome-to-linuxpy">Welcome to linuxpy<a class="headerlink" href="#welcome-to-linuxpy" title="Permanent link">#</a></h1>
+<h1 id="welcome-to-linuxpy">Welcome to linuxpy<a class="headerlink" href="#welcome-to-linuxpy" title="Permanent link">&para;</a></h1>
 <p><a href="https://pypi.python.org/pypi/linuxpy"><img alt="linuxpy" src="https://img.shields.io/pypi/v/linuxpy.svg" /></a>
 <a href="https://pypi.python.org/pypi/linuxpy"><img alt="Python Versions" src="https://img.shields.io/pypi/pyversions/linuxpy.svg" /></a>
-<a href=""><img alt="License" src="https://img.shields.io/pypi/l/linuxpy.svg" /></a>]]
+<a href=""><img alt="License" src="https://img.shields.io/pypi/l/linuxpy.svg" /></a>
 <a href="https://github.com/tiagocoutinho/linuxpy/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/tiagocoutinho/linuxpy/actions/workflows/ci.yml/badge.svg" /></a></p>
 <p>Human friendly interface to linux subsystems using python.</p>
 <p>Provides python access to several linux subsystems like V4L2, input and MIDI.</p>
 <p>There is experimental, incomplete and unstable access to USB.</p>
+<p>Need fine control over Webcams, MIDI devices, input devices (joysticks,
+gamepads, keyboards, mice or even the keyboard light on your laptop)?
+Linuxpy has your back.</p>
 <p>Only works on python &gt;= 3.9.</p>
-<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h2>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <p>From within your favorite python environment:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>linuxpy
-</code></pre></div>
+<div class="termy" data-termynal data-ty-macos data-ty-title="bash"><span data-ty="input" data-ty-prompt="$">pip install linuxpy</span><span data-ty="progress"></span><span data-ty></span></div>
+
 <p>To run the examples you'll need:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>linuxpy<span class="o">[</span>examples<span class="o">]</span>
-</code></pre></div>
+<div class="termy" data-termynal data-ty-macos data-ty-title="bash"><span data-ty="input" data-ty-prompt="$">pip install linuxpy[examples]</span><span data-ty="progress"></span><span data-ty></span></div>
+
 <p>To develop, run tests, build package, lint, etc you'll need:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>linuxpy<span class="o">[</span>dev<span class="o">]</span>
-</code></pre></div>
+<div class="termy" data-termynal data-ty-macos data-ty-title="bash"><span data-ty="input" data-ty-prompt="$">pip install linuxpy[dev]</span><span data-ty="progress"></span><span data-ty></span></div>
+
 <p>To run docs you'll need:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>linuxpy<span class="o">[</span>docs<span class="o">]</span>
-</code></pre></div>
+<div class="termy" data-termynal data-ty-macos data-ty-title="bash"><span data-ty="input" data-ty-prompt="$">pip install linuxpy[docs]</span><span data-ty="progress"></span><span data-ty></span></div>
 
 
 
@@ -591,6 +732,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
         </div>
         
       </main>
@@ -623,10 +766,12 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.indexes", "content.tooltips", "navigation.path", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.tabs"], "search": "assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="assets/javascripts/bundle.81fa17fe.min.js"></script>
+      
+        <script src="termynal.js"></script>
       
     
   </body>

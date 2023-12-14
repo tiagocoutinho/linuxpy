@@ -12,16 +12,16 @@
         <meta name="author" content="Tiago Coutinho">
       
       
-        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/input/">
+        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/user_guide/input/">
       
       
-        <link rel="prev" href="..">
+        <link rel="prev" href="../">
       
       
         <link rel="next" href="../midi/">
       
       
-      <link rel="icon" href="../img/favicon.ico">
+      <link rel="icon" href="../../img/favicon.ico">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
     
     
@@ -30,10 +30,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.4b4a2bd9.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.4b4a2bd9.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.356b1318.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.356b1318.min.css">
       
       
 
@@ -52,9 +52,11 @@
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+      <link rel="stylesheet" href="../../termynal.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -91,13 +93,11 @@
     
       
 
-  
-
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="LinuxPy" class="md-header__button md-logo" aria-label="LinuxPy" data-md-component="logo">
+    <a href="../.." title="LinuxPy" class="md-header__button md-logo" aria-label="LinuxPy" data-md-component="logo">
       
-  <img src="../img/logo-128x128.png" alt="logo">
+  <img src="../../img/logo-128x128.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -148,6 +148,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" data-md-scrollfix>
@@ -184,6 +186,91 @@
       
         
           
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Linuxpy
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+    
+  
+  User guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/" class="md-tabs__link">
+          
+  
+    
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../develop/" class="md-tabs__link">
+        
+  
+    
+  
+  Developers corner
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
         
       
       <main class="md-main" data-md-component="main">
@@ -197,12 +284,14 @@
                     
 
 
+  
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="LinuxPy" class="md-nav__button md-logo" aria-label="LinuxPy" data-md-component="logo">
+    <a href="../.." title="LinuxPy" class="md-nav__button md-logo" aria-label="LinuxPy" data-md-component="logo">
       
-  <img src="../img/logo-128x128.png" alt="logo">
+  <img src="../../img/logo-128x128.png" alt="logo">
 
     </a>
     LinuxPy
@@ -228,11 +317,11 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Home
+    Linuxpy
   </span>
   
 
@@ -250,10 +339,25 @@
   
     
     
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
@@ -261,16 +365,24 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     User guide
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
@@ -278,6 +390,8 @@
             User guide
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
             
               
                 
@@ -407,10 +521,25 @@
   
     
     
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
@@ -418,16 +547,24 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../api/" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     API Reference
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
@@ -437,12 +574,14 @@
           <ul class="md-nav__list" data-md-scrollfix>
             
               
+            
+              
                 
   
   
   
     <li class="md-nav__item">
-      <a href="../api/input/" class="md-nav__link">
+      <a href="../../api/input/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -462,11 +601,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/midi/" class="md-nav__link">
+      <a href="../../api/midi/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    MIDI Sequencer
+    MIDI API reference
   </span>
   
 
@@ -482,7 +621,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/video/" class="md-nav__link">
+      <a href="../../api/video/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -509,7 +648,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../develop/" class="md-nav__link">
+      <a href="../../develop/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -577,7 +716,7 @@
                   
 
 
-<h1 id="input">Input<a class="headerlink" href="#input" title="Permanent link">#</a></h1>
+<h1 id="input">Input<a class="headerlink" href="#input" title="Permanent link">&para;</a></h1>
 <p>API not documented yet. Just this example:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">linuxpy.input.device</span> <span class="kn">import</span> <span class="n">find_gamepads</span>
@@ -590,30 +729,10 @@
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;X:</span><span class="si">{</span><span class="nb">abs</span><span class="o">.</span><span class="n">x</span><span class="si">:</span><span class="s2">&gt;3</span><span class="si">}</span><span class="s2"> | Y:</span><span class="si">{</span><span class="nb">abs</span><span class="o">.</span><span class="n">y</span><span class="si">:</span><span class="s2">&gt;3</span><span class="si">}</span><span class="s2"> | RX:</span><span class="si">{</span><span class="nb">abs</span><span class="o">.</span><span class="n">rx</span><span class="si">:</span><span class="s2">&gt;3</span><span class="si">}</span><span class="s2"> | RY:</span><span class="si">{</span><span class="nb">abs</span><span class="o">.</span><span class="n">ry</span><span class="si">:</span><span class="s2">&gt;3</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="asyncio">asyncio<a class="headerlink" href="#asyncio" title="Permanent link">#</a></h2>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>asyncio
+<h2 id="asyncio">asyncio<a class="headerlink" href="#asyncio" title="Permanent link">&para;</a></h2>
+<div class="termy" data-termynal data-ty-macos data-ty-title="bash"><span data-ty="input" data-ty-prompt="$">python -m asyncio</span><span data-ty></span><span data-ty="input" data-ty-prompt="&gt;&gt;&gt;">from linuxpy.input.device import find_gamepads</span><span data-ty="input" data-ty-prompt="&gt;&gt;&gt;">with next(find_gamepads()) as pad:</span><span data-ty="input" data-ty-prompt="...">    async for event in pad:</span><span data-ty="input" data-ty-prompt="...">        print(event)</span><span data-ty>InputEvent(time=1697520475.348099, type=&lt;EventType.SYN: 0&gt;, code=&lt;Synchronization.REPORT: 0&gt;, value=0)<br>InputEvent(time=1697520475.361564, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.X: 0&gt;, value=-1)<br>InputEvent(time=1697520475.361564, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.Y: 1&gt;, value=1)<br>InputEvent(time=1697520475.361564, type=&lt;EventType.SYN: 0&gt;, code=&lt;Synchronization.REPORT: 0&gt;, value=0)<br>InputEvent(time=1697520475.371128, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.X: 0&gt;, value=-1)<br>InputEvent(time=1697520475.371128, type=&lt;EventType.SYN: 0&gt;, code=&lt;Synchronization.REPORT: 0&gt;, value=0)<br>InputEvent(time=1697520475.384468, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.X: 0&gt;, value=-1)<br>InputEvent(time=1697520475.384468, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.Y: 1&gt;, value=1)<br>InputEvent(time=1697520475.384468, type=&lt;EventType.SYN: 0&gt;, code=&lt;Synchronization.REPORT: 0&gt;, value=0)<br>InputEvent(time=1697520475.398041, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.X: 0&gt;, value=-2)<br>InputEvent(time=1697520475.398041, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.Y: 1&gt;, value=1)<br>InputEvent(time=1697520475.398041, type=&lt;EventType.SYN: 0&gt;, code=&lt;Synchronization.REPORT: 0&gt;, value=0)<br>InputEvent(time=1697520475.424895, type=&lt;EventType.REL: 2&gt;, code=&lt;Relative.X: 0&gt;, value=-1)<br>InputEvent(time=1697520475.424895, type=&lt;EventType.SYN: 0&gt;, code=&lt;Synchronization.REPORT: 0&gt;, value=0)<br>...<br></span></div>
 
-&gt;&gt;&gt;<span class="w"> </span>from<span class="w"> </span>linuxpy.input.device<span class="w"> </span>import<span class="w"> </span>find_gamepads
-&gt;&gt;&gt;<span class="w"> </span>with<span class="w"> </span>next<span class="o">(</span>find_gamepads<span class="o">())</span><span class="w"> </span>as<span class="w"> </span>pad:
-...<span class="w">     </span>async<span class="w"> </span><span class="k">for</span><span class="w"> </span>event<span class="w"> </span><span class="k">in</span><span class="w"> </span>pad:
-...<span class="w">         </span>print<span class="o">(</span>event<span class="o">)</span>
-InputEvent<span class="o">(</span><span class="nv">time</span><span class="o">=</span><span class="m">1697520475</span>.348099,<span class="w"> </span><span class="nv">type</span><span class="o">=</span>&lt;EventType.SYN:<span class="w"> </span><span class="m">0</span>&gt;,<span class="w"> </span><span class="nv">code</span><span class="o">=</span>&lt;Synchronization.REPORT:<span class="w"> </span><span class="m">0</span>&gt;,<span class="w"> </span><span class="nv">value</span><span class="o">=</span><span class="m">0</span><span class="o">)</span>
-InputEvent<span class="o">(</span><span class="nv">time</span><span class="o">=</span><span class="m">1697520475</span>.361564,<span class="w"> </span><span class="nv">type</span><span class="o">=</span>&lt;EventType.REL:<span class="w"> </span><span class="m">2</span>&gt;,<span class="w"> </span><span class="nv">code</span><span class="o">=</span>&lt;Relative.X:<span class="w"> </span><span class="m">0</span>&gt;,<span class="w"> </span><span class="nv">value</span><span class="o">=</span>-1<span class="o">)</span>
-InputEvent<span class="o">(</span><span class="nv">time</span><span class="o">=</span><span class="m">1697520475</span>.361564,<span class="w"> </span><span class="nv">type</span><span class="o">=</span>&lt;EventType.REL:<span class="w"> </span><span class="m">2</span>&gt;,<span class="w"> </span><span class="nv">code</span><span class="o">=</span>&lt;Relative.Y:<span class="w"> </span><span class="m">1</span>&gt;,<span class="w"> </span><span class="nv">value</span><span class="o">=</span><span class="m">1</span><span class="o">)</span>
-InputEvent<span class="o">(</span><span class="nv">time</span><span class="o">=</span><span class="m">1697520475</span>.361564,<span class="w"> </span><span class="nv">type</span><span class="o">=</span>&lt;EventType.SYN:<span class="w"> </span><span class="m">0</span>&gt;,<span class="w"> </span><span class="nv">code</span><span class="o">=</span>&lt;Synchronization.REPORT:<span class="w"> </span><span class="m">0</span>&gt;,<span class="w"> </span><span class="nv">value</span><span class="o">=</span><span class="m">0</span><span class="o">)</span>
-InputEvent<span class="o">(</span><span class="nv">time</span><span class="o">=</span><span class="m">1697520475</span>.371128,<span class="w"> </span><span class="nv">type</span><span class="o">=</span>&lt;EventType.REL:<span class="w"> </span><span class="m">2</span>&gt;,<span class="w"> </span><span class="nv">code</span><span class="o">=</span>&lt;Relative.X:<span class="w"> </span><span class="m">0</span>&gt;,<span class="w"> </span><span class="nv">value</span><span class="o">=</span>-1<span class="o">)</span>
-InputEvent<span class="o">(</span><span class="nv">time</span><span class="o">=</span><span class="m">1697520475</span>.371128,<span class="w"> </span><span class="nv">type</span><span class="o">=</span>&lt;EventType.SYN:<span class="w"> </span><span class="m">0</span>&gt;,<span class="w"> </span><span class="nv">code</span><span class="o">=</span>&lt;Synchronization.REPORT:<span class="w"> </span><span class="m">0</span>&gt;,<span class="w"> </span><span class="nv">value</span><span class="o">=</span><span class="m">0</span><span class="o">)</span>
-InputEvent<span class="o">(</span><span class="nv">time</span><span class="o">=</span><span class="m">1697520475</span>.384468,<span class="w"> </span><span class="nv">type</span><span class="o">=</span>&lt;EventType.REL:<span class="w"> </span><span class="m">2</span>&gt;,<span class="w"> </span><span class="nv">code</span><span class="o">=</span>&lt;Relative.X:<span class="w"> </span><span class="m">0</span>&gt;,<span class="w"> </span><span class="nv">value</span><span class="o">=</span>-1<span class="o">)</span>
-InputEvent<span class="o">(</span><span class="nv">time</span><span class="o">=</span><span class="m">1697520475</span>.384468,<span class="w"> </span><span class="nv">type</span><span class="o">=</span>&lt;EventType.REL:<span class="w"> </span><span class="m">2</span>&gt;,<span class="w"> </span><span class="nv">code</span><span class="o">=</span>&lt;Relative.Y:<span class="w"> </span><span class="m">1</span>&gt;,<span class="w"> </span><span class="nv">value</span><span class="o">=</span><span class="m">1</span><span class="o">)</span>
-InputEvent<span class="o">(</span><span class="nv">time</span><span class="o">=</span><span class="m">1697520475</span>.384468,<span class="w"> </span><span class="nv">type</span><span class="o">=</span>&lt;EventType.SYN:<span class="w"> </span><span class="m">0</span>&gt;,<span class="w"> </span><span class="nv">code</span><span class="o">=</span>&lt;Synchronization.REPORT:<span class="w"> </span><span class="m">0</span>&gt;,<span class="w"> </span><span class="nv">value</span><span class="o">=</span><span class="m">0</span><span class="o">)</span>
-InputEvent<span class="o">(</span><span class="nv">time</span><span class="o">=</span><span class="m">1697520475</span>.398041,<span class="w"> </span><span class="nv">type</span><span class="o">=</span>&lt;EventType.REL:<span class="w"> </span><span class="m">2</span>&gt;,<span class="w"> </span><span class="nv">code</span><span class="o">=</span>&lt;Relative.X:<span class="w"> </span><span class="m">0</span>&gt;,<span class="w"> </span><span class="nv">value</span><span class="o">=</span>-2<span class="o">)</span>
-InputEvent<span class="o">(</span><span class="nv">time</span><span class="o">=</span><span class="m">1697520475</span>.398041,<span class="w"> </span><span class="nv">type</span><span class="o">=</span>&lt;EventType.REL:<span class="w"> </span><span class="m">2</span>&gt;,<span class="w"> </span><span class="nv">code</span><span class="o">=</span>&lt;Relative.Y:<span class="w"> </span><span class="m">1</span>&gt;,<span class="w"> </span><span class="nv">value</span><span class="o">=</span><span class="m">1</span><span class="o">)</span>
-InputEvent<span class="o">(</span><span class="nv">time</span><span class="o">=</span><span class="m">1697520475</span>.398041,<span class="w"> </span><span class="nv">type</span><span class="o">=</span>&lt;EventType.SYN:<span class="w"> </span><span class="m">0</span>&gt;,<span class="w"> </span><span class="nv">code</span><span class="o">=</span>&lt;Synchronization.REPORT:<span class="w"> </span><span class="m">0</span>&gt;,<span class="w"> </span><span class="nv">value</span><span class="o">=</span><span class="m">0</span><span class="o">)</span>
-InputEvent<span class="o">(</span><span class="nv">time</span><span class="o">=</span><span class="m">1697520475</span>.424895,<span class="w"> </span><span class="nv">type</span><span class="o">=</span>&lt;EventType.REL:<span class="w"> </span><span class="m">2</span>&gt;,<span class="w"> </span><span class="nv">code</span><span class="o">=</span>&lt;Relative.X:<span class="w"> </span><span class="m">0</span>&gt;,<span class="w"> </span><span class="nv">value</span><span class="o">=</span>-1<span class="o">)</span>
-InputEvent<span class="o">(</span><span class="nv">time</span><span class="o">=</span><span class="m">1697520475</span>.424895,<span class="w"> </span><span class="nv">type</span><span class="o">=</span>&lt;EventType.SYN:<span class="w"> </span><span class="m">0</span>&gt;,<span class="w"> </span><span class="nv">code</span><span class="o">=</span>&lt;Synchronization.REPORT:<span class="w"> </span><span class="m">0</span>&gt;,<span class="w"> </span><span class="nv">value</span><span class="o">=</span><span class="m">0</span><span class="o">)</span>
-...
-</code></pre></div>
-<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">#</a></h2>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="https://www.kernel.org/doc/html/latest/input/">Input (Latest)</a></li>
 <li><a href="https://www.kernel.org/doc/html/v6.2/input/">Input 6.2</a></li>
@@ -628,6 +747,8 @@ InputEvent<span class="o">(</span><span class="nv">time</span><span class="o">=<
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
         </div>
         
       </main>
@@ -660,10 +781,12 @@ InputEvent<span class="o">(</span><span class="nv">time</span><span class="o">=<
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.indexes", "content.tooltips", "navigation.path", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.81fa17fe.min.js"></script>
+      <script src="../../assets/javascripts/bundle.81fa17fe.min.js"></script>
+      
+        <script src="../../termynal.js"></script>
       
     
   </body>

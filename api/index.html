@@ -12,11 +12,13 @@
         <meta name="author" content="Tiago Coutinho">
       
       
-        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/develop/">
+        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/api/">
       
       
-        <link rel="prev" href="../api/video/">
+        <link rel="prev" href="../user_guide/video/">
       
+      
+        <link rel="next" href="input/">
       
       
       <link rel="icon" href="../img/favicon.ico">
@@ -24,7 +26,7 @@
     
     
       
-        <title>Developers corner - LinuxPy</title>
+        <title>LinuxPy reference API - LinuxPy</title>
       
     
     
@@ -79,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#developers-corner" class="md-skip">
+        <a href="#linuxpy-reference-api" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Developers corner
+              LinuxPy reference API
             
           </span>
         </div>
@@ -229,11 +231,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../api/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
           
   
     
@@ -249,11 +253,9 @@
         
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../develop/" class="md-tabs__link">
         
   
     
@@ -460,6 +462,8 @@
       
   
   
+    
+  
   
     
     
@@ -481,17 +485,17 @@
       
       
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../api/" class="md-nav__link ">
+            <a href="./" class="md-nav__link md-nav__link--active">
               
   
   <span class="md-ellipsis">
@@ -502,13 +506,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+              <label class="md-nav__link md-nav__link--active" for="__nav_3" id="__nav_3_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             API Reference
@@ -523,7 +527,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/input/" class="md-nav__link">
+      <a href="input/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -543,7 +547,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/midi/" class="md-nav__link">
+      <a href="midi/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -563,7 +567,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/video/" class="md-nav__link">
+      <a href="video/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -588,29 +592,9 @@
       
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Developers corner
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../develop/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -619,47 +603,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
-    Requirements
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#code-generation" class="md-nav__link">
-    Code generation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#running-tests" class="md-nav__link">
-    Running tests
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -684,35 +627,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
-    Requirements
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#code-generation" class="md-nav__link">
-    Code generation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#running-tests" class="md-nav__link">
-    Running tests
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -726,40 +640,11 @@
                   
 
 
-<h1 id="developers-corner">Developers corner<a class="headerlink" href="#developers-corner" title="Permanent link">&para;</a></h1>
-<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
-<p>A linux OS and python &gt;= 3.9.</p>
-<p>From within your favorite python environment:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>linuxpy<span class="o">[</span>dev<span class="o">]</span>
-</code></pre></div>
-<p>Additionally, to run the code generation tool you'll need <code>castxml</code> installed
-on your system.</p>
-<p>On a debian based run:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>castxml
-</code></pre></div>
-<h2 id="code-generation">Code generation<a class="headerlink" href="#code-generation" title="Permanent link">&para;</a></h2>
-<p>This project uses an internal simple code generator that reads linux
-kernel header files and produces several <code>raw.py</code> ctypes based python
-files for each sub-system.</p>
-<p>To re-generate these files for a newer linux kernel (or fix a bug)
-you'll need linux header files installed on your system + black.</p>
-<p>To launch the tool call:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>linuxpy.codegen.cli
-</code></pre></div>
-<h2 id="running-tests">Running tests<a class="headerlink" href="#running-tests" title="Permanent link">&para;</a></h2>
-<p>Some video tests will only run with a properly configured <code>v4l2loopback</code>.</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>sudo<span class="w"> </span>modprobe<span class="w"> </span>v4l2loopback<span class="w"> </span><span class="nv">video_nr</span><span class="o">=</span><span class="m">199</span><span class="w"> </span><span class="nv">card_label</span><span class="o">=</span><span class="s2">&quot;Loopback 199&quot;</span>
-</code></pre></div>
-<p>Additionally the user which runs the tests will need read/write access to
-<code>/dev/video199</code>.
-On most systems this can be achieved by adding the user to the <code>video</code> group:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>sudo<span class="w"> </span>addgroup<span class="w"> </span><span class="nv">$USER</span><span class="w"> </span>video
-</code></pre></div>
-<p>Some input tests require the user which runs the tests to have read/write
-access to <code>/dev/uinput</code>.
-On most systems this can be achieved by adding the user to the <code>input</code> group:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>sudo<span class="w"> </span>addgroup<span class="w"> </span><span class="nv">$USER</span><span class="w"> </span>input
-</code></pre></div>
+<h1 id="linuxpy-reference-api">LinuxPy reference API<a class="headerlink" href="#linuxpy-reference-api" title="Permanent link">&para;</a></h1>
+<p>Here's the reference or code API, the classes, functions, parameters, attributes, and
+all the LinuxPy parts you can use in your applications.</p>
+<p>If you want to <strong>learn LinuxPy</strong> you are much better off reading the
+<a href="https://tiagocoutinho.github.io/linuxpy/user_guide/">LinuxPy User Guide</a>.</p>
 
 
 

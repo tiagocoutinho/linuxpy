@@ -12,16 +12,16 @@
         <meta name="author" content="Tiago Coutinho">
       
       
-        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/video/">
+        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/user_guide/video/">
       
       
         <link rel="prev" href="../midi/">
       
       
-        <link rel="next" href="../api/input/">
+        <link rel="next" href="../../api/">
       
       
-      <link rel="icon" href="../img/favicon.ico">
+      <link rel="icon" href="../../img/favicon.ico">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
     
     
@@ -30,10 +30,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.4b4a2bd9.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.4b4a2bd9.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.356b1318.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.356b1318.min.css">
       
       
 
@@ -52,9 +52,11 @@
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+      <link rel="stylesheet" href="../../termynal.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -91,13 +93,11 @@
     
       
 
-  
-
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="LinuxPy" class="md-header__button md-logo" aria-label="LinuxPy" data-md-component="logo">
+    <a href="../.." title="LinuxPy" class="md-header__button md-logo" aria-label="LinuxPy" data-md-component="logo">
       
-  <img src="../img/logo-128x128.png" alt="logo">
+  <img src="../../img/logo-128x128.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -148,6 +148,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" data-md-scrollfix>
@@ -184,6 +186,91 @@
       
         
           
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Linuxpy
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+    
+  
+  User guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/" class="md-tabs__link">
+          
+  
+    
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../develop/" class="md-tabs__link">
+        
+  
+    
+  
+  Developers corner
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
         
       
       <main class="md-main" data-md-component="main">
@@ -197,12 +284,14 @@
                     
 
 
+  
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="LinuxPy" class="md-nav__button md-logo" aria-label="LinuxPy" data-md-component="logo">
+    <a href="../.." title="LinuxPy" class="md-nav__button md-logo" aria-label="LinuxPy" data-md-component="logo">
       
-  <img src="../img/logo-128x128.png" alt="logo">
+  <img src="../../img/logo-128x128.png" alt="logo">
 
     </a>
     LinuxPy
@@ -228,11 +317,11 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Home
+    Linuxpy
   </span>
   
 
@@ -250,10 +339,25 @@
   
     
     
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
@@ -261,16 +365,24 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     User guide
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
@@ -278,6 +390,8 @@
             User guide
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
             
               
                 
@@ -449,10 +563,25 @@
   
     
     
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
@@ -460,16 +589,24 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../api/" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     API Reference
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
@@ -479,12 +616,14 @@
           <ul class="md-nav__list" data-md-scrollfix>
             
               
+            
+              
                 
   
   
   
     <li class="md-nav__item">
-      <a href="../api/input/" class="md-nav__link">
+      <a href="../../api/input/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -504,11 +643,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/midi/" class="md-nav__link">
+      <a href="../../api/midi/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    MIDI Sequencer
+    MIDI API reference
   </span>
   
 
@@ -524,7 +663,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/video/" class="md-nav__link">
+      <a href="../../api/video/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -551,7 +690,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../develop/" class="md-nav__link">
+      <a href="../../develop/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -661,7 +800,7 @@
                   
 
 
-<h1 id="video">Video<a class="headerlink" href="#video" title="Permanent link">#</a></h1>
+<h1 id="video">Video<a class="headerlink" href="#video" title="Permanent link">&para;</a></h1>
 <p>Video for Linux 2 (V4L2).</p>
 <p>Without further ado:</p>
 <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span>
@@ -683,7 +822,7 @@
 <span class="n">frame</span> <span class="c1">#9: 40714 bytes</span>
 <span class="n">frame</span> <span class="c1">#10: 40662 bytes</span>
 </code></pre></div>
-<h2 id="device-creation">Device creation<a class="headerlink" href="#device-creation" title="Permanent link">#</a></h2>
+<h2 id="device-creation">Device creation<a class="headerlink" href="#device-creation" title="Permanent link">&para;</a></h2>
 <p>Create a device object from an ID:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span>
 <span class="n">camera</span> <span class="o">=</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
@@ -710,7 +849,7 @@ You can either use the device object as a context manager (prefered):</p>
 <span class="k">finally</span><span class="p">:</span>
     <span class="n">camera</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </code></pre></div>
-<h2 id="capture">Capture<a class="headerlink" href="#capture" title="Permanent link">#</a></h2>
+<h2 id="capture">Capture<a class="headerlink" href="#capture" title="Permanent link">&para;</a></h2>
 <p>Simple capture without any configuration is possible using the Device object
 as an infinite iterator:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">VideoCapture</span>
@@ -743,7 +882,7 @@ force a specific reader:</p>
         <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">capture</span><span class="p">:</span>
             <span class="o">...</span>
 </code></pre></div>
-<h2 id="information">Information<a class="headerlink" href="#information" title="Permanent link">#</a></h2>
+<h2 id="information">Information<a class="headerlink" href="#information" title="Permanent link">&para;</a></h2>
 <p>Getting information about the device:</p>
 <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">BufferType</span>
 
@@ -794,7 +933,7 @@ force a specific reader:</p>
 <span class="o">&lt;</span><span class="n">IntegerControl</span> <span class="n">brightness</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span> <span class="nb">max</span><span class="o">=</span><span class="mi">255</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span> <span class="n">default</span><span class="o">=</span><span class="mi">128</span> <span class="n">value</span><span class="o">=</span><span class="mi">64</span><span class="o">&gt;</span>
 </code></pre></div>
 <p>(see also <a href="examples/video/v4l2py-ctl.py">v4l2py-ctl</a> example)</p>
-<h2 id="asyncio">asyncio<a class="headerlink" href="#asyncio" title="Permanent link">#</a></h2>
+<h2 id="asyncio">asyncio<a class="headerlink" href="#asyncio" title="Permanent link">&para;</a></h2>
 <p>linuxpy.video is asyncio friendly:</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>asyncio
 
@@ -809,7 +948,7 @@ frame<span class="w"> </span><span class="m">10136</span>
 ...
 </code></pre></div>
 <p>(check <a href="examples/video/basic_async.py">basic async</a> and <a href="examples/video/web/async.py">web async</a> examples)</p>
-<h2 id="gevent">gevent<a class="headerlink" href="#gevent" title="Permanent link">#</a></h2>
+<h2 id="gevent">gevent<a class="headerlink" href="#gevent" title="Permanent link">&para;</a></h2>
 <p>linuxpy.video is also gevent friendly:</p>
 <div class="highlight"><pre><span></span><code>$ python
 
@@ -825,7 +964,7 @@ frame 10136
 ...
 </code></pre></div>
 <p>(check <a href="examples/basic_gevent.py">basic gevent</a> and <a href="examples/web/sync.py">web gevent</a> examples)</p>
-<h2 id="video-output">Video output<a class="headerlink" href="#video-output" title="Permanent link">#</a></h2>
+<h2 id="video-output">Video output<a class="headerlink" href="#video-output" title="Permanent link">&para;</a></h2>
 <p>It is possible to write to a video output capable device (ex: v4l2loopback).
 The following example shows how to grab frames from device 0 and write them
 to device 10:</p>
@@ -844,7 +983,7 @@ to device 10:</p>
 <p>By default, VideoOutput will use memory map if the device has STREAMING
 capability and falls back to standard write if not. It is also possible to
 force a specific writer with <code>VideoOutput(cam, sink=Capability.READWRITE)</code>:</p>
-<h2 id="v4l2loopback">v4l2loopback<a class="headerlink" href="#v4l2loopback" title="Permanent link">#</a></h2>
+<h2 id="v4l2loopback">v4l2loopback<a class="headerlink" href="#v4l2loopback" title="Permanent link">&para;</a></h2>
 <p>This is just an example on how to setup v4l2loopback.</p>
 <p>Start from scratch:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Remove kernel module and all devices (no client can be connected at this point)</span>
@@ -853,7 +992,7 @@ sudo<span class="w"> </span>modprobe<span class="w"> </span>-r<span class="w"> <
 <span class="c1"># Install some devices</span>
 sudo<span class="w"> </span>modprobe<span class="w"> </span>v4l2loopback<span class="w"> </span><span class="nv">video_nr</span><span class="o">=</span><span class="m">20</span>,21<span class="w"> </span><span class="nv">card_label</span><span class="o">=</span><span class="s2">&quot;Loopback 0&quot;</span>,<span class="s2">&quot;Loopback 1&quot;</span>
 </code></pre></div>
-<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">#</a></h2>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <p>See the <code>linux/videodev2.h</code> header file for details.</p>
 <ul>
 <li><a href="https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/v4l2.html">V4L2 (Latest)</a> (<a href="https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/videodev.html">videodev.h</a>)</li>
@@ -869,6 +1008,8 @@ sudo<span class="w"> </span>modprobe<span class="w"> </span>v4l2loopback<span cl
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
         </div>
         
       </main>
@@ -901,10 +1042,12 @@ sudo<span class="w"> </span>modprobe<span class="w"> </span>v4l2loopback<span cl
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.indexes", "content.tooltips", "navigation.path", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.81fa17fe.min.js"></script>
+      <script src="../../assets/javascripts/bundle.81fa17fe.min.js"></script>
+      
+        <script src="../../termynal.js"></script>
       
     
   </body>
