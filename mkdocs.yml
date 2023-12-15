@@ -31,11 +31,6 @@ plugins:
             signature_crossrefs: true
             unwrap_annotated: true
   - search
-  - termynal:
-      prompt_literal_start:
-        - "$"
-        - ">>>"
-        - "..."
 
 theme:
   name: material
@@ -59,6 +54,12 @@ theme:
   - content.code.copy
   - content.code.select
   - navigation.tabs
+
+extra_css:
+  - css/termynal.css
+
+extra_javascript:
+  - js/termynal.js
 
 markdown_extensions:
   meta: null

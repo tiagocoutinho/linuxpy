@@ -19,23 +19,22 @@ with pad:
 
 ## asyncio
 
-<!-- termynal -->
+<div class="termy" data-ty-macos>
+  <span data-ty="input" data-ty-prompt="$">python -m asyncio</span>
+  <span data-ty="input" data-ty-prompt=">>>">from linuxpy.input.device import find_gamepad</span>
+  <span data-ty="input" data-ty-prompt=">>>">with find_gamepad() as pad:</span>
+  <span data-ty="input" data-ty-prompt="...">    async for event in pad:</span>
+  <span data-ty="input" data-ty-prompt="...">        print(event)</span>
 
-```console
-$ python -m asyncio
+  <span data-ty data-ty-delay="200">InputEvent(time=1697520475.348099, type=&lt;EventType.SYN: 0>, code=&lt;Synchronization.REPORT: 0>, value=0)</span>
+  <span data-ty data-ty-delay="200">InputEvent(time=1697520475.361564, type=&lt;EventType.REL: 2>, code=&lt;Relative.X: 0>, value=-1)</span>
+  <span data-ty data-ty-delay="200">InputEvent(time=1697520475.361564, type=&lt;EventType.REL: 2>, code=&lt;Relative.Y: 1>, value=1)</span>
+  <span data-ty data-ty-delay="200">InputEvent(time=1697520475.361564, type=&lt;EventType.SYN: 0>, code=&lt;Synchronization.REPORT: 0>, value=0)</span>
+  <span data-ty data-ty-delay="200">InputEvent(time=1697520475.371128, type=&lt;EventType.REL: 2>, code=&lt;Relative.X: 0>, value=-1)</span>
+  <span data-ty data-ty-delay="200">InputEvent(time=1697520475.371128, type=&lt;EventType.SYN: 0>, code=&lt;Synchronization.REPORT: 0>, value=0)</span>
+  <span data-ty data-ty-delay="200">...</span>
+</div>
 
->>> from linuxpy.input.device import find_gamepads
->>> with next(find_gamepads()) as pad:
-...     async for event in pad:
-...         print(event)
-InputEvent(time=1697520475.348099, type=<EventType.SYN: 0>, code=<Synchronization.REPORT: 0>, value=0)
-InputEvent(time=1697520475.361564, type=<EventType.REL: 2>, code=<Relative.X: 0>, value=-1)
-InputEvent(time=1697520475.361564, type=<EventType.REL: 2>, code=<Relative.Y: 1>, value=1)
-InputEvent(time=1697520475.361564, type=<EventType.SYN: 0>, code=<Synchronization.REPORT: 0>, value=0)
-InputEvent(time=1697520475.371128, type=<EventType.REL: 2>, code=<Relative.X: 0>, value=-1)
-InputEvent(time=1697520475.371128, type=<EventType.SYN: 0>, code=<Synchronization.REPORT: 0>, value=0)
-...
-```
 
 ## References
 

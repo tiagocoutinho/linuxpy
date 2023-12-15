@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # Welcome to linuxpy
 
 [![linuxpy][pypi-version]](https://pypi.python.org/pypi/linuxpy)
@@ -48,12 +53,10 @@ write calls. Ain't linux wonderful?
 
 From within your favorite python environment:
 
-<!-- termynal -->
-
-```console
-$ pip install linuxpy
----> 100%
-```
+<div class="termy" data-ty-macos data-ty-title="bash" data-ty-typeDelay="30" >
+	<span data-ty="input" data-ty-prompt="$">pip install linuxpy</span>
+    <span data-ty="progress" >pip install linuxpy</span>
+</div>
 
 To run the examples you'll need:
 

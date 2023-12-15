@@ -4,28 +4,26 @@ Human friendly interface to the Video for Linux 2 (V4L2) subsystem.
 
 Without further ado:
 
-<!-- termynal -->
+<div class="termy" data-ty-macos>
+  <span data-ty="input" data-ty-prompt="$">python</span>
+  <span data-ty="input" data-ty-prompt=">>>">from linuxpy.video.device import Device</span>
+  <span data-ty="input" data-ty-prompt=">>>">with Device.from_id(0) as cam:</span>
+  <span data-ty="input" data-ty-prompt="...">    for i, frame in enumerate(cam):</span>
+  <span data-ty="input" data-ty-prompt="...">        print(f"frame #{i}: {len(frame)} bytes")</span>
+  <span data-ty data-ty-delay="200">frame #0: 54630 bytes</span>
+  <span data-ty data-ty-delay="200">frame #1: 50184 bytes</span>
+  <span data-ty data-ty-delay="200">frame #2: 44054 bytes</span>
+  <span data-ty data-ty-delay="200">frame #3: 42822 bytes</span>
+  <span data-ty data-ty-delay="200">frame #4: 42116 bytes</span>
+  <span data-ty data-ty-delay="200">frame #5: 41868 bytes</span>
+  <span data-ty data-ty-delay="200">frame #6: 41322 bytes</span>
+  <span data-ty data-ty-delay="200">frame #7: 40896 bytes</span>
+  <span data-ty data-ty-delay="200">frame #8: 40844 bytes</span>
+  <span data-ty data-ty-delay="200">frame #9: 40714 bytes</span>
+  <span data-ty data-ty-delay="200">frame #10: 40662 bytes</span>
+  <span data-ty data-ty-delay="200">...</span>
+</div>
 
-```console
->>> from linuxpy.video.device import Device
->>> with Device.from_id(0) as cam:
-...     for i, frame in enumerate(cam):
-...         print(f"frame #{i}: {len(frame)} bytes")
-...         if i > 9:
-...             break
-...
-frame #0: 54630 bytes
-frame #1: 50184 bytes
-frame #2: 44054 bytes
-frame #3: 42822 bytes
-frame #4: 42116 bytes
-frame #5: 41868 bytes
-frame #6: 41322 bytes
-frame #7: 40896 bytes
-frame #8: 40844 bytes
-frame #9: 40714 bytes
-frame #10: 40662 bytes
-```
 
 ## Device creation
 
@@ -175,21 +173,18 @@ Format(width=640, height=480, pixelformat=<PixelFormat.MJPEG: 1196444237>}
 
 linuxpy.video is asyncio friendly:
 
-<!-- termynal -->
+<div class="termy" data-ty-macos>
+  <span data-ty="input" data-ty-prompt="$">python -m asyncio</span>
+  <span data-ty="input" data-ty-prompt=">>>">from linuxpy.video.device import Device</span>
+  <span data-ty="input" data-ty-prompt=">>>">with Device.from_id(0) as cam:</span>
+  <span data-ty="input" data-ty-prompt="...">    async for frame in cam:</span>
+  <span data-ty="input" data-ty-prompt="...">        print(f"frame {len(frame)}")</span>
+  <span data-ty data-ty-delay="200">frame 10224</span>
+  <span data-ty data-ty-delay="200">frame 10304</span>
+  <span data-ty data-ty-delay="200">frame 10136</span>
+  <span data-ty data-ty-delay="200">...</span>
+</div>
 
-```console
-$ python -m asyncio
-
->>> from linuxpy.video.device import Device
->>> with Device.from_id(0) as camera:
-...     async for frame in camera:
-...         print(f"frame {len(frame)}")
-frame 10224
-frame 10304
-frame 10224
-frame 10136
-...
-```
 
 (check [basic async](examples/video/basic_async.py) and [web async](examples/video/web/async.py) examples)
 
@@ -197,9 +192,7 @@ frame 10136
 
 linuxpy.video is also gevent friendly:
 
-```
-$ python
-
+```python
 >>> from linuxpy.io import GeventIO
 >>> from linuxpy.video.device import Device
 >>> with Device.from_id(0, io=GeventIO) as camera:
@@ -220,7 +213,7 @@ It is possible to write to a video output capable device (ex: v4l2loopback).
 The following example shows how to grab frames from device 0 and write them
 to device 10:
 
-```console
+```python
 >>> from linuxpy.video.device import Device, VideoOutput, BufferType
 >>> dev_source = Device.from_id(0)
 >>> dev_sink = Device.from_id(10)

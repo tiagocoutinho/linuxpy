@@ -10,6 +10,8 @@ import os
 import pathlib
 from io import IOBase
 
+from linuxpy.types import PathLike
+
 from .io import IO
 
 DEV_PATH = pathlib.Path("/dev")
@@ -40,7 +42,7 @@ class ReentrantOpen(contextlib.AbstractContextManager):
         raise NotImplementedError
 
 
-def device_number(path):
+def device_number(path: PathLike):
     """Retrieves device"""
     num = ""
     for c in str(path)[::-1]:
@@ -51,7 +53,7 @@ def device_number(path):
     return int(num) if num else None
 
 
-def is_device_file(path, read_write=True):
+def is_device_file(path: PathLike, read_write: bool = True):
     """Check if path is a readable (and, optionally, writable) character device."""
     path = pathlib.Path(path)
     if not path.is_char_device():
@@ -62,7 +64,7 @@ def is_device_file(path, read_write=True):
     return True
 
 
-def iter_device_files(path="/dev", pattern="*"):
+def iter_device_files(path: PathLike = "/dev", pattern: str = "*"):
     path = pathlib.Path(path)
     items = path.glob(pattern)
 

@@ -32,7 +32,7 @@ import select
 from linuxpy.ctypes import cast, cint, create_string_buffer, cuint, cvoidp, i32, sizeof
 from linuxpy.device import BaseDevice, iter_device_files
 from linuxpy.ioctl import IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR, ioctl
-from linuxpy.types import AsyncIterable, Callable, Iterable, Optional, Union
+from linuxpy.types import AsyncIterable, Callable, Iterable, Optional, PathLike, Sequence, Union
 from linuxpy.util import Version, add_reader_asyncio, make_find
 
 from .raw import (
@@ -262,7 +262,7 @@ def read_event(fd, read=os.read):
     return input_event.from_buffer_copy(data)
 
 
-def iter_input_files(path="/dev/input", pattern="event*"):
+def iter_input_files(path: PathLike = "/dev/input", pattern: str = "event*"):
     """List readable character devices in the given path."""
     return iter_device_files(path, pattern)
 
@@ -563,20 +563,20 @@ class EventReader:
         return await task
 
 
-def event_stream(fd):
+def event_stream(fd) -> Iterable[InputEvent]:
     while True:
         select.select((fd,), (), ())
         yield InputEvent.from_struct(read_event(fd))
 
 
-async def async_event_stream(fd, maxsize=1000):
+async def async_event_stream(fd, maxsize: int = 1000) -> AsyncIterable[InputEvent]:
     queue = asyncio.Queue(maxsize=maxsize)
     with add_reader_asyncio(fd, lambda: queue.put_nowait(read_event(fd))):
         while True:
             yield InputEvent.from_struct(await queue.get())
 
 
-def event_batch_stream(fd):
+def event_batch_stream(fd) -> Iterable[Sequence[InputEvent]]:
     """Yields packets of events occurring at the same moment in time."""
     packet = []
     for event in event_stream(fd):
@@ -590,7 +590,7 @@ def event_batch_stream(fd):
             packet.append(event)
 
 
-async def async_event_batch_stream(fd, maxsize=1000):
+async def async_event_batch_stream(fd, maxsize: int = 1000) -> AsyncIterable[Sequence[InputEvent]]:
     """Yields packets of events occurring at the same moment in time."""
     packet = []
     async for event in async_event_stream(fd, maxsize=maxsize):
@@ -604,7 +604,7 @@ async def async_event_batch_stream(fd, maxsize=1000):
             packet.append(event)
 
 
-def iter_devices(path="/dev/input", **kwargs):
+def iter_devices(path: PathLike = "/dev/input", **kwargs) -> Iterable[Device]:
     return (Device(path, **kwargs) for path in iter_input_files(path=path))
 
 
