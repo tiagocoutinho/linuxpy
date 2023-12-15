@@ -52,7 +52,7 @@
     
       <link rel="stylesheet" href="assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="termynal.css">
+      <link rel="stylesheet" href="css/termynal.css">
     
     <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -276,7 +276,9 @@
           
             
               
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -672,6 +674,8 @@
             
             
               
+                
+              
               <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
@@ -769,7 +773,10 @@ write calls. Ain't linux wonderful?</p>
 </ul>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <p>From within your favorite python environment:</p>
-<div class="termy" data-termynal data-ty-macos data-ty-title="bash"><span data-ty="input" data-ty-prompt="$">pip install linuxpy</span><span data-ty="progress"></span><span data-ty></span></div>
+<div class="termy" data-ty-macos data-ty-title="bash" data-ty-typeDelay="30" >
+    <span data-ty="input" data-ty-prompt="$">pip install linuxpy</span>
+    <span data-ty="progress" >pip install linuxpy</span>
+</div>
 
 <p>To run the examples you'll need:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>linuxpy<span class="o">[</span>examples<span class="o">]</span>
@@ -791,6 +798,8 @@ dependency on linux systems of other libraries  that will be concerned
 with providing a common API on different platforms.</p>
 
 
+
+  
 
 
 
@@ -838,7 +847,7 @@ with providing a common API on different platforms.</p>
     
       <script src="assets/javascripts/bundle.81fa17fe.min.js"></script>
       
-        <script src="termynal.js"></script>
+        <script src="js/termynal.js"></script>
       
     
   </body>
