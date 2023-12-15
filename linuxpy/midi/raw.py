@@ -16,6 +16,12 @@ from linuxpy.ctypes import POINTER, Struct, Union, cchar, cint, cuint, cvoidp, u
 from linuxpy.ioctl import IOR as _IOR, IOW as _IOW, IOWR as _IOWR
 
 
+class ClientType(enum.IntEnum):
+    NO_CLIENT = 0
+    USER = 1
+    KERNEL = 2
+
+
 class EventLength(enum.IntEnum):
     FIXED = 0 << 2  # fixed event size
     VARIABLE = 1 << 2  # variable event size
@@ -104,7 +110,7 @@ class EventType(enum.IntEnum):
     NONE = 0xFF
 
 
-class ClientType(enum.IntEnum):
+class ClientNumber(enum.IntEnum):
     SYSTEM = 0x0
     DUMMY = 14  # midi through
     OSS = 15  # oss sequencer emulator

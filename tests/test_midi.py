@@ -22,7 +22,7 @@ from linuxpy.midi.device import (
     to_address,
     to_event_type,
 )
-from linuxpy.midi.raw import ClientType, PortType, snd_seq_addr, snd_seq_client_info
+from linuxpy.midi.raw import ClientNumber, PortType, snd_seq_addr, snd_seq_client_info
 
 
 def assert_address(addr, client, port):
@@ -120,7 +120,7 @@ def _():
 def _():
     with Sequencer() as seq:
         running_mode = seq.running_mode
-        assert running_mode.client == ClientType.SYSTEM
+        assert running_mode.client == ClientNumber.SYSTEM
 
 
 @skip(when=not is_sequencer_available(), reason="MIDI sequencer is not prepared")
