@@ -33,9 +33,9 @@ class Termynal {
         this.originalStartDelay = this.startDelay = options.startDelay
             || parseFloat(this.container.getAttribute(`${this.pfx}-startDelay`)) || 600;
         this.originalTypeDelay = this.typeDelay = options.typeDelay
-            || parseFloat(this.container.getAttribute(`${this.pfx}-typeDelay`)) || 90;
+            || parseFloat(this.container.getAttribute(`${this.pfx}-typeDelay`)) || 30;
         this.originalLineDelay = this.lineDelay = options.lineDelay
-            || parseFloat(this.container.getAttribute(`${this.pfx}-lineDelay`)) || 1500;
+            || parseFloat(this.container.getAttribute(`${this.pfx}-lineDelay`)) || 200;
         this.progressLength = options.progressLength
             || parseFloat(this.container.getAttribute(`${this.pfx}-progressLength`)) || 40;
         this.progressChar = options.progressChar
@@ -43,7 +43,7 @@ class Termynal {
 		this.progressPercent = options.progressPercent
             || parseFloat(this.container.getAttribute(`${this.pfx}-progressPercent`)) || 100;
         this.cursor = options.cursor
-            || this.container.getAttribute(`${this.pfx}-cursor`) || '▋';
+            || this.container.getAttribute(`${this.pfx}-cursor`) || '█'; // '▋';
         this.lineData = this.lineDataToElements(options.lineData || []);
         this.loadLines()
         if (!options.noInit) this.init()

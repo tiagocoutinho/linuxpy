@@ -54,7 +54,7 @@
     
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../../termynal.css">
+      <link rel="stylesheet" href="../../css/termynal.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -1721,7 +1721,7 @@ Event must be available to read or otherwise will raise an error</p>
 
 
 <h3 id="linuxpy.input.device.iter_input_files" class="doc doc-heading">
-          <code class=" language-python"><span class="n">iter_input_files</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/dev/input&#39;</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s1">&#39;event*&#39;</span><span class="p">)</span></code>
+          <code class=" language-python"><span class="n">iter_input_files</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span> <span class="o">=</span> <span class="s1">&#39;/dev/input&#39;</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;event*&#39;</span><span class="p">)</span></code>
 
 <a href="#linuxpy.input.device.iter_input_files" class="headerlink" title="Permanent link">&para;</a></h3>
 
@@ -1741,7 +1741,7 @@ Event must be available to read or otherwise will raise an error</p>
 
 
 <h3 id="linuxpy.input.device.event_batch_stream" class="doc doc-heading">
-          <code class=" language-python"><span class="n">event_batch_stream</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span></code>
+          <code class=" language-python"><span class="n">event_batch_stream</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">InputEvent</span><span class="p">]]</span></code>
 
 <a href="#linuxpy.input.device.event_batch_stream" class="headerlink" title="Permanent link">&para;</a></h3>
 
@@ -1761,7 +1761,7 @@ Event must be available to read or otherwise will raise an error</p>
 
 
 <h3 id="linuxpy.input.device.async_event_batch_stream" class="doc doc-heading">
-          <code class=" language-python"><span class="n">async_event_batch_stream</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">maxsize</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span></code>
+          <code class=" language-python"><span class="n">async_event_batch_stream</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">maxsize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncIterable</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">InputEvent</span><span class="p">]]</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
@@ -1946,7 +1946,7 @@ Default is to return an iterator over all mouse devices found on the system.</p>
     
       <script src="../../assets/javascripts/bundle.81fa17fe.min.js"></script>
       
-        <script src="../../termynal.js"></script>
+        <script src="../../js/termynal.js"></script>
       
     
   </body>
