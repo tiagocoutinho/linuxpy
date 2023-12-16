@@ -802,6 +802,7 @@
 
 <h1 id="video">Video<a class="headerlink" href="#video" title="Permanent link">&para;</a></h1>
 <p>Human friendly interface to the Video for Linux 2 (V4L2) subsystem.</p>
+<p><img alt="V4L2 demo" src="../video.svg" /></p>
 <p>Without further ado:</p>
 <div class="termy" data-ty-macos>
   <span data-ty="input" data-ty-prompt="$">python</span>
@@ -837,12 +838,26 @@
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/dev/video10&quot;</span><span class="p">,</span> <span class="s2">&quot;rb+&quot;</span><span class="p">,</span> <span class="n">buffering</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
     <span class="n">camera</span> <span class="o">=</span> <span class="n">Device</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
 </code></pre></div>
-<p>Before using video <code>Device</code> object you need to open it.
+<p>Before using video <code>Device</code> object you need to open it (except in the
+example directly above when creating a device from a file object).
 You can either use the device object as a context manager (prefered):</p>
 <div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">as</span> <span class="n">camera</span><span class="p">:</span>
     <span class="o">...</span>
 </code></pre></div>
-<p>... or manage call <code>Device.open()</code>/<code>Device.close()</code> manually:</p>
+<p>The Device object is a reusable, reentrant but <strong>not</strong> thread safe context
+manager. This means that Device object can not only be used in multiple with
+statements, but may also be used inside a with statement that is already
+using the same context manager.</p>
+<p>So the following examples will work just fine:</p>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">as</span> <span class="n">camera</span><span class="p">:</span>
+    <span class="o">...</span>
+    <span class="k">with</span> <span class="n">camera</span><span class="p">:</span>
+        <span class="o">...</span>
+
+<span class="k">with</span> <span class="n">camera</span><span class="p">:</span>
+    <span class="o">...</span>
+</code></pre></div>
+<p>Alternatively, you can manage calls <code>Device.open()</code>/<code>Device.close()</code> manually:</p>
 <div class="highlight"><pre><span></span><code><span class="n">camera</span> <span class="o">=</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">camera</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 <span class="k">try</span><span class="p">:</span>
@@ -872,7 +887,7 @@ as an infinite iterator:</p>
             <span class="o">...</span>
 </code></pre></div>
 <p>Note that <code>VideoCapture</code> configuration must be done <strong>before</strong> the capture is started
-(ie, the the <code>with capture:</code> statement.)</p>
+(ie, the <code>with capture:</code> statement.)</p>
 <p>By default, VideoCapture will use memory map if the device has STREAMING
 capability and falls back to standard read if not. It is also possible to
 force a specific reader:</p>
