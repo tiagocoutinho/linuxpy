@@ -50,7 +50,7 @@ def run(args):
                         n = frame_n - last_n
                         rate = n / elapsed
                         print(
-                            f"Frame: {i:>8} | Elapsed: {elapsed:>8.1f} s | Rate: {rate:>8.1f} fps | Skipped: {skipped:>8}",
+                            f"Frame: {i:>8} | Elapsed: {now-start:>8.1f} s | Rate: {rate:>8.1f} fps | Skipped: {skipped:>8}",
                             end="\r",
                         )
                         last = now

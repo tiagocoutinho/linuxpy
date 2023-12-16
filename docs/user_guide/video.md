@@ -2,6 +2,8 @@
 
 Human friendly interface to the Video for Linux 2 (V4L2) subsystem.
 
+![V4L2 demo](video.svg)
+
 Without further ado:
 
 <div class="termy" data-ty-macos>
@@ -48,7 +50,8 @@ with open("/dev/video10", "rb+", buffering=0) as fd:
     camera = Device(fd)
 ```
 
-Before using video `Device` object you need to open it.
+Before using video `Device` object you need to open it (except in the
+example directly above when creating a device from a file object).
 You can either use the device object as a context manager (prefered):
 
 ```python
@@ -56,7 +59,25 @@ with Device.from_id(10) as camera:
     ...
 ```
 
-... or manage call `Device.open()`/`Device.close()` manually:
+The Device object is a reusable, reentrant but **not** thread safe context
+manager. This means that Device object can not only be used in multiple with
+statements, but may also be used inside a with statement that is already
+using the same context manager.
+
+So the following examples will work just fine:
+
+```python
+with Device.from_id(10) as camera:
+    ...
+    with camera:
+        ...
+
+with camera:
+    ...
+```
+
+
+Alternatively, you can manage calls `Device.open()`/`Device.close()` manually:
 
 ```python
 
@@ -98,7 +119,7 @@ with Device.from_id(0) as camera:
 ```
 
 Note that `VideoCapture` configuration must be done **before** the capture is started
-(ie, the the `with capture:` statement.)
+(ie, the `with capture:` statement.)
 
 By default, VideoCapture will use memory map if the device has STREAMING
 capability and falls back to standard read if not. It is also possible to
