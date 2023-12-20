@@ -84,5 +84,6 @@ nav:
     - api/index.md
     - api/input.md
     - api/midi.md
+    - api/thermal.md
     - api/video.md
   - Developers corner: develop.md

@@ -1,0 +1,3 @@
+# Thermal API
+
+::: linuxpy.thermal
