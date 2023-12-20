@@ -42,6 +42,7 @@ fsfilcnt = culong
 cast = ctypes.cast
 sizeof = ctypes.sizeof
 byref = ctypes.byref
+addressof = ctypes.addressof
 
 calcsize = struct.calcsize
 
