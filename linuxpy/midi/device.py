@@ -45,6 +45,7 @@ with Sequencer("My MIDI App") as midi:
 
 
 import asyncio
+import contextlib
 import errno
 import itertools
 from enum import IntEnum
@@ -160,10 +161,8 @@ def write_client_info(seq, client: snd_seq_client_info):
 
 
 def next_client(seq, client_id: int) -> Optional[snd_seq_client_info]:
-    try:
+    with contextlib.suppress(FileNotFoundError):
         return ioctl(seq, IOC.QUERY_NEXT_CLIENT, snd_seq_client_info(client=client_id))
-    except FileNotFoundError:
-        pass
 
 
 def iter_read_clients(seq) -> Iterable[snd_seq_client_info]:
@@ -184,10 +183,8 @@ def next_port(seq, client_id: int, port_id: int) -> Optional[snd_seq_port_info]:
     port = snd_seq_port_info(client=client_id)
     port.addr.client = client_id
     port.addr.port = port_id
-    try:
+    with contextlib.suppress(FileNotFoundError):
         return ioctl(seq, IOC.QUERY_NEXT_PORT, port)
-    except FileNotFoundError:
-        pass
 
 
 def iter_read_ports(seq, client_id: int) -> Iterable[snd_seq_port_info]:
@@ -457,7 +454,7 @@ class Sequencer(BaseDevice):
             addr = port_info.addr.client, port_info.addr.port
         # unsubscribe first
         for uid in set(self.subscriptions):
-            if addr == uid[0:2] or addr == uid[2:4]:
+            if addr in {uid[0:2], uid[2:4]}:
                 self.unsubscribe(uid[0:2], uid[2:4])
         self._local_ports.remove(addr[1])
         delete_port(self, port_info)
@@ -893,8 +890,7 @@ class Event:
             self.event.data.ext.len = len(data)
             self.event.data.ext.ptr = cvoidp()
             return bytes(self.event) + data
-        else:
-            return bytes(self.event)
+        return bytes(self.event)
 
     @classmethod
     def new(cls, etype: EventT, **kwargs):
@@ -947,8 +943,7 @@ class Event:
     def timestamp(self) -> Union[float, int]:
         if self.timestamp_type == TimeStamp.REAL:
             return self.event.data.time.time.tv_sec + self.event.data.time.time.tv_nsec * 1e-9
-        else:
-            return self.event.data.time.tick
+        return self.event.data.time.tick
 
     @property
     def note(self):

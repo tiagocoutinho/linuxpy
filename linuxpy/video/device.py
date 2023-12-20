@@ -8,6 +8,7 @@
 
 import asyncio
 import collections
+import contextlib
 import copy
 import ctypes
 import enum
@@ -529,16 +530,15 @@ def get_selection(
     ioctl(fd, IOC.G_SELECTION, sel)
     if sel.rectangles == 0:
         return Rect(left=sel.r.left, top=sel.r.top, width=sel.r.width, height=sel.r.height)
-    else:
-        return [
-            Rect(
-                left=rects[i].r.left,
-                top=rects[i].r.top,
-                width=rects[i].r.width,
-                height=rects[i].r.height,
-            )
-            for i in range(sel.rectangles)
-        ]
+    return [
+        Rect(
+            left=rects[i].r.left,
+            top=rects[i].r.top,
+            width=rects[i].r.width,
+            height=rects[i].r.height,
+        )
+        for i in range(sel.rectangles)
+    ]
 
 
 def get_control(fd, id):
@@ -744,10 +744,8 @@ class Controls(dict):
         return cls(ctrl_dict)
 
     def __getattr__(self, key):
-        try:
+        with contextlib.suppress(KeyError):
             return self[key]
-        except KeyError:
-            pass
         raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{key}'")
 
     def __setattr__(self, key, value):
@@ -788,10 +786,8 @@ class Controls(dict):
             if not isinstance(v, BaseControl):
                 continue
 
-            try:
+            with contextlib.suppress(AttributeError):
                 v.set_to_default()
-            except AttributeError:
-                pass
 
     def set_clipping(self, clipping: bool) -> None:
         for v in self.values():
@@ -815,7 +811,7 @@ class BaseControl:
             self.standard = None
 
     def __repr__(self):
-        repr = f"{self.config_name}"
+        repr = str(self.config_name)
 
         addrepr = self._get_repr()
         addrepr = addrepr.strip()
@@ -934,8 +930,6 @@ class BaseMonoControl(BaseControl):
         if not self.is_flagged_write_only:
             v = self._get_control()
             return self._convert_read(v)
-        else:
-            return None
 
     def _convert_write(self, value):
         return value
@@ -1541,11 +1535,9 @@ class FrameReader:
         return self
 
     async def __aexit__(self, exc_type, exc_value, traceback):
-        try:
+        with contextlib.suppress(OSError):
             # device may have been closed by now
             self._selector.unregister(self._device_fd)
-        except OSError:
-            pass
         self._loop.remove_reader(self._selector.fileno())
         self._selector.close()
         self._selector = None

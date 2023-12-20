@@ -19,8 +19,9 @@ def chunks(lst, size) -> tuple:
 
 
 def bcd_version_tuple(bcd: int) -> tuple:
-    text = hex(bcd)[2:]
-    if len(text) % 2:
+    text = f"{bcd:x}"
+    text_size = len(text)
+    if text_size % 2:
         text = "0" + text
     return tuple(int(i) for i in ichunks(text, 2))
 
