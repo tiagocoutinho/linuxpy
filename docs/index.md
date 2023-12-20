@@ -16,8 +16,10 @@ Provides python access to several linux subsystems like V4L2, input and MIDI.
 
 There is experimental, undocumented, incomplete and unstable access to USB.
 
-Need fine control over Webcams, MIDI devices, input devices (joysticks,
-gamepads, keyboards, mice or even the keyboard light on your laptop)?
+Need fine control over Webcams, MIDI devices, thermal sensors and cooling
+devices, joysticks, gamepads, keyboards, mice or even the keyboard light on
+your laptop?
+
 Linuxpy has your back.
 
 Requirements:
