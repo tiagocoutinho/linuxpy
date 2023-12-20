@@ -282,7 +282,7 @@ def iter_read_controls(fd):
     nxt = ControlFlag.NEXT_CTRL | ControlFlag.NEXT_COMPOUND
     ctrl.id = nxt
     for ctrl_ext in iter_read(fd, IOC.QUERY_EXT_CTRL, ctrl):
-        if not (ctrl_ext.flags & ControlFlag.DISABLED) and not (ctrl_ext.type == ControlType.CTRL_CLASS):
+        if ctrl_ext.type != ControlType.CTRL_CLASS:
             yield copy.deepcopy(ctrl_ext)
         ctrl_ext.id |= nxt
 
@@ -1690,14 +1690,18 @@ class VideoOutput(BufferManager):
 
 
 def iter_video_files(path: PathLike = "/dev") -> Iterable[Path]:
+    """Returns an iterator over all video files"""
     return iter_device_files(path=path, pattern="video*")
 
 
 def iter_devices(path: PathLike = "/dev", **kwargs) -> Iterable[Device]:
+    """Returns an iterator over all video devices"""
     return (Device(name, **kwargs) for name in iter_video_files(path=path))
 
 
 def iter_video_capture_files(path: PathLike = "/dev") -> Iterable[Path]:
+    """Returns an iterator over all video files that have CAPTURE capability"""
+
     def filt(filename):
         with IO.open(filename) as fobj:
             caps = read_capabilities(fobj.fileno())
@@ -1707,6 +1711,7 @@ def iter_video_capture_files(path: PathLike = "/dev") -> Iterable[Path]:
 
 
 def iter_video_capture_devices(path: PathLike = "/dev", **kwargs) -> Iterable[Device]:
+    """Returns an iterator over all video devices that have CAPTURE capability"""
     return (Device(name, **kwargs) for name in iter_video_capture_files(path))
 
 
@@ -1726,6 +1731,7 @@ def iter_video_output_files(path: PathLike = "/dev") -> Iterable[Path]:
 
 
 def iter_video_output_devices(path: PathLike = "/dev", **kwargs) -> Iterable[Device]:
+    """Returns an iterator over all video devices that have VIDEO OUTPUT capability"""
     return (Device(name, **kwargs) for name in iter_video_output_files(path))
 
 

@@ -10,7 +10,7 @@ import os
 import pathlib
 from io import IOBase
 
-from linuxpy.types import PathLike
+from linuxpy.types import Optional, PathLike
 
 from .io import IO
 
@@ -42,7 +42,7 @@ class ReentrantOpen(contextlib.AbstractContextManager):
         raise NotImplementedError
 
 
-def device_number(path: PathLike):
+def device_number(path: PathLike) -> Optional[int]:
     """Retrieves device"""
     num = ""
     for c in str(path)[::-1]:
