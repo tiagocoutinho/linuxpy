@@ -7,14 +7,23 @@
 import argparse
 import asyncio
 
-from linuxpy.input.device import Device, async_event_batch_stream, event_batch_stream, find
+from linuxpy.input.device import Bus, Device, async_event_batch_stream, event_batch_stream, find
 
 
 def ls(_):
-    print(f"{'Name':32} {'Location':32} {'Version':8} {'Filename':32}")
-    for inp in sorted(find(find_all=True), key=lambda d: d.index):
-        with inp:
-            print(f"{inp.name:<32} {inp.physical_location:<32} {inp.version:<8} {inp.filename}")
+    print(f"{'Name':32} {'Bus':10} {'Location':32} {'Version':8} {'Filename':32}")
+    for dev in sorted(find(find_all=True), key=lambda d: d.index):
+        with dev:
+            try:
+                physical_location = dev.physical_location
+            except OSError:
+                physical_location = "-"
+            did = dev.device_id
+            try:
+                bus = Bus(did.bustype).name
+            except ValueError:
+                bus = "-"
+            print(f"{dev.name:<32} {bus:<10} {physical_location:<32} {dev.version:<8} {dev.filename}")
 
 
 def print_event(device, event):
