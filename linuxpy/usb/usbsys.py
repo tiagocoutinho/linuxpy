@@ -44,19 +44,18 @@ def attr(filename, decode=str.strip, alternative=None):
 
 
 def _decode_speed(speed):
-    match int(speed):
-        case 1:
-            return Speed.LOW
-        case 12:
-            return Speed.FULL
-        case 480:
-            return Speed.HIGH
-        case 5000:
-            return Speed.SUPER
-        case 10000:
-            return Speed.SUPER_PLUS
-        case _:
-            return Speed.UNKNOWN
+    speed = int(speed)
+    if speed == 1:
+        return Speed.LOW
+    elif speed == 12:
+        return Speed.FULL
+    elif speed == 480:
+        return Speed.HIGH
+    elif speed == 5_000:
+        return Speed.SUPER
+    elif speed == 10_000:
+        return Speed.SUPER_PLUS
+    return Speed.UNKNOWN
 
 
 def _manufacturer_alternative(device):
