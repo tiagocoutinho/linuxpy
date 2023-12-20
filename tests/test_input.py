@@ -14,6 +14,7 @@ from ward import each, fixture, raises, skip, test
 from linuxpy.input.device import (
     Device,
     EventType,
+    Grab,
     Key,
     UGamepad,
     UMouse,
@@ -125,6 +126,23 @@ def _(pair_dev_simulator=gamepad):
         assert isinstance(device.ry, int)
         assert isinstance(device.rz, int)
         assert not device.active_keys
+
+
+@skip(when=not is_uinput_available(), reason="uinput is not available")
+@test("grab")
+def _(pair_dev_simulator=gamepad):
+    device, simulator = pair_dev_simulator
+    with device:
+        with Grab(device):
+            assert device.device_id.bustype == simulator.bustype
+
+        device.grab()
+        assert device.device_id.bustype == simulator.bustype
+        device.ungrab()
+
+        with Grab(device):
+            with raises(OSError):
+                device.grab()
 
 
 @skip(when=not is_uinput_available(), reason="uinput is not available")
