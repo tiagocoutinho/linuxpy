@@ -78,6 +78,10 @@ class Hardware:
         self.video_capture_state = "OFF"
         self.blocking = None
         self.frame = 640 * 480 * 3 * b"\x01"
+        self.fps_capture = 10
+        self.fps_output = 20
+        self.brightness = 55
+        self.contrast = 12
 
     def __enter__(self):
         self.stack = ExitStack()
@@ -113,18 +117,33 @@ class Hardware:
         return self.fd is not None
 
     def ioctl(self, fd, ioc, arg):  # noqa: C901
-        assert self.fd == fd
+        # assert self.fd == fd
         if isinstance(arg, raw.v4l2_input):
             if arg.index > 0:
                 raise OSError(EINVAL, "ups!")
             arg.name = self.input0_name
             arg.type = raw.InputType.CAMERA
         elif isinstance(arg, raw.v4l2_query_ext_ctrl):
-            if arg.index > 0:
+            if arg.index == 0:
+                arg.name = b"brightness"
+                arg.type = raw.CtrlType.INTEGER
+                arg.id = 9963776
+                arg.minimum = 10
+                arg.maximum = 127
+                arg.step = 1
+                arg.default_value = 64
+            elif arg.index == 1:
+                arg.name = b"contrast"
+                arg.type = raw.CtrlType.INTEGER
+                arg.id = 9963777
+                arg.flags = raw.ControlFlag.READ_ONLY
+            elif arg.index == 2:
+                arg.name = b"white_balance_automatic"
+                arg.type = raw.CtrlType.BOOLEAN
+                arg.id = 9963788
+                arg.flags = raw.ControlFlag.DISABLED
+            else:
                 raise OSError(EINVAL, "ups!")
-            arg.name = b"brightness"
-            arg.type = raw.CtrlType.INTEGER
-            arg.id = 9963776
         elif isinstance(arg, raw.v4l2_capability):
             arg.driver = self.driver
             arg.card = self.card
@@ -151,6 +170,36 @@ class Hardware:
         elif ioc == raw.IOC.STREAMOFF:
             assert arg.value == raw.BufType.VIDEO_CAPTURE
             self.video_capture_state = "OFF"
+        elif ioc == raw.IOC.G_PARM:
+            if arg.type == raw.BufType.VIDEO_CAPTURE:
+                arg.parm.capture.timeperframe.numerator = 1
+                arg.parm.capture.timeperframe.denominator = self.fps_capture
+            elif arg.type == raw.BufType.VIDEO_OUTPUT:
+                arg.parm.output.timeperframe.numerator = 1
+                arg.parm.output.timeperframe.denominator = self.fps_output
+        elif ioc == raw.IOC.S_PARM:
+            if arg.type == raw.BufType.VIDEO_CAPTURE:
+                assert arg.parm.capture.timeperframe.numerator == 1
+                self.fps_capture = arg.parm.capture.timeperframe.denominator
+            elif arg.type == raw.BufType.VIDEO_OUTPUT:
+                assert arg.parm.output.timeperframe.numerator == 1
+                self.fps_output = arg.parm.output.timeperframe.denominator
+        elif ioc == raw.IOC.G_CTRL:
+            if arg.id == 9963776:
+                arg.value = self.brightness
+            elif arg.id == 9963777:
+                arg.value = self.contrast
+            elif arg.id == 9963788:
+                arg.value = 0
+            else:
+                raise OSError(EINVAL, "ups!")
+        elif ioc == raw.IOC.S_CTRL:
+            if arg.id == 9963776:
+                self.brightness = arg.value
+            elif arg.id == 9963777:
+                self.contrast = arg.value
+            else:
+                raise OSError(EINVAL, "ups!")
         return 0
 
     def mmap(self, fd, length, offset):
@@ -269,6 +318,115 @@ def _(camera=hardware):
     assert device.info.bus_info == camera.bus_info.decode()
     assert device.info.bus_info == camera.bus_info.decode()
     assert device.info.version == camera.version_str
+
+
+@test("controls")
+def _(camera=hardware):
+    with Device(camera.filename) as device:
+        controls = device.controls
+        assert len(controls) == 3
+        brightness = controls["brightness"]
+        contrast = controls["contrast"]
+        white_balance_automatic = controls["white_balance_automatic"]
+
+        assert brightness.value == camera.brightness
+        assert brightness.minimum == 10
+        assert brightness.maximum == 127
+        assert brightness.step == 1
+
+        brightness.value = 123
+        assert brightness.value == 123
+        assert camera.brightness == 123
+
+        brightness.increase(2)
+        assert brightness.value == 125
+        assert camera.brightness == 125
+
+        brightness.decrease(20)
+        assert brightness.value == 105
+        assert camera.brightness == 105
+
+        brightness.set_to_default()
+        assert brightness.value == brightness.default
+        assert camera.brightness == brightness.default
+
+        brightness.set_to_minimum()
+        assert brightness.value == brightness.minimum
+
+        brightness.set_to_maximum()
+        assert brightness.value == brightness.maximum
+
+        brightness.value = 128
+        assert brightness.value == brightness.maximum
+        brightness.value = 1
+        assert brightness.value == brightness.minimum
+
+        brightness.clipping = False
+        with raises(ValueError):
+            brightness.value = 128
+        with raises(ValueError):
+            brightness.value = 0
+        brightness.clipping = True
+        brightness.value = 128
+        assert brightness.value == brightness.maximum
+        brightness.value = 1
+        assert brightness.value == brightness.minimum
+
+        controls.set_clipping(False)
+        assert brightness.clipping is False
+        assert contrast.clipping is False
+        controls.set_clipping(True)
+        assert brightness.clipping is True
+        assert contrast.clipping is True
+
+        brightness.value = "122"
+        assert brightness.value == 122
+        assert camera.brightness == 122
+
+        brightness.value = True
+        assert brightness.value == brightness.minimum
+        assert camera.brightness == brightness.minimum
+
+        for value in (device, {}, [], "bla"):
+            with raises(ValueError):
+                brightness.value = value
+
+        assert contrast.value == camera.contrast
+        with raises(AttributeError):
+            contrast.value = 12
+
+        white_balance_automatic = controls["white_balance_automatic"]
+        assert white_balance_automatic.value is False
+        with raises(AttributeError):
+            white_balance_automatic.value = True
+
+
+@test("get fps")
+def _(camera=hardware):
+    with Device(camera.filename) as device:
+        fps = device.get_fps(BufferType.VIDEO_CAPTURE)
+        assert isclose(fps, 10)
+
+        fps = device.get_fps(BufferType.VIDEO_OUTPUT)
+        assert isclose(fps, 20)
+
+        with raises(ValueError):
+            device.get_fps(BufferType.VBI_CAPTURE)
+
+
+@test("set fps")
+def _(camera=hardware):
+    with Device(camera.filename) as device:
+        device.set_fps(BufferType.VIDEO_CAPTURE, 35)
+        fps = device.get_fps(BufferType.VIDEO_CAPTURE)
+        assert isclose(fps, 35)
+
+        device.set_fps(BufferType.VIDEO_OUTPUT, 5)
+        fps = device.get_fps(BufferType.VIDEO_OUTPUT)
+        assert isclose(fps, 5)
+
+        with raises(ValueError):
+            device.set_fps(BufferType.VBI_CAPTURE, 10)
 
 
 @test("device repr")
