@@ -12,13 +12,13 @@
         <meta name="author" content="Tiago Coutinho">
       
       
-        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/api/video/">
+        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/api/thermal/">
       
       
-        <link rel="prev" href="../thermal/">
+        <link rel="prev" href="../midi/">
       
       
-        <link rel="next" href="../../develop/">
+        <link rel="next" href="../video/">
       
       
       <link rel="icon" href="../../img/favicon.ico">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Video API - LinuxPy</title>
+        <title>Thermal API - LinuxPy</title>
       
     
     
@@ -81,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#video-api" class="md-skip">
+        <a href="#thermal-api" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Video API
+              Thermal API
             
           </span>
         </div>
@@ -567,26 +567,6 @@
                 
   
   
-  
-    <li class="md-nav__item">
-      <a href="../thermal/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Thermal API
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -602,7 +582,7 @@
           
   
   <span class="md-ellipsis">
-    Video API
+    Thermal API
   </span>
   
 
@@ -613,7 +593,7 @@
         
   
   <span class="md-ellipsis">
-    Video API
+    Thermal API
   </span>
   
 
@@ -635,126 +615,72 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#linuxpy.video.device" class="md-nav__link">
-    device
+  <a href="#linuxpy.thermal" class="md-nav__link">
+    thermal
   </a>
   
-    <nav class="md-nav" aria-label="device">
+    <nav class="md-nav" aria-label="thermal">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#linuxpy.video.device.V4L2Error" class="md-nav__link">
-    V4L2Error
+  <a href="#linuxpy.thermal.ThermalZone" class="md-nav__link">
+    ThermalZone
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.video.device.Frame" class="md-nav__link">
-    Frame
+  <a href="#linuxpy.thermal.TripPoint" class="md-nav__link">
+    TripPoint
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.video.device.EventReader" class="md-nav__link">
-    EventReader
-  </a>
-  
-    <nav class="md-nav" aria-label="EventReader">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.video.device.EventReader.aread" class="md-nav__link">
-    aread()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.video.device.FrameReader" class="md-nav__link">
-    FrameReader
-  </a>
-  
-    <nav class="md-nav" aria-label="FrameReader">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.video.device.FrameReader.aread" class="md-nav__link">
-    aread()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.video.device.create_buffer" class="md-nav__link">
-    create_buffer()
+  <a href="#linuxpy.thermal.CoolingDevice" class="md-nav__link">
+    CoolingDevice
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.video.device.create_buffers" class="md-nav__link">
-    create_buffers()
+  <a href="#linuxpy.thermal.iter_thermal_zone_paths" class="md-nav__link">
+    iter_thermal_zone_paths()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.video.device.create_mmap_buffers" class="md-nav__link">
-    create_mmap_buffers()
+  <a href="#linuxpy.thermal.iter_thermal_zone_devices" class="md-nav__link">
+    iter_thermal_zone_devices()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.video.device.iter_video_files" class="md-nav__link">
-    iter_video_files()
+  <a href="#linuxpy.thermal.iter_cooling_device_paths" class="md-nav__link">
+    iter_cooling_device_paths()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.video.device.iter_devices" class="md-nav__link">
+  <a href="#linuxpy.thermal.iter_cooling_devices" class="md-nav__link">
+    iter_cooling_devices()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.thermal.iter_devices" class="md-nav__link">
     iter_devices()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.video.device.iter_video_capture_files" class="md-nav__link">
-    iter_video_capture_files()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.video.device.iter_video_capture_devices" class="md-nav__link">
-    iter_video_capture_devices()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.video.device.iter_video_output_files" class="md-nav__link">
-    iter_video_output_files()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.video.device.iter_video_output_devices" class="md-nav__link">
-    iter_video_output_devices()
+  <a href="#linuxpy.thermal.find" class="md-nav__link">
+    find()
   </a>
   
 </li>
@@ -768,6 +694,26 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../video/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Video API
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -826,126 +772,72 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#linuxpy.video.device" class="md-nav__link">
-    device
+  <a href="#linuxpy.thermal" class="md-nav__link">
+    thermal
   </a>
   
-    <nav class="md-nav" aria-label="device">
+    <nav class="md-nav" aria-label="thermal">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#linuxpy.video.device.V4L2Error" class="md-nav__link">
-    V4L2Error
+  <a href="#linuxpy.thermal.ThermalZone" class="md-nav__link">
+    ThermalZone
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.video.device.Frame" class="md-nav__link">
-    Frame
+  <a href="#linuxpy.thermal.TripPoint" class="md-nav__link">
+    TripPoint
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.video.device.EventReader" class="md-nav__link">
-    EventReader
-  </a>
-  
-    <nav class="md-nav" aria-label="EventReader">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.video.device.EventReader.aread" class="md-nav__link">
-    aread()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.video.device.FrameReader" class="md-nav__link">
-    FrameReader
-  </a>
-  
-    <nav class="md-nav" aria-label="FrameReader">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.video.device.FrameReader.aread" class="md-nav__link">
-    aread()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.video.device.create_buffer" class="md-nav__link">
-    create_buffer()
+  <a href="#linuxpy.thermal.CoolingDevice" class="md-nav__link">
+    CoolingDevice
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.video.device.create_buffers" class="md-nav__link">
-    create_buffers()
+  <a href="#linuxpy.thermal.iter_thermal_zone_paths" class="md-nav__link">
+    iter_thermal_zone_paths()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.video.device.create_mmap_buffers" class="md-nav__link">
-    create_mmap_buffers()
+  <a href="#linuxpy.thermal.iter_thermal_zone_devices" class="md-nav__link">
+    iter_thermal_zone_devices()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.video.device.iter_video_files" class="md-nav__link">
-    iter_video_files()
+  <a href="#linuxpy.thermal.iter_cooling_device_paths" class="md-nav__link">
+    iter_cooling_device_paths()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.video.device.iter_devices" class="md-nav__link">
+  <a href="#linuxpy.thermal.iter_cooling_devices" class="md-nav__link">
+    iter_cooling_devices()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.thermal.iter_devices" class="md-nav__link">
     iter_devices()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.video.device.iter_video_capture_files" class="md-nav__link">
-    iter_video_capture_files()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.video.device.iter_video_capture_devices" class="md-nav__link">
-    iter_video_capture_devices()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.video.device.iter_video_output_files" class="md-nav__link">
-    iter_video_output_files()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.video.device.iter_video_output_devices" class="md-nav__link">
-    iter_video_output_devices()
+  <a href="#linuxpy.thermal.find" class="md-nav__link">
+    find()
   </a>
   
 </li>
@@ -970,7 +862,7 @@
                   
 
 
-<h1 id="video-api">Video API<a class="headerlink" href="#video-api" title="Permanent link">&para;</a></h1>
+<h1 id="thermal-api">Thermal API<a class="headerlink" href="#thermal-api" title="Permanent link">&para;</a></h1>
 
 
 <div class="doc doc-object doc-module">
@@ -978,15 +870,22 @@
 
 
 
-<h2 id="linuxpy.video.device" class="doc doc-heading">
-          <code>linuxpy.video.device</code>
+<h2 id="linuxpy.thermal" class="doc doc-heading">
+          <code>linuxpy.thermal</code>
 
 
-<a href="#linuxpy.video.device" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#linuxpy.thermal" class="headerlink" title="Permanent link">&para;</a></h2>
 
   <div class="doc doc-contents first">
   
-      <p>Human friendly interface to V4L2 (Video 4 Linux 2) subsystem.</p>
+      <p>Human friendly interface to linux thermal subsystem.</p>
+<p>The heart of linuxpy thermal library are the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.ThermalZone"><code>ThermalZone</code></a>
+and <a class="autorefs autorefs-internal" href="#linuxpy.thermal.CoolingDevice"><code>CoolingDevice</code></a> classes.</p>
+<p>Probably the most common way to create a thermal device is through
+the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>find</code></a> helper:</p>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;x86_pkg_temp&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tz</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;X86 temperature: </span><span class="si">{</span><span class="n">tz</span><span class="o">.</span><span class="n">temperature</span><span class="o">/</span><span class="mi">1000</span><span class="si">:</span><span class="s2">6.2f</span><span class="si">}</span><span class="s2"> C&quot;</span><span class="p">)</span>
+</code></pre></div>
 
   
 
@@ -1004,40 +903,143 @@
 
 
 
-<h3 id="linuxpy.video.device.V4L2Error" class="doc doc-heading">
-          <code>V4L2Error</code>
+<h3 id="linuxpy.thermal.ThermalZone" class="doc doc-heading">
+            <code class=" language-python"><span class="n">ThermalZone</span><span class="p">(</span><span class="n">syspath</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">)</span></code>
 
-
-<a href="#linuxpy.video.device.V4L2Error" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.thermal.ThermalZone" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
           <p class="doc doc-class-bases">
-            Bases: <code>Exception</code></p>
+            Bases: <code><span title="linuxpy.sysfs.Device">Device</span></code></p>
 
   
-      <p>Video for linux 2 error</p>
-
-
-  </div>
-
-</div>
-
-<div class="doc doc-object doc-class">
+      <p>Thermal sensor</p>
 
 
 
-
-<h3 id="linuxpy.video.device.Frame" class="doc doc-heading">
-            <code class=" language-python"><span class="n">Frame</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">buff</span><span class="p">:</span> <span class="n">raw</span><span class="o">.</span><span class="n">v4l2_buffer</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">Format</span><span class="p">)</span></code>
-
-<a href="#linuxpy.video.device.Frame" class="headerlink" title="Permanent link">&para;</a></h3>
-
-
-  <div class="doc doc-contents ">
-
-  
-      <p>The resulting object from an acquisition.</p>
+  <table>
+    <thead>
+      <tr>
+        <th><b>ATTRIBUTE</b></th>
+        <th><b>DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>type</code></td>
+          <td class="doc-attribute-details">
+            <div class="doc-md-description">
+              <p>thermal zone type</p>
+            </div>
+            <p>
+                <span class="doc-attribute-annotation">
+                  <b>TYPE:</b>
+                    <code>str</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>policy</code></td>
+          <td class="doc-attribute-details">
+            <div class="doc-md-description">
+              <p>the policy</p>
+            </div>
+            <p>
+                <span class="doc-attribute-annotation">
+                  <b>TYPE:</b>
+                    <code>str</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>available_policies</code></td>
+          <td class="doc-attribute-details">
+            <div class="doc-md-description">
+              <p>list of available policies</p>
+            </div>
+            <p>
+                <span class="doc-attribute-annotation">
+                  <b>TYPE:</b>
+                    <code>list[str]</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>temperature</code></td>
+          <td class="doc-attribute-details">
+            <div class="doc-md-description">
+              <p>current temperature in milli-celsius</p>
+            </div>
+            <p>
+                <span class="doc-attribute-annotation">
+                  <b>TYPE:</b>
+                    <code>int</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>offset</code></td>
+          <td class="doc-attribute-details">
+            <div class="doc-md-description">
+              <p>offet in milli-celsius</p>
+            </div>
+            <p>
+                <span class="doc-attribute-annotation">
+                  <b>TYPE:</b>
+                    <code>int</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>mode</code></td>
+          <td class="doc-attribute-details">
+            <div class="doc-md-description">
+              <p>current mode (enabled/disabled)</p>
+            </div>
+            <p>
+                <span class="doc-attribute-annotation">
+                  <b>TYPE:</b>
+                    <code><span title="linuxpy.sysfs.Mode">Mode</span></code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>device_number</code></td>
+          <td class="doc-attribute-details">
+            <div class="doc-md-description">
+              <p>thermal device number</p>
+            </div>
+            <p>
+                <span class="doc-attribute-annotation">
+                  <b>TYPE:</b>
+                    <code>int</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>trip_points</code></td>
+          <td class="doc-attribute-details">
+            <div class="doc-md-description">
+              <p>list of trip points (new list every time)</p>
+            </div>
+            <p>
+                <span class="doc-attribute-annotation">
+                  <b>TYPE:</b>
+                    <code>list[<a class="autorefs autorefs-internal" title="linuxpy.thermal.TripPoint" href="#linuxpy.thermal.TripPoint">TripPoint</a>]</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
   
@@ -1065,14 +1067,57 @@
 
 
 
-<h3 id="linuxpy.video.device.EventReader" class="doc doc-heading">
-            <code class=" language-python"><span class="n">EventReader</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Device</span><span class="p">,</span> <span class="n">max_queue_size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span></code>
+<h3 id="linuxpy.thermal.TripPoint" class="doc doc-heading">
+            <code class=" language-python"><span class="n">TripPoint</span><span class="p">(</span><span class="n">temperature_path</span><span class="p">,</span> <span class="n">type_path</span><span class="p">)</span></code>
 
-<a href="#linuxpy.video.device.EventReader" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.thermal.TripPoint" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
 
+  
+      <p>Trip point associated with the thermal zone</p>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>ATTRIBUTE</b></th>
+        <th><b>DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>temperature</code></td>
+          <td class="doc-attribute-details">
+            <div class="doc-md-description">
+              <p>trip point temperature in milli-celsius</p>
+            </div>
+            <p>
+                <span class="doc-attribute-annotation">
+                  <b>TYPE:</b>
+                    <code>int</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>type</code></td>
+          <td class="doc-attribute-details">
+            <div class="doc-md-description">
+              <p>trip point type</p>
+            </div>
+            <p>
+                <span class="doc-attribute-annotation">
+                  <b>TYPE:</b>
+                    <code>str</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
   
@@ -1086,30 +1131,6 @@
 
 
 
-
-
-<div class="doc doc-object doc-function">
-
-
-
-
-<h4 id="linuxpy.video.device.EventReader.aread" class="doc doc-heading">
-          <code class=" language-python"><span class="n">aread</span><span class="p">()</span></code>
-  
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
-  </span>
-
-<a href="#linuxpy.video.device.EventReader.aread" class="headerlink" title="Permanent link">&para;</a></h4>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Wait for next event or return last event in queue</p>
-
-  </div>
-
-</div>
 
 
 
@@ -1124,14 +1145,45 @@
 
 
 
-<h3 id="linuxpy.video.device.FrameReader" class="doc doc-heading">
-            <code class=" language-python"><span class="n">FrameReader</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Device</span><span class="p">,</span> <span class="n">raw_read</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Buffer</span><span class="p">],</span> <span class="n">max_queue_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span></code>
+<h3 id="linuxpy.thermal.CoolingDevice" class="doc doc-heading">
+            <code class=" language-python"><span class="n">CoolingDevice</span><span class="p">(</span><span class="n">syspath</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">)</span></code>
 
-<a href="#linuxpy.video.device.FrameReader" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.thermal.CoolingDevice" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
+          <p class="doc doc-class-bases">
+            Bases: <code><span title="linuxpy.sysfs.Device">Device</span></code></p>
 
+  
+      <p>Cooling device (fan, processor, ...)</p>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th><b>ATTRIBUTE</b></th>
+        <th><b>DESCRIPTION</b></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>type</code></td>
+          <td class="doc-attribute-details">
+            <div class="doc-md-description">
+              <p>thermal zone type</p>
+            </div>
+            <p>
+                <span class="doc-attribute-annotation">
+                  <b>TYPE:</b>
+                    <code>str</code>
+                </span>
+            </p>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
   
@@ -1147,30 +1199,6 @@
 
 
 
-<div class="doc doc-object doc-function">
-
-
-
-
-<h4 id="linuxpy.video.device.FrameReader.aread" class="doc doc-heading">
-          <code class=" language-python"><span class="n">aread</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Frame</span></code>
-  
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
-  </span>
-
-<a href="#linuxpy.video.device.FrameReader.aread" class="headerlink" title="Permanent link">&para;</a></h4>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Wait for next frame or return last frame</p>
-
-  </div>
-
-</div>
-
-
 
   </div>
 
@@ -1185,15 +1213,15 @@
 
 
 
-<h3 id="linuxpy.video.device.create_buffer" class="doc doc-heading">
-          <code class=" language-python"><span class="n">create_buffer</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buffer_type</span><span class="p">:</span> <span class="n">BufferType</span><span class="p">,</span> <span class="n">memory</span><span class="p">:</span> <span class="n">Memory</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">raw</span><span class="o">.</span><span class="n">v4l2_buffer</span></code>
+<h3 id="linuxpy.thermal.iter_thermal_zone_paths" class="doc doc-heading">
+          <code class=" language-python"><span class="n">iter_thermal_zone_paths</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span></code>
 
-<a href="#linuxpy.video.device.create_buffer" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.thermal.iter_thermal_zone_paths" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
   
-      <p>request + query buffers</p>
+      <p>Returns an iterator over all thermal zone paths</p>
 
   </div>
 
@@ -1205,15 +1233,15 @@
 
 
 
-<h3 id="linuxpy.video.device.create_buffers" class="doc doc-heading">
-          <code class=" language-python"><span class="n">create_buffers</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buffer_type</span><span class="p">:</span> <span class="n">BufferType</span><span class="p">,</span> <span class="n">memory</span><span class="p">:</span> <span class="n">Memory</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">raw</span><span class="o">.</span><span class="n">v4l2_buffer</span><span class="p">]</span></code>
+<h3 id="linuxpy.thermal.iter_thermal_zone_devices" class="doc doc-heading">
+          <code class=" language-python"><span class="n">iter_thermal_zone_devices</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ThermalZone</span><span class="p">]</span></code>
 
-<a href="#linuxpy.video.device.create_buffers" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.thermal.iter_thermal_zone_devices" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
   
-      <p>request + query buffers</p>
+      <p>Returns an iterator over all thermal zone devices</p>
 
   </div>
 
@@ -1225,15 +1253,15 @@
 
 
 
-<h3 id="linuxpy.video.device.create_mmap_buffers" class="doc doc-heading">
-          <code class=" language-python"><span class="n">create_mmap_buffers</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buffer_type</span><span class="p">:</span> <span class="n">BufferType</span><span class="p">,</span> <span class="n">memory</span><span class="p">:</span> <span class="n">Memory</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">mmap</span><span class="o">.</span><span class="n">mmap</span><span class="p">]</span></code>
+<h3 id="linuxpy.thermal.iter_cooling_device_paths" class="doc doc-heading">
+          <code class=" language-python"><span class="n">iter_cooling_device_paths</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span></code>
 
-<a href="#linuxpy.video.device.create_mmap_buffers" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.thermal.iter_cooling_device_paths" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
   
-      <p>create buffers + mmap_from_buffer</p>
+      <p>Returns an iterator over all cooling device paths</p>
 
   </div>
 
@@ -1245,15 +1273,15 @@
 
 
 
-<h3 id="linuxpy.video.device.iter_video_files" class="doc doc-heading">
-          <code class=" language-python"><span class="n">iter_video_files</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span> <span class="o">=</span> <span class="s1">&#39;/dev&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span></code>
+<h3 id="linuxpy.thermal.iter_cooling_devices" class="doc doc-heading">
+          <code class=" language-python"><span class="n">iter_cooling_devices</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">CoolingDevice</span><span class="p">]</span></code>
 
-<a href="#linuxpy.video.device.iter_video_files" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.thermal.iter_cooling_devices" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
   
-      <p>Returns an iterator over all video files</p>
+      <p>Returns an iterator over all cooling devices</p>
 
   </div>
 
@@ -1265,15 +1293,15 @@
 
 
 
-<h3 id="linuxpy.video.device.iter_devices" class="doc doc-heading">
-          <code class=" language-python"><span class="n">iter_devices</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span> <span class="o">=</span> <span class="s1">&#39;/dev&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Device</span><span class="p">]</span></code>
+<h3 id="linuxpy.thermal.iter_devices" class="doc doc-heading">
+          <code class=" language-python"><span class="n">iter_devices</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ThermalZone</span><span class="p">,</span> <span class="n">CoolingDevice</span><span class="p">]]</span></code>
 
-<a href="#linuxpy.video.device.iter_devices" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.thermal.iter_devices" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
   
-      <p>Returns an iterator over all video devices</p>
+      <p>Returns an iterator over all thermal and cooling devices</p>
 
   </div>
 
@@ -1285,77 +1313,23 @@
 
 
 
-<h3 id="linuxpy.video.device.iter_video_capture_files" class="doc doc-heading">
-          <code class=" language-python"><span class="n">iter_video_capture_files</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span> <span class="o">=</span> <span class="s1">&#39;/dev&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span></code>
+<h3 id="linuxpy.thermal.find" class="doc doc-heading">
+          <code class=" language-python"><span class="n">find</span><span class="p">(</span><span class="n">find_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">custom_match</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Device</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Device</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span></code>
 
-<a href="#linuxpy.video.device.iter_video_capture_files" class="headerlink" title="Permanent link">&para;</a></h3>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Returns an iterator over all video files that have CAPTURE capability</p>
-
-  </div>
-
-</div>
-
-
-<div class="doc doc-object doc-function">
-
-
-
-
-<h3 id="linuxpy.video.device.iter_video_capture_devices" class="doc doc-heading">
-          <code class=" language-python"><span class="n">iter_video_capture_devices</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span> <span class="o">=</span> <span class="s1">&#39;/dev&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Device</span><span class="p">]</span></code>
-
-<a href="#linuxpy.video.device.iter_video_capture_devices" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.thermal.find" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
   
-      <p>Returns an iterator over all video devices that have CAPTURE capability</p>
-
-  </div>
-
-</div>
-
-
-<div class="doc doc-object doc-function">
-
-
-
-
-<h3 id="linuxpy.video.device.iter_video_output_files" class="doc doc-heading">
-          <code class=" language-python"><span class="n">iter_video_output_files</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span> <span class="o">=</span> <span class="s1">&#39;/dev&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span></code>
-
-<a href="#linuxpy.video.device.iter_video_output_files" class="headerlink" title="Permanent link">&para;</a></h3>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Some drivers (ex: v4l2loopback) don't report being output capable so that
-apps like zoom recognize them as valid capture devices so some results might
-be missing</p>
-
-  </div>
-
-</div>
-
-
-<div class="doc doc-object doc-function">
-
-
-
-
-<h3 id="linuxpy.video.device.iter_video_output_devices" class="doc doc-heading">
-          <code class=" language-python"><span class="n">iter_video_output_devices</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span> <span class="o">=</span> <span class="s1">&#39;/dev&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Device</span><span class="p">]</span></code>
-
-<a href="#linuxpy.video.device.iter_video_output_devices" class="headerlink" title="Permanent link">&para;</a></h3>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Returns an iterator over all video devices that have VIDEO OUTPUT capability</p>
+      <p>If find_all is False:</p>
+<p>Find a device follwing the criteria matched by custom_match and kwargs.
+If no device is found matching the criteria it returns None.
+Default is to return a random first device.</p>
+<p>If find_all is True:</p>
+<p>The result is an iterator.
+Find all devices that match the criteria custom_match and kwargs.
+If no device is found matching the criteria it returns an empty iterator.
+Default is to return an iterator over all input devices found on the system.</p>
 
   </div>
 
