@@ -4,29 +4,41 @@
 # Copyright (c) 2023 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
+"""Utility functions used by the library. Mostly for internal usage"""
+
 import asyncio
 import contextlib
 
-from .types import Callable, Iterable, Iterator, Optional, Union
+from .types import Callable, Iterable, Iterator, Optional, Sequence, Union
 
 
-def ichunks(lst, size):
+def iter_chunks(lst: Sequence, size: int) -> Iterable:
+    """
+    Batch data from the sequence into groups of length n.
+    The last batch may be shorter than size.
+    """
     return (lst[i : i + size] for i in range(0, len(lst), size))
 
 
-def chunks(lst, size) -> tuple:
-    return tuple(ichunks(lst, size))
+def chunks(lst: Sequence, size) -> tuple:
+    """
+    Batch data from the sequence into groups of length n.
+    The last batch may be shorter than size.
+    """
+    return tuple(iter_chunks(lst, size))
 
 
-def bcd_version_tuple(bcd: int) -> tuple:
+def bcd_version_tuple(bcd: int) -> tuple[int, ...]:
+    """Returns the tuple version of a BCD (binary-coded decimal) number"""
     text = f"{bcd:x}"
     text_size = len(text)
     if text_size % 2:
         text = "0" + text
-    return tuple(int(i) for i in ichunks(text, 2))
+    return tuple(int(i) for i in iter_chunks(text, 2))
 
 
 def bcd_version(bcd: int) -> str:
+    """Returns the text version of a BCD (binary-coded decimal) number"""
     return ".".join(str(i) for i in bcd_version_tuple(bcd))
 
 
@@ -43,6 +55,12 @@ def add_reader_asyncio(fd: int, callback: Callable[[], None], *args, loop: Optio
 
 
 def make_find(iter_devices: Callable[[], Iterator]) -> Callable:
+    """
+    Create a find function for the given callable. The callable should
+    return an iterable where each element has the context manager capability
+    (ie, it can be used in a with statement)
+    """
+
     def find(find_all=False, custom_match=None, **kwargs):
         idevs = iter_devices()
         if kwargs or custom_match:
