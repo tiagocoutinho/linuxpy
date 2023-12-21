@@ -27,8 +27,8 @@ def run(args):
     width, height = args.frame_size
     gui = args.gui
 
-    N = min(100, int(frame_rate // 2))
-
+    N = min(100, max(10, int(frame_rate // 2)))
+    logging.info("Preparing %d frames...", N)
     frames = tuple(numpy.random.randint(0, high=256, size=(height, width, 3), dtype=numpy.uint8) for _ in range(N))
 
     with device:
@@ -42,10 +42,10 @@ def run(args):
             try:
                 for i in itertools.count():
                     frame_n = i + 1
-                    sink.write(frames[i % N].data)
+                    sink.write(frames[i % N])
                     next = start + (frame_n / frame_rate)
                     now = time.monotonic()
-                    if now - last > 0.1:
+                    if now - last > 0.5:
                         elapsed = now - last
                         n = frame_n - last_n
                         rate = n / elapsed

@@ -34,7 +34,7 @@ def run(args):
             for frame in capture:
                 new = time.monotonic()
                 fps, last = 1 / (new - last), new
-                if new - last_update > 0.1:
+                if new - last_update > 0.5:
                     elapsed = new - start
                     size = len(frame) / 1000
                     print(
