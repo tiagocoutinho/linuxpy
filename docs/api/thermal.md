@@ -1,3 +1,3 @@
-# Thermal API
+# 🌡️ Thermal and cooling API
 
 ::: linuxpy.thermal

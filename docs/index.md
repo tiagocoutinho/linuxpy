@@ -3,7 +3,8 @@ hide:
   - navigation
 ---
 
-# Welcome to linuxpy
+# 🐧 Welcome to linuxpy
+
 
 [![linuxpy][pypi-version]](https://pypi.python.org/pypi/linuxpy)
 [![Python Versions][pypi-python-versions]](https://pypi.python.org/pypi/linuxpy)
@@ -32,6 +33,8 @@ created input devices)
 And yes, it is true: there are **no python** dependencies! Also there are **no
 C libraries** dependencies! Everything is done here through direct ioctl, read and
 write calls. Ain't linux wonderful?
+
+
 
 ## Goals
 

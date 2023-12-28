@@ -1,4 +1,4 @@
-# Video
+# 🎥 Video
 
 Human friendly interface to the Video for Linux 2 (V4L2) subsystem.
 

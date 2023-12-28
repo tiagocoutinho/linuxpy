@@ -1,4 +1,4 @@
-# MIDI Sequencer
+# 🎹  MIDI Sequencer
 
 Without further ado:
 

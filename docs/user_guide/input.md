@@ -1,6 +1,12 @@
-# Input
+# 🕹️ Input
 
 Human friendly interface to the Linux Input subsystem.
+
+* 🎮 Gamepads
+* 🕹️ Joysticks
+* 🖱️ Mice
+* ⌨️ Keyboards
+* 🔘 Switch buttons
 
 API not documented yet. Just this example:
 
@@ -40,3 +46,4 @@ with pad:
 
 * [Input (Latest)](https://www.kernel.org/doc/html/latest/input/)
 * [Input 6.2](https://www.kernel.org/doc/html/v6.2/input/)
+# 🐧

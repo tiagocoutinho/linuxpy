@@ -1,3 +1,3 @@
-# Input API
+# 🕹️ Input API
 
 ::: linuxpy.input.device
