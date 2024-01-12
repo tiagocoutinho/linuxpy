@@ -12,22 +12,28 @@
         <meta name="author" content="Tiago Coutinho">
       
       
+        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/user_guide/thermal/">
       
       
+        <link rel="prev" href="../midi/">
       
-      <link rel="icon" href="/linuxpy/img/favicon.ico">
+      
+        <link rel="next" href="../video/">
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
     
     
       
-        <title>LinuxPy</title>
+        <title>🌡️ Thermal and cooling - LinuxPy</title>
       
     
     
-      <link rel="stylesheet" href="/linuxpy/assets/stylesheets/main.4b4a2bd9.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.4b4a2bd9.min.css">
       
         
-        <link rel="stylesheet" href="/linuxpy/assets/stylesheets/palette.356b1318.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.356b1318.min.css">
       
       
 
@@ -46,11 +52,11 @@
       
     
     
-      <link rel="stylesheet" href="/linuxpy/assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="/linuxpy/css/termynal.css">
+      <link rel="stylesheet" href="../../css/termynal.css">
     
-    <script>__md_scope=new URL("/linuxpy/",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,6 +80,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#thermal-and-cooling" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -84,9 +95,9 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/linuxpy/." title="LinuxPy" class="md-header__button md-logo" aria-label="LinuxPy" data-md-component="logo">
+    <a href="../.." title="LinuxPy" class="md-header__button md-logo" aria-label="LinuxPy" data-md-component="logo">
       
-  <img src="/linuxpy/img/logo-128x128.png" alt="logo">
+  <img src="../../img/logo-128x128.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -103,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              🌡️ Thermal and cooling
             
           </span>
         </div>
@@ -185,7 +196,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/linuxpy/." class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         
   
     
@@ -200,11 +211,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="/linuxpy/user_guide/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
     
@@ -224,7 +237,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/linuxpy/api/" class="md-tabs__link">
+        <a href="../../api/" class="md-tabs__link">
           
   
     
@@ -242,7 +255,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/linuxpy/develop/" class="md-tabs__link">
+      <a href="../../develop/" class="md-tabs__link">
         
   
     
@@ -276,9 +289,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/linuxpy/." title="LinuxPy" class="md-nav__button md-logo" aria-label="LinuxPy" data-md-component="logo">
+    <a href="../.." title="LinuxPy" class="md-nav__button md-logo" aria-label="LinuxPy" data-md-component="logo">
       
-  <img src="/linuxpy/img/logo-128x128.png" alt="logo">
+  <img src="../../img/logo-128x128.png" alt="logo">
 
     </a>
     LinuxPy
@@ -304,7 +317,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/linuxpy/." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -321,6 +334,8 @@
       
   
   
+    
+  
   
     
     
@@ -344,17 +359,17 @@
       
       
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="/linuxpy/user_guide/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -371,7 +386,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             User guide
@@ -386,7 +401,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/linuxpy/user_guide/input/" class="md-nav__link">
+      <a href="../input/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -406,7 +421,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/linuxpy/user_guide/midi/" class="md-nav__link">
+      <a href="../midi/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -424,9 +439,18 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="/linuxpy/user_guide/thermal/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -435,6 +459,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -446,7 +471,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/linuxpy/user_guide/video/" class="md-nav__link">
+      <a href="../video/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -504,7 +529,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="/linuxpy/api/" class="md-nav__link ">
+            <a href="../../api/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -536,7 +561,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/linuxpy/api/input/" class="md-nav__link">
+      <a href="../../api/input/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -556,7 +581,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/linuxpy/api/midi/" class="md-nav__link">
+      <a href="../../api/midi/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -576,7 +601,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/linuxpy/api/thermal/" class="md-nav__link">
+      <a href="../../api/thermal/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -596,7 +621,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/linuxpy/api/video/" class="md-nav__link">
+      <a href="../../api/video/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -623,7 +648,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/linuxpy/develop/" class="md-nav__link">
+      <a href="../../develop/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -653,6 +678,8 @@
   
   
   
+    
+  
   
 </nav>
                   </div>
@@ -664,8 +691,25 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+<h1 id="thermal-and-cooling">🌡️ Thermal and cooling<a class="headerlink" href="#thermal-and-cooling" title="Permanent link">&para;</a></h1>
+<p>Human friendly interface to linux thermal zone and cooling devices.</p>
+<p>Without further ado:</p>
+<div class="termy" data-ty-macos>
+  <span data-ty="input" data-ty-prompt="$">python</span>
+  <span data-ty="input" data-ty-prompt=">>>">from linuxpy.thermal import find</span>
+  <span data-ty="input" data-ty-prompt=">>>">with find(type="x86_pkg_temp") as tz:</span>
+  <span data-ty="input" data-ty-prompt="...">    print(f"X86 temperature: {tz.temperature/1000:6.2f} C")</span>
+  <span data-ty>X86 temperature:  63.00 C</span>
+</div>
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -704,12 +748,12 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "/linuxpy/", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.indexes", "content.tooltips", "navigation.path", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.tabs"], "search": "/linuxpy/assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.indexes", "content.tooltips", "navigation.path", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="/linuxpy/assets/javascripts/bundle.81fa17fe.min.js"></script>
+      <script src="../../assets/javascripts/bundle.81fa17fe.min.js"></script>
       
-        <script src="/linuxpy/js/termynal.js"></script>
+        <script src="../../js/termynal.js"></script>
       
     
   </body>
