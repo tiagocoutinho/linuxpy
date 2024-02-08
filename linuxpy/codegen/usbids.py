@@ -22,6 +22,21 @@ def get_raw(url: str = USB_IDS) -> str:
     return response.text
 
 
+TYPES = {
+    "V": "vendor",
+    "C": "klass",
+    "AT": "audio_terminal",
+    "HID": "hid",
+    "R": "hid_item",
+    "BIAS": "bias",
+    "PHYS": "physical",
+    "HUT": "hid_usage",
+    "L": "language",
+    "HCC": "country",
+    "VT": "video_terminal",
+}
+
+
 def get(url: str = USB_IDS) -> dict[int,]:
     logging.info("  Fetching usbids...")
     raw = get_raw(url=url)
@@ -49,7 +64,8 @@ def get(url: str = USB_IDS) -> dict[int,]:
                 itype = "V"  # Vendors don't have prefix
             l0_id = int(l0_id, 16)
             l0 = {"name": l0_name}
-            items.setdefault(itype, {})[l0_id] = l0
+            type_label = TYPES.get(itype, itype.lower())
+            items.setdefault(type_label, {})[l0_id] = l0
 
     return items
 
@@ -69,8 +85,8 @@ HEADER = """\
 """
 
 
-def dump_items(items, output=this_dir.parent / "usb" / "usbids.py"):
-    logging.info("  Building usbids...")
+def dump_item(item, name, output):
+    logging.info("  Building %s...", name)
     output = pathlib.Path(output)
     fields = {
         "name": "linuxpy.codegen.usbids",
@@ -80,13 +96,14 @@ def dump_items(items, output=this_dir.parent / "usb" / "usbids.py"):
         "version": platform.version(),
     }
     text = HEADER.format(**fields)
+    items = {name: item}
     fields = [f"{item} = {pprint.pformat(values)}\n\n" for item, values in items.items()]
     text += "\n".join(fields)
 
-    logging.info("  Applying black to usbids...")
+    logging.info("  Applying black to %s...", name)
     text = black.format_str(text, mode=black.FileMode())
 
-    logging.info("  Writting usbids...")
+    logging.info("  Writting %s...", name)
     if output is None:
         print(text)
     else:
@@ -94,7 +111,15 @@ def dump_items(items, output=this_dir.parent / "usb" / "usbids.py"):
             print(text, file=fobj)
 
 
+def dump_items(items, output=this_dir.parent / "usb" / "ids"):
+    logging.info("  Building usbids...")
+    output = pathlib.Path(output)
+    for name, data in items.items():
+        dump_item(data, name, output / (name + ".py"))
+
+
 def main():
+    logging.basicConfig(level="INFO")
     logging.info("Starting %s...", __name__)
     items = get()
     dump_items(items)

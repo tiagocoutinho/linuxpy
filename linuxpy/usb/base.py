@@ -1,3 +1,4 @@
+import array
 import enum
 import errno
 import pathlib
@@ -47,6 +48,7 @@ class DescriptorType(enum.IntEnum):
     REPORT = 0x22
     PHYSICAL = 0x23
     VIDEO_CONTROL = 0x24
+
     HUB = 0x29
     SUPERSPEED_HUB = 0x2A
     SS_ENDPOINT_COMPANION = 0x30
@@ -76,7 +78,7 @@ def active_configuration(fd):
     return result.value
 
 
-def kernel_driver(fd, interface):
+def get_kernel_driver(fd, interface):
     result = raw.usbdevfs_getdriver()
     result.interface = interface
     try:
@@ -85,13 +87,13 @@ def kernel_driver(fd, interface):
         if error.errno == errno.ENODATA:
             return
         raise
-    return result.driver
+    return result.driver.decode()
 
 
 def connect(fd, interface):
     command = raw.usbdevfs_ioctl()
     command.ifno = interface
-    command.ioctl_code = raw.IOC.DISCONNECT
+    command.ioctl_code = raw.IOC.CONNECT
     ioctl.ioctl(fd, raw.IOC.IOCTL, command)
 
 
@@ -117,6 +119,27 @@ def capabilities(fd):
 def speed(fd):
     result = ioctl.ioctl(fd, raw.IOC.GET_SPEED)
     return raw.UsbDeviceSpeed(result)
+
+
+def bulk_read(fd, endpoint_address: int):
+    data = array.array("B", 4096 * b"\x00")
+    addr, length = data.buffer_info()
+    nbytes = length * data.itemsize
+
+    urb = raw.usbdevfs_urb()
+    urb.usercontext = 0
+    urb.type = raw.URBType.BULK
+    urb.stream_id = 0
+    urb.endpoint = endpoint_address
+    urb.buffer = addr
+    urb.buffer_length = nbytes
+    ioctl.ioctl(fd, raw.IOC.SUBMITURB, urb)
+
+    import select
+
+    r, _, e = select.select((fd,), (), (fd,))
+    reply = raw.usbdevfs_urb()
+    return ioctl.ioctl(fd, raw.IOC.REAPURBNDELAY, reply)
 
 
 class BaseDevice(device.BaseDevice):
@@ -147,8 +170,8 @@ class BaseDevice(device.BaseDevice):
     def speed(self):
         return speed(self.fileno())
 
-    def kernel_driver(self, interface):
-        return kernel_driver(self.fileno(), interface)
+    def get_kernel_driver(self, interface):
+        return get_kernel_driver(self.fileno(), interface)
 
     def connect(self, interface):
         connect(self.fileno(), interface)
@@ -161,3 +184,6 @@ class BaseDevice(device.BaseDevice):
 
     def claim_interface(self, n):
         return claim_interface(self.fileno(), n)
+
+    def bulk_read(self, endpoint):
+        return bulk_read(self.fileno(), endpoint.address)
