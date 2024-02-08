@@ -54,7 +54,7 @@ def add_reader_asyncio(fd: int, callback: Callable[[], None], *args, loop: Optio
         loop.remove_reader(fd)
 
 
-def make_find(iter_devices: Callable[[], Iterator]) -> Callable:
+def make_find(iter_devices: Callable[[], Iterator], needs_open=True) -> Callable:
     """
     Create a find function for the given callable. The callable should
     return an iterable where each element has the context manager capability
@@ -65,12 +65,19 @@ def make_find(iter_devices: Callable[[], Iterator]) -> Callable:
         idevs = iter_devices()
         if kwargs or custom_match:
 
-            def accept(dev):
-                with dev:
-                    result = all(getattr(dev, key) == value for key, value in kwargs.items())
-                    if result and custom_match:
-                        return custom_match(dev)
-                    return result
+            def simple_accept(dev):
+                result = all(getattr(dev, key) == value for key, value in kwargs.items())
+                if result and custom_match:
+                    return custom_match(dev)
+                return result
+
+            if needs_open:
+
+                def accept(dev):
+                    with dev:
+                        return simple_accept(dev)
+            else:
+                accept = simple_accept
 
             idevs = filter(accept, idevs)
         return idevs if find_all else next(idevs, None)
