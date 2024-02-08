@@ -31,7 +31,7 @@ from linuxpy.device import (
 from linuxpy.io import IO
 from linuxpy.ioctl import ioctl
 from linuxpy.types import AsyncIterator, Buffer, Callable, Iterable, Iterator, Optional, PathLike, Self
-from linuxpy.util import make_find
+from linuxpy.util import add_reader_asyncio, make_find
 
 from . import raw
 
@@ -1372,9 +1372,19 @@ class MemoryMap(ReentrantOpen):
                 yield self.frame_reader.read()
 
     async def __aiter__(self) -> AsyncIterator[Frame]:
-        async with self.frame_reader:
+        queue = asyncio.Queue(maxsize=10)
+
+        def feed():
+            print("start read")
+            queue.put_nowait(self.raw_read())
+            print("end read")
+
+        with add_reader_asyncio(self.device.fileno(), feed):
             while True:
-                yield await self.frame_reader.aread()
+                print("start wait")
+                frame = await queue.get()
+                print("end wait")
+                yield frame
 
     @property
     def device(self) -> Device:
@@ -1672,8 +1682,14 @@ class VideoOutput(BufferManager):
     def close(self) -> None:
         if self.buffer:
             self.device.log.info("Closing video output...")
-            self.stream_off()
-            self.buffer.close()
+            try:
+                self.stream_off()
+            except Exception as error:
+                self.device.log.warning("Failed to close stream: %r", error)
+            try:
+                self.buffer.close()
+            except Exception as error:
+                self.device.log.warning("Failed to close buffer: %r", error)
             self.buffer = None
             self.device.log.info("Video output closed")
 
