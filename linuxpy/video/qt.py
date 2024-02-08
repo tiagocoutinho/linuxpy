@@ -14,7 +14,7 @@ import threading
 
 from qtpy import QtCore, QtGui, QtWidgets
 
-from linuxpy.video.device import Device, Frame, PixelFormat
+from linuxpy.video.device import Device, Frame, PixelFormat, VideoCapture
 
 
 class QCamera(QtCore.QObject):
@@ -24,6 +24,7 @@ class QCamera(QtCore.QObject):
     def __init__(self, device: Device):
         super().__init__()
         self.device = device
+        self.capture = VideoCapture(device)
         self._stop = False
         self._task = None
         self._state = "stopped"
@@ -57,6 +58,9 @@ class QCamera(QtCore.QObject):
         if self._task:
             self._task.join()
 
+    def prepare(self):
+        pass
+
     def run(self):
         self._stop = False
         self._continue.set()
@@ -66,16 +70,19 @@ class QCamera(QtCore.QObject):
                     self._continue.wait()
                     if self._stop:
                         return
+                    self.prepare()
                     self.setState("running")
-                    for frame in self.device:
-                        if self._stop:
-                            return
-                        self.frameChanged.emit(frame)
-                        if not self._continue.is_set():
-                            self.setState("paused")
-                            break
-                        if self._stop:
-                            return
+                    with self.capture:
+                        for frame in self.capture:
+                            if self._stop:
+                                return
+                            # print(f"\rframe #{frame.frame_nb} {frame.width}x{frame.height}@{frame.pixel_format.name}", end='', flush=True)
+                            self.frameChanged.emit(frame)
+                            if not self._continue.is_set():
+                                self.setState("paused")
+                                break
+                            if self._stop:
+                                return
         finally:
             self.setState("stopped")
             self._stop = False
@@ -157,17 +164,6 @@ class QVideoInfo(QtWidgets.QWidget):
     def _init(self):
         layout = QtWidgets.QFormLayout()
         self.setLayout(layout)
-
-
-"""
-stopped:
-    play
-paused:
-    play (continue/resume)
-    stop
-running:
-    pause
-"""
 
 
 class BaseCameraControl:
@@ -354,3 +350,32 @@ class QVideoWidget(QtWidgets.QWidget):
         layout.addWidget(self.video)
         layout.addWidget(self.controls)
         layout.setStretchFactor(self.video, 1)
+
+    def set_camera(self, camera: QCamera | None = None):
+        self.video.set_camera(camera)
+        self.controls.set_camera(camera)
+
+
+def main():
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--log-level", choices=["debug", "info", "warning", "error"], default="info")
+    parser.add_argument("device", type=int)
+    args = parser.parse_args()
+    app = QtWidgets.QApplication([])
+    device = Device.from_id(args.device)
+    camera = QCamera(device)
+    widget = QVideoWidget(camera)
+    widget.show()
+
+    def stop():
+        camera.stop()
+        camera.wait()
+
+    app.aboutToQuit.connect(stop)
+    app.exec()
+
+
+if __name__ == "__main__":
+    main()
