@@ -7,7 +7,7 @@
 """
 Human friendly interface to linux Input subsystem.
 
-The heart of linuxpy MIDI library is the [`Device`][linuxpy.input.device.Device]
+The heart of linuxpy input library is the [`Device`][linuxpy.input.device.Device]
 class.
 The recommended way is to use one of the find methods to create a Device object
 and use it within a context manager like:
