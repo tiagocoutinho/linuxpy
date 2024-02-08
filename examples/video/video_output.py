@@ -25,15 +25,16 @@ def run(args):
     device = args.device
     frame_rate = args.frame_rate
     width, height = args.frame_size
+    fmt = PixelFormat[args.frame_format.upper()]
     gui = args.gui
-
     N = min(100, max(10, int(frame_rate // 2)))
     logging.info("Preparing %d frames...", N)
-    frames = tuple(numpy.random.randint(0, high=256, size=(height, width, 3), dtype=numpy.uint8) for _ in range(N))
+    depth = 3 if fmt == PixelFormat.RGB24 else 4
+    frames = tuple(numpy.random.randint(0, high=256, size=(height, width, depth), dtype=numpy.uint8) for _ in range(N))
 
     with device:
         sink = VideoOutput(device, sink=MODES[args.mode], size=args.nb_buffers)
-        sink.set_format(width, height, PixelFormat.RGB24)
+        sink.set_format(width, height, fmt)
         with sink:
             if gui:
                 proc = subprocess.Popen(["cvlc", f"v4l2://{device.filename}"])
@@ -81,6 +82,7 @@ def cli():
     parser.add_argument("--log-level", choices=["debug", "info", "warning", "error"], default="info")
     parser.add_argument("--frame-rate", type=float, default=10)
     parser.add_argument("--frame-size", type=frame_size, default="640x480")
+    parser.add_argument("--frame-format", choices=["rgb24", "argb32", "rgb32"], default="argb32")
     parser.add_argument("--nb-buffers", type=int, default=2)
     parser.add_argument("--mode", choices=["auto", "mmap", "write"], default="auto")
     parser.add_argument("--gui", type=bool, default=True, action=argparse.BooleanOptionalAction)
