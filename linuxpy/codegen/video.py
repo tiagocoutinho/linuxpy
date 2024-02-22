@@ -33,9 +33,25 @@ TEMPLATE = """\
 
 import enum
 
+from linuxpy.ctypes import (
+    POINTER,
+    Struct,
+    Union,
+    cchar,
+    cint,
+    cuint,
+    i16,
+    i32,
+    i64,
+    i8,
+    timespec,
+    timeval,
+    u16,
+    u32,
+    u64,
+    u8,
+)
 from linuxpy.ioctl import IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR
-from linuxpy.ctypes import u8, i8, u16, i16, u32, i32, u64, i64, cuint, cint, cchar
-from linuxpy.ctypes import Struct, Union, POINTER, timeval, timespec
 from linuxpy.video.util import v4l2_fourcc, v4l2_fourcc_be
 
 v4l2_std_id = u64

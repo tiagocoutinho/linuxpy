@@ -225,7 +225,12 @@ def get_structs(header_filename, xml_filename):
     nodes = etree.findall(f"Struct[@file='{header_id}']")
     nodes += etree.findall(f"Union[@file='{header_id}']")
     for node in nodes:
-        member_ids = node.get("members").split()
+        members = node.get("members")
+        if members is not None:
+            member_ids = node.get("members").split()
+        else:
+            # Handle empty structure case
+            member_ids = []
         fields = (etree.find(f"*[@id='{member_id}']") for member_id in member_ids)
         fields = [field for field in fields if field.tag not in {"Union", "Struct", "Unimplemented"}]
         pack = int(node.get("align")) == 8
