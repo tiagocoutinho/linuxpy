@@ -219,6 +219,20 @@ def frame_sizes(fd, pixel_formats):
                     step_fps=step_fps,
                 )
             )
+        if len(res) == 0:
+            # If it wasn't possible to get frame interval, report discovered frame size anyway
+            res.append(
+                FrameType(
+                    type=FrameIntervalType.DISCRETE,
+                    pixel_format=fmt,
+                    width=w,
+                    height=h,
+                    min_fps=0,
+                    max_fps=0,
+                    step_fps=0,
+                )
+            )
+
         return res
 
     size = raw.v4l2_frmsizeenum()
