@@ -22,7 +22,7 @@ import time
 from collections import UserDict
 from pathlib import Path
 
-from linuxpy.ctypes import cenum, memcpy
+from linuxpy.ctypes import cast, cenum, create_string_buffer, memcpy, string_at
 from linuxpy.device import (
     BaseDevice,
     ReentrantOpen,
@@ -589,6 +589,34 @@ def deque_event(fd):
     return event
 
 
+def set_edid(fd, edid):
+    if len(edid) % 128:
+        raise ValueError(f"EDID length {len(edid)} is not multiple of 128")
+    edid_struct = raw.v4l2_edid()
+    edid_struct.pad = 0
+    edid_struct.start_block = 0
+    edid_struct.blocks = len(edid) // 128
+    edid_array = create_string_buffer(edid)
+    edid_struct.edid = cast(edid_array, type(edid_struct.edid))
+    ioctl(fd, IOC.S_EDID, edid_struct)
+
+
+def clear_edid(fd):
+    set_edid(fd, b"")
+
+
+def get_edid(fd):
+    edid_struct = raw.v4l2_edid()
+    ioctl(fd, IOC.G_EDID, edid_struct)
+    if edid_struct.blocks == 0:
+        return b""
+    edid_len = 128 * edid_struct.blocks
+    edid_array = create_string_buffer(b"\0" * edid_len)
+    edid_struct.edid = cast(edid_array, type(edid_struct.edid))
+    ioctl(fd, IOC.G_EDID, edid_struct)
+    return string_at(edid_struct.edid, edid_len)
+
+
 # Helpers
 
 
@@ -719,6 +747,15 @@ class Device(BaseDevice):
 
     def deque_event(self):
         return deque_event(self.fileno())
+
+    def set_edid(self, edid):
+        set_edid(self.fileno(), edid)
+
+    def clear_edid(self):
+        clear_edid(self.fileno())
+
+    def get_edid(self):
+        return get_edid(self.fileno())
 
 
 class Controls(dict):
