@@ -64,7 +64,7 @@ jobs:
     - name: Upload coverage data
       uses: actions/upload-artifact@v4
       with:
-        name: html_report
+        name: html_report-${{ matrix.python-version }}
         path: ./htmlcov/
     - name: Code Coverage Summary Report
       uses: irongut/CodeCoverageSummary@v1.3.0
