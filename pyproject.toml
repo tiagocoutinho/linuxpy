@@ -41,7 +41,7 @@ dev = [
     "black>=22.1.0",
     "build>=0.10.0",
     "twine>=4.0.2",
-    "ward>=0.67.0b0",
+    "ward>=0.68.0b0",
     "ward-coverage>=0.3.0",
     "ruff>=0.0.261",
 ]
