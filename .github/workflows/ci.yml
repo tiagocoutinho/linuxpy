@@ -38,7 +38,7 @@ jobs:
         # Issue ref: https://github.com/actions/setup-python/issues/436
         # cache: 'pip'
         # cache-dependency-path: pyproject.toml
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       id: cache
       with:
         path: ${{ env.pythonLocation }}
@@ -62,7 +62,7 @@ jobs:
         sudo -s -E -u $USER bash -c '${{ steps.setuppy.outputs.python-path }} -m ward'
 
     - name: Upload coverage data
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: html_report
         path: ./htmlcov/
