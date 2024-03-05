@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
     - name: Checkout
@@ -32,13 +32,13 @@ jobs:
         lsmod
     - name: Set up Python ${{ matrix.python-version }}
       id: setuppy
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
         # Issue ref: https://github.com/actions/setup-python/issues/436
         # cache: 'pip'
         # cache-dependency-path: pyproject.toml
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       id: cache
       with:
         path: ${{ env.pythonLocation }}
@@ -62,9 +62,9 @@ jobs:
         sudo -s -E -u $USER bash -c '${{ steps.setuppy.outputs.python-path }} -m ward'
 
     - name: Upload coverage data
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: html_report
+        name: html_report-${{ matrix.python-version }}
         path: ./htmlcov/
     - name: Code Coverage Summary Report
       uses: irongut/CodeCoverageSummary@v1.3.0

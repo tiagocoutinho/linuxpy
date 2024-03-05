@@ -43,7 +43,6 @@ with Sequencer("My MIDI App") as midi:
 ```
 """
 
-
 import asyncio
 import contextlib
 import errno
