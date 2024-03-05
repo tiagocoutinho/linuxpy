@@ -30,20 +30,7 @@ TEMPLATE = """\
 
 import enum
 
-from linuxpy.ctypes import (
-    POINTER,
-    Struct,
-    Union,
-    cchar,
-    ccharp,
-    cint,
-    cuint,
-    i16,
-    i64,
-    timeval,
-    u16,
-    u8,
-)
+from linuxpy.ctypes import POINTER, Struct, Union, cchar, ccharp, cint, cuint, culonglong, i16, timeval, u8, u16
 from linuxpy.ioctl import IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR
 
 

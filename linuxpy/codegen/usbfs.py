@@ -40,14 +40,9 @@ from linuxpy.ctypes import (
     cint,
     cuint,
     cvoidp,
-    i16,
-    i32,
-    i64,
-    i8,
+    u8,
     u16,
     u32,
-    u64,
-    u8,
 )
 from linuxpy.ioctl import IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR
 

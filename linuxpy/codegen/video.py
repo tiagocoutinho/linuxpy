@@ -39,17 +39,17 @@ from linuxpy.ctypes import (
     Union,
     cchar,
     cint,
+    clonglong,
     cuint,
+    culong,
+    culonglong,
     i16,
-    i32,
-    i64,
-    i8,
     timespec,
     timeval,
+    u8,
     u16,
     u32,
     u64,
-    u8,
 )
 from linuxpy.ioctl import IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR
 from linuxpy.video.util import v4l2_fourcc, v4l2_fourcc_be
