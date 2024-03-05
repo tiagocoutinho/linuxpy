@@ -10,5 +10,4 @@ from ward import test
 
 
 @test("basic linux")
-def test_linux():
-    ...
+def test_linux(): ...

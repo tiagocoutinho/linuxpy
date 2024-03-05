@@ -43,7 +43,7 @@ dev = [
     "twine>=4.0.2",
     "ward>=0.68.0b0",
     "ward-coverage>=0.3.0",
-    "ruff>=0.0.261",
+    "ruff>=0.3.0",
 ]
 examples = [
     "flask>=2,<4",
@@ -93,7 +93,7 @@ report = {skip_empty = true, show_missing = true}
 
 
 [tool.ruff]
-select = [
+lint.select = [
     "E",  # pycodestyle errors
     "W",  # pycodestyle warnings
     "F",  # pyflakes
@@ -102,7 +102,7 @@ select = [
     "B",  # flake8-bugbear
     "UP",  # pyupgrade
 ]
-ignore = [
+lint.ignore = [
     "E501",  # line too long, handled by black
     "B008",  # do not perform function calls in argument defaults
     "C901",  # too complex
@@ -112,7 +112,7 @@ line-length = 120
 indent-width = 4
 target-version = "py39"
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 combine-as-imports = true
 
 [project.scripts]

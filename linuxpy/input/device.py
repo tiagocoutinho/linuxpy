@@ -20,7 +20,6 @@ with find_gamepad() as gamepad:
 ```
 """
 
-
 import asyncio
 import enum
 import functools
