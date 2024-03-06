@@ -304,8 +304,12 @@ def get_enums(header_filename, xml_filename, enums):
 
 
 def code_format(text, filename):
-    cmd = ["ruff", "format", "--stdin-filename", str(filename)]
+    cmd = ["ruff", "check", "--fix", "--stdin-filename", str(filename)]
     result = subprocess.run(cmd, capture_output=True, check=True, text=True, input=text)
+    fixed_text = result.stdout
+
+    cmd = ["ruff", "format", "--stdin-filename", str(filename)]
+    result = subprocess.run(cmd, capture_output=True, check=True, text=True, input=fixed_text)
     return result.stdout
 
 
