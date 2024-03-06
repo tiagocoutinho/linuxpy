@@ -83,6 +83,13 @@ MACRO_ENUMS = [
     CEnum("TimeCodeFlag", "V4L2_TC_FLAG_", "IntFlag"),
     CEnum("EventType", "V4L2_EVENT_"),
     CEnum("EventSubscriptionFlag", "V4L2_EVENT_SUB_FL_", "IntFlag"),
+    # It is very dificult to match just only these two values using prefix, so put whole name there
+    CEnum("Interlaced", ["V4L2_DV_PROGRESSIVE", "V4L2_DV_INTERLACED"], with_prefix=True),
+    # It is very dificult to match just only these two values using prefix, so put whole name there
+    CEnum("PositivePolarityFlag", ["V4L2_DV_VSYNC_POS_POL", "V4L2_DV_HSYNC_POS_POL"], "IntFlag", with_prefix=True),
+    CEnum("DVTimingsStandardFlag", "V4L2_DV_BT_STD_", "IntFlag"),
+    CEnum("DVTimingsFlag", "V4L2_DV_FL_", "IntFlag"),
+    CEnum("DVTimingsCapabilities", "V4L2_DV_BT_CAP_", "IntFlag"),
     CEnum("IOC", "VIDIOC_"),
 ]
 
