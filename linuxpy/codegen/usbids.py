@@ -6,8 +6,8 @@ import logging
 import pathlib
 import platform
 import pprint
+import subprocess
 
-import black
 import requests
 
 this_dir = pathlib.Path(__file__).parent
@@ -85,6 +85,12 @@ HEADER = """\
 """
 
 
+def code_format(text, filename):
+    cmd = ["ruff", "format", "--stdin-filename", str(filename)]
+    result = subprocess.run(cmd, capture_output=True, check=True, text=True, input=text)
+    return result.stdout
+
+
 def dump_item(item, name, output):
     logging.info("  Building %s...", name)
     output = pathlib.Path(output)
@@ -100,8 +106,8 @@ def dump_item(item, name, output):
     fields = [f"{item} = {pprint.pformat(values)}\n\n" for item, values in items.items()]
     text += "\n".join(fields)
 
-    logging.info("  Applying black to %s...", name)
-    text = black.format_str(text, mode=black.FileMode())
+    logging.info("  Applying ruff to %s...", name)
+    text = code_format(text, output)
 
     logging.info("  Writting %s...", name)
     if output is None:
