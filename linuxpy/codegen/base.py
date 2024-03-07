@@ -11,11 +11,10 @@ import os
 import pathlib
 import platform
 import re
+import subprocess
 import tempfile
 import textwrap
 import xml.etree.ElementTree
-
-import black
 
 CTYPES_MAP = {
     "char*": "ccharp",
@@ -304,6 +303,16 @@ def get_enums(header_filename, xml_filename, enums):
         enums.append(enum)
 
 
+def code_format(text, filename):
+    cmd = ["ruff", "check", "--fix", "--stdin-filename", str(filename)]
+    result = subprocess.run(cmd, capture_output=True, check=True, text=True, input=text)
+    fixed_text = result.stdout
+
+    cmd = ["ruff", "format", "--stdin-filename", str(filename)]
+    result = subprocess.run(cmd, capture_output=True, check=True, text=True, input=fixed_text)
+    return result.stdout
+
+
 def run(name, headers, template, macro_enums, output=None):
     cache = {}
     temp_dir = tempfile.mkdtemp()
@@ -341,8 +350,8 @@ def run(name, headers, template, macro_enums, output=None):
         "iocs_body": iocs_body,
     }
     text = template.format(**fields)
-    logging.info("  Applying black to %s...", name)
-    text = black.format_str(text, mode=black.FileMode())
+    logging.info("  Applying ruff to %s...", name)
+    text = code_format(text, output)
     logging.info("  Writting %s...", name)
     if output is None:
         print(text)
