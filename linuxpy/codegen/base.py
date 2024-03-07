@@ -354,9 +354,9 @@ def run(name, headers, template, macro_enums, output=None):
     text = code_format(text, output)
     logging.info("  Writting %s...", name)
     if output is None:
-        print(text)
+        print(text, end="", flush=True)
     else:
         output = pathlib.Path(output)
         with output.open("w") as fobj:
-            print(text, file=fobj)
+            print(text, end="", flush=True, file=fobj)
     logging.info("Finished %s!", name)
