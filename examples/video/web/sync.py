@@ -178,7 +178,7 @@ def reset_control(device_id, control_id):
     camera = cameras()[device_id]
     with camera.device:
         control = camera.device.controls[control_id]
-        control.value = control.info.default_value
+        control.value = control._info.default_value
     return flask.render_template("control.html", control=control, ControlType=ControlType)
 
 
