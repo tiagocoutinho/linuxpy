@@ -32,9 +32,19 @@ TEMPLATE = """\
 
 import enum
 
+from linuxpy.ctypes import (
+    POINTER,
+    Struct,
+    Union,
+    cchar,
+    cint,
+    cuint,
+    cvoidp,
+    u8,
+    u16,
+    u32,
+)
 from linuxpy.ioctl import IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR
-from linuxpy.ctypes import u8, i8, u16, i16, u32, i32, u64, i64, cuint, cint, cchar, cvoidp
-from linuxpy.ctypes import Struct, Union, POINTER
 
 {enums_body}
 

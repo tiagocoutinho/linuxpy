@@ -33,9 +33,25 @@ TEMPLATE = """\
 
 import enum
 
+from linuxpy.ctypes import (
+    POINTER,
+    Struct,
+    Union,
+    cchar,
+    cint,
+    clonglong,
+    cuint,
+    culong,
+    culonglong,
+    i16,
+    timespec,
+    timeval,
+    u8,
+    u16,
+    u32,
+    u64,
+)
 from linuxpy.ioctl import IO as _IO, IOR as _IOR, IOW as _IOW, IOWR as _IOWR
-from linuxpy.ctypes import u8, i8, u16, i16, u32, i32, u64, i64, cuint, cint, cchar
-from linuxpy.ctypes import Struct, Union, POINTER, timeval, timespec
 from linuxpy.video.util import v4l2_fourcc, v4l2_fourcc_be
 
 v4l2_std_id = u64
@@ -67,6 +83,13 @@ MACRO_ENUMS = [
     CEnum("TimeCodeFlag", "V4L2_TC_FLAG_", "IntFlag"),
     CEnum("EventType", "V4L2_EVENT_"),
     CEnum("EventSubscriptionFlag", "V4L2_EVENT_SUB_FL_", "IntFlag"),
+    # It is very dificult to match just only these two values using prefix, so put whole name there
+    CEnum("Interlaced", ["V4L2_DV_PROGRESSIVE", "V4L2_DV_INTERLACED"], with_prefix=True),
+    # It is very dificult to match just only these two values using prefix, so put whole name there
+    CEnum("PositivePolarityFlag", ["V4L2_DV_VSYNC_POS_POL", "V4L2_DV_HSYNC_POS_POL"], "IntFlag", with_prefix=True),
+    CEnum("DVTimingsStandardFlag", "V4L2_DV_BT_STD_", "IntFlag"),
+    CEnum("DVTimingsFlag", "V4L2_DV_FL_", "IntFlag"),
+    CEnum("DVTimingsCapabilities", "V4L2_DV_BT_CAP_", "IntFlag"),
     CEnum("IOC", "VIDIOC_"),
 ]
 

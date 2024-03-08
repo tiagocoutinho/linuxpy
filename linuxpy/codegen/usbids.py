@@ -115,10 +115,10 @@ def dump_item(item, name, output):
 
     logging.info("  Writting %s...", name)
     if output is None:
-        print(text)
+        print(text, end="", flush=True)
     else:
         with output.open("w") as fobj:
-            print(text, file=fobj)
+            print(text, end="", flush=True, file=fobj)
 
 
 def dump_items(items, output=this_dir.parent / "usb" / "ids"):
