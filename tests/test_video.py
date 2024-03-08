@@ -82,6 +82,7 @@ class Hardware:
         self.fps_output = 20
         self.brightness = 55
         self.contrast = 12
+        self.edid = bytes(range(0, 256))  # Its not valid edid, just random data for testing
 
     def __enter__(self):
         self.stack = ExitStack()
@@ -164,6 +165,27 @@ class Hardware:
                 arg.sequence = 123
                 arg.timestamp.secs = 123
                 arg.timestamp.usecs = 456789
+        elif isinstance(arg, raw.v4l2_edid):
+            # Our mock doesn't support pad != 0 at the moment
+            assert arg.pad == 0
+            # Documentation for VIDIOC_G_EDID states that this is maximum value defined by the standard
+            assert arg.blocks <= 256
+            if ioc == raw.IOC.S_EDID:
+                assert arg.start_block == 0
+                self.edid = arg.edid[: arg.blocks * 128]
+            elif ioc == raw.IOC.G_EDID:
+                if arg.blocks == 0 and arg.start_block == 0:
+                    arg.blocks = len(self.edid) // 128
+                else:
+                    blocks_to_copy = len(self.edid) // 128 - arg.start_block
+                    if blocks_to_copy == 0:
+                        raise OSError(ENODATA, "ups!")
+                    blocks_to_copy = min(blocks_to_copy, arg.blocks)
+                    for i in range(blocks_to_copy * 128):
+                        arg.edid[i] = self.edid[arg.start_block * 128 + i]
+                    arg.blocks = blocks_to_copy
+            else:
+                raise OSError(EINVAL, "ups!")
         elif ioc == raw.IOC.STREAMON:
             assert arg.value == raw.BufType.VIDEO_CAPTURE
             self.video_capture_state = "ON"
@@ -459,6 +481,37 @@ def _(camera=hardware):
             for frame in video_capture:
                 assert_frame(frame, camera)
                 break
+
+
+@test("get edid")
+def _(display=hardware):
+    with Device(display.filename) as device:
+        edid = device.get_edid()
+        assert len(edid) == 256
+        assert edid == bytes(range(0, 256))
+
+
+@test("clear edid")
+def _(display=hardware):
+    with Device(display.filename) as device:
+        device.clear_edid()
+        edid = device.get_edid()
+        assert len(edid) == 0
+
+
+@test("set edid")
+def _(display=hardware):
+    with Device(display.filename) as device:
+        # Generate some random edid with 3 blocks
+        expected_edid = bytes(range(255, -1, -1)) + bytes(range(255, -1, -2))
+        device.set_edid(expected_edid)
+        edid = device.get_edid()
+        assert len(edid) == 128 * 3
+        assert edid == expected_edid
+
+        with raises(ValueError):
+            # Fail if edid length is not multiple of 128
+            device.set_edid(bytes(range(0, 100)))
 
 
 V4L2_LOOPBACK_TEST_DEVICE = Path("/dev/video199")

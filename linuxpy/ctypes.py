@@ -43,6 +43,7 @@ cast = ctypes.cast
 sizeof = ctypes.sizeof
 byref = ctypes.byref
 addressof = ctypes.addressof
+string_at = ctypes.string_at
 
 calcsize = struct.calcsize
 
