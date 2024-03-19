@@ -170,6 +170,6 @@ def reset_control(request: Request, device_id: int, control_id: int):
     camera = cameras()[device_id]
     with camera.device:
         control = camera.device.controls[control_id]
-        control.value = control.info.default_value
+        control.value = control._info.default_value
     ctx = {"request": request, "control": control, "ControlType": ControlType}
     return templates.TemplateResponse("control.html", ctx)

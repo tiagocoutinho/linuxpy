@@ -1429,15 +1429,11 @@ class MemoryMap(ReentrantOpen):
         queue = asyncio.Queue(maxsize=10)
 
         def feed():
-            print("start read")
             queue.put_nowait(self.raw_read())
-            print("end read")
 
         with add_reader_asyncio(self.device.fileno(), feed):
             while True:
-                print("start wait")
                 frame = await queue.get()
-                print("end wait")
                 yield frame
 
     @property

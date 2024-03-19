@@ -6,9 +6,9 @@
     # if control.type in [ControlType.INTEGER, ControlType.INTEGER64, ControlType.U32, ControlType.U16, ControlType.U8]:
         <span class="input-group-text">{{control.name}}</span>
         <input type="range" class="form-range form-control"
-            min="{{control.info.minimum}}"
-            max="{{control.info.maximum}}"
-            step="{{control.info.step}}"
+            min="{{control._info.minimum}}"
+            max="{{control._info.maximum}}"
+            step="{{control._info.step}}"
             value="{{value}}"
             name="value"
             hx-post="/camera/{{did}}/control/{{control.id}}"
@@ -36,7 +36,7 @@
             name="value"
             hx-post="/camera/{{did}}/control/{{control.id}}"
         >
-        # for index, item in control.menu.items():
+        # for index, item in control.items():
             <option value="{{index}}" {{"selected" if value == index else ""}}>{{item.name}}</option>
         # endfor
         </select>
