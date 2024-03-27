@@ -443,7 +443,7 @@ def set_raw_format(fd, fmt: raw.v4l2_format):
 def set_format(fd, buffer_type: BufferType, width: int, height: int, pixel_format: str = "MJPG"):
     fmt = raw.v4l2_format()
     if isinstance(pixel_format, str):
-        pixel_format = raw.v4l2_fourcc(*pixel_format.upper())
+        pixel_format = raw.v4l2_fourcc(*pixel_format)
     fmt.type = buffer_type
     fmt.fmt.pix.pixelformat = pixel_format
     fmt.fmt.pix.field = Field.ANY
