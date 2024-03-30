@@ -10,8 +10,7 @@ jobs:
   tests:
     name: "Python ${{ matrix.python-version }}"
     runs-on: "ubuntu-latest"
-    permissions:
-      pull-requests: write
+    permissions: write-all
 
     strategy:
       matrix:
