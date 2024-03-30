@@ -486,6 +486,11 @@ def free_buffers(fd, buffer_type: BufferType, memory: Memory) -> raw.v4l2_reques
     return req
 
 
+def export_buffer(fd, buffer_type: BufferType, index: int) -> int:
+    req = raw.v4l2_exportbuffer(type=buffer_type, index=index)
+    return ioctl(fd, IOC.EXPBUF, req).fd
+
+
 def set_raw_format(fd, fmt: raw.v4l2_format):
     return ioctl(fd, IOC.S_FMT, fmt)
 
