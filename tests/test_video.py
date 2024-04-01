@@ -119,6 +119,8 @@ class Hardware:
 
     def ioctl(self, fd, ioc, arg):  # noqa: C901
         # assert self.fd == fd
+        self.ioctl_ioc = ioc
+        self.ioctl_arg = arg
         if isinstance(arg, raw.v4l2_input):
             if arg.index > 0:
                 raise OSError(EINVAL, "ups!")
@@ -340,6 +342,17 @@ def _(camera=hardware):
     assert device.info.bus_info == camera.bus_info.decode()
     assert device.info.bus_info == camera.bus_info.decode()
     assert device.info.version == camera.version_str
+
+
+@test("set format")
+def _(camera=hardware):
+    device = Device(camera.filename)
+    with device:
+        device.set_format(BufferType.VIDEO_CAPTURE, 7, 5, 'pRCC')
+    assert camera.ioctl_ioc == raw.IOC.S_FMT
+    assert camera.ioctl_arg.fmt.pix.height == 5
+    assert camera.ioctl_arg.fmt.pix.width == 7
+    assert camera.ioctl_arg.fmt.pix.pixelformat == PixelFormat.SRGGB12P
 
 
 @test("controls")
