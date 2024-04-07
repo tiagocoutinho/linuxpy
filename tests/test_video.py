@@ -7,7 +7,7 @@
 import os
 import subprocess
 from contextlib import ExitStack, contextmanager
-from errno import EINVAL
+from errno import EINVAL, ENODATA
 from functools import cache
 from inspect import isgenerator
 from math import isclose
@@ -348,7 +348,7 @@ def _(camera=hardware):
 def _(camera=hardware):
     device = Device(camera.filename)
     with device:
-        device.set_format(BufferType.VIDEO_CAPTURE, 7, 5, 'pRCC')
+        device.set_format(BufferType.VIDEO_CAPTURE, 7, 5, "pRCC")
     assert camera.ioctl_ioc == raw.IOC.S_FMT
     assert camera.ioctl_arg.fmt.pix.height == 5
     assert camera.ioctl_arg.fmt.pix.width == 7
