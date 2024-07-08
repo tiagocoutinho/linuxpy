@@ -470,6 +470,24 @@ def get_format(fd, buffer_type) -> Format:
     )
 
 
+def try_raw_format(fd, fmt: raw.v4l2_format):
+    ioctl(fd, IOC.TRY_FMT, fmt)
+
+
+def try_format(fd, buffer_type: BufferType, width: int, height: int, pixel_format: str = "MJPG"):
+    fmt = raw.v4l2_format()
+    if isinstance(pixel_format, str):
+        pixel_format = raw.v4l2_fourcc(*pixel_format)
+    fmt.type = buffer_type
+    fmt.fmt.pix.pixelformat = pixel_format
+    fmt.fmt.pix.field = Field.ANY
+    fmt.fmt.pix.width = width
+    fmt.fmt.pix.height = height
+    fmt.fmt.pix.bytesperline = 0
+    fmt.fmt.pix.sizeimage = 0
+    return try_raw_format(fd, fmt)
+
+
 def get_parm(fd, buffer_type):
     p = raw.v4l2_streamparm()
     p.type = buffer_type
