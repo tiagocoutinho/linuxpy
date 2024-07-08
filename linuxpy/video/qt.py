@@ -10,6 +10,7 @@ Qt helpers for V4L2 (Video 4 Linux 2) subsystem.
 You'll need to install linuxpy qt optional dependencies (ex: `$pip install linuxpy[qt]`)
 """
 
+import logging
 import threading
 
 from qtpy import QtCore, QtGui, QtWidgets
@@ -43,10 +44,12 @@ class QCamera(QtCore.QObject):
         self._task = threading.Thread(name=f"ThVideo-{self.device.index:02}", target=self.run)
         self._task.start()
 
-    def stop(self):
+    def stop(self, wait=True):
         self._stop = True
         # If camera is paused, give it a chance to resume
         self._continue.set()
+        if wait:
+            self.wait()
 
     def pause(self):
         self._continue.clear()
@@ -58,25 +61,20 @@ class QCamera(QtCore.QObject):
         if self._task:
             self._task.join()
 
-    def prepare(self):
-        pass
-
     def run(self):
         self._stop = False
         self._continue.set()
         try:
             with self.device:
-                while True:
-                    self._continue.wait()
-                    if self._stop:
-                        return
-                    self.prepare()
-                    self.setState("running")
-                    with self.capture:
+                with self.capture:
+                    while True:
+                        self._continue.wait()
+                        self.setState("running")
+                        if self._stop:
+                            return
                         for frame in self.capture:
                             if self._stop:
                                 return
-                            # print(f"\rframe #{frame.frame_nb} {frame.width}x{frame.height}@{frame.pixel_format.name}", end='', flush=True)
                             self.frameChanged.emit(frame)
                             if not self._continue.is_set():
                                 self.setState("paused")
@@ -243,11 +241,12 @@ class PauseButtonControl(BaseCameraControl):
         self.button.setToolTip(tip)
 
     def on_click(self):
-        if self.camera:
-            if self.camera.state() == "running":
-                self.camera.pause()
-            else:
-                self.camera.resume()
+        if self.camera is None:
+            return
+        if self.camera.state() == "running":
+            self.camera.pause()
+        else:
+            self.camera.resume()
 
 
 class StateControl(BaseCameraControl):
@@ -363,17 +362,14 @@ def main():
     parser.add_argument("--log-level", choices=["debug", "info", "warning", "error"], default="info")
     parser.add_argument("device", type=int)
     args = parser.parse_args()
+    fmt = "%(threadName)-10s %(asctime)-15s %(levelname)-5s %(name)s: %(message)s"
+    logging.basicConfig(level=args.log_level.upper(), format=fmt)
     app = QtWidgets.QApplication([])
     device = Device.from_id(args.device)
     camera = QCamera(device)
     widget = QVideoWidget(camera)
+    app.aboutToQuit.connect(camera.stop)
     widget.show()
-
-    def stop():
-        camera.stop()
-        camera.wait()
-
-    app.aboutToQuit.connect(stop)
     app.exec()
 
 
