@@ -6,7 +6,7 @@
 
 import argparse
 
-from linuxpy.video.device import Device, LegacyControl, MenuControl
+from linuxpy.video.device import Device, MenuControl
 
 
 def _get_ctrl(cam, control):
@@ -23,8 +23,8 @@ def _get_ctrl(cam, control):
         return ctrl
 
 
-def show_control_status(device: str, legacy_controls: bool) -> None:
-    with Device(device, legacy_controls=legacy_controls) as cam:
+def show_control_status(device: str) -> None:
+    with Device(device) as cam:
         print("Showing current status of all controls ...\n")
         print(f"*** {cam.info.card} ***")
 
@@ -36,14 +36,11 @@ def show_control_status(device: str, legacy_controls: bool) -> None:
                 if isinstance(ctrl, MenuControl):
                     for key, value in ctrl.items():
                         print(11 * " ", f" +-- {key}: {value}")
-                elif isinstance(ctrl, LegacyControl):
-                    for item in ctrl.menu.values():
-                        print(11 * " ", f" +-- {item}")
         print("")
 
 
-def get_controls(device: str, controls: list, legacy_controls: bool) -> None:
-    with Device(device, legacy_controls=legacy_controls) as cam:
+def get_controls(device: str, controls: list) -> None:
+    with Device(device) as cam:
         print("Showing current value of given controls ...\n")
 
         for control in controls:
@@ -59,10 +56,10 @@ def get_controls(device: str, controls: list, legacy_controls: bool) -> None:
         print("")
 
 
-def set_controls(device: str, controls: list, legacy_controls: bool, clipping: bool) -> None:
+def set_controls(device: str, controls: list, clipping: bool) -> None:
     controls = ((ctrl.strip(), value.strip()) for (ctrl, value) in (c.split("=") for c in controls))
 
-    with Device(device, legacy_controls=legacy_controls) as cam:
+    with Device(device) as cam:
         print("Changing value of given controls ...\n")
 
         cam.controls.set_clipping(clipping)
@@ -93,8 +90,8 @@ def set_controls(device: str, controls: list, legacy_controls: bool, clipping: b
                 print(f"{result} {control}: {value_old} -> {value_new}\n{result} {reason}\n")
 
 
-def reset_controls(device: str, controls: list, legacy_controls: bool) -> None:
-    with Device(device, legacy_controls=legacy_controls) as cam:
+def reset_controls(device: str, controls: list) -> None:
+    with Device(device) as cam:
         print("Resetting given controls to default ...\n")
 
         for control in controls:
@@ -119,8 +116,8 @@ def reset_controls(device: str, controls: list, legacy_controls: bool) -> None:
                 print(f"{result} {control}:\n{result} {reason}\n")
 
 
-def reset_all_controls(device: str, legacy_controls: bool) -> None:
-    with Device(device, legacy_controls=legacy_controls) as cam:
+def reset_all_controls(device: str) -> None:
+    with Device(device) as cam:
         print("Resetting all controls to default ...\n")
         cam.controls.set_to_default()
 
@@ -131,12 +128,6 @@ def csv(string: str) -> list:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--legacy",
-        default=False,
-        action="store_true",
-        help="use legacy controls (default: %(default)s)",
-    )
     parser.add_argument(
         "--clipping",
         default=False,
@@ -186,14 +177,14 @@ if __name__ == "__main__":
         dev = args.device
 
     if args.reset_all:
-        reset_all_controls(dev, args.legacy)
+        reset_all_controls(dev)
     elif args.reset_ctrl:
-        reset_controls(dev, args.reset_ctrl, args.legacy)
+        reset_controls(dev, args.reset_ctrl)
     elif args.get_ctrl:
-        get_controls(dev, args.get_ctrl, args.legacy)
+        get_controls(dev, args.get_ctrl)
     elif args.set_ctrl:
-        set_controls(dev, args.set_ctrl, args.legacy, args.clipping)
+        set_controls(dev, args.set_ctrl, args.clipping)
     else:
-        show_control_status(dev, args.legacy)
+        show_control_status(dev)
 
     print("Done.")
