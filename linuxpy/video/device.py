@@ -978,9 +978,7 @@ class BaseControl:
 
     @property
     def is_writeable(self) -> bool:
-        return not (
-            self.is_flagged_read_only or self.is_flagged_inactive or self.is_flagged_disabled or self.is_flagged_grabbed
-        )
+        return not (self.is_flagged_read_only or self.is_flagged_disabled or self.is_flagged_grabbed)
 
 
 class BaseMonoControl(BaseControl):
