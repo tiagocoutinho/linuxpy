@@ -31,7 +31,7 @@ from linuxpy.device import (
 from linuxpy.io import IO
 from linuxpy.ioctl import ioctl
 from linuxpy.types import AsyncIterator, Buffer, Callable, Iterable, Iterator, Optional, PathLike, Self
-from linuxpy.util import add_reader_asyncio, make_find
+from linuxpy.util import add_reader_asyncio, bit_indexes, make_find
 
 from . import raw
 
@@ -69,12 +69,14 @@ PixelFormat = raw.PixelFormat
 FrameSizeType = raw.Frmsizetypes
 Memory = raw.Memory
 InputStatus = raw.InputStatus
-InputType = raw.InputType
+OutputType = raw.OutputType
 InputCapabilities = raw.InputCapabilities
+OutputCapabilities = raw.OutputCapabilities
 Priority = raw.Priority
 TimeCodeType = raw.TimeCodeType
 TimeCodeFlag = raw.TimeCodeFlag
 EventSubscriptionFlag = raw.EventSubscriptionFlag
+StandardID = raw.StandardID
 
 
 def V4L2_CTRL_ID2CLASS(id_):
@@ -91,7 +93,7 @@ PixelFormat.human_str = lambda self: human_pixel_format(self.value)
 Info = collections.namedtuple(
     "Info",
     "driver card bus_info version capabilities device_capabilities "
-    "crop_capabilities buffers formats frame_sizes inputs controls",
+    "crop_capabilities buffers formats frame_sizes inputs outputs controls",
 )
 
 ImageFormat = collections.namedtuple("ImageFormat", "type description flags pixel_format")
@@ -108,6 +110,7 @@ FrameType = collections.namedtuple("FrameType", "type pixel_format width height 
 
 Input = collections.namedtuple("InputType", "index name type audioset tuner std status capabilities")
 
+Output = collections.namedtuple("OutputType", "index name type audioset modulator std capabilities")
 
 INFO_REPR = """\
 driver = {info.driver}
@@ -286,13 +289,28 @@ def iter_read_inputs(fd):
             index=inp.index,
             name=inp.name.decode(),
             type=InputType(inp.type),
-            audioset=inp.audioset,
+            audioset=bit_indexes(inp.audioset),
             tuner=inp.tuner,
-            std=inp.std,
+            std=StandardID(inp.std),
             status=InputStatus(inp.status),
             capabilities=InputCapabilities(inp.capabilities),
         )
         yield input_type
+
+
+def iter_read_outputs(fd):
+    output = raw.v4l2_output()
+    for out in iter_read(fd, IOC.ENUMOUTPUT, output):
+        output_type = Output(
+            index=out.index,
+            name=out.name.decode(),
+            type=OutputType(out.type),
+            audioset=bit_indexes(out.audioset),
+            modulator=out.modulator,
+            std=StandardID(out.std),
+            capabilities=OutputCapabilities(out.capabilities),
+        )
+        yield output_type
 
 
 def iter_read_controls(fd):
@@ -374,6 +392,7 @@ def read_info(fd):
         formats=image_formats,
         frame_sizes=frame_sizes(fd, pixel_formats),
         inputs=list(iter_read_inputs(fd)),
+        outputs=list(iter_read_outputs(fd)),
         controls=list(iter_read_controls(fd)),
     )
 
@@ -652,6 +671,28 @@ def get_edid(fd):
     return string_at(edid_struct.edid, edid_len)
 
 
+def get_input(fd):
+    inp = ctypes.c_uint()
+    ioctl(fd, IOC.G_INPUT, inp)
+    return inp.value
+
+
+def set_input(fd, index: int):
+    index = ctypes.c_uint(index)
+    ioctl(fd, IOC.S_INPUT, index)
+
+
+def get_output(fd):
+    out = ctypes.c_uint()
+    ioctl(fd, IOC.G_OUTPUT, out)
+    return out.value
+
+
+def set_output(fd, index: int):
+    index = ctypes.c_uint(index)
+    ioctl(fd, IOC.S_OUTPUT, index)
+
+
 # Helpers
 
 
@@ -791,6 +832,18 @@ class Device(BaseDevice):
 
     def get_edid(self):
         return get_edid(self.fileno())
+
+    def get_input(self):
+        return get_input(self.fileno())
+
+    def set_input(self, index: int):
+        return set_input(self.fileno(), index)
+
+    def get_output(self):
+        return get_output(self.fileno())
+
+    def set_output(self, index: int):
+        return set_output(self.fileno(), index)
 
 
 class Controls(dict):

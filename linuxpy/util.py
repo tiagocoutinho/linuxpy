@@ -182,3 +182,7 @@ class Version:
         so `Version(3,2,1).tuple()` yields the tuple `(3, 2, 1)`
         """
         return self.major, self.minor, self.patch
+
+
+def bit_indexes(number):
+    return [i for i, c in enumerate(bin(number)[:1:-1]) if c == "1"]

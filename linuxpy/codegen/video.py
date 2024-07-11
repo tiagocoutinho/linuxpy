@@ -61,6 +61,35 @@ v4l2_std_id = u64
 
 {structs_body}
 
+# STD macros are too complicated to auto generate
+
+class StandardID(enum.IntFlag):
+    V4L2_STD_PAL_B       = 0x00000001
+    V4L2_STD_PAL_B1      = 0x00000002
+    V4L2_STD_PAL_G       = 0x00000004
+    V4L2_STD_PAL_H       = 0x00000008
+    V4L2_STD_PAL_I       = 0x00000010
+    V4L2_STD_PAL_D       = 0x00000020
+    V4L2_STD_PAL_D1      = 0x00000040
+    V4L2_STD_PAL_K       = 0x00000080
+    V4L2_STD_PAL_M       = 0x00000100
+    V4L2_STD_PAL_N       = 0x00000200
+    V4L2_STD_PAL_Nc      = 0x00000400
+    V4L2_STD_PAL_60      = 0x00000800
+    V4L2_STD_NTSC_M      = 0x00001000	# BTSC
+    V4L2_STD_NTSC_M_JP   = 0x00002000	# EIA-J
+    V4L2_STD_NTSC_443    = 0x00004000
+    V4L2_STD_NTSC_M_KR   = 0x00008000	# FM A2
+    V4L2_STD_SECAM_B     = 0x00010000
+    V4L2_STD_SECAM_D     = 0x00020000
+    V4L2_STD_SECAM_G     = 0x00040000
+    V4L2_STD_SECAM_H     = 0x00080000
+    V4L2_STD_SECAM_K     = 0x00100000
+    V4L2_STD_SECAM_K1    = 0x00200000
+    V4L2_STD_SECAM_L     = 0x00400000
+    V4L2_STD_SECAM_LC    = 0x00800000
+    V4L2_STD_ATSC_8_VSB  = 0x01000000
+    V4L2_STD_ATSC_16_VSB = 0x02000000
 
 {iocs_body}"""
 
@@ -75,7 +104,9 @@ MACRO_ENUMS = [
     CEnum("ImageFormatFlag", "V4L2_FMT_FLAG_", "IntFlag"),
     CEnum("InputStatus", "V4L2_IN_ST_", "IntFlag"),
     CEnum("InputType", "V4L2_INPUT_TYPE_"),
+    CEnum("OutputType", "V4L2_OUTPUT_TYPE_"),
     CEnum("InputCapabilities", "V4L2_IN_CAP_", "IntFlag"),
+    CEnum("OutputCapabilities", "V4L2_OUT_CAP_", "IntFlag"),
     CEnum("ControlClass", "V4L2_CTRL_CLASS_"),
     CEnum("ControlID", "V4L2_CID_"),
     CEnum("ControlFlag", "V4L2_CTRL_FLAG_", "IntFlag"),
