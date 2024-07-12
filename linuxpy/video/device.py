@@ -93,7 +93,7 @@ PixelFormat.human_str = lambda self: human_pixel_format(self.value)
 Info = collections.namedtuple(
     "Info",
     "driver card bus_info version capabilities device_capabilities "
-    "crop_capabilities buffers formats frame_sizes inputs outputs controls",
+    "crop_capabilities buffers formats frame_sizes inputs outputs controls video_standards",
 )
 
 ImageFormat = collections.namedtuple("ImageFormat", "type description flags pixel_format")
@@ -111,6 +111,9 @@ FrameType = collections.namedtuple("FrameType", "type pixel_format width height 
 Input = collections.namedtuple("InputType", "index name type audioset tuner std status capabilities")
 
 Output = collections.namedtuple("OutputType", "index name type audioset modulator std capabilities")
+
+Standard = collections.namedtuple("Standard", "index name frameperiod framelines")
+
 
 INFO_REPR = """\
 driver = {info.driver}
@@ -313,6 +316,18 @@ def iter_read_outputs(fd):
         yield output_type
 
 
+def iter_read_video_standards(fd):
+    std = raw.v4l2_standard()
+    for item in iter_read(fd, IOC.ENUMSTD, std):
+        period = item.frameperiod
+        yield Standard(
+            index=item.index,
+            name=item.name.decode(),
+            frameperiod=fractions.Fraction(period.denominator, period.numerator),
+            framelines=item.framelines,
+        )
+
+
 def iter_read_controls(fd):
     ctrl = raw.v4l2_query_ext_ctrl()
     nxt = ControlFlag.NEXT_CTRL | ControlFlag.NEXT_COMPOUND
@@ -394,6 +409,7 @@ def read_info(fd):
         inputs=list(iter_read_inputs(fd)),
         outputs=list(iter_read_outputs(fd)),
         controls=list(iter_read_controls(fd)),
+        video_standards=list(iter_read_video_standards(fd)),
     )
 
 
@@ -693,6 +709,22 @@ def set_output(fd, index: int):
     ioctl(fd, IOC.S_OUTPUT, index)
 
 
+def get_std(fd):
+    out = ctypes.c_uint64()
+    ioctl(fd, IOC.G_STD, out)
+    return out.value
+
+
+def set_std(fd, std):
+    ioctl(fd, IOC.S_STD, std)
+
+
+def query_std(fd):
+    out = ctypes.c_uint64()
+    ioctl(fd, IOC.QUERYSTD, out)
+    return out.value
+
+
 # Helpers
 
 
@@ -844,6 +876,15 @@ class Device(BaseDevice):
 
     def set_output(self, index: int):
         return set_output(self.fileno(), index)
+
+    def get_std(self):
+        return get_std(self.fileno())
+
+    def set_std(self, std):
+        return set_std(self.fileno(), std)
+
+    def query_std(self):
+        return query_std(self.fileno())
 
 
 class Controls(dict):
