@@ -126,11 +126,13 @@ class Hardware:
                 raise OSError(EINVAL, "ups!")
             arg.name = self.input0_name
             arg.type = raw.InputType.CAMERA
-        if isinstance(arg, raw.v4l2_output):
+        elif isinstance(arg, raw.v4l2_output):
             if arg.index > 0:
                 raise OSError(EINVAL, "ups!")
             arg.name = self.input0_name
             arg.type = raw.OutputType.ANALOG
+        elif isinstance(arg, raw.v4l2_standard):
+            raise OSError(EINVAL, "ups!")
         elif isinstance(arg, raw.v4l2_query_ext_ctrl):
             if arg.index == 0:
                 arg.name = b"brightness"
