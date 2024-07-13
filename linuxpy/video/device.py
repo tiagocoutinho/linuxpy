@@ -568,20 +568,14 @@ def stream_off(fd, buffer_type):
     return ioctl(fd, IOC.STREAMOFF, btype)
 
 
-def set_selection(fd, buffer_type, rectangles):
+def set_selection(fd, buffer_type, target, rectangle):
     sel = raw.v4l2_selection()
     sel.type = buffer_type
-    sel.target = SelectionTarget.CROP
-    sel.rectangles = len(rectangles)
-    rects = (raw.v4l2_ext_rect * sel.rectangles)()
-
-    for i in range(sel.rectangles):
-        rects[i].r.left = rectangles[i].left
-        rects[i].r.top = rectangles[i].top
-        rects[i].r.width = rectangles[i].width
-        rects[i].r.height = rectangles[i].height
-
-    sel.pr = ctypes.cast(ctypes.pointer(rects), ctypes.POINTER(raw.v4l2_ext_rect))
+    sel.target = target
+    sel.r.left = rectangle.left
+    sel.r.top = rectangle.top
+    sel.r.width = rectangle.width
+    sel.r.height = rectangle.height
     ioctl(fd, IOC.S_SELECTION, sel)
 
 
@@ -589,26 +583,12 @@ def get_selection(
     fd,
     buffer_type: BufferType,
     target: SelectionTarget = SelectionTarget.CROP_DEFAULT,
-    max_nb: int = 128,
 ):
     sel = raw.v4l2_selection()
     sel.type = buffer_type
     sel.target = target
-    sel.rectangles = max_nb
-    rects = (raw.v4l2_ext_rect * sel.rectangles)()
-    sel.pr = ctypes.cast(ctypes.pointer(rects), ctypes.POINTER(raw.v4l2_ext_rect))
     ioctl(fd, IOC.G_SELECTION, sel)
-    if sel.rectangles == 0:
-        return Rect(left=sel.r.left, top=sel.r.top, width=sel.r.width, height=sel.r.height)
-    return [
-        Rect(
-            left=rects[i].r.left,
-            top=rects[i].r.top,
-            width=rects[i].r.width,
-            height=rects[i].r.height,
-        )
-        for i in range(sel.rectangles)
-    ]
+    return Rect(left=sel.r.left, top=sel.r.top, width=sel.r.width, height=sel.r.height)
 
 
 def get_control(fd, id):
@@ -817,8 +797,8 @@ class Device(BaseDevice):
     def get_fps(self, buffer_type):
         return get_fps(self.fileno(), buffer_type)
 
-    def set_selection(self, buffer_type, rectangles):
-        return set_selection(self.fileno(), buffer_type, rectangles)
+    def set_selection(self, buffer_type, target, rectangle):
+        return set_selection(self.fileno(), buffer_type, target, rectangle)
 
     def get_selection(self, buffer_type, target):
         return get_selection(self.fileno(), buffer_type, target)
@@ -1314,11 +1294,11 @@ class BufferManager(DeviceHelper):
     def get_fps(self):
         return self.device.get_fps(self.type)
 
-    def set_selection(self, rectangles):
-        return self.device.set_selection(self.type, rectangles)
+    def set_selection(self, target, rectangle):
+        return self.device.set_selection(self.type, target, rectangle)
 
-    def get_selection(self):
-        return self.device.get_selection(self.type)
+    def get_selection(self, target):
+        return self.device.get_selection(self.type, target)
 
     def stream_on(self):
         self.device.stream_on(self.type)
