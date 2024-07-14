@@ -31,7 +31,7 @@ from linuxpy.device import (
 from linuxpy.io import IO
 from linuxpy.ioctl import ioctl
 from linuxpy.types import AsyncIterator, Buffer, Callable, Iterable, Iterator, Optional, PathLike, Self
-from linuxpy.util import add_reader_asyncio, bit_indexes, make_find
+from linuxpy.util import astream, bit_indexes, make_find
 
 from . import raw
 
@@ -98,7 +98,7 @@ Info = collections.namedtuple(
 
 ImageFormat = collections.namedtuple("ImageFormat", "type description flags pixel_format")
 
-Format = collections.namedtuple("Format", "width height pixel_format")
+Format = collections.namedtuple("Format", "width height pixel_format size")
 
 CropCapability = collections.namedtuple("CropCapability", "type bounds defrect pixel_aspect")
 
@@ -472,7 +472,7 @@ def free_buffers(fd, buffer_type: BufferType, memory: Memory) -> raw.v4l2_reques
 
 
 def set_raw_format(fd, fmt: raw.v4l2_format):
-    ioctl(fd, IOC.S_FMT, fmt)
+    return ioctl(fd, IOC.S_FMT, fmt)
 
 
 def set_format(fd, buffer_type: BufferType, width: int, height: int, pixel_format: str = "MJPG"):
@@ -502,6 +502,7 @@ def get_format(fd, buffer_type) -> Format:
         width=f.fmt.pix.width,
         height=f.fmt.pix.height,
         pixel_format=PixelFormat(f.fmt.pix.pixelformat),
+        size=f.fmt.pix.sizeimage,
     )
 
 
@@ -1282,6 +1283,12 @@ class BufferManager(DeviceHelper):
         self.buffers = self.device.create_buffers(self.type, memory, self.size)
         return self.buffers
 
+    def request_buffers(self, memory: Memory):
+        if self.buffers:
+            raise V4L2Error("buffers already requested. free first")
+        self.buffers = self.device.request_buffers(self.type, memory, self.size)
+        return self.buffers
+
     def set_format(self, width, height, pixel_format="MJPG"):
         return self.device.set_format(self.type, width, height, pixel_format)
 
@@ -1394,7 +1401,7 @@ class Frame:
     def array(self):
         import numpy
 
-        return numpy.frombuffer(bytes(self), dtype="u1")
+        return numpy.frombuffer(self.data, dtype="u1")
 
 
 class VideoCapture(BufferManager):
@@ -1427,9 +1434,10 @@ class VideoCapture(BufferManager):
             if Capability.STREAMING in source:
                 self.device.log.info("Video capture using memory map")
                 self.buffer = MemoryMap(self)
+                # self.buffer = UserPtr(self)
             elif Capability.READWRITE in source:
                 self.device.log.info("Video capture using read")
-                self.buffer = Read(self)
+                self.buffer = ReadSource(self)
             else:
                 raise OSError("Device needs to support STREAMING or READWRITE capability")
             self.buffer.open()
@@ -1445,7 +1453,7 @@ class VideoCapture(BufferManager):
             self.device.log.info("Video capture closed")
 
 
-class Read(ReentrantOpen):
+class ReadSource(ReentrantOpen):
     def __init__(self, buffer_manager: BufferManager):
         super().__init__()
         self.buffer_manager = buffer_manager
@@ -1501,58 +1509,54 @@ class Read(ReentrantOpen):
         return self.read()
 
 
-class MemoryMap(ReentrantOpen):
-    def __init__(self, buffer_manager: BufferManager):
+class MemorySource(ReentrantOpen):
+    def __init__(self, buffer_manager: BufferManager, source: Memory):
         super().__init__()
         self.buffer_manager = buffer_manager
+        self.source = source
         self.buffers = None
-        self.queue = BufferQueue(buffer_manager, Memory.MMAP)
+        self.queue = BufferQueue(buffer_manager, source)
         self.frame_reader = FrameReader(self.device, self.raw_read)
         self.format = None
 
     def __iter__(self) -> Iterator[Frame]:
         with self.frame_reader:
-            while True:
-                yield self.frame_reader.read()
+            yield from self.frame_reader
 
     async def __aiter__(self) -> AsyncIterator[Frame]:
-        queue = asyncio.Queue(maxsize=10)
-
-        def feed():
-            queue.put_nowait(self.raw_read())
-
-        with add_reader_asyncio(self.device.fileno(), feed):
-            while True:
-                frame = await queue.get()
-                yield frame
+        async for frame in astream(self.device.fileno(), self.raw_read):
+            yield frame
 
     @property
     def device(self) -> Device:
         return self.buffer_manager.device
 
+    def prepare_buffers(self):
+        raise NotImplementedError
+
+    def release_buffers(self):
+        self.device.log.info("Freeing buffers...")
+        self.buffer_manager.free_buffers(self.source)
+        self.buffers = None
+        self.format = None
+        self.device.log.info("Buffers freed")
+
     def open(self) -> None:
+        self.format = self.buffer_manager.get_format()
         if self.buffers is None:
-            self.device.log.info("Reserving buffers...")
-            fd = self.device.fileno()
-            buffers = self.buffer_manager.create_buffers(Memory.MMAP)
-            self.buffers = [mmap_from_buffer(fd, buff) for buff in buffers]
-            self.buffer_manager.enqueue_buffers(Memory.MMAP)
-            self.format = self.buffer_manager.get_format()
-            self.buffer_manager.device.log.info("Buffers reserved")
+            self.prepare_buffers()
 
     def close(self) -> None:
         if self.buffers:
-            self.device.log.info("Freeing buffers...")
-            for mem in self.buffers:
-                mem.close()
-            self.buffer_manager.free_buffers(Memory.MMAP)
-            self.buffers = None
-            self.format = None
-            self.device.log.info("Buffers freed")
+            self.release_buffers()
+
+    def grab_from_buffer(self, buff: raw.v4l2_buffer):
+        # return memoryview(self.buffers[buff.index])[: buff.bytesused], buff
+        return self.buffers[buff.index][: buff.bytesused], buff
 
     def raw_grab(self) -> tuple[Buffer, raw.v4l2_buffer]:
         with self.queue as buff:
-            return self.buffers[buff.index][: buff.bytesused], buff
+            return self.grab_from_buffer(buff)
 
     def raw_read(self) -> Frame:
         data, buff = self.raw_grab()
@@ -1597,6 +1601,42 @@ class MemoryMap(ReentrantOpen):
         else:
             self.write = self.wait_write
         return self.write(data)
+
+
+class UserPtr(MemorySource):
+    def __init__(self, buffer_manager: BufferManager):
+        super().__init__(buffer_manager, Memory.USERPTR)
+
+    def prepare_buffers(self):
+        self.device.log.info("Reserving buffers...")
+        self.buffer_manager.create_buffers(self.source)
+        size = self.format.size
+        self.buffers = []
+        for index in range(self.buffer_manager.size):
+            data = ctypes.create_string_buffer(size)
+            self.buffers.append(data)
+            buff = raw.v4l2_buffer()
+            buff.index = index
+            buff.type = self.buffer_manager.type
+            buff.memory = self.source
+            buff.m.userptr = ctypes.addressof(data)
+            buff.length = size
+            self.queue.enqueue(buff)
+        self.device.log.info("Buffers reserved")
+
+
+class MemoryMap(MemorySource):
+    def __init__(self, buffer_manager: BufferManager):
+        super().__init__(buffer_manager, Memory.MMAP)
+
+    def prepare_buffers(self):
+        self.device.log.info("Reserving buffers...")
+        buffers = self.buffer_manager.create_buffers(self.source)
+        fd = self.device.fileno()
+        self.buffers = [mmap_from_buffer(fd, buff) for buff in buffers]
+        self.buffer_manager.enqueue_buffers(Memory.MMAP)
+        self.format = self.buffer_manager.get_format()
+        self.device.log.info("Buffers reserved")
 
 
 class EventReader:
@@ -1700,6 +1740,10 @@ class FrameReader:
     def __exit__(self, exc_type, exc_value, tb):
         pass
 
+    def __iter__(self):
+        while True:
+            yield self.read()
+
     def _on_event(self) -> None:
         task = self._loop.create_future()
         try:
@@ -1734,9 +1778,15 @@ class BufferQueue:
         self.memory = memory
         self.raw_buffer = None
 
+    def enqueue(self, buff: raw.v4l2_buffer):
+        enqueue_buffer_raw(self.buffer_manager.device.fileno(), buff)
+
+    def dequeue(self):
+        return self.buffer_manager.dequeue_buffer(self.memory)
+
     def __enter__(self) -> raw.v4l2_buffer:
         # get next buffer that has some data in it
-        self.raw_buffer = self.buffer_manager.dequeue_buffer(self.memory)
+        self.raw_buffer = self.dequeue()
         return self.raw_buffer
 
     def __exit__(self, *exc):
@@ -1744,7 +1794,7 @@ class BufferQueue:
         # dequeue in to keep frame info like frame number, timestamp, etc
         raw_buffer = raw.v4l2_buffer()
         memcpy(raw_buffer, self.raw_buffer)
-        enqueue_buffer_raw(self.buffer_manager.device.fileno(), raw_buffer)
+        self.enqueue(raw_buffer)
 
 
 class Write(ReentrantOpen):
