@@ -54,6 +54,18 @@ def add_reader_asyncio(fd: int, callback: Callable[[], None], *args, loop: Optio
         loop.remove_reader(fd)
 
 
+async def astream(fd, read_func, max_buffer_size=10):
+    queue = asyncio.Queue(maxsize=max_buffer_size)
+
+    def feed():
+        queue.put_nowait(read_func())
+
+    with add_reader_asyncio(fd, feed):
+        while True:
+            event = await queue.get()
+            yield event
+
+
 def make_find(iter_devices: Callable[[], Iterator], needs_open=True) -> Callable:
     """
     Create a find function for the given callable. The callable should
