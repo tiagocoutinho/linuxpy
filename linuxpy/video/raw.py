@@ -913,6 +913,12 @@ class ControlFlag(enum.IntFlag):
     NEXT_COMPOUND = 0x40000000
 
 
+class ControlWhichValue(enum.IntEnum):
+    CUR_VAL = 0x0
+    DEF_VAL = 0xF000000
+    REQUEST_VAL = 0xF010000
+
+
 class TimeCodeType(enum.IntEnum):
     _24FPS = 0x1
     _25FPS = 0x2

@@ -110,6 +110,7 @@ MACRO_ENUMS = [
     CEnum("ControlClass", "V4L2_CTRL_CLASS_"),
     CEnum("ControlID", "V4L2_CID_"),
     CEnum("ControlFlag", "V4L2_CTRL_FLAG_", "IntFlag"),
+    CEnum("ControlWhichValue", "V4L2_CTRL_WHICH_"),
     CEnum("TimeCodeType", "V4L2_TC_TYPE_"),
     CEnum("TimeCodeFlag", "V4L2_TC_FLAG_", "IntFlag"),
     CEnum("EventType", "V4L2_EVENT_"),

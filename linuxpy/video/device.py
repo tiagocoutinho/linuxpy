@@ -598,6 +598,54 @@ def get_control(fd, id):
     return control.value
 
 
+CTRL_TYPE_ARRAY_FIELD_MAP = {
+    ControlType.U8: "p_u8",
+    ControlType.U16: "p_u16",
+    ControlType.U32: "p_u32",
+    ControlType.INTEGER: "p_s32",
+    ControlType.INTEGER64: "p_s64",
+}
+
+
+def _prepare_control(control: "BaseControl", raw_control: raw.v4l2_ext_control):
+    raw_control.id = control.id
+    if control.type >= ControlType.COMPOUND_TYPES:  # an array or compound type
+        size = control._info.elem_size * control._info.elems
+        raw_control.ptr = ctypes.create_string_buffer(size)
+    elif control.type == ControlType.STRING:
+        size = control._info.maximum
+        raw_control.ptr = ctypes.create_string_buffer(size)
+    return raw_control
+
+
+def _get_control_value(control: raw.v4l2_query_ext_ctrl, raw_control: raw.v4l2_ext_control):
+    assert raw_control.id == control.id
+    nb_elems = control.elems
+    if control.type >= ControlType.COMPOUND_TYPES:  # an array
+        if nb_elems > 1:
+            member = CTRL_TYPE_ARRAY_FIELD_MAP[control.type]
+            return getattr(raw_control, member)[:nb_elems]
+    else:
+        if control.type == ControlType.INTEGER64:
+            return raw_control.value64
+        elif control.type == ControlType.STRING:
+            return raw_control.string.decode()
+        return raw_control.value
+
+
+def get_controls(fd, controls: list[raw.v4l2_query_ext_ctrl], which=raw.ControlWhichValue.CUR_VAL, request_fd=0):
+    n = len(controls)
+    ctrls = raw.v4l2_ext_controls()
+    ctrls.which = which
+    ctrls.count = n
+    ctrls.request_fd = request_fd
+    ctrls.controls = (n * raw.v4l2_ext_control)()
+    for control, raw_control in zip(controls, ctrls.controls):
+        _prepare_control(control, raw_control)
+    ioctl(fd, IOC.G_EXT_CTRLS, ctrls)
+    return [_get_control_value(control, raw_control) for control, raw_control in zip(controls, ctrls.controls)]
+
+
 def set_control(fd, id, value):
     control = raw.v4l2_control(id, value)
     ioctl(fd, IOC.S_CTRL, control)
