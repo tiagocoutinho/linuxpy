@@ -8,6 +8,9 @@ import pathlib
 
 from .base import CEnum, run
 
+this_dir = pathlib.Path(__file__).parent
+
+
 HEADERS = [
     "/usr/include/linux/v4l2-common.h",
     "/usr/include/linux/v4l2-controls.h",
@@ -15,6 +18,7 @@ HEADERS = [
     "/usr/include/linux/v4l2-mediabus.h",
     "/usr/include/linux/v4l2-dv-timings.h",
     "/usr/include/linux/v4l2-subdev.h",
+    str(this_dir / "vivid.h"),
 ]
 
 
@@ -109,6 +113,7 @@ MACRO_ENUMS = [
     CEnum("OutputCapabilities", "V4L2_OUT_CAP_", "IntFlag"),
     CEnum("ControlClass", "V4L2_CTRL_CLASS_"),
     CEnum("ControlID", "V4L2_CID_"),
+    CEnum("VividControlID", "VIVID_CID_"),
     CEnum("ControlFlag", "V4L2_CTRL_FLAG_", "IntFlag"),
     CEnum("ControlWhichValue", "V4L2_CTRL_WHICH_"),
     CEnum("TimeCodeType", "V4L2_TC_TYPE_"),
@@ -124,9 +129,6 @@ MACRO_ENUMS = [
     CEnum("DVTimingsCapabilities", "V4L2_DV_BT_CAP_", "IntFlag"),
     CEnum("IOC", "VIDIOC_"),
 ]
-
-
-this_dir = pathlib.Path(__file__).parent
 
 
 def main(output=this_dir.parent / "video" / "raw.py"):
