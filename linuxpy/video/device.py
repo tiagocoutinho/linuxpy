@@ -1268,7 +1268,7 @@ class MenuControl(BaseMonoControl, UserDict):
         if self.type == ControlType.MENU:
             self.data = {item.index: item.name.decode() for item in iter_read_menu(self.device._fobj, self)}
         elif self.type == ControlType.INTEGER_MENU:
-            self.data = {item.index: int(item.name) for item in iter_read_menu(self.device._fobj, self)}
+            self.data = {item.index: ord(item.name) for item in iter_read_menu(self.device._fobj, self)}
         else:
             raise TypeError(f"MenuControl only supports control types MENU or INTEGER_MENU, but not {self.type.name}")
 
