@@ -11,7 +11,6 @@ You'll need to install linuxpy qt optional dependencies (ex: `$pip install linux
 """
 
 import logging
-import threading
 
 from qtpy import QtCore, QtGui, QtWidgets
 
@@ -27,64 +26,49 @@ class QCamera(QtCore.QObject):
         self.device = device
         self.capture = VideoCapture(device)
         self._stop = False
-        self._task = None
+        self._stream = None
         self._state = "stopped"
-        self._continue = threading.Event()
+
+    def on_frame(self):
+        frame = next(self._stream)
+        self.frameChanged.emit(frame)
 
     def setState(self, state):
         self._state = state
-        self.stateChanged.emit(self._state)
+        self.stateChanged.emit(state)
 
     def state(self):
         return self._state
 
     def start(self):
-        if self._task is not None and self._task.is_alive():
+        if self._state != "stopped":
             return
-        self._task = threading.Thread(name=f"ThVideo-{self.device.index:02}", target=self.run)
-        self._task.start()
-
-    def stop(self, wait=True):
-        self._stop = True
-        # If camera is paused, give it a chance to resume
-        self._continue.set()
-        if wait:
-            self.wait()
+        self.setState("running")
+        self.device.open()
+        self.capture.open()
+        self._stream = iter(self.capture)
+        self._notifier = QtCore.QSocketNotifier(self.device.fileno(), QtCore.QSocketNotifier.Type.Read)
+        self._notifier.activated.connect(self.on_frame)
 
     def pause(self):
-        self._continue.clear()
+        if self._state != "running":
+            return
+        self._notifier.setEnabled(False)
+        self.setState("paused")
 
     def resume(self):
-        self._continue.set()
+        if self._state != "paused":
+            return
+        self._notifier.setEnabled(True)
+        self.setState("running")
 
-    def wait(self):
-        if self._task:
-            self._task.join()
-
-    def run(self):
-        self._stop = False
-        self._continue.set()
-        try:
-            with self.device:
-                with self.capture:
-                    while True:
-                        self._continue.wait()
-                        self.setState("running")
-                        if self._stop:
-                            return
-                        for frame in self.capture:
-                            if self._stop:
-                                return
-                            self.frameChanged.emit(frame)
-                            if not self._continue.is_set():
-                                self.setState("paused")
-                                break
-                            if self._stop:
-                                return
-        finally:
-            self.setState("stopped")
-            self._stop = False
-            self._task = None
+    def stop(self):
+        self._notifier.setEnabled(False)
+        self._stream.close()
+        self.capture.close()
+        self.device.close()
+        self._notifier = None
+        self.setState("stopped")
 
 
 def to_qpixelformat(pixel_format: PixelFormat) -> QtGui.QPixelFormat | None:
