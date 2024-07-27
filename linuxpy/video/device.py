@@ -634,7 +634,9 @@ def _get_control_value(control: raw.v4l2_query_ext_ctrl, raw_control: raw.v4l2_e
         return raw_control.value
 
 
-def get_controls(fd, controls: list[raw.v4l2_query_ext_ctrl], which=raw.ControlWhichValue.CUR_VAL, request_fd=0):
+def get_controls_values(
+    fd, controls: list[raw.v4l2_query_ext_ctrl], which=raw.ControlWhichValue.CUR_VAL, request_fd=0
+) -> list:
     n = len(controls)
     ctrls = raw.v4l2_ext_controls()
     ctrls.which = which
