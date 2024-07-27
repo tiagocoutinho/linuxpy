@@ -931,11 +931,16 @@ class Controls(dict):
             ControlType.U32: U32Control,
         }
         ctrl_dict = {}
-
+        classes = {}
         for ctrl in device.info.controls:
             ctrl_type = ControlType(ctrl.type)
-            ctrl_class = ctrl_type_map.get(ctrl_type, GenericControl)
-            ctrl_dict[ctrl.id] = ctrl_class(device, ctrl)
+            ctrl_class_id = V4L2_CTRL_ID2CLASS(ctrl.id)
+            if ctrl_type == ControlType.CTRL_CLASS:
+                classes[ctrl_class_id] = ctrl
+            else:
+                klass = classes[ctrl_class_id]
+                ctrl_class = ctrl_type_map.get(ctrl_type, GenericControl)
+                ctrl_dict[ctrl.id] = ctrl_class(device, ctrl, klass)
 
         return cls(ctrl_dict)
 
@@ -960,21 +965,14 @@ class Controls(dict):
         raise KeyError(key)
 
     def used_classes(self):
-        return {v.control_class for v in self.values() if isinstance(v, BaseControl)}
+        class_map = {v.control_class.id: v.control_class for v in self.values() if isinstance(v, BaseControl)}
+        return list(class_map.values())
 
     def with_class(self, control_class):
-        if isinstance(control_class, ControlClass):
-            pass
-        elif isinstance(control_class, str):
-            cl = [c for c in ControlClass if c.name == control_class.upper()]
-            if len(cl) != 1:
-                raise ValueError(f"{control_class} is no valid ControlClass")
-            control_class = cl[0]
-        else:
-            raise TypeError(f"control_class expected as ControlClass or str, not {control_class.__class__.__name__}")
-
         for v in self.values():
-            if isinstance(v, BaseControl) and (v.control_class == control_class):
+            if not isinstance(v, BaseControl):
+                continue
+            if v.control_class.id == control_class.id:
                 yield v
 
     def set_to_default(self):
@@ -992,13 +990,13 @@ class Controls(dict):
 
 
 class BaseControl:
-    def __init__(self, device, info):
+    def __init__(self, device, info, control_class):
         self.device = device
         self._info = info
         self.id = self._info.id
         self.name = self._info.name.decode()
         self._config_name = None
-        self.control_class = ControlClass(V4L2_CTRL_ID2CLASS(self.id))
+        self.control_class = control_class
         self.type = ControlType(self._info.type)
 
         try:
@@ -1109,7 +1107,10 @@ class BaseMonoControl(BaseControl):
     def _get_repr(self) -> str:
         repr = f" default={self.default}"
         if not self.is_flagged_write_only:
-            repr += f" value={self.value}"
+            try:
+                repr += f" value={self.value}"
+            except OSError:
+                repr += " value=<error!>"
         return repr
 
     def _convert_read(self, value):
@@ -1149,8 +1150,8 @@ class BaseNumericControl(BaseMonoControl):
     lower_bound = -(2**31)
     upper_bound = 2**31 - 1
 
-    def __init__(self, device, info, clipping=True):
-        super().__init__(device, info)
+    def __init__(self, device, info, control_class, clipping=True):
+        super().__init__(device, info, control_class)
         self.minimum = self._info.minimum
         self.maximum = self._info.maximum
         self.step = self._info.step
@@ -1262,8 +1263,8 @@ class BooleanControl(BaseMonoControl):
 
 
 class MenuControl(BaseMonoControl, UserDict):
-    def __init__(self, device, info):
-        BaseControl.__init__(self, device, info)
+    def __init__(self, device, info, control_class):
+        BaseControl.__init__(self, device, info, control_class)
         UserDict.__init__(self)
 
         if self.type == ControlType.MENU:
@@ -1283,7 +1284,7 @@ class ButtonControl(BaseControl):
 
 
 class BaseCompoundControl(BaseControl):
-    def __init__(self, device, info):
+    def __init__(self, device, info, control_class):
         raise NotImplementedError()
 
 
