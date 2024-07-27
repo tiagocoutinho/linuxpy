@@ -1037,6 +1037,7 @@ class BaseControl:
         self._config_name = None
         self.control_class = control_class
         self.type = ControlType(self._info.type)
+        self.flags = ControlFlag(self._info.flags)
 
         try:
             self.standard = ControlID(self.id)
@@ -1051,9 +1052,8 @@ class BaseControl:
         if addrepr:
             repr += f" {addrepr}"
 
-        flags = [flag.name.lower() for flag in ControlFlag if ((self._info.flags & flag) == flag)]
-        if flags:
-            repr += " flags=" + ",".join(flags)
+        if self.flags:
+            repr += " flags=" + ",".join(flag.name.lower() for flag in self.flags)
 
         return f"<{type(self).__name__} {repr}>"
 
@@ -1091,51 +1091,51 @@ class BaseControl:
 
     @property
     def is_flagged_disabled(self) -> bool:
-        return (self._info.flags & ControlFlag.DISABLED) == ControlFlag.DISABLED
+        return ControlFlag.DISABLED in self.flags
 
     @property
     def is_flagged_grabbed(self) -> bool:
-        return (self._info.flags & ControlFlag.GRABBED) == ControlFlag.GRABBED
+        return ControlFlag.GRABBED in self.flags
 
     @property
     def is_flagged_read_only(self) -> bool:
-        return (self._info.flags & ControlFlag.READ_ONLY) == ControlFlag.READ_ONLY
+        return ControlFlag.READ_ONLY in self.flags
 
     @property
     def is_flagged_update(self) -> bool:
-        return (self._info.flags & ControlFlag.UPDATE) == ControlFlag.UPDATE
+        return ControlFlag.UPDATE in self.flags
 
     @property
     def is_flagged_inactive(self) -> bool:
-        return (self._info.flags & ControlFlag.INACTIVE) == ControlFlag.INACTIVE
+        return ControlFlag.INACTIVE in self.flags
 
     @property
     def is_flagged_slider(self) -> bool:
-        return (self._info.flags & ControlFlag.SLIDER) == ControlFlag.SLIDER
+        return ControlFlag.SLIDER in self.flags
 
     @property
     def is_flagged_write_only(self) -> bool:
-        return (self._info.flags & ControlFlag.WRITE_ONLY) == ControlFlag.WRITE_ONLY
+        return ControlFlag.WRITE_ONLY in self.flags
 
     @property
     def is_flagged_volatile(self) -> bool:
-        return (self._info.flags & ControlFlag.VOLATILE) == ControlFlag.VOLATILE
+        return ControlFlag.VOLATILE in self.flags
 
     @property
     def is_flagged_has_payload(self) -> bool:
-        return (self._info.flags & ControlFlag.HAS_PAYLOAD) == ControlFlag.HAS_PAYLOAD
+        return ControlFlag.HAS_PAYLOAD in self.flags
 
     @property
     def is_flagged_execute_on_write(self) -> bool:
-        return (self._info.flags & ControlFlag.EXECUTE_ON_WRITE) == ControlFlag.EXECUTE_ON_WRITE
+        return ControlFlag.EXECUTE_ON_WRITE in self.flags
 
     @property
     def is_flagged_modify_layout(self) -> bool:
-        return (self._info.flags & ControlFlag.MODIFY_LAYOUT) == ControlFlag.MODIFY_LAYOUT
+        return ControlFlag.MODIFY_LAYOUT in self.flags
 
     @property
     def is_flagged_dynamic_array(self) -> bool:
-        return (self._info.flags & ControlFlag.DYNAMIC_ARRAY) == ControlFlag.DYNAMIC_ARRAY
+        return ControlFlag.DYNAMIC_ARRAY in self.flags
 
     @property
     def is_writeable(self) -> bool:
