@@ -182,6 +182,8 @@ def iter_read(fd, ioc, indexed_struct, start=0, stop=128, step=1, ignore_einval=
             elif error.errno == errno.ENOTTY:
                 # The ioctl is not supported by the driver
                 break
+            elif error.errno == errno.ENODATA:
+                break
             else:
                 raise
 
