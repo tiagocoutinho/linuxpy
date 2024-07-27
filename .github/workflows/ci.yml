@@ -29,6 +29,15 @@ jobs:
         sudo udevadm control --reload-rules
         sudo udevadm trigger
         lsmod
+    - name: Run scripts in Renode
+      uses: antmicro/renode-linux-runner-action@v1
+      with:
+        shared-dirs: ./
+        renode-run: |
+          ls -l
+          pip install .
+          lsmod
+        devices: vivid
     - name: Set up Python ${{ matrix.python-version }}
       id: setuppy
       uses: actions/setup-python@v5
@@ -80,3 +89,22 @@ jobs:
         recreate: true
     - name: Write to Job Summary
       run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
+
+  tests-vivid:
+    name: "Tests with vivid"
+    runs-on: "ubuntu-latest"
+    permissions: write-all
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Run tests with vivd in renode
+      uses: antmicro/renode-linux-runner-action@v1
+      with:
+        renode-run: |
+          lsmod
+          pwd
+          ls -l
+          pip install ward
+          ward
+        devices: vivid
