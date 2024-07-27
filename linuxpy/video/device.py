@@ -917,6 +917,14 @@ class Device(BaseDevice):
         return query_std(self.fileno())
 
 
+def create_artificial_control_class(class_id):
+    return raw.v4l2_query_ext_ctrl(
+        id=class_id | 1,
+        name=b"Generic Controls",
+        type=ControlType.CTRL_CLASS,
+    )
+
+
 class Controls(dict):
     @classmethod
     def from_device(cls, device):
@@ -938,7 +946,10 @@ class Controls(dict):
             if ctrl_type == ControlType.CTRL_CLASS:
                 classes[ctrl_class_id] = ctrl
             else:
-                klass = classes[ctrl_class_id]
+                klass = classes.get(ctrl_class_id)
+                if klass is None:
+                    klass = create_artificial_control_class(ctrl_class_id)
+                    classes[ctrl_class_id] = klass
                 ctrl_class = ctrl_type_map.get(ctrl_type, GenericControl)
                 ctrl_dict[ctrl.id] = ctrl_class(device, ctrl, klass)
 
