@@ -599,54 +599,80 @@ def get_control(fd, id):
     return control.value
 
 
-CTRL_TYPE_ARRAY_FIELD_MAP = {
-    ControlType.U8: "p_u8",
-    ControlType.U16: "p_u16",
-    ControlType.U32: "p_u32",
-    ControlType.INTEGER: "p_s32",
-    ControlType.INTEGER64: "p_s64",
+CTRL_TYPE_CTYPE_ARRAY = {
+    ControlType.U8: ctypes.c_uint8,
+    ControlType.U16: ctypes.c_uint16,
+    ControlType.U32: ctypes.c_uint32,
+    ControlType.INTEGER: ctypes.c_int,
+    ControlType.INTEGER64: ctypes.c_int64,
 }
 
 
-def _prepare_control(control: "BaseControl", raw_control: raw.v4l2_ext_control):
+CTRL_TYPE_CTYPE_STRUCT = {
+    ControlType.AREA: raw.v4l2_area,
+}
+
+
+def _struct_for_ctrl_type(ctrl_type):
+    ctrl_type = ControlType(ctrl_type).name.lower()
+    name = f"v4l2_ctrl_{ctrl_type}"
+    return getattr(raw, name)
+
+
+def get_ctrl_type_struct(ctrl_type):
+    struct = CTRL_TYPE_CTYPE_STRUCT.get(ctrl_type)
+    if struct is None:
+        struct = _struct_for_ctrl_type(ctrl_type)
+        CTRL_TYPE_CTYPE_STRUCT[ctrl_type] = struct
+    return struct
+
+
+def _prepare_control(control: raw.v4l2_query_ext_ctrl, raw_control: raw.v4l2_ext_control):
     raw_control.id = control.id
-    if control.type >= ControlType.COMPOUND_TYPES:  # an array or compound type
-        size = control._info.elem_size * control._info.elems
-        raw_control.ptr = ctypes.create_string_buffer(size)
-    elif control.type == ControlType.STRING:
-        size = control._info.maximum
-        raw_control.ptr = ctypes.create_string_buffer(size)
-    return raw_control
+    has_payload = ControlFlag.HAS_PAYLOAD in ControlFlag(control.flags)
+    if has_payload:
+        if control.type == ControlType.STRING:
+            size = control.maximum + 1
+            payload = ctypes.create_string_buffer(size)
+            raw_control.string = payload
+            raw_control.size = size
+        else:
+            ctype = CTRL_TYPE_CTYPE_ARRAY.get(control.type)
+            raw_control.size = control.elem_size * control.elems
+            if ctype is None:
+                ctype = get_ctrl_type_struct(control.type)
+                payload = ctype()
+                raw_control.ptr = ctypes.cast(ctypes.pointer(payload), ctypes.c_void_p)
+            else:
+                for i in range(control.nr_of_dims):
+                    ctype *= control.dims[i]
+                payload = ctype()
+                raw_control.size = control.elem_size * control.elems
+                raw_control.ptr = ctypes.cast(payload, ctypes.c_void_p)
+        return payload
 
 
-def _get_control_value(control: raw.v4l2_query_ext_ctrl, raw_control: raw.v4l2_ext_control):
-    assert raw_control.id == control.id
-    nb_elems = control.elems
-    if control.type >= ControlType.COMPOUND_TYPES:  # an array
-        if nb_elems > 1:
-            member = CTRL_TYPE_ARRAY_FIELD_MAP[control.type]
-            return getattr(raw_control, member)[:nb_elems]
-    else:
+def _get_control_value(control: raw.v4l2_query_ext_ctrl, raw_control: raw.v4l2_ext_control, data):
+    if data is None:
         if control.type == ControlType.INTEGER64:
             return raw_control.value64
-        elif control.type == ControlType.STRING:
-            return raw_control.string.decode()
         return raw_control.value
+    else:
+        if control.type == ControlType.STRING:
+            return data.value.decode()
+        return data
 
 
-def get_controls_values(
-    fd, controls: list[raw.v4l2_query_ext_ctrl], which=raw.ControlWhichValue.CUR_VAL, request_fd=0
-) -> list:
+def get_controls_values(fd, controls: list[raw.v4l2_query_ext_ctrl], which=raw.ControlWhichValue.CUR_VAL, request_fd=0):
     n = len(controls)
     ctrls = raw.v4l2_ext_controls()
     ctrls.which = which
     ctrls.count = n
     ctrls.request_fd = request_fd
     ctrls.controls = (n * raw.v4l2_ext_control)()
-    for control, raw_control in zip(controls, ctrls.controls):
-        _prepare_control(control, raw_control)
+    values = [_prepare_control(*args) for args in zip(controls, ctrls.controls)]
     ioctl(fd, IOC.G_EXT_CTRLS, ctrls)
-    return [_get_control_value(control, raw_control) for control, raw_control in zip(controls, ctrls.controls)]
+    return [_get_control_value(*args) for args in zip(controls, ctrls.controls, values)]
 
 
 def set_control(fd, id, value):
