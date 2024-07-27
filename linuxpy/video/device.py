@@ -335,8 +335,7 @@ def iter_read_controls(fd):
     nxt = ControlFlag.NEXT_CTRL | ControlFlag.NEXT_COMPOUND
     ctrl.id = nxt
     for ctrl_ext in iter_read(fd, IOC.QUERY_EXT_CTRL, ctrl):
-        if ctrl_ext.type != ControlType.CTRL_CLASS:
-            yield copy.deepcopy(ctrl_ext)
+        yield copy.deepcopy(ctrl_ext)
         ctrl_ext.id |= nxt
 
 
