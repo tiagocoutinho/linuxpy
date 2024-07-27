@@ -1061,7 +1061,7 @@ class BaseControl:
         return ""
 
     def _get_control(self):
-        value = get_control(self.device, self.id)
+        value = get_controls_values(self.device, [self._info])[0]
         return value
 
     def _set_control(self, value):
@@ -1148,8 +1148,8 @@ class BaseMonoControl(BaseControl):
         if not self.is_flagged_write_only:
             try:
                 repr += f" value={self.value}"
-            except OSError:
-                repr += " value=<error!>"
+            except Exception as error:
+                repr += f" value=<error: {error!r}>"
         return repr
 
     def _convert_read(self, value):
@@ -1211,7 +1211,7 @@ class BaseNumericControl(BaseMonoControl):
         return repr
 
     def _convert_read(self, value):
-        return int(value)
+        return value
 
     def _convert_write(self, value):
         if isinstance(value, int):
