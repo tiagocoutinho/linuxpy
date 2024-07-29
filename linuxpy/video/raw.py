@@ -318,8 +318,36 @@ class PixelFormat(enum.IntEnum):
     PRIV_MAGIC = 0xFEEDCAFE
     FLAG_PREMUL_ALPHA = 0x1
     FLAG_SET_CSC = 0x2
-    HM12 = NV12_16L16
-    SUNXI_TILED_NV12 = NV12_32L32
+
+
+class MetaFormat(enum.IntEnum):
+    VSP1_HGO = v4l2_fourcc("V", "S", "P", "H")  # R-Car VSP1 1-D Histogram
+    VSP1_HGT = v4l2_fourcc("V", "S", "P", "T")  # R-Car VSP1 2-D Histogram
+    UVC = v4l2_fourcc("U", "V", "C", "H")  # UVC Payload Header metadata
+    D4XX = v4l2_fourcc("D", "4", "X", "X")  # D4XX Payload Header metadata
+    VIVID = v4l2_fourcc("V", "I", "V", "D")  # Vivid Metadata
+    RK_ISP1_PARAMS = v4l2_fourcc("R", "K", "1", "P")  # Rockchip ISP1 3A Parameters
+    RK_ISP1_STAT_3A = v4l2_fourcc("R", "K", "1", "S")  # Rockchip ISP1 3A Statistics
+
+
+class TouchFormat(enum.IntEnum):
+    DELTA_TD16 = v4l2_fourcc("T", "D", "1", "6")  # 16-bit signed deltas
+    DELTA_TD08 = v4l2_fourcc("T", "D", "0", "8")  # 8-bit signed deltas
+    TU16 = v4l2_fourcc("T", "U", "1", "6")  # 16-bit unsigned touch data
+    TU08 = v4l2_fourcc("T", "U", "0", "8")  # 8-bit unsigned touch data
+
+
+class SDRFormat(enum.IntEnum):
+    CU8 = v4l2_fourcc("C", "U", "0", "8")  # IQ u8
+    CU16LE = v4l2_fourcc("C", "U", "1", "6")  # IQ u16le
+    CS8 = v4l2_fourcc("C", "S", "0", "8")  # complex s8
+    CS14LE = v4l2_fourcc("C", "S", "1", "4")  # complex s14le
+    RU12LE = v4l2_fourcc("R", "U", "1", "2")  # real u12le
+    PCU16BE = v4l2_fourcc("P", "C", "1", "6")  # planar complex u16be
+    PCU18BE = v4l2_fourcc("P", "C", "1", "8")  # planar complex u18be
+    PCU20BE = v4l2_fourcc("P", "C", "2", "0")  # planar complex u20be
+    HM12 = PixelFormat.NV12_16L16.value
+    SUNXI_TILED_NV12 = PixelFormat.NV12_32L32.value
 
 
 class BufferFlag(enum.IntFlag):
@@ -358,6 +386,7 @@ class ImageFormatFlag(enum.IntFlag):
     CSC_YCBCR_ENC = 0x80
     CSC_HSV_ENC = CSC_YCBCR_ENC
     CSC_QUANTIZATION = 0x100
+    META_LINE_BASED = 0x200
 
 
 class InputStatus(enum.IntFlag):
@@ -3742,7 +3771,13 @@ class v4l2_meta_format(Struct):
     _pack_ = True
 
 
-v4l2_meta_format._fields_ = [("dataformat", cuint), ("buffersize", cuint)]
+v4l2_meta_format._fields_ = [
+    ("dataformat", cuint),
+    ("buffersize", cuint),
+    ("width", cuint),
+    ("height", cuint),
+    ("bytesperline", cuint),
+]
 
 
 class v4l2_format(Struct):

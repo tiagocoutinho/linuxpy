@@ -160,6 +160,7 @@ class Hardware:
             arg.bus_info = self.bus_info
             arg.version = self.version
             arg.capabilities = raw.Capability.STREAMING | raw.Capability.VIDEO_CAPTURE
+            arg.device_caps = raw.Capability.STREAMING | raw.Capability.VIDEO_CAPTURE
         elif isinstance(arg, raw.v4l2_format):
             if ioc == raw.IOC.G_FMT:
                 arg.fmt.pix.width = 640
@@ -201,6 +202,8 @@ class Hardware:
         elif ioc == raw.IOC.STREAMOFF:
             assert arg.value == raw.BufType.VIDEO_CAPTURE
             self.video_capture_state = "OFF"
+        elif ioc == raw.IOC.CROPCAP:
+            raise OSError(EINVAL, "ups!")
         elif ioc == raw.IOC.G_PARM:
             if arg.type == raw.BufType.VIDEO_CAPTURE:
                 arg.parm.capture.timeperframe.numerator = 1
@@ -556,6 +559,8 @@ def _(display=hardware):
 
 V4L2_LOOPBACK_TEST_DEVICE = Path("/dev/video199")
 
+VIVID_TEST_DEVICES = [Path(f"/dev/video{i}") for i in range(190, 194)]
+
 
 @cache
 def is_v4l2loopback_installed():
@@ -565,6 +570,16 @@ def is_v4l2loopback_installed():
 
 def is_v4l2looback_prepared():
     return V4L2_LOOPBACK_TEST_DEVICE.exists()
+
+
+@cache
+def is_vivid_installed():
+    result = subprocess.run("lsmod", capture_output=True, check=False, timeout=1)
+    return result.returncode == 0 and b"vivid" in result.stdout
+
+
+def is_vivid_prepared():
+    return all(path.exists() for path in VIVID_TEST_DEVICES)
 
 
 for output_type in (None, Capability.STREAMING, Capability.READWRITE):
