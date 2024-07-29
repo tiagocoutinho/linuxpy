@@ -386,6 +386,7 @@ class ImageFormatFlag(enum.IntFlag):
     CSC_YCBCR_ENC = 0x80
     CSC_HSV_ENC = CSC_YCBCR_ENC
     CSC_QUANTIZATION = 0x100
+    META_LINE_BASED = 0x200
 
 
 class InputStatus(enum.IntFlag):
@@ -3770,7 +3771,13 @@ class v4l2_meta_format(Struct):
     _pack_ = True
 
 
-v4l2_meta_format._fields_ = [("dataformat", cuint), ("buffersize", cuint)]
+v4l2_meta_format._fields_ = [
+    ("dataformat", cuint),
+    ("buffersize", cuint),
+    ("width", cuint),
+    ("height", cuint),
+    ("bytesperline", cuint),
+]
 
 
 class v4l2_format(Struct):
