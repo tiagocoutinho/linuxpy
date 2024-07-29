@@ -66,6 +66,7 @@ BufferType = raw.BufType
 BufferFlag = raw.BufferFlag
 InputType = raw.InputType
 PixelFormat = raw.PixelFormat
+MetaFormat = raw.MetaFormat
 FrameSizeType = raw.Frmsizetypes
 Memory = raw.Memory
 InputStatus = raw.InputStatus
@@ -88,6 +89,7 @@ def human_pixel_format(ifmt):
 
 
 PixelFormat.human_str = lambda self: human_pixel_format(self.value)
+MetaFormat.human_str = lambda self: human_pixel_format(self.value)
 
 
 Info = collections.namedtuple(
@@ -97,6 +99,8 @@ Info = collections.namedtuple(
 )
 
 ImageFormat = collections.namedtuple("ImageFormat", "type description flags pixel_format")
+
+MetaFmt = collections.namedtuple("MetaFmt", "format max_buffer_size width height bytes_per_line")
 
 Format = collections.namedtuple("Format", "width height pixel_format size")
 
@@ -265,20 +269,32 @@ def iter_read_formats(fd, type):
     format = raw.v4l2_fmtdesc()
     format.type = type
     pixel_formats = set(PixelFormat)
+    meta_formats = set(MetaFormat)
     for fmt in iter_read(fd, IOC.ENUM_FMT, format):
         pixel_fmt = fmt.pixelformat
-        if pixel_fmt not in pixel_formats:
-            log.warning(
-                "ignored unknown pixel format %s (%d)",
-                human_pixel_format(pixel_fmt),
-                pixel_fmt,
-            )
-            continue
+        if type in {BufferType.VIDEO_CAPTURE, BufferType.VIDEO_OUTPUT}:
+            if pixel_fmt not in pixel_formats:
+                log.warning(
+                    "ignored unknown pixel format %s (%d)",
+                    human_pixel_format(pixel_fmt),
+                    pixel_fmt,
+                )
+                continue
+            pixel_format = PixelFormat(pixel_fmt)
+        elif type in {BufferType.META_CAPTURE, BufferType.META_OUTPUT}:
+            if pixel_fmt not in meta_formats:
+                log.warning(
+                    "ignored unknown meta format %s (%d)",
+                    human_pixel_format(pixel_fmt),
+                    pixel_fmt,
+                )
+                continue
+            pixel_format = MetaFormat(pixel_fmt)
         image_format = ImageFormat(
             type=type,
             flags=ImageFormatFlag(fmt.flags),
             description=fmt.description.decode(),
-            pixel_format=PixelFormat(pixel_fmt),
+            pixel_format=pixel_format,
         )
         yield image_format
 
@@ -361,17 +377,19 @@ def read_info(fd):
     device_capabilities = Capability(caps.device_caps)
     buffers = [typ for typ in BufferType if Capability[typ.name] in device_capabilities]
 
-    img_fmt_stream_types = {
+    img_fmt_buffer_types = {
         BufferType.VIDEO_CAPTURE,
         BufferType.VIDEO_CAPTURE_MPLANE,
         BufferType.VIDEO_OUTPUT,
         BufferType.VIDEO_OUTPUT_MPLANE,
         BufferType.VIDEO_OVERLAY,
+        BufferType.META_CAPTURE,
+        BufferType.META_OUTPUT,
     } & set(buffers)
 
     image_formats = []
     pixel_formats = set()
-    for stream_type in img_fmt_stream_types:
+    for stream_type in img_fmt_buffer_types:
         for image_format in iter_read_formats(fd, stream_type):
             image_formats.append(image_format)
             pixel_formats.add(image_format.pixel_format)
@@ -486,7 +504,7 @@ def set_format(fd, buffer_type: BufferType, width: int, height: int, pixel_forma
     return set_raw_format(fd, fmt)
 
 
-def get_raw_format(fd, buffer_type):
+def get_raw_format(fd, buffer_type) -> raw.v4l2_format:
     fmt = raw.v4l2_format()
     fmt.type = buffer_type
     ioctl(fd, IOC.G_FMT, fmt)
@@ -495,6 +513,14 @@ def get_raw_format(fd, buffer_type):
 
 def get_format(fd, buffer_type) -> Format:
     f = get_raw_format(fd, buffer_type)
+    if buffer_type in {BufferType.META_CAPTURE, BufferType.META_OUTPUT}:
+        return MetaFmt(
+            format=MetaFormat(f.fmt.meta.dataformat),
+            max_buffer_size=f.fmt.meta.buffersize,
+            width=f.fmt.meta.width,
+            height=f.fmt.meta.height,
+            bytes_per_line=f.fmt.meta.bytesperline,
+        )
     return Format(
         width=f.fmt.pix.width,
         height=f.fmt.pix.height,
