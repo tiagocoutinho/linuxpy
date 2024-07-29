@@ -182,6 +182,8 @@ def iter_read(fd, ioc, indexed_struct, start=0, stop=128, step=1, ignore_einval=
             elif error.errno == errno.ENOTTY:
                 # The ioctl is not supported by the driver
                 break
+            elif error.errno == errno.ENODATA:
+                break
             else:
                 raise
 
@@ -333,8 +335,7 @@ def iter_read_controls(fd):
     nxt = ControlFlag.NEXT_CTRL | ControlFlag.NEXT_COMPOUND
     ctrl.id = nxt
     for ctrl_ext in iter_read(fd, IOC.QUERY_EXT_CTRL, ctrl):
-        if ctrl_ext.type != ControlType.CTRL_CLASS:
-            yield copy.deepcopy(ctrl_ext)
+        yield copy.deepcopy(ctrl_ext)
         ctrl_ext.id |= nxt
 
 
@@ -598,9 +599,151 @@ def get_control(fd, id):
     return control.value
 
 
+CTRL_TYPE_CTYPE_ARRAY = {
+    ControlType.U8: ctypes.c_uint8,
+    ControlType.U16: ctypes.c_uint16,
+    ControlType.U32: ctypes.c_uint32,
+    ControlType.INTEGER: ctypes.c_int,
+    ControlType.INTEGER64: ctypes.c_int64,
+}
+
+
+CTRL_TYPE_CTYPE_STRUCT = {
+    ControlType.AREA: raw.v4l2_area,
+}
+
+
+def _struct_for_ctrl_type(ctrl_type):
+    ctrl_type = ControlType(ctrl_type).name.lower()
+    name = f"v4l2_ctrl_{ctrl_type}"
+    return getattr(raw, name)
+
+
+def _field_for_control(control):
+    has_payload = ControlFlag.HAS_PAYLOAD in ControlFlag(control.flags)
+    if has_payload:
+        if control.type == ControlType.INTEGER:
+            return "p_s32"
+        elif control.type == ControlType.INTEGER64:
+            return "p_s64"
+        elif control.type == ControlType.STRING:
+            return "string"
+        else:
+            ctrl_name = ControlType(control.type).name.lower()
+            return f"p_{ctrl_name}"
+    if control.type == ControlType.INTEGER64:
+        return "value64"
+    return "value"
+
+
+def get_ctrl_type_struct(ctrl_type):
+    struct = CTRL_TYPE_CTYPE_STRUCT.get(ctrl_type)
+    if struct is None:
+        struct = _struct_for_ctrl_type(ctrl_type)
+        CTRL_TYPE_CTYPE_STRUCT[ctrl_type] = struct
+    return struct
+
+
+def convert_to_ctypes_array(lst, depth, ctype):
+    """Convert a list (arbitrary depth) to a ctypes array."""
+    if depth == 1:
+        return (ctype * len(lst))(*lst)
+
+    # Recursive case: we need to process the sub-lists first
+    sub_arrays = [convert_to_ctypes_array(sub_lst, depth - 1, ctype) for sub_lst in lst]
+    array_type = len(sub_arrays) * type(sub_arrays[0])  # Create the array type
+    return array_type(*sub_arrays)
+
+
+def _prepare_read_control_value(control: raw.v4l2_query_ext_ctrl, raw_control: raw.v4l2_ext_control):
+    raw_control.id = control.id
+    has_payload = ControlFlag.HAS_PAYLOAD in ControlFlag(control.flags)
+    if has_payload:
+        if control.type == ControlType.STRING:
+            size = control.maximum + 1
+            payload = ctypes.create_string_buffer(size)
+            raw_control.string = payload
+            raw_control.size = size
+        else:
+            ctype = CTRL_TYPE_CTYPE_ARRAY.get(control.type)
+            raw_control.size = control.elem_size * control.elems
+            if ctype is None:
+                ctype = get_ctrl_type_struct(control.type)
+                payload = ctype()
+                raw_control.ptr = ctypes.cast(ctypes.pointer(payload), ctypes.c_void_p)
+            else:
+                for i in range(control.nr_of_dims):
+                    ctype *= control.dims[i]
+                payload = ctype()
+                raw_control.size = control.elem_size * control.elems
+                raw_control.ptr = ctypes.cast(payload, ctypes.c_void_p)
+        return payload
+
+
+def _get_control_value(control: raw.v4l2_query_ext_ctrl, raw_control: raw.v4l2_ext_control, data):
+    if data is None:
+        if control.type == ControlType.INTEGER64:
+            return raw_control.value64
+        return raw_control.value
+    else:
+        if control.type == ControlType.STRING:
+            return data.value.decode()
+        return data
+
+
+def get_controls_values(fd, controls: list[raw.v4l2_query_ext_ctrl], which=raw.ControlWhichValue.CUR_VAL, request_fd=0):
+    n = len(controls)
+    ctrls = raw.v4l2_ext_controls()
+    ctrls.which = which
+    ctrls.count = n
+    ctrls.request_fd = request_fd
+    ctrls.controls = (n * raw.v4l2_ext_control)()
+    values = [_prepare_read_control_value(*args) for args in zip(controls, ctrls.controls)]
+    ioctl(fd, IOC.G_EXT_CTRLS, ctrls)
+    return [_get_control_value(*args) for args in zip(controls, ctrls.controls, values)]
+
+
 def set_control(fd, id, value):
     control = raw.v4l2_control(id, value)
     ioctl(fd, IOC.S_CTRL, control)
+
+
+def _prepare_write_controls_values(control: raw.v4l2_query_ext_ctrl, value: object, raw_control: raw.v4l2_ext_control):
+    raw_control.id = control.id
+    has_payload = ControlFlag.HAS_PAYLOAD in ControlFlag(control.flags)
+    if has_payload:
+        if control.type == ControlType.STRING:
+            raw_control.string = ctypes.create_string_buffer(value.encode())
+            raw_control.size = len(value) + 1
+        else:
+            array_type = CTRL_TYPE_CTYPE_ARRAY.get(control.type)
+            raw_control.size = control.elem_size * control.elems
+            field = _field_for_control(control)
+            # a struct: assume value is proper raw struct
+            if array_type is None:
+                value = ctypes.pointer(value)
+            else:
+                value = convert_to_ctypes_array(value, control.nr_of_dims, array_type)
+            setattr(raw_control, field, value)
+    else:
+        if control.type == ControlType.INTEGER64:
+            raw_control.value64 = value
+        else:
+            raw_control.value = value
+
+
+def set_controls_values(
+    fd, controls_values: list[tuple[raw.v4l2_query_ext_ctrl, object]], which=raw.ControlWhichValue.CUR_VAL, request_fd=0
+):
+    n = len(controls_values)
+    ctrls = raw.v4l2_ext_controls()
+    ctrls.which = which
+    ctrls.count = n
+    ctrls.request_fd = request_fd
+    ctrls.controls = (n * raw.v4l2_ext_control)()
+    for (control, value), raw_control in zip(controls_values, ctrls.controls):
+        _prepare_write_controls_values(control, value, raw_control)
+    ioctl(fd, IOC.S_EXT_CTRLS, ctrls)
 
 
 def get_priority(fd) -> Priority:
@@ -868,6 +1011,14 @@ class Device(BaseDevice):
         return query_std(self.fileno())
 
 
+def create_artificial_control_class(class_id):
+    return raw.v4l2_query_ext_ctrl(
+        id=class_id | 1,
+        name=b"Generic Controls",
+        type=ControlType.CTRL_CLASS,
+    )
+
+
 class Controls(dict):
     @classmethod
     def from_device(cls, device):
@@ -880,13 +1031,26 @@ class Controls(dict):
             ControlType.U8: U8Control,
             ControlType.U16: U16Control,
             ControlType.U32: U32Control,
+            ControlType.BUTTON: ButtonControl,
         }
         ctrl_dict = {}
-
+        classes = {}
         for ctrl in device.info.controls:
             ctrl_type = ControlType(ctrl.type)
-            ctrl_class = ctrl_type_map.get(ctrl_type, GenericControl)
-            ctrl_dict[ctrl.id] = ctrl_class(device, ctrl)
+            ctrl_class_id = V4L2_CTRL_ID2CLASS(ctrl.id)
+            if ctrl_type == ControlType.CTRL_CLASS:
+                classes[ctrl_class_id] = ctrl
+            else:
+                klass = classes.get(ctrl_class_id)
+                if klass is None:
+                    klass = create_artificial_control_class(ctrl_class_id)
+                    classes[ctrl_class_id] = klass
+                has_payload = ControlFlag.HAS_PAYLOAD in ControlFlag(ctrl.flags)
+                if has_payload:
+                    ctrl_class = CompoundControl
+                else:
+                    ctrl_class = ctrl_type_map.get(ctrl_type, GenericControl)
+                ctrl_dict[ctrl.id] = ctrl_class(device, ctrl, klass)
 
         return cls(ctrl_dict)
 
@@ -911,21 +1075,14 @@ class Controls(dict):
         raise KeyError(key)
 
     def used_classes(self):
-        return {v.control_class for v in self.values() if isinstance(v, BaseControl)}
+        class_map = {v.control_class.id: v.control_class for v in self.values() if isinstance(v, BaseControl)}
+        return list(class_map.values())
 
     def with_class(self, control_class):
-        if isinstance(control_class, ControlClass):
-            pass
-        elif isinstance(control_class, str):
-            cl = [c for c in ControlClass if c.name == control_class.upper()]
-            if len(cl) != 1:
-                raise ValueError(f"{control_class} is no valid ControlClass")
-            control_class = cl[0]
-        else:
-            raise TypeError(f"control_class expected as ControlClass or str, not {control_class.__class__.__name__}")
-
         for v in self.values():
-            if isinstance(v, BaseControl) and (v.control_class == control_class):
+            if not isinstance(v, BaseControl):
+                continue
+            if v.control_class.id == control_class.id:
                 yield v
 
     def set_to_default(self):
@@ -943,14 +1100,15 @@ class Controls(dict):
 
 
 class BaseControl:
-    def __init__(self, device, info):
+    def __init__(self, device, info, control_class):
         self.device = device
         self._info = info
         self.id = self._info.id
         self.name = self._info.name.decode()
         self._config_name = None
-        self.control_class = ControlClass(V4L2_CTRL_ID2CLASS(self.id))
+        self.control_class = control_class
         self.type = ControlType(self._info.type)
+        self.flags = ControlFlag(self._info.flags)
 
         try:
             self.standard = ControlID(self.id)
@@ -965,9 +1123,8 @@ class BaseControl:
         if addrepr:
             repr += f" {addrepr}"
 
-        flags = [flag.name.lower() for flag in ControlFlag if ((self._info.flags & flag) == flag)]
-        if flags:
-            repr += " flags=" + ",".join(flags)
+        if self.flags:
+            repr += " flags=" + ",".join(flag.name.lower() for flag in self.flags)
 
         return f"<{type(self).__name__} {repr}>"
 
@@ -975,7 +1132,8 @@ class BaseControl:
         return ""
 
     def _get_control(self):
-        value = get_control(self.device, self.id)
+        # value = get_controls_values(self.device, [self._info])[0]
+        value = get_controls_values(self.device, (self._info,))[0]
         return value
 
     def _set_control(self, value):
@@ -990,7 +1148,7 @@ class BaseControl:
             if self.is_flagged_grabbed:
                 reasons.append("grabbed")
             raise AttributeError(f"{self.__class__.__name__} {self.config_name} is not writeable: {', '.join(reasons)}")
-        set_control(self.device, self.id, value)
+        set_controls_values(self.device, ((self._info, value),))
 
     @property
     def config_name(self) -> str:
@@ -1005,51 +1163,51 @@ class BaseControl:
 
     @property
     def is_flagged_disabled(self) -> bool:
-        return (self._info.flags & ControlFlag.DISABLED) == ControlFlag.DISABLED
+        return ControlFlag.DISABLED in self.flags
 
     @property
     def is_flagged_grabbed(self) -> bool:
-        return (self._info.flags & ControlFlag.GRABBED) == ControlFlag.GRABBED
+        return ControlFlag.GRABBED in self.flags
 
     @property
     def is_flagged_read_only(self) -> bool:
-        return (self._info.flags & ControlFlag.READ_ONLY) == ControlFlag.READ_ONLY
+        return ControlFlag.READ_ONLY in self.flags
 
     @property
     def is_flagged_update(self) -> bool:
-        return (self._info.flags & ControlFlag.UPDATE) == ControlFlag.UPDATE
+        return ControlFlag.UPDATE in self.flags
 
     @property
     def is_flagged_inactive(self) -> bool:
-        return (self._info.flags & ControlFlag.INACTIVE) == ControlFlag.INACTIVE
+        return ControlFlag.INACTIVE in self.flags
 
     @property
     def is_flagged_slider(self) -> bool:
-        return (self._info.flags & ControlFlag.SLIDER) == ControlFlag.SLIDER
+        return ControlFlag.SLIDER in self.flags
 
     @property
     def is_flagged_write_only(self) -> bool:
-        return (self._info.flags & ControlFlag.WRITE_ONLY) == ControlFlag.WRITE_ONLY
+        return ControlFlag.WRITE_ONLY in self.flags
 
     @property
     def is_flagged_volatile(self) -> bool:
-        return (self._info.flags & ControlFlag.VOLATILE) == ControlFlag.VOLATILE
+        return ControlFlag.VOLATILE in self.flags
 
     @property
     def is_flagged_has_payload(self) -> bool:
-        return (self._info.flags & ControlFlag.HAS_PAYLOAD) == ControlFlag.HAS_PAYLOAD
+        return ControlFlag.HAS_PAYLOAD in self.flags
 
     @property
     def is_flagged_execute_on_write(self) -> bool:
-        return (self._info.flags & ControlFlag.EXECUTE_ON_WRITE) == ControlFlag.EXECUTE_ON_WRITE
+        return ControlFlag.EXECUTE_ON_WRITE in self.flags
 
     @property
     def is_flagged_modify_layout(self) -> bool:
-        return (self._info.flags & ControlFlag.MODIFY_LAYOUT) == ControlFlag.MODIFY_LAYOUT
+        return ControlFlag.MODIFY_LAYOUT in self.flags
 
     @property
     def is_flagged_dynamic_array(self) -> bool:
-        return (self._info.flags & ControlFlag.DYNAMIC_ARRAY) == ControlFlag.DYNAMIC_ARRAY
+        return ControlFlag.DYNAMIC_ARRAY in self.flags
 
     @property
     def is_writeable(self) -> bool:
@@ -1060,7 +1218,10 @@ class BaseMonoControl(BaseControl):
     def _get_repr(self) -> str:
         repr = f" default={self.default}"
         if not self.is_flagged_write_only:
-            repr += f" value={self.value}"
+            try:
+                repr += f" value={self.value}"
+            except Exception as error:
+                repr += f" value=<error: {error!r}>"
         return repr
 
     def _convert_read(self, value):
@@ -1068,7 +1229,8 @@ class BaseMonoControl(BaseControl):
 
     @property
     def default(self):
-        return self._convert_read(self._info.default_value)
+        default = get_controls_values(self.device, (self._info,), raw.ControlWhichValue.DEF_VAL)[0]
+        return self._convert_read(default)
 
     @property
     def value(self):
@@ -1100,8 +1262,8 @@ class BaseNumericControl(BaseMonoControl):
     lower_bound = -(2**31)
     upper_bound = 2**31 - 1
 
-    def __init__(self, device, info, clipping=True):
-        super().__init__(device, info)
+    def __init__(self, device, info, control_class, clipping=True):
+        super().__init__(device, info, control_class)
         self.minimum = self._info.minimum
         self.maximum = self._info.maximum
         self.step = self._info.step
@@ -1122,7 +1284,7 @@ class BaseNumericControl(BaseMonoControl):
         return repr
 
     def _convert_read(self, value):
-        return int(value)
+        return value
 
     def _convert_write(self, value):
         if isinstance(value, int):
@@ -1213,14 +1375,14 @@ class BooleanControl(BaseMonoControl):
 
 
 class MenuControl(BaseMonoControl, UserDict):
-    def __init__(self, device, info):
-        BaseControl.__init__(self, device, info)
+    def __init__(self, device, info, control_class):
+        BaseControl.__init__(self, device, info, control_class)
         UserDict.__init__(self)
 
         if self.type == ControlType.MENU:
             self.data = {item.index: item.name.decode() for item in iter_read_menu(self.device._fobj, self)}
         elif self.type == ControlType.INTEGER_MENU:
-            self.data = {item.index: int(item.name) for item in iter_read_menu(self.device._fobj, self)}
+            self.data = {item.index: ord(item.name) for item in iter_read_menu(self.device._fobj, self)}
         else:
             raise TypeError(f"MenuControl only supports control types MENU or INTEGER_MENU, but not {self.type.name}")
 
@@ -1233,9 +1395,19 @@ class ButtonControl(BaseControl):
         self._set_control(1)
 
 
-class BaseCompoundControl(BaseControl):
-    def __init__(self, device, info):
-        raise NotImplementedError()
+class CompoundControl(BaseControl):
+    @property
+    def default(self):
+        return get_controls_values(self.device, [self._info], raw.ControlWhichValue.DEF_VAL)[0]
+
+    @property
+    def value(self):
+        if not self.is_flagged_write_only:
+            return get_controls_values(self.device, [self._info])[0]
+
+    @value.setter
+    def value(self, value):
+        set_controls_values(self.device, ((self._info, value),))
 
 
 class DeviceHelper:

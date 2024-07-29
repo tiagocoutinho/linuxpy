@@ -8,6 +8,9 @@ import pathlib
 
 from .base import CEnum, run
 
+this_dir = pathlib.Path(__file__).parent
+
+
 HEADERS = [
     "/usr/include/linux/v4l2-common.h",
     "/usr/include/linux/v4l2-controls.h",
@@ -15,6 +18,7 @@ HEADERS = [
     "/usr/include/linux/v4l2-mediabus.h",
     "/usr/include/linux/v4l2-dv-timings.h",
     "/usr/include/linux/v4l2-subdev.h",
+    str(this_dir / "vivid.h"),
 ]
 
 
@@ -94,6 +98,21 @@ class StandardID(enum.IntFlag):
 {iocs_body}"""
 
 
+class ControlClassEnum(CEnum):
+    def __init__(self):
+        super.__init__("ControlClass", ["V4L2_CTRL_CLASS_", "V4L2_CID_", "VIVID_CID_"], with_prefix=True)
+
+    def add_item(self, name, value):
+        if name.startswith("V4L2_CTRL_CLASS_"):
+            name = name.removeprefix("V4L2_CTRL_CLASS_")
+        elif name.startswith("V4L2_CID_"):
+            name = name.removeprefix("V4L2_CID_")
+        elif name.startswith("VIVID_CID_"):
+            name = "VIVID_" + name.removeprefix("VIVID_CID_")
+        value = value.replace("VIVID_CID_", "VIVID_")
+        super().add_item(name, value)
+
+
 # macros from #define statements
 MACRO_ENUMS = [
     CEnum("SelectionFlag", "V4L2_SEL_FLAG_", "IntFlag"),
@@ -107,9 +126,11 @@ MACRO_ENUMS = [
     CEnum("OutputType", "V4L2_OUTPUT_TYPE_"),
     CEnum("InputCapabilities", "V4L2_IN_CAP_", "IntFlag"),
     CEnum("OutputCapabilities", "V4L2_OUT_CAP_", "IntFlag"),
-    CEnum("ControlClass", "V4L2_CTRL_CLASS_"),
-    CEnum("ControlID", "V4L2_CID_"),
+    CEnum("ControlClass", ["V4L2_CTRL_CLASS_", "V4L2_CID_", "VIVID_CID_"]),
+    # CEnum("ControlID", "V4L2_CID_"),
+    # CEnum("VividControlID", "VIVID_CID_"),
     CEnum("ControlFlag", "V4L2_CTRL_FLAG_", "IntFlag"),
+    CEnum("ControlWhichValue", "V4L2_CTRL_WHICH_"),
     CEnum("TimeCodeType", "V4L2_TC_TYPE_"),
     CEnum("TimeCodeFlag", "V4L2_TC_FLAG_", "IntFlag"),
     CEnum("EventType", "V4L2_EVENT_"),
@@ -123,9 +144,6 @@ MACRO_ENUMS = [
     CEnum("DVTimingsCapabilities", "V4L2_DV_BT_CAP_", "IntFlag"),
     CEnum("IOC", "VIDIOC_"),
 ]
-
-
-this_dir = pathlib.Path(__file__).parent
 
 
 def main(output=this_dir.parent / "video" / "raw.py"):

@@ -25,17 +25,27 @@ def _get_ctrl(cam, control):
 
 def show_control_status(device: str) -> None:
     with Device(device) as cam:
+        # Group controls by class
+        class_controls = {}
+        classes = {}
+        for control in cam.controls.values():
+            classes[control.control_class.id] = control.control_class
+            control_ids = class_controls.setdefault(control.control_class.id, [])
+            control_ids.append(control)
+
         print("Showing current status of all controls ...\n")
         print(f"*** {cam.info.card} ***")
 
-        for cc in cam.controls.used_classes():
-            print(f"\n{cc.name.title()} Controls\n")
+        for control_class_id, controls in class_controls.items():
+            control_class = classes[control_class_id]
+            print(f"\n{control_class.name.decode().title()}\n")
 
-            for ctrl in cam.controls.with_class(cc):
+            for ctrl in controls:
                 print("0x%08x:" % ctrl.id, ctrl)
                 if isinstance(ctrl, MenuControl):
                     for key, value in ctrl.items():
                         print(11 * " ", f" +-- {key}: {value}")
+
         print("")
 
 
