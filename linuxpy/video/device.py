@@ -1595,7 +1595,7 @@ class VideoCapture(BufferManager):
     def open(self):
         if self.buffer is None:
             self.device.log.info("Preparing for video capture...")
-            capabilities = self.device.info.capabilities
+            capabilities = self.device.info.device_capabilities
             if Capability.VIDEO_CAPTURE not in capabilities:
                 raise V4L2Error("device lacks VIDEO_CAPTURE capability")
             source = capabilities if self.source is None else self.source
