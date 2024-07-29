@@ -19,6 +19,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+    - name: Install necessary packages
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y linux-modules-extra-$(uname -r)
     - name: Setup user groups
       run: |
         sudo usermod -aG input,audio $USER
@@ -28,6 +32,7 @@ jobs:
         cat /etc/udev/rules.d/99-$USER.rules
         sudo udevadm control --reload-rules
         sudo udevadm trigger
+        sudo modprobe vivid n_devs=2 node_types=0xe1d3d,0xe1d3d vid_cap_nr=10,20 vid_out_nr=11,21 meta_cap_nr=12,22 meta_out_nr=13,33
         lsmod
     - name: Set up Python ${{ matrix.python-version }}
       id: setuppy
