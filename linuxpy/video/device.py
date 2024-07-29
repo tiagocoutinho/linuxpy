@@ -188,61 +188,57 @@ def iter_read(fd, ioc, indexed_struct, start=0, stop=128, step=1, ignore_einval=
                 raise
 
 
-def frame_sizes(fd, pixel_formats):
-    def get_frame_intervals(fmt, w, h):
-        value = raw.v4l2_frmivalenum()
-        value.pixel_format = fmt
-        value.width = w
-        value.height = h
-        res = []
-        for val in iter_read(fd, IOC.ENUM_FRAMEINTERVALS, value):
-            # values come in frame interval (fps = 1/interval)
-            try:
-                ftype = FrameIntervalType(val.type)
-            except ValueError:
-                break
-            if ftype == FrameIntervalType.DISCRETE:
-                min_fps = max_fps = step_fps = fractions.Fraction(val.discrete.denominator / val.discrete.numerator)
+def iter_read_frame_intervals(fd, fmt, w, h):
+    value = raw.v4l2_frmivalenum()
+    value.pixel_format = fmt
+    value.width = w
+    value.height = h
+    count = 0
+    for val in iter_read(fd, IOC.ENUM_FRAMEINTERVALS, value):
+        # values come in frame interval (fps = 1/interval)
+        try:
+            ftype = FrameIntervalType(val.type)
+        except ValueError:
+            break
+        if ftype == FrameIntervalType.DISCRETE:
+            min_fps = max_fps = step_fps = fractions.Fraction(val.discrete.denominator / val.discrete.numerator)
+        else:
+            if val.stepwise.min.numerator == 0:
+                min_fps = 0
             else:
-                if val.stepwise.min.numerator == 0:
-                    min_fps = 0
-                else:
-                    min_fps = fractions.Fraction(val.stepwise.min.denominator, val.stepwise.min.numerator)
-                if val.stepwise.max.numerator == 0:
-                    max_fps = 0
-                else:
-                    max_fps = fractions.Fraction(val.stepwise.max.denominator, val.stepwise.max.numerator)
-                if val.stepwise.step.numerator == 0:
-                    step_fps = 0
-                else:
-                    step_fps = fractions.Fraction(val.stepwise.step.denominator, val.stepwise.step.numerator)
-            res.append(
-                FrameType(
-                    type=ftype,
-                    pixel_format=fmt,
-                    width=w,
-                    height=h,
-                    min_fps=min_fps,
-                    max_fps=max_fps,
-                    step_fps=step_fps,
-                )
-            )
-        if len(res) == 0:
-            # If it wasn't possible to get frame interval, report discovered frame size anyway
-            res.append(
-                FrameType(
-                    type=FrameIntervalType.DISCRETE,
-                    pixel_format=fmt,
-                    width=w,
-                    height=h,
-                    min_fps=0,
-                    max_fps=0,
-                    step_fps=0,
-                )
-            )
+                min_fps = fractions.Fraction(val.stepwise.min.denominator, val.stepwise.min.numerator)
+            if val.stepwise.max.numerator == 0:
+                max_fps = 0
+            else:
+                max_fps = fractions.Fraction(val.stepwise.max.denominator, val.stepwise.max.numerator)
+            if val.stepwise.step.numerator == 0:
+                step_fps = 0
+            else:
+                step_fps = fractions.Fraction(val.stepwise.step.denominator, val.stepwise.step.numerator)
+        yield FrameType(
+            type=ftype,
+            pixel_format=fmt,
+            width=w,
+            height=h,
+            min_fps=min_fps,
+            max_fps=max_fps,
+            step_fps=step_fps,
+        )
+        count += 1
+    if not count:
+        # If it wasn't possible to get frame interval, report discovered frame size anyway
+        yield FrameType(
+            type=FrameIntervalType.DISCRETE,
+            pixel_format=fmt,
+            width=w,
+            height=h,
+            min_fps=0,
+            max_fps=0,
+            step_fps=0,
+        )
 
-        return res
 
+def frame_sizes(fd, pixel_formats):
     size = raw.v4l2_frmsizeenum()
     sizes = []
     for pixel_format in pixel_formats:
@@ -254,7 +250,7 @@ def frame_sizes(fd, pixel_formats):
             except OSError:
                 break
             if size.type == FrameSizeType.DISCRETE:
-                sizes += get_frame_intervals(pixel_format, size.discrete.width, size.discrete.height)
+                sizes += iter_read_frame_intervals(fd, pixel_format, size.discrete.width, size.discrete.height)
             size.index += 1
     return sizes
 
