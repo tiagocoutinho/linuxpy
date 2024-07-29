@@ -231,6 +231,26 @@ class Hardware:
                 self.contrast = arg.value
             else:
                 raise OSError(EINVAL, "ups!")
+        elif ioc == raw.IOC.G_EXT_CTRLS:
+            for i in range(arg.count):
+                ctrl = arg.controls[i]
+                if ctrl.id == 9963776:
+                    ctrl.value = self.brightness
+                elif ctrl.id == 9963777:
+                    ctrl.value = self.contrast
+                elif ctrl.id == 9963788:
+                    ctrl.value = 0
+                else:
+                    raise OSError(EINVAL, "ups!")
+        elif ioc == raw.IOC.S_EXT_CTRLS:
+            for i in range(arg.count):
+                ctrl = arg.controls[i]
+                if ctrl.id == 9963776:
+                    self.brightness = ctrl.value
+                elif ctrl.id == 9963777:
+                    self.contrast = ctrl.value
+                else:
+                    raise OSError(EINVAL, "ups!")
         return 0
 
     def mmap(self, fd, length, offset):
