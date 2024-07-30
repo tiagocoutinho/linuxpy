@@ -95,7 +95,7 @@ MetaFormat.human_str = lambda self: human_pixel_format(self.value)
 Info = collections.namedtuple(
     "Info",
     "driver card bus_info version capabilities device_capabilities "
-    "crop_capabilities buffers formats frame_sizes inputs outputs controls video_standards",
+    "crop_capabilities buffers formats frame_sizes inputs outputs controls",
 )
 
 ImageFormat = collections.namedtuple("ImageFormat", "type description flags pixel_format")
@@ -425,7 +425,6 @@ def read_info(fd):
         inputs=list(iter_read_inputs(fd)),
         outputs=list(iter_read_outputs(fd)),
         controls=list(iter_read_controls(fd)),
-        video_standards=list(iter_read_video_standards(fd)),
     )
 
 
