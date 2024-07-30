@@ -486,6 +486,23 @@ def free_buffers(fd, buffer_type: BufferType, memory: Memory) -> raw.v4l2_reques
     return req
 
 
+def export_buffer(fd, buffer_type: BufferType, index: int) -> int:
+    req = raw.v4l2_exportbuffer(type=buffer_type, index=index)
+    return ioctl(fd, IOC.EXPBUF, req).fd
+
+
+def create_buffers(fd, format: raw.v4l2_format, memory: Memory, count: int) -> raw.v4l2_create_buffers:
+    """Create buffers for Memory Mapped or User Pointer or DMA Buffer I/O"""
+    req = raw.v4l2_create_buffers()
+    req.format = format
+    req.memory = memory
+    req.count = count
+    ioctl(fd, IOC.CREATE_BUFS, req)
+    if not req.count:
+        raise OSError("Not enough buffer memory")
+    return req
+
+
 def set_raw_format(fd, fmt: raw.v4l2_format):
     return ioctl(fd, IOC.S_FMT, fmt)
 
@@ -874,13 +891,13 @@ def query_std(fd):
 # Helpers
 
 
-def create_buffer(fd, buffer_type: BufferType, memory: Memory) -> raw.v4l2_buffer:
+def request_and_query_buffer(fd, buffer_type: BufferType, memory: Memory) -> raw.v4l2_buffer:
     """request + query buffers"""
-    buffers = create_buffers(fd, buffer_type, memory, 1)
+    buffers = request_and_query_buffers(fd, buffer_type, memory, 1)
     return buffers[0]
 
 
-def create_buffers(fd, buffer_type: BufferType, memory: Memory, count: int) -> list[raw.v4l2_buffer]:
+def request_and_query_buffers(fd, buffer_type: BufferType, memory: Memory, count: int) -> list[raw.v4l2_buffer]:
     """request + query buffers"""
     request_buffers(fd, buffer_type, memory, count)
     return [query_buffer(fd, buffer_type, memory, index) for index in range(count)]
@@ -892,7 +909,7 @@ def mmap_from_buffer(fd, buff: raw.v4l2_buffer) -> mmap.mmap:
 
 def create_mmap_buffers(fd, buffer_type: BufferType, memory: Memory, count: int) -> list[mmap.mmap]:
     """create buffers + mmap_from_buffer"""
-    return [mmap_from_buffer(fd, buff) for buff in create_buffers(fd, buffer_type, memory, count)]
+    return [mmap_from_buffer(fd, buff) for buff in request_and_query_buffers(fd, buffer_type, memory, count)]
 
 
 def create_mmap_buffer(fd, buffer_type: BufferType, memory: Memory) -> mmap.mmap:
@@ -937,7 +954,7 @@ class Device(BaseDevice):
         return request_buffers(self.fileno(), buffer_type, memory, size)
 
     def create_buffers(self, buffer_type: BufferType, memory: Memory, count: int) -> list[raw.v4l2_buffer]:
-        return create_buffers(self.fileno(), buffer_type, memory, count)
+        return request_and_query_buffers(self.fileno(), buffer_type, memory, count)
 
     def free_buffers(self, buffer_type, memory):
         return free_buffers(self.fileno(), buffer_type, memory)

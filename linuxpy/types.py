@@ -37,3 +37,5 @@ Generator = typing.Generator
 Callable = collections.abc.Callable
 Sequence = collections.abc.Sequence
 Collection = collections.abc.Collection
+
+T = typing.TypeVar("T")
