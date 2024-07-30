@@ -129,6 +129,24 @@ device_capabilities = {device_capabilities}
 buffers = {buffers}
 """
 
+CROP_BUFFER_TYPES = {
+    BufferType.VIDEO_CAPTURE,
+    BufferType.VIDEO_CAPTURE_MPLANE,
+    BufferType.VIDEO_OUTPUT,
+    BufferType.VIDEO_OUTPUT_MPLANE,
+    BufferType.VIDEO_OVERLAY,
+}
+
+IMAGE_FORMAT_BUFFER_TYPES = {
+    BufferType.VIDEO_CAPTURE,
+    BufferType.VIDEO_CAPTURE_MPLANE,
+    BufferType.VIDEO_OUTPUT,
+    BufferType.VIDEO_OUTPUT_MPLANE,
+    BufferType.VIDEO_OVERLAY,
+    BufferType.META_CAPTURE,
+    BufferType.META_OUTPUT,
+}
+
 
 def mem_map(fd, length, offset):
     log_mmap.debug("%s, length=%d, offset=%d", fd, length, offset)
@@ -149,9 +167,9 @@ def Info_repr(info):
 Info.__repr__ = Info_repr
 
 
-def raw_crop_caps_to_crop_caps(stream_type, crop):
+def raw_crop_caps_to_crop_caps(crop):
     return CropCapability(
-        type=stream_type,
+        type=BufferType(crop.type),
         bounds=Rect(
             crop.bounds.left,
             crop.bounds.top,
@@ -169,6 +187,17 @@ def raw_crop_caps_to_crop_caps(stream_type, crop):
 
 
 CropCapability.from_raw = raw_crop_caps_to_crop_caps
+
+
+def raw_read_crop_capabilities(fd, buffer_type: BufferType) -> raw.v4l2_cropcap:
+    crop = raw.v4l2_cropcap()
+    crop.type = buffer_type
+    return ioctl(fd, IOC.CROPCAP, crop)
+
+
+def read_crop_capabilities(fd, buffer_type: BufferType) -> CropCapability:
+    crop = raw_read_crop_capabilities(fd, buffer_type)
+    return raw_crop_caps_to_crop_caps(crop)
 
 
 def iter_read(fd, ioc, indexed_struct, start=0, stop=128, step=1, ignore_einval=False):
@@ -242,21 +271,20 @@ def iter_read_frame_intervals(fd, fmt, w, h):
         )
 
 
-def frame_sizes(fd, pixel_formats):
+def iter_read_discrete_frame_sizes(fd, pixel_format):
     size = raw.v4l2_frmsizeenum()
-    sizes = []
+    size.index = 0
+    size.pixel_format = pixel_format
+    for val in iter_read(fd, IOC.ENUM_FRAMESIZES, size):
+        if size.type != FrameSizeType.DISCRETE:
+            break
+        yield val
+
+
+def iter_read_pixel_formats_frame_intervals(fd, pixel_formats):
     for pixel_format in pixel_formats:
-        size.pixel_format = pixel_format
-        size.index = 0
-        while True:
-            try:
-                ioctl(fd, IOC.ENUM_FRAMESIZES, size)
-            except OSError:
-                break
-            if size.type == FrameSizeType.DISCRETE:
-                sizes += iter_read_frame_intervals(fd, pixel_format, size.discrete.width, size.discrete.height)
-            size.index += 1
-    return sizes
+        for size in iter_read_discrete_frame_sizes(fd, pixel_format):
+            yield from iter_read_frame_intervals(fd, pixel_format, size.discrete.width, size.discrete.height)
 
 
 def read_capabilities(fd):
@@ -378,15 +406,7 @@ def read_info(fd):
     device_capabilities = Capability(caps.device_caps)
     buffers = [typ for typ in BufferType if Capability[typ.name] in device_capabilities]
 
-    img_fmt_buffer_types = {
-        BufferType.VIDEO_CAPTURE,
-        BufferType.VIDEO_CAPTURE_MPLANE,
-        BufferType.VIDEO_OUTPUT,
-        BufferType.VIDEO_OUTPUT_MPLANE,
-        BufferType.VIDEO_OVERLAY,
-        BufferType.META_CAPTURE,
-        BufferType.META_OUTPUT,
-    } & set(buffers)
+    img_fmt_buffer_types = IMAGE_FORMAT_BUFFER_TYPES & set(buffers)
 
     image_formats = []
     pixel_formats = set()
@@ -396,11 +416,7 @@ def read_info(fd):
             pixel_formats.add(image_format.pixel_format)
 
     crop = raw.v4l2_cropcap()
-    crop_stream_types = {
-        BufferType.VIDEO_CAPTURE,
-        BufferType.VIDEO_OUTPUT,
-        BufferType.VIDEO_OVERLAY,
-    } & set(buffers)
+    crop_stream_types = CROP_BUFFER_TYPES & set(buffers)
     crop_caps = []
     for stream_type in crop_stream_types:
         crop.type = stream_type
@@ -408,7 +424,7 @@ def read_info(fd):
             ioctl(fd, IOC.CROPCAP, crop)
         except OSError:
             continue
-        crop_cap = CropCapability.from_raw(stream_type, crop)
+        crop_cap = CropCapability.from_raw(crop)
         crop_caps.append(crop_cap)
 
     return Info(
@@ -421,7 +437,7 @@ def read_info(fd):
         crop_capabilities=crop_caps,
         buffers=buffers,
         formats=image_formats,
-        frame_sizes=frame_sizes(fd, pixel_formats),
+        frame_sizes=list(iter_read_pixel_formats_frame_intervals(fd, pixel_formats)),
         inputs=list(iter_read_inputs(fd)),
         outputs=list(iter_read_outputs(fd)),
         controls=list(iter_read_controls(fd)),
@@ -938,7 +954,7 @@ class Device(BaseDevice):
                 yield frame
 
     def _on_open(self):
-        self.info = read_info(self.fileno())
+        self.info = InfoEx(self)
         self.controls = Controls.from_device(self)
 
     def query_buffer(self, buffer_type, memory, index):
@@ -1419,9 +1435,9 @@ class MenuControl(BaseMonoControl, UserDict):
         UserDict.__init__(self)
 
         if self.type == ControlType.MENU:
-            self.data = {item.index: item.name.decode() for item in iter_read_menu(self.device._fobj, self)}
+            self.data = {item.index: item.name.decode() for item in iter_read_menu(self.device, self)}
         elif self.type == ControlType.INTEGER_MENU:
-            self.data = {item.index: ord(item.name) for item in iter_read_menu(self.device._fobj, self)}
+            self.data = {item.index: ord(item.name) for item in iter_read_menu(self.device, self)}
         else:
             raise TypeError(f"MenuControl only supports control types MENU or INTEGER_MENU, but not {self.type.name}")
 
@@ -1453,6 +1469,90 @@ class DeviceHelper:
     def __init__(self, device: Device):
         super().__init__()
         self.device = device
+
+
+class InfoEx(DeviceHelper):
+    def __init__(self, device: "Device"):
+        self.device = device
+        self._raw_capabilities_cache = None
+
+    @property
+    def raw_capabilities(self) -> raw.v4l2_capability:
+        if self._raw_capabilities_cache is None:
+            self._raw_capabilities_cache = read_capabilities(self.device)
+        return self._raw_capabilities_cache
+
+    @property
+    def driver(self) -> str:
+        return self.raw_capabilities.driver.decode()
+
+    @property
+    def card(self) -> str:
+        return self.raw_capabilities.card.decode()
+
+    @property
+    def bus_info(self) -> str:
+        return self.raw_capabilities.bus_info.decode()
+
+    @property
+    def version_tuple(self) -> tuple:
+        caps = self.raw_capabilities
+        return (
+            (caps.version & 0xFF0000) >> 16,
+            (caps.version & 0x00FF00) >> 8,
+            (caps.version & 0x0000FF),
+        )
+
+    @property
+    def version(self) -> str:
+        return ".".join(map(str, self.version_tuple))
+
+    @property
+    def capabilities(self) -> Capability:
+        return Capability(self.raw_capabilities.capabilities)
+
+    @property
+    def device_capabilities(self) -> Capability:
+        return Capability(self.raw_capabilities.device_caps)
+
+    @property
+    def buffers(self):
+        dev_caps = self.device_capabilities
+        return [typ for typ in BufferType if Capability[typ.name] in dev_caps]
+
+    def get_crop_capabilities(self, buffer_type: BufferType) -> CropCapability:
+        return read_crop_capabilities(self.device, buffer_type)
+
+    @property
+    def crop_capabilities(self) -> dict[BufferType, CropCapability]:
+        buffer_types = CROP_BUFFER_TYPES & set(self.buffers)
+        return {buffer_type: self.get_crop_capabilities(buffer_type) for buffer_type in buffer_types}
+
+    @property
+    def formats(self):
+        img_fmt_buffer_types = IMAGE_FORMAT_BUFFER_TYPES & set(self.buffers)
+        return [
+            image_format
+            for buffer_type in img_fmt_buffer_types
+            for image_format in iter_read_formats(self.device, buffer_type)
+        ]
+
+    @property
+    def frame_sizes(self):
+        pixel_formats = {fmt.pixel_format for fmt in self.formats}
+        return list(iter_read_pixel_formats_frame_intervals(self.device, pixel_formats))
+
+    @property
+    def inputs(self) -> list[Input]:
+        return list(iter_read_inputs(self.device))
+
+    @property
+    def outputs(self):
+        return list(iter_read_outputs(self.device))
+
+    @property
+    def controls(self):
+        return list(iter_read_controls(self.device))
 
 
 class BufferManager(DeviceHelper):
