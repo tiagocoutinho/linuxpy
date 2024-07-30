@@ -92,12 +92,6 @@ PixelFormat.human_str = lambda self: human_pixel_format(self.value)
 MetaFormat.human_str = lambda self: human_pixel_format(self.value)
 
 
-Info = collections.namedtuple(
-    "Info",
-    "driver card bus_info version capabilities device_capabilities "
-    "crop_capabilities buffers formats frame_sizes inputs outputs controls",
-)
-
 ImageFormat = collections.namedtuple("ImageFormat", "type description flags pixel_format")
 
 MetaFmt = collections.namedtuple("MetaFmt", "format max_buffer_size width height bytes_per_line")
@@ -118,16 +112,6 @@ Output = collections.namedtuple("OutputType", "index name type audioset modulato
 
 Standard = collections.namedtuple("Standard", "index id name frameperiod framelines")
 
-
-INFO_REPR = """\
-driver = {info.driver}
-card = {info.card}
-bus = {info.bus_info}
-version = {info.version}
-capabilities = {capabilities}
-device_capabilities = {device_capabilities}
-buffers = {buffers}
-"""
 
 CROP_BUFFER_TYPES = {
     BufferType.VIDEO_CAPTURE,
@@ -155,16 +139,6 @@ def mem_map(fd, length, offset):
 
 def flag_items(flag):
     return [item for item in type(flag) if item in flag]
-
-
-def Info_repr(info):
-    dcaps = "|".join(cap.name for cap in flag_items(info.device_capabilities))
-    caps = "|".join(cap.name for cap in flag_items(info.capabilities))
-    buffers = "|".join(buff.name for buff in info.buffers)
-    return INFO_REPR.format(info=info, capabilities=caps, device_capabilities=dcaps, buffers=buffers)
-
-
-Info.__repr__ = Info_repr
 
 
 def raw_crop_caps_to_crop_caps(crop):
@@ -393,55 +367,6 @@ def iter_read_menu(fd, ctrl):
         ignore_einval=True,
     ):
         yield copy.deepcopy(menu)
-
-
-def read_info(fd):
-    caps = read_capabilities(fd)
-    version_tuple = (
-        (caps.version & 0xFF0000) >> 16,
-        (caps.version & 0x00FF00) >> 8,
-        (caps.version & 0x0000FF),
-    )
-    version_str = ".".join(map(str, version_tuple))
-    device_capabilities = Capability(caps.device_caps)
-    buffers = [typ for typ in BufferType if Capability[typ.name] in device_capabilities]
-
-    img_fmt_buffer_types = IMAGE_FORMAT_BUFFER_TYPES & set(buffers)
-
-    image_formats = []
-    pixel_formats = set()
-    for stream_type in img_fmt_buffer_types:
-        for image_format in iter_read_formats(fd, stream_type):
-            image_formats.append(image_format)
-            pixel_formats.add(image_format.pixel_format)
-
-    crop = raw.v4l2_cropcap()
-    crop_stream_types = CROP_BUFFER_TYPES & set(buffers)
-    crop_caps = []
-    for stream_type in crop_stream_types:
-        crop.type = stream_type
-        try:
-            ioctl(fd, IOC.CROPCAP, crop)
-        except OSError:
-            continue
-        crop_cap = CropCapability.from_raw(crop)
-        crop_caps.append(crop_cap)
-
-    return Info(
-        driver=caps.driver.decode(),
-        card=caps.card.decode(),
-        bus_info=caps.bus_info.decode(),
-        version=version_str,
-        capabilities=Capability(caps.capabilities),
-        device_capabilities=device_capabilities,
-        crop_capabilities=crop_caps,
-        buffers=buffers,
-        formats=image_formats,
-        frame_sizes=list(iter_read_pixel_formats_frame_intervals(fd, pixel_formats)),
-        inputs=list(iter_read_inputs(fd)),
-        outputs=list(iter_read_outputs(fd)),
-        controls=list(iter_read_controls(fd)),
-    )
 
 
 def query_buffer(fd, buffer_type: BufferType, memory: Memory, index: int) -> raw.v4l2_buffer:
@@ -1472,9 +1397,25 @@ class DeviceHelper:
 
 
 class InfoEx(DeviceHelper):
+    INFO_REPR = """\
+driver = {info.driver}
+card = {info.card}
+bus = {info.bus_info}
+version = {info.version}
+capabilities = {capabilities}
+device_capabilities = {device_capabilities}
+buffers = {buffers}
+"""
+
     def __init__(self, device: "Device"):
         self.device = device
         self._raw_capabilities_cache = None
+
+    def __repr__(self):
+        dcaps = "|".join(cap.name for cap in flag_items(self.device_capabilities))
+        caps = "|".join(cap.name for cap in flag_items(self.capabilities))
+        buffers = "|".join(buff.name for buff in self.buffers)
+        return self.INFO_REPR.format(info=self, capabilities=caps, device_capabilities=dcaps, buffers=buffers)
 
     @property
     def raw_capabilities(self) -> raw.v4l2_capability:
