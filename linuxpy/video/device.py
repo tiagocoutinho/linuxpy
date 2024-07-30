@@ -491,6 +491,18 @@ def export_buffer(fd, buffer_type: BufferType, index: int) -> int:
     return ioctl(fd, IOC.EXPBUF, req).fd
 
 
+def create_buffers(fd, format: raw.v4l2_format, memory: Memory, count: int) -> raw.v4l2_create_buffers:
+    """Create buffers for Memory Mapped or User Pointer or DMA Buffer I/O"""
+    req = raw.v4l2_create_buffers()
+    req.format = format
+    req.memory = memory
+    req.count = count
+    ioctl(fd, IOC.CREATE_BUFS, req)
+    if not req.count:
+        raise OSError("Not enough buffer memory")
+    return req
+
+
 def set_raw_format(fd, fmt: raw.v4l2_format):
     return ioctl(fd, IOC.S_FMT, fmt)
 
