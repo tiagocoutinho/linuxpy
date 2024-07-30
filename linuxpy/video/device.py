@@ -116,7 +116,7 @@ Input = collections.namedtuple("InputType", "index name type audioset tuner std 
 
 Output = collections.namedtuple("OutputType", "index name type audioset modulator std capabilities")
 
-Standard = collections.namedtuple("Standard", "index name frameperiod framelines")
+Standard = collections.namedtuple("Standard", "index id name frameperiod framelines")
 
 
 INFO_REPR = """\
@@ -336,6 +336,7 @@ def iter_read_video_standards(fd):
         period = item.frameperiod
         yield Standard(
             index=item.index,
+            id=StandardID(item.id),
             name=item.name.decode(),
             frameperiod=fractions.Fraction(period.denominator, period.numerator),
             framelines=item.framelines,
