@@ -626,12 +626,6 @@ for output_type in (None, Capability.STREAMING, Capability.READWRITE):
                         assert frame.memory == Memory.MMAP if source is None else source
                         assert frame.pixel_format == pixel_format
 
-
-for output_type in (None, Capability.STREAMING, Capability.READWRITE):
-    oname = "auto" if output_type is None else output_type.name
-    for input_type in (None, Capability.STREAMING, Capability.READWRITE):
-        iname = "auto" if input_type is None else input_type.name
-
         @skip(when=not is_v4l2looback_prepared(), reason="v4l2loopback is not prepared")
         @skip(when=not is_v4l2loopback_installed(), reason="v4l2loopback is not installed")
         @test(f"output({oname}) and async capture({iname}) with v4l2loopback")
@@ -682,7 +676,7 @@ def _():
         current_value = controls.keep_format.value
         assert current_value in {True, False}
         try:
-            controls.keep_format.value = not current_value
+            controls.keep_format.value = current_value + 5
             assert controls.keep_format.value == (not current_value)
         finally:
             controls.keep_format.value = current_value
@@ -690,13 +684,43 @@ def _():
         with raises(AttributeError):
             _ = controls.unknown_field
 
-        assert ControlClass.USER in controls.used_classes()
+        assert ControlClass.USER in {ctrl.id - 1 for ctrl in controls.used_classes()}
         assert controls.keep_format in controls.with_class("user")
         assert controls.keep_format in controls.with_class(ControlClass.USER)
 
         assert "<BooleanControl keep_format" in repr(controls.keep_format)
-        with raises(ValueError):
+        with raises(KeyError):
             _ = list(controls.with_class("unknown class"))
 
-        with raises(TypeError):
+        with raises(ValueError):
+            _ = list(controls.with_class(55))
+
+
+@skip(when=not is_vivid_prepared(), reason="vivid is not prepared")
+@skip(when=not is_vivid_installed(), reason="vivid is not installed")
+@test("controls with vivid")
+def _():
+    with Device(VIVID_TEST_DEVICES[0]) as device:
+        controls = device.controls
+        assert controls.brightness is controls["brightness"]
+        current_value = controls.brightness.value
+        assert 0 <= current_value < 250
+        try:
+            controls.brightness.value = not current_value
+            assert controls.brightness.value == (not current_value)
+        finally:
+            controls.brightness.value = current_value
+
+        with raises(AttributeError):
+            _ = controls.unknown_field
+
+        assert ControlClass.USER in {ctrl.id - 1 for ctrl in controls.used_classes()}
+        assert controls.brightness in controls.with_class("user")
+        assert controls.brightness in controls.with_class(ControlClass.USER)
+
+        assert "<IntegerControl brightness" in repr(controls.brightness)
+        with raises(KeyError):
+            _ = list(controls.with_class("unknown class"))
+
+        with raises(ValueError):
             _ = list(controls.with_class(55))

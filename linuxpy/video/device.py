@@ -1000,8 +1000,25 @@ def create_artificial_control_class(class_id):
 
 
 class Controls(dict):
-    @classmethod
-    def from_device(cls, device):
+    def __init__(self, device: Device):
+        super().__init__()
+        self.__dict__["_device"] = device
+        self.__dict__["_initialized"] = False
+
+    def _init_if_needed(self):
+        if not self._initialized:
+            self._load()
+            self.__dict__["_initialized"] = True
+
+    def __getitem__(self, name):
+        self._init_if_needed()
+        return super().__getitem__(name)
+
+    def __len__(self):
+        self._init_if_needed()
+        return super().__len__()
+
+    def _load(self):
         ctrl_type_map = {
             ControlType.BOOLEAN: BooleanControl,
             ControlType.INTEGER: IntegerControl,
@@ -1013,9 +1030,8 @@ class Controls(dict):
             ControlType.U32: U32Control,
             ControlType.BUTTON: ButtonControl,
         }
-        ctrl_dict = {}
         classes = {}
-        for ctrl in device.info.controls:
+        for ctrl in self._device.info.controls:
             ctrl_type = ControlType(ctrl.type)
             ctrl_class_id = V4L2_CTRL_ID2CLASS(ctrl.id)
             if ctrl_type == ControlType.CTRL_CLASS:
@@ -1030,9 +1046,12 @@ class Controls(dict):
                     ctrl_class = CompoundControl
                 else:
                     ctrl_class = ctrl_type_map.get(ctrl_type, GenericControl)
-                ctrl_dict[ctrl.id] = ctrl_class(device, ctrl, klass)
+                self[ctrl.id] = ctrl_class(self._device, ctrl, klass)
 
-        return cls(ctrl_dict)
+    @classmethod
+    def from_device(cls, device):
+        """Deprecated: backward compatible. Please use Controls(device) constructor directly"""
+        return cls(device)
 
     def __getattr__(self, key):
         with contextlib.suppress(KeyError):
@@ -1059,10 +1078,16 @@ class Controls(dict):
         return list(class_map.values())
 
     def with_class(self, control_class):
+        if isinstance(control_class, str):
+            control_class = ControlClass[control_class.upper()]
+        elif isinstance(control_class, int):
+            control_class = ControlClass(control_class)
+        elif not isinstance(control_class, ControlClass):
+            control_class = ControlClass(control_class.id - 1)
         for v in self.values():
             if not isinstance(v, BaseControl):
                 continue
-            if v.control_class.id == control_class.id:
+            if v.control_class.id - 1 == control_class:
                 yield v
 
     def set_to_default(self):
@@ -1104,7 +1129,8 @@ class BaseControl:
             repr += f" {addrepr}"
 
         if self.flags:
-            repr += " flags=" + ",".join(flag.name.lower() for flag in self.flags)
+            flags = [flag.name.lower() for flag in ControlFlag if ((self._info.flags & flag) == flag)]
+            repr += " flags=" + ",".join(flags)
 
         return f"<{type(self).__name__} {repr}>"
 
