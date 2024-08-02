@@ -1078,10 +1078,16 @@ class Controls(dict):
         return list(class_map.values())
 
     def with_class(self, control_class):
+        if isinstance(control_class, str):
+            control_class = ControlClass[control_class.upper()]
+        elif isinstance(control_class, int):
+            control_class = ControlClass(control_class)
+        elif not isinstance(control_class, ControlClass):
+            control_class = ControlClass(control_class.id - 1)
         for v in self.values():
             if not isinstance(v, BaseControl):
                 continue
-            if v.control_class.id == control_class.id:
+            if v.control_class.id - 1 == control_class:
                 yield v
 
     def set_to_default(self):
