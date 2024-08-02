@@ -1059,19 +1059,26 @@ class Controls(dict):
         raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{key}'")
 
     def __setattr__(self, key, value):
+        self._init_if_needed()
         self[key] = value
 
     def __delattr__(self, key):
+        self._init_if_needed()
         try:
             del self[key]
         except KeyError as error:
             raise AttributeError(key) from error
 
     def __missing__(self, key):
+        self._init_if_needed()
         for v in self.values():
             if isinstance(v, BaseControl) and (v.config_name == key):
                 return v
         raise KeyError(key)
+
+    def values(self):
+        self._init_if_needed()
+        return super().values()
 
     def used_classes(self):
         class_map = {v.control_class.id: v.control_class for v in self.values() if isinstance(v, BaseControl)}
