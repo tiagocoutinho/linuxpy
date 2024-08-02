@@ -1129,7 +1129,8 @@ class BaseControl:
             repr += f" {addrepr}"
 
         if self.flags:
-            repr += " flags=" + ",".join(flag.name.lower() for flag in self.flags)
+            flags = [flag.name.lower() for flag in ControlFlag if ((self._info.flags & flag) == flag)]
+            repr += " flags=" + ",".join(flags)
 
         return f"<{type(self).__name__} {repr}>"
 
