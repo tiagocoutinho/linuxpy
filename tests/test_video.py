@@ -31,6 +31,7 @@ from linuxpy.video.device import (
     Device,
     Memory,
     PixelFormat,
+    Priority,
     VideoCapture,
     VideoOutput,
     iter_devices,
@@ -702,12 +703,14 @@ def _():
 def _():
     with Device(VIVID_TEST_DEVICES[0]) as device:
         controls = device.controls
+
+        # Brightness
         assert controls.brightness is controls["brightness"]
         current_value = controls.brightness.value
         assert 0 <= current_value < 250
         try:
-            controls.brightness.value = not current_value
-            assert controls.brightness.value == (not current_value)
+            controls.brightness.value = 100
+            assert controls.brightness.value == 100
         finally:
             controls.brightness.value = current_value
 
@@ -719,8 +722,59 @@ def _():
         assert controls.brightness in controls.with_class(ControlClass.USER)
 
         assert "<IntegerControl brightness" in repr(controls.brightness)
+
+        # String
+        assert controls.string is controls["string"]
+        current_value = controls.string.value
+        try:
+            controls.string.value = "hell"
+            assert controls.string.value == "hell"
+        finally:
+            controls.string.value = current_value
+
+        assert "<CompoundControl string flags=has_payload>" in repr(controls.string)
+
+        # 2 element array
+        assert controls.s32_2_element_array is controls["s32_2_element_array"]
+        current_value = controls.s32_2_element_array.value
+        try:
+            controls.s32_2_element_array.value = [5, -5]
+            assert controls.s32_2_element_array.value[:] == [5, -5]
+        finally:
+            controls.s32_2_element_array.value = current_value
+
+        assert "<CompoundControl s32_2_element_array flags=has_payload>" in repr(controls.s32_2_element_array)
+
+        # Unknown
         with raises(KeyError):
             _ = list(controls.with_class("unknown class"))
 
         with raises(ValueError):
             _ = list(controls.with_class(55))
+
+
+@skip(when=not is_vivid_prepared(), reason="vivid is not prepared")
+@skip(when=not is_vivid_installed(), reason="vivid is not installed")
+@test("info with vivid")
+def _():
+    with Device(VIVID_TEST_DEVICES[0]) as device:
+        text = repr(device.info)
+        assert "driver = " in text
+
+        assert len(device.info.frame_sizes) > 10
+        assert len(device.info.formats) > 10
+
+        inputs = device.info.inputs
+        assert len(inputs) > 0
+        active_input = device.get_input()
+        assert active_input in {inp.index for inp in inputs}
+        try:
+            device.set_input(inputs[-1].index)
+            assert device.get_input() == inputs[-1].index
+        finally:
+            device.set_input(active_input)
+
+        outputs = device.info.outputs
+        assert len(outputs) >= 0
+
+        assert isinstance(device.get_priority(), Priority)
