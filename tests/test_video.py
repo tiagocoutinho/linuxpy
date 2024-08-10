@@ -35,6 +35,7 @@ from linuxpy.video.device import (
     Priority,
     V4L2Error,
     VideoCapture,
+    VideoOutput,
     iter_devices,
     iter_video_capture_devices,
     iter_video_capture_files,
@@ -832,3 +833,19 @@ def _():
         stream = iter(output_dev)
         with raises(V4L2Error):
             next(stream)
+
+
+@test_vivid_only("vivid output")
+def _():
+    with Device(VIVID_TEST_DEVICES[1]) as output_dev:
+        width, height, pixel_format = 640, 480, PixelFormat.RGB24
+        size = width * height * 3
+        out = VideoOutput(output_dev)
+        out.set_format(width, height, pixel_format)
+        fmt = out.get_format()
+        assert fmt.width == width
+        assert fmt.height == height
+        assert fmt.pixel_format == pixel_format
+        with out:
+            data = os.urandom(size)
+            out.write(data)
