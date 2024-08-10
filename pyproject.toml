@@ -43,6 +43,7 @@ dev = [
     "ward>=0.68.0b0",
     "ward-coverage>=0.3.0",
     "ruff>=0.3.0",
+    "numpy>=1.1",
 ]
 examples = [
     "flask>=2,<4",

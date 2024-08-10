@@ -25,6 +25,7 @@ except ImportError:
 from linuxpy.device import device_number
 from linuxpy.video import raw
 from linuxpy.video.device import (
+    BufferFlag,
     BufferType,
     Capability,
     ControlClass,
@@ -755,6 +756,25 @@ def _():
             capture_dev.set_input(active_input)
 
 
+def test_frame(frame, i, width, height, pixel_format, source):
+    size = width * height * 3
+    assert len(frame.data) == size
+    assert frame.nbytes == size
+    assert frame.memory == Memory.MMAP
+    assert frame.pixel_format == pixel_format
+    assert frame.type == BufferType.VIDEO_CAPTURE
+    assert frame.frame_nb == i
+    assert frame.width == width
+    assert frame.height == height
+    assert frame.pixel_format == pixel_format
+    if numpy:
+        data = frame.array
+        assert data.shape == (size,)
+        assert data.dtype == numpy.ubyte
+    if source in {None, Capability.STREAMING}:
+        assert BufferFlag.MAPPED in frame.flags
+
+
 for input_type in (None, Capability.STREAMING):
     iname = "auto" if input_type is None else input_type.name
 
@@ -763,7 +783,6 @@ for input_type in (None, Capability.STREAMING):
         with Device(VIVID_TEST_DEVICES[0]) as capture_dev:
             capture_dev.set_input(0)
             width, height, pixel_format = 640, 480, PixelFormat.RGB24
-            size = width * height * 3
             capture = VideoCapture(capture_dev, source=source)
             capture.set_format(width, height, pixel_format)
             fmt = capture.get_format()
@@ -779,23 +798,14 @@ for input_type in (None, Capability.STREAMING):
                 frame1 = next(stream)
                 frame2 = next(stream)
 
-            for i, frame in enumerate((frame1, frame2)):
-                assert len(frame.data) == size
-                assert frame.nbytes == size
-                assert frame.memory == Memory.MMAP
-                assert frame.pixel_format == pixel_format
-                assert frame.type == BufferType.VIDEO_CAPTURE
-                assert frame.frame_nb == i
-                assert frame.width == width
-                assert frame.height == height
-                assert frame.pixel_format == pixel_format
+            test_frame(frame1, 0, width, height, pixel_format, source)
+            test_frame(frame2, 1, width, height, pixel_format, source)
 
     @test_vivid_only(f"vivid async capture ({iname})")
     async def _(source=input_type):
         with Device(VIVID_TEST_DEVICES[0]) as capture_dev:
             capture_dev.set_input(0)
             width, height, pixel_format = 640, 480, PixelFormat.RGB24
-            size = width * height * 3
             capture = VideoCapture(capture_dev, source=source)
             capture.set_format(width, height, pixel_format)
 
@@ -810,15 +820,7 @@ for input_type in (None, Capability.STREAMING):
             with capture:
                 i = 0
                 async for frame in capture:
-                    assert len(frame.data) == size
-                    assert frame.nbytes == size
-                    assert frame.memory == Memory.MMAP
-                    assert frame.pixel_format == pixel_format
-                    assert frame.type == BufferType.VIDEO_CAPTURE
-                    assert frame.frame_nb == i
-                    assert frame.width == width
-                    assert frame.height == height
-                    assert frame.pixel_format == pixel_format
+                    test_frame(frame, i, width, height, pixel_format, source)
                     i += 1
                     if i > 2:
                         break
