@@ -36,17 +36,14 @@ $ python -m linuxpy.codegen.cli
 
 ## Running tests
 
-Some video tests will only run with a properly configured `v4l2loopback`
-and `vivid` drivers.
+Some video tests will only run with a properly configured `vivid` driver.
 
 ```console
-$ sudo modprobe v4l2loopback video_nr=199 card_label="Loopback 199"
 $ sudo modprobe vivid n_devs=1 vid_cap_nr=190 vid_out_nr=191 meta_cap_nr=192 meta_out_nr=193
 ```
 
 Additionally the user which runs the tests will need read/write access to
-`/dev/video199` (v4l2loopback) and `/dev/video190`, `/dev/video191`, `/dev/video192`
-and `/dev/video193` (for vivid).
+`/dev/video190`, `/dev/video191`, `/dev/video192` and `/dev/video193`.
 On most systems this can be achieved by adding the user to the `video` group:
 
 ```console
