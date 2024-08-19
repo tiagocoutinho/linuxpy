@@ -77,11 +77,13 @@ class LED(Device):
 
 
 class ULED(BaseDevice):
+    PATH = "/dev/uleds"
+
     def __init__(self, name: str, max_brightness: int = 1, **kwargs):
         self.name = name
         self.max_brightness = max_brightness
         self._brightness = None
-        super().__init__("/dev/uleds", **kwargs)
+        super().__init__(self.PATH, **kwargs)
 
     @staticmethod
     def decode(data):

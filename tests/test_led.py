@@ -4,12 +4,15 @@
 # Copyright (c) 2024 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
+import pathlib
 import time
 
-from ward import fixture, test
+from ward import fixture, skip, test
 
 from linuxpy.led import LED, LED_PATH, ULED, iter_device_paths, iter_devices
 from linuxpy.util import random_name
+
+ULED_PREPARED = pathlib.Path(ULED.PATH).exists()
 
 
 @fixture
@@ -44,6 +47,7 @@ def uled_single_colon():
         yield uled
 
 
+@skip("uled not prepared", when=not ULED_PREPARED)
 @test("led name")
 def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single_colon=uled_single_colon):
     devicename, color, function = uled.name.split(":")
@@ -71,6 +75,7 @@ def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single
     assert led.function == function
 
 
+@skip("uled not prepared", when=not ULED_PREPARED)
 @test("led brightness")
 def _(uled=uled):
     led = LED.from_name(uled.name)
@@ -79,6 +84,7 @@ def _(uled=uled):
     assert uled.brightness() == 1
 
 
+@skip("uled not prepared", when=not ULED_PREPARED)
 @test("led trigger")
 def _(uled=uled):
     led = LED.from_name(uled.name)
@@ -90,6 +96,7 @@ def _(uled=uled):
     assert led.trigger_enabled
 
 
+@skip("uled not prepared", when=not ULED_PREPARED)
 @test("led path list")
 def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single_colon=uled_single_colon):
     paths = list(iter_device_paths())
@@ -101,6 +108,7 @@ def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single
     assert LED_PATH / uled_single_colon.name in paths
 
 
+@skip("uled not prepared", when=not ULED_PREPARED)
 @test("led list")
 def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single_colon=uled_single_colon):
     devs = list(iter_devices())
@@ -111,6 +119,7 @@ def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single
     assert uled_single_colon.name in paths
 
 
+@skip("uled not prepared", when=not ULED_PREPARED)
 @test("uled stream")
 def _(uled=uled):
     led = LED.from_name(uled.name)
