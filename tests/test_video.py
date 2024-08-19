@@ -797,10 +797,9 @@ for input_type in (None, Capability.STREAMING):
             with capture:
                 stream = iter(capture)
                 frame1 = next(stream)
+                test_frame(frame1, 0, width, height, pixel_format, source)
                 frame2 = next(stream)
-
-            test_frame(frame1, 0, width, height, pixel_format, source)
-            test_frame(frame2, 1, width, height, pixel_format, source)
+                test_frame(frame2, 1, width, height, pixel_format, source)
 
     @test_vivid_only(f"vivid async capture ({iname})")
     async def _(source=input_type):
