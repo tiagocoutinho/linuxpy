@@ -170,7 +170,12 @@ def raw_read_crop_capabilities(fd, buffer_type: BufferType) -> raw.v4l2_cropcap:
 
 
 def read_crop_capabilities(fd, buffer_type: BufferType) -> CropCapability:
-    crop = raw_read_crop_capabilities(fd, buffer_type)
+    try:
+        crop = raw_read_crop_capabilities(fd, buffer_type)
+    except OSError as error:
+        if error.errno == errno.ENODATA:
+            return None
+        raise
     return raw_crop_caps_to_crop_caps(crop)
 
 
@@ -1500,7 +1505,13 @@ buffers = {buffers}
     @property
     def crop_capabilities(self) -> dict[BufferType, CropCapability]:
         buffer_types = CROP_BUFFER_TYPES & set(self.buffers)
-        return {buffer_type: self.get_crop_capabilities(buffer_type) for buffer_type in buffer_types}
+        result = {}
+        for buffer_type in buffer_types:
+            crop_cap = self.get_crop_capabilities(buffer_type)
+            if crop_cap is None:
+                continue
+            result[buffer_type] = crop_cap
+        return result
 
     @property
     def formats(self):

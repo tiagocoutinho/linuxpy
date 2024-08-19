@@ -25,6 +25,7 @@ except ImportError:
 from linuxpy.device import device_number
 from linuxpy.video import raw
 from linuxpy.video.device import (
+    BufferFlag,
     BufferType,
     Capability,
     ControlClass,
@@ -32,10 +33,15 @@ from linuxpy.video.device import (
     Memory,
     PixelFormat,
     Priority,
+    V4L2Error,
     VideoCapture,
     VideoOutput,
     iter_devices,
+    iter_video_capture_devices,
+    iter_video_capture_files,
     iter_video_files,
+    iter_video_output_devices,
+    iter_video_output_files,
 )
 
 
@@ -558,19 +564,7 @@ def _(display=hardware):
             device.set_edid(bytes(range(0, 100)))
 
 
-V4L2_LOOPBACK_TEST_DEVICE = Path("/dev/video199")
-
 VIVID_TEST_DEVICES = [Path(f"/dev/video{i}") for i in range(190, 194)]
-
-
-@cache
-def is_v4l2loopback_installed():
-    result = subprocess.run("lsmod", capture_output=True, check=False, timeout=1)
-    return result.returncode == 0 and b"v4l2loopback" in result.stdout
-
-
-def is_v4l2looback_prepared():
-    return V4L2_LOOPBACK_TEST_DEVICE.exists()
 
 
 @cache
@@ -583,123 +577,68 @@ def is_vivid_prepared():
     return all(path.exists() for path in VIVID_TEST_DEVICES)
 
 
-for output_type in (None, Capability.STREAMING, Capability.READWRITE):
-    oname = "auto" if output_type is None else output_type.name
-    for input_type in (None, Capability.STREAMING, Capability.READWRITE):
-        iname = "auto" if input_type is None else input_type.name
-
-        @skip(when=not is_v4l2looback_prepared(), reason="v4l2loopback is not prepared")
-        @skip(when=not is_v4l2loopback_installed(), reason="v4l2loopback is not installed")
-        @test(f"output({oname}) and capture({iname}) with v4l2loopback")
-        def _(sink=output_type, source=input_type):
-            with Device(V4L2_LOOPBACK_TEST_DEVICE) as outp, Device(V4L2_LOOPBACK_TEST_DEVICE) as inp:
-                assert outp.info.card == "Loopback 199"
-                assert Capability.STREAMING in outp.info.capabilities
-                assert Capability.VIDEO_OUTPUT in outp.info.capabilities
-
-                width, height, pixel_format = 320, 240, PixelFormat.RGB24
-                size = width * height * 3
-                output = VideoOutput(outp, sink=sink)
-                output.set_format(width, height, pixel_format)
-                fmt = output.get_format()
-                assert fmt.width == width
-                assert fmt.height == height
-                assert fmt.pixel_format == pixel_format
-
-                with output:
-                    assert inp.info.card == "Loopback 199"
-                    assert Capability.STREAMING in inp.info.capabilities
-                    assert Capability.VIDEO_OUTPUT in inp.info.capabilities
-
-                    with VideoCapture(inp, source=source) as capture:
-                        fmt = capture.get_format()
-                        assert fmt.width == width
-                        assert fmt.height == height
-                        assert fmt.pixel_format == pixel_format
-
-                        data = os.urandom(size)
-                        output.write(data)
-
-                        stream = iter(capture)
-                        frame = next(stream)
-                        assert frame.data == data
-                        assert frame.nbytes == size
-                        assert frame.memory == Memory.MMAP if source is None else source
-                        assert frame.pixel_format == pixel_format
-
-        @skip(when=not is_v4l2looback_prepared(), reason="v4l2loopback is not prepared")
-        @skip(when=not is_v4l2loopback_installed(), reason="v4l2loopback is not installed")
-        @test(f"output({oname}) and async capture({iname}) with v4l2loopback")
-        async def _(sink=output_type, source=input_type):
-            with Device(V4L2_LOOPBACK_TEST_DEVICE) as outp, Device(V4L2_LOOPBACK_TEST_DEVICE) as inp:
-                assert outp.info.card == "Loopback 199"
-                assert Capability.STREAMING in outp.info.capabilities
-                assert Capability.VIDEO_OUTPUT in outp.info.capabilities
-
-                width, height, pixel_format = 320, 240, PixelFormat.RGB24
-                size = width * height * 3
-                output = VideoOutput(outp, sink=sink)
-                output.set_format(width, height, pixel_format)
-                fmt = output.get_format()
-                assert fmt.width == width
-                assert fmt.height == height
-                assert fmt.pixel_format == pixel_format
-
-                with output:
-                    assert inp.info.card == "Loopback 199"
-                    assert Capability.STREAMING in inp.info.capabilities
-                    assert Capability.VIDEO_OUTPUT in inp.info.capabilities
-
-                    with VideoCapture(inp, source=source) as capture:
-                        fmt = capture.get_format()
-                        assert fmt.width == width
-                        assert fmt.height == height
-                        assert fmt.pixel_format == pixel_format
-
-                        data = os.urandom(size)
-                        output.write(data)
-
-                        async for frame in capture:
-                            assert frame.data == data
-                            assert frame.nbytes == size
-                            assert frame.memory == Memory.MMAP if source is None else source
-                            assert frame.pixel_format == pixel_format
-                            break
+vivid_only = skip(when=not is_vivid_prepared(), reason="vivid is not prepared")(
+    skip(when=not is_vivid_installed(), reason="vivid is not installed")
+)
 
 
-@skip(when=not is_v4l2looback_prepared(), reason="v4l2loopback is not prepared")
-@skip(when=not is_v4l2loopback_installed(), reason="v4l2loopback is not installed")
-@test("controls with v4l2loopback")
+def test_vivid_only(*args, **kwargs):
+    kwargs.setdefault("tags", []).append("vivid")
+    return vivid_only(test(*args, **kwargs))
+
+
+@test_vivid_only("list vivid files")
 def _():
-    with Device(V4L2_LOOPBACK_TEST_DEVICE) as device:
-        controls = device.controls
-        assert controls.keep_format is controls["keep_format"]
-        current_value = controls.keep_format.value
-        assert current_value in {True, False}
-        try:
-            controls.keep_format.value = current_value + 5
-            assert controls.keep_format.value == (not current_value)
-        finally:
-            controls.keep_format.value = current_value
-
-        with raises(AttributeError):
-            _ = controls.unknown_field
-
-        assert ControlClass.USER in {ctrl.id - 1 for ctrl in controls.used_classes()}
-        assert controls.keep_format in controls.with_class("user")
-        assert controls.keep_format in controls.with_class(ControlClass.USER)
-
-        assert "<BooleanControl keep_format" in repr(controls.keep_format)
-        with raises(KeyError):
-            _ = list(controls.with_class("unknown class"))
-
-        with raises(ValueError):
-            _ = list(controls.with_class(55))
+    video_files = list(iter_video_files())
+    for video_file in VIVID_TEST_DEVICES:
+        assert video_file in video_files
 
 
-@skip(when=not is_vivid_prepared(), reason="vivid is not prepared")
-@skip(when=not is_vivid_installed(), reason="vivid is not installed")
-@test("controls with vivid")
+@test_vivid_only("list vivid capture files")
+def _():
+    video_files = list(iter_video_capture_files())
+    assert VIVID_TEST_DEVICES[0] in video_files
+    for video_file in VIVID_TEST_DEVICES[1:]:
+        assert video_file not in video_files
+
+
+@test_vivid_only("list vivid output files")
+def _():
+    video_files = list(iter_video_output_files())
+    assert VIVID_TEST_DEVICES[1] in video_files
+    assert VIVID_TEST_DEVICES[0] not in video_files
+    for video_file in VIVID_TEST_DEVICES[2:]:
+        assert video_file not in video_files
+
+
+@test_vivid_only("list vivid devices")
+def _():
+    devices = list(iter_devices())
+    device_names = [dev.filename for dev in devices]
+    for video_file in VIVID_TEST_DEVICES:
+        assert video_file in device_names
+
+
+@test_vivid_only("list vivid capture devices")
+def _():
+    devices = list(iter_video_capture_devices())
+    device_names = [dev.filename for dev in devices]
+    assert VIVID_TEST_DEVICES[0] in device_names
+    for video_file in VIVID_TEST_DEVICES[1:]:
+        assert video_file not in device_names
+
+
+@test_vivid_only("list vivid output devices")
+def _():
+    devices = list(iter_video_output_devices())
+    device_names = [dev.filename for dev in devices]
+    assert VIVID_TEST_DEVICES[1] in device_names
+    assert VIVID_TEST_DEVICES[0] not in device_names
+    for video_file in VIVID_TEST_DEVICES[2:]:
+        assert video_file not in device_names
+
+
+@test_vivid_only("controls with vivid")
 def _():
     with Device(VIVID_TEST_DEVICES[0]) as device:
         controls = device.controls
@@ -753,28 +692,159 @@ def _():
             _ = list(controls.with_class(55))
 
 
-@skip(when=not is_vivid_prepared(), reason="vivid is not prepared")
-@skip(when=not is_vivid_installed(), reason="vivid is not installed")
-@test("info with vivid")
+@test_vivid_only("info with vivid")
 def _():
-    with Device(VIVID_TEST_DEVICES[0]) as device:
-        text = repr(device.info)
+    with Device(VIVID_TEST_DEVICES[0]) as capture_dev:
+        dev_caps = capture_dev.info.device_capabilities
+        assert Capability.VIDEO_CAPTURE in dev_caps
+        assert Capability.STREAMING in dev_caps
+        assert Capability.READWRITE in dev_caps
+        assert Capability.VIDEO_OUTPUT not in dev_caps
+        assert Capability.META_CAPTURE not in dev_caps
+
+        text = repr(capture_dev.info)
         assert "driver = " in text
 
-        assert len(device.info.frame_sizes) > 10
-        assert len(device.info.formats) > 10
+        assert len(capture_dev.info.frame_sizes) > 10
+        assert len(capture_dev.info.formats) > 10
 
-        inputs = device.info.inputs
+        inputs = capture_dev.info.inputs
         assert len(inputs) > 0
-        active_input = device.get_input()
+        outputs = capture_dev.info.outputs
+        assert len(outputs) == 0
+
+        assert isinstance(capture_dev.get_priority(), Priority)
+
+        crop = capture_dev.info.crop_capabilities
+        assert not crop
+
+    with Device(VIVID_TEST_DEVICES[1]) as output_dev:
+        crop = output_dev.info.crop_capabilities
+        assert crop
+        assert BufferType.VIDEO_OUTPUT in crop
+
+        dev_caps = output_dev.info.device_capabilities
+        assert Capability.VIDEO_OUTPUT in dev_caps
+        assert Capability.STREAMING in dev_caps
+        assert Capability.READWRITE in dev_caps
+        assert Capability.VIDEO_CAPTURE not in dev_caps
+        assert Capability.META_CAPTURE not in dev_caps
+
+        text = repr(output_dev.info)
+        assert "driver = " in text
+
+        assert len(output_dev.info.frame_sizes) == 0
+        assert len(output_dev.info.formats) > 10
+
+        inputs = output_dev.info.inputs
+        assert len(inputs) == 0
+
+        outputs = output_dev.info.outputs
+        assert len(outputs) > 0
+
+
+@test_vivid_only("vivid inputs")
+def _():
+    with Device(VIVID_TEST_DEVICES[0]) as capture_dev:
+        inputs = capture_dev.info.inputs
+        assert len(inputs) > 0
+        active_input = capture_dev.get_input()
         assert active_input in {inp.index for inp in inputs}
         try:
-            device.set_input(inputs[-1].index)
-            assert device.get_input() == inputs[-1].index
+            capture_dev.set_input(inputs[-1].index)
+            assert capture_dev.get_input() == inputs[-1].index
         finally:
-            device.set_input(active_input)
+            capture_dev.set_input(active_input)
 
-        outputs = device.info.outputs
-        assert len(outputs) >= 0
 
-        assert isinstance(device.get_priority(), Priority)
+def test_frame(frame, i, width, height, pixel_format, source):
+    size = width * height * 3
+    assert len(frame.data) == size
+    assert frame.nbytes == size
+    assert frame.memory == Memory.MMAP
+    assert frame.pixel_format == pixel_format
+    assert frame.type == BufferType.VIDEO_CAPTURE
+    assert frame.frame_nb == i
+    assert frame.width == width
+    assert frame.height == height
+    assert frame.pixel_format == pixel_format
+    if numpy:
+        data = frame.array
+        assert data.shape == (size,)
+        assert data.dtype == numpy.ubyte
+    if source in {None, Capability.STREAMING}:
+        assert BufferFlag.MAPPED in frame.flags
+
+
+for input_type in (None, Capability.STREAMING):
+    iname = "auto" if input_type is None else input_type.name
+
+    @test_vivid_only(f"vivid capture ({iname})")
+    def _(source=input_type):
+        with Device(VIVID_TEST_DEVICES[0]) as capture_dev:
+            capture_dev.set_input(0)
+            width, height, pixel_format = 640, 480, PixelFormat.RGB24
+            capture = VideoCapture(capture_dev, source=source)
+            capture.set_format(width, height, pixel_format)
+            fmt = capture.get_format()
+            assert fmt.width == width
+            assert fmt.height == height
+            assert fmt.pixel_format == pixel_format
+
+            capture.set_fps(120)
+            assert capture.get_fps() >= 60
+
+            with capture:
+                stream = iter(capture)
+                frame1 = next(stream)
+                test_frame(frame1, 0, width, height, pixel_format, source)
+                frame2 = next(stream)
+                test_frame(frame2, 1, width, height, pixel_format, source)
+
+    @test_vivid_only(f"vivid async capture ({iname})")
+    async def _(source=input_type):
+        with Device(VIVID_TEST_DEVICES[0]) as capture_dev:
+            capture_dev.set_input(0)
+            width, height, pixel_format = 640, 480, PixelFormat.RGB24
+            capture = VideoCapture(capture_dev, source=source)
+            capture.set_format(width, height, pixel_format)
+
+            fmt = capture.get_format()
+            assert fmt.width == width
+            assert fmt.height == height
+            assert fmt.pixel_format == pixel_format
+
+            capture.set_fps(120)
+            assert capture.get_fps() >= 60
+
+            with capture:
+                i = 0
+                async for frame in capture:
+                    test_frame(frame, i, width, height, pixel_format, source)
+                    i += 1
+                    if i > 2:
+                        break
+
+
+@test_vivid_only("vivid capture no capability")
+def _():
+    with Device(VIVID_TEST_DEVICES[1]) as output_dev:
+        stream = iter(output_dev)
+        with raises(V4L2Error):
+            next(stream)
+
+
+@test_vivid_only("vivid output")
+def _():
+    with Device(VIVID_TEST_DEVICES[1]) as output_dev:
+        width, height, pixel_format = 640, 480, PixelFormat.RGB24
+        size = width * height * 3
+        out = VideoOutput(output_dev)
+        out.set_format(width, height, pixel_format)
+        fmt = out.get_format()
+        assert fmt.width == width
+        assert fmt.height == height
+        assert fmt.pixel_format == pixel_format
+        with out:
+            data = os.urandom(size)
+            out.write(data)
