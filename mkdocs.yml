@@ -78,12 +78,14 @@ nav:
   - User guide:
     - user_guide/index.md
     - user_guide/input.md
+    - user_guide/led.md
     - user_guide/midi.md
     - user_guide/thermal.md
     - user_guide/video.md
   - API Reference:
     - api/index.md
     - api/input.md
+    - api/led.md
     - api/midi.md
     - api/thermal.md
     - api/video.md

@@ -81,7 +81,8 @@ def _(uled=uled):
     led = LED.from_name(uled.name)
     assert led.brightness == 0
     led.brightness = 1
-    assert uled.brightness() == 1
+    assert led.brightness == 1
+    assert uled.brightness == 1
 
 
 @skip("uled not prepared", when=not ULED_PREPARED)
