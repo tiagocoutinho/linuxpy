@@ -8,6 +8,8 @@
 
 import asyncio
 import contextlib
+import random
+import string
 
 from .types import Callable, Iterable, Iterator, Optional, Sequence, Union
 
@@ -198,3 +200,13 @@ class Version:
 
 def bit_indexes(number):
     return [i for i, c in enumerate(bin(number)[:1:-1]) if c == "1"]
+
+
+ascii_alphanumeric = string.ascii_letters + string.digits
+
+
+def random_name(min_length=32, max_length=32):
+    if not (k := random.randint(min_length, max_length)):
+        return ""
+    first = random.choice(string.ascii_letters)
+    return first + "".join(random.choices(ascii_alphanumeric, k=k - 1))
