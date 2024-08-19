@@ -22,6 +22,7 @@ MOUNT_PATH = pathlib.Path("/sys")
 DEVICE_PATH = MOUNT_PATH / "bus/usb/devices"
 CLASS_PATH = MOUNT_PATH / "class"
 THERMAL_PATH = CLASS_PATH / "thermal"
+LED_PATH = CLASS_PATH / "leds"
 
 
 class Mode(enum.Enum):
