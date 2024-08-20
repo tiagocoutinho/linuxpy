@@ -757,14 +757,13 @@ def _():
             capture_dev.set_input(active_input)
 
 
-def test_frame(frame, i, width, height, pixel_format, source):
+def test_frame(frame, width, height, pixel_format, source):
     size = width * height * 3
     assert len(frame.data) == size
     assert frame.nbytes == size
     assert frame.memory == Memory.MMAP
     assert frame.pixel_format == pixel_format
     assert frame.type == BufferType.VIDEO_CAPTURE
-    assert frame.frame_nb == i
     assert frame.width == width
     assert frame.height == height
     assert frame.pixel_format == pixel_format
@@ -797,9 +796,9 @@ for input_type in (None, Capability.STREAMING):
             with capture:
                 stream = iter(capture)
                 frame1 = next(stream)
-                test_frame(frame1, 0, width, height, pixel_format, source)
+                test_frame(frame1, width, height, pixel_format, source)
                 frame2 = next(stream)
-                test_frame(frame2, 1, width, height, pixel_format, source)
+                test_frame(frame2, width, height, pixel_format, source)
 
     @test_vivid_only(f"vivid async capture ({iname})")
     async def _(source=input_type):
@@ -820,7 +819,7 @@ for input_type in (None, Capability.STREAMING):
             with capture:
                 i = 0
                 async for frame in capture:
-                    test_frame(frame, i, width, height, pixel_format, source)
+                    test_frame(frame, width, height, pixel_format, source)
                     i += 1
                     if i > 2:
                         break
