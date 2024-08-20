@@ -12,13 +12,13 @@
         <meta name="author" content="Tiago Coutinho">
       
       
-        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/api/thermal/">
+        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/api/led/">
       
       
-        <link rel="prev" href="../midi/">
+        <link rel="prev" href="../input/">
       
       
-        <link rel="next" href="../video/">
+        <link rel="next" href="../midi/">
       
       
       <link rel="icon" href="../../img/favicon.ico">
@@ -26,7 +26,7 @@
     
     
       
-        <title>🌡️ Thermal and cooling API - LinuxPy</title>
+        <title>💡 Led API - LinuxPy</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#thermal-and-cooling-api" class="md-skip">
+        <a href="#led-api" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              🌡️ Thermal and cooling API
+              💡 Led API
             
           </span>
         </div>
@@ -601,10 +601,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../led/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    💡 Led API
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -613,6 +633,188 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#linuxpy.led" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;led
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" led">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led--uled" class="md-nav__link">
+    <span class="md-ellipsis">
+      ULED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.LED" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LED
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" LED">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.LED.name" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;name
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.LED.devicename" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;devicename
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.LED.color" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;color
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.LED.function" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;function
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.LED.trigger_enabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;trigger_enabled
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.LED.from_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;from_name
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.ULED" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ULED
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" ULED">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.ULED.brightness" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;brightness
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.ULED.read" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;read
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.ULED.stream" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;stream
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.iter_device_paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_device_paths
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.iter_devices" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_devices
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.find" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;find
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -643,30 +845,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    🌡️ Thermal and cooling API
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../thermal/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -675,122 +857,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#linuxpy.thermal" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;thermal
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" thermal">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.thermal.ThermalZone" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ThermalZone
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.thermal.TripPoint" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;TripPoint
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.thermal.CoolingDevice" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;CoolingDevice
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.thermal.iter_thermal_zone_paths" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_thermal_zone_paths
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.thermal.iter_thermal_zone_devices" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_thermal_zone_devices
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.thermal.iter_cooling_device_paths" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_cooling_device_paths
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.thermal.iter_cooling_devices" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_cooling_devices
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.thermal.iter_devices" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_devices
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.thermal.find" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;find
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -871,80 +937,146 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#linuxpy.thermal" class="md-nav__link">
+  <a href="#linuxpy.led" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;thermal
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;led
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" thermal">
+    <nav class="md-nav" aria-label=" led">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#linuxpy.thermal.ThermalZone" class="md-nav__link">
+  <a href="#linuxpy.led--uled" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ThermalZone
+      ULED
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.thermal.TripPoint" class="md-nav__link">
+  <a href="#linuxpy.led.LED" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;TripPoint
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LED
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" LED">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.LED.name" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;name
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.thermal.CoolingDevice" class="md-nav__link">
+  <a href="#linuxpy.led.LED.devicename" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;CoolingDevice
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;devicename
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.thermal.iter_thermal_zone_paths" class="md-nav__link">
+  <a href="#linuxpy.led.LED.color" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_thermal_zone_paths
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;color
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.thermal.iter_thermal_zone_devices" class="md-nav__link">
+  <a href="#linuxpy.led.LED.function" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_thermal_zone_devices
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;function
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.thermal.iter_cooling_device_paths" class="md-nav__link">
+  <a href="#linuxpy.led.LED.trigger_enabled" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_cooling_device_paths
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;trigger_enabled
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.thermal.iter_cooling_devices" class="md-nav__link">
+  <a href="#linuxpy.led.LED.from_name" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_cooling_devices
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;from_name
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.ULED" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ULED
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" ULED">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.ULED.brightness" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;brightness
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.thermal.iter_devices" class="md-nav__link">
+  <a href="#linuxpy.led.ULED.read" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;read
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.ULED.stream" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;stream
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.iter_device_paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_device_paths
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.led.iter_devices" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_devices
     </span>
@@ -953,7 +1085,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.thermal.find" class="md-nav__link">
+  <a href="#linuxpy.led.find" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;find
     </span>
@@ -981,28 +1113,45 @@
                   
 
 
-<h1 id="thermal-and-cooling-api">🌡️ Thermal and cooling API<a class="headerlink" href="#thermal-and-cooling-api" title="Permanent link">&para;</a></h1>
+<h1 id="led-api">💡 Led API<a class="headerlink" href="#led-api" title="Permanent link">&para;</a></h1>
 
 
 <div class="doc doc-object doc-module">
 
 
 
-<h2 id="linuxpy.thermal" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>linuxpy.thermal</code>
+<h2 id="linuxpy.led" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>linuxpy.led</code>
 
 
-<a href="#linuxpy.thermal" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#linuxpy.led" class="headerlink" title="Permanent link">&para;</a></h2>
 
     <div class="doc doc-contents first">
 
-      <p>Human friendly interface to linux thermal subsystem.</p>
-<p>The heart of linuxpy thermal library are the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.ThermalZone"><code>ThermalZone</code></a>
-and <a class="autorefs autorefs-internal" href="#linuxpy.thermal.CoolingDevice"><code>CoolingDevice</code></a> classes.</p>
-<p>Probably the most common way to create a thermal device is through
-the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>find</code></a> helper:</p>
-<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;x86_pkg_temp&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tz</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;X86 temperature: </span><span class="si">{</span><span class="n">tz</span><span class="o">.</span><span class="n">temperature</span><span class="o">/</span><span class="mi">1000</span><span class="si">:</span><span class="s2">6.2f</span><span class="si">}</span><span class="s2"> C&quot;</span><span class="p">)</span>
+      <p>Human friendly interface to linux LED subsystem.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.led</span> <span class="kn">import</span> <span class="n">find</span>
+
+<span class="n">caps_lock</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="s2">&quot;capslock&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">caps_lock</span><span class="o">.</span><span class="n">brightness</span><span class="p">)</span>
+<span class="n">caps_lock</span><span class="o">.</span><span class="n">brightness</span> <span class="o">=</span> <span class="n">caps_lock</span><span class="o">.</span><span class="n">max_brightness</span>
+</code></pre></div>
+<h5 id="linuxpy.led--uled">ULED<a class="headerlink" href="#linuxpy.led--uled" title="Permanent link">&para;</a></h5>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.led</span> <span class="kn">import</span> <span class="n">LED</span><span class="p">,</span> <span class="n">ULED</span>
+
+<span class="k">with</span> <span class="n">ULED</span><span class="p">(</span><span class="s2">&quot;uled::simulation&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">uled</span><span class="p">:</span>
+    <span class="n">led</span> <span class="o">=</span> <span class="n">LED</span><span class="o">.</span><span class="n">from_name</span><span class="p">(</span><span class="s2">&quot;uled::simulation&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+</code></pre></div>
+<p>Streaming example:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">monotonic</span>
+
+<span class="kn">from</span> <span class="nn">linuxpy.led</span> <span class="kn">import</span> <span class="n">ULED</span>
+
+<span class="k">with</span> <span class="n">ULED</span><span class="p">(</span><span class="s2">&quot;uled::simulation&quot;</span><span class="p">,</span> <span class="n">max_brightness</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span> <span class="k">as</span> <span class="n">uled</span><span class="p">:</span>
+    <span class="c1"># Open another terminal and type:</span>
+    <span class="c1"># echo 10 &gt; /sys/class/leds/uled::simulation/brightness</span>
+    <span class="k">for</span> <span class="n">brightness</span> <span class="ow">in</span> <span class="n">uled</span><span class="o">.</span><span class="n">stream</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">monotonic</span><span class="p">()</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">]: </span><span class="si">{</span><span class="n">brightness</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
 
 
@@ -1020,10 +1169,10 @@ the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>fin
 
 
 
-<h3 id="linuxpy.thermal.ThermalZone" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class=" language-python"><span class="n">ThermalZone</span><span class="p">(</span><span class="n">syspath</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">)</span></code>
+<h3 id="linuxpy.led.LED" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class=" language-python"><span class="n">LED</span><span class="p">(</span><span class="n">syspath</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">)</span></code>
 
-<a href="#linuxpy.thermal.ThermalZone" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.led.LED" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
     <div class="doc doc-contents ">
@@ -1031,131 +1180,7 @@ the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>fin
               Bases: <code><span title="linuxpy.sysfs.Device">Device</span></code></p>
 
 
-      <p>Thermal sensor</p>
-
-
-<table>
-      <thead>
-        <tr>
-          <th><span class="doc-section-title">ATTRIBUTE</span></th>
-          <th><span>DESCRIPTION</span></th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td><code><span title="linuxpy.thermal.ThermalZone.type">type</span></code></td>
-            <td class="doc-attribute-details">
-              <div class="doc-md-description">
-                <p>thermal zone type</p>
-              </div>
-              <p>
-                  <span class="doc-attribute-annotation">
-                    <b>TYPE:</b>
-                      <code>str</code>
-                  </span>
-              </p>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td><code><span title="linuxpy.thermal.ThermalZone.policy">policy</span></code></td>
-            <td class="doc-attribute-details">
-              <div class="doc-md-description">
-                <p>the policy</p>
-              </div>
-              <p>
-                  <span class="doc-attribute-annotation">
-                    <b>TYPE:</b>
-                      <code>str</code>
-                  </span>
-              </p>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td><code><span title="linuxpy.thermal.ThermalZone.available_policies">available_policies</span></code></td>
-            <td class="doc-attribute-details">
-              <div class="doc-md-description">
-                <p>list of available policies</p>
-              </div>
-              <p>
-                  <span class="doc-attribute-annotation">
-                    <b>TYPE:</b>
-                      <code>list[str]</code>
-                  </span>
-              </p>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td><code><span title="linuxpy.thermal.ThermalZone.temperature">temperature</span></code></td>
-            <td class="doc-attribute-details">
-              <div class="doc-md-description">
-                <p>current temperature in milli-celsius</p>
-              </div>
-              <p>
-                  <span class="doc-attribute-annotation">
-                    <b>TYPE:</b>
-                      <code>int</code>
-                  </span>
-              </p>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td><code><span title="linuxpy.thermal.ThermalZone.offset">offset</span></code></td>
-            <td class="doc-attribute-details">
-              <div class="doc-md-description">
-                <p>offet in milli-celsius</p>
-              </div>
-              <p>
-                  <span class="doc-attribute-annotation">
-                    <b>TYPE:</b>
-                      <code>int</code>
-                  </span>
-              </p>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td><code><span title="linuxpy.thermal.ThermalZone.mode">mode</span></code></td>
-            <td class="doc-attribute-details">
-              <div class="doc-md-description">
-                <p>current mode (enabled/disabled)</p>
-              </div>
-              <p>
-                  <span class="doc-attribute-annotation">
-                    <b>TYPE:</b>
-                      <code><span title="linuxpy.sysfs.Mode">Mode</span></code>
-                  </span>
-              </p>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td><code><span title="linuxpy.thermal.ThermalZone.device_number">device_number</span></code></td>
-            <td class="doc-attribute-details">
-              <div class="doc-md-description">
-                <p>thermal device number</p>
-              </div>
-              <p>
-                  <span class="doc-attribute-annotation">
-                    <b>TYPE:</b>
-                      <code>int</code>
-                  </span>
-              </p>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td><code><span title="linuxpy.thermal.ThermalZone.trip_points">trip_points</span></code></td>
-            <td class="doc-attribute-details">
-              <div class="doc-md-description">
-                <p>list of trip points (new list every time)</p>
-              </div>
-              <p>
-                  <span class="doc-attribute-annotation">
-                    <b>TYPE:</b>
-                      <code>list[<a class="autorefs autorefs-internal" title="linuxpy.thermal.TripPoint" href="#linuxpy.thermal.TripPoint">TripPoint</a>]</code>
-                  </span>
-              </p>
-            </td>
-          </tr>
-      </tbody>
-    </table>
+      <p>Main LED class</p>
 
 
 
@@ -1168,7 +1193,133 @@ the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>fin
 
 
 
+<div class="doc doc-object doc-attribute">
 
+
+
+<h4 id="linuxpy.led.LED.name" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class=" language-python"><span class="n">name</span><span class="p">:</span> <span class="nb">str</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.led.LED.name" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>LED name from the naming <devicename:color:function></p>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="linuxpy.led.LED.devicename" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class=" language-python"><span class="n">devicename</span><span class="p">:</span> <span class="nb">str</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.led.LED.devicename" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>LED device name from the naming <devicename:color:function></p>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="linuxpy.led.LED.color" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class=" language-python"><span class="n">color</span><span class="p">:</span> <span class="nb">str</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.led.LED.color" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>LED color from the naming <devicename:color:function></p>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="linuxpy.led.LED.function" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class=" language-python"><span class="n">function</span><span class="p">:</span> <span class="nb">str</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.led.LED.function" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>LED function from the naming <devicename:color:function></p>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="linuxpy.led.LED.trigger_enabled" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class=" language-python"><span class="n">trigger_enabled</span><span class="p">:</span> <span class="nb">bool</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.led.LED.trigger_enabled" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Tells if the LED trigger is enabled</p>
+    </div>
+
+</div>
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="linuxpy.led.LED.from_name" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="n">from_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LED</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a href="#linuxpy.led.LED.from_name" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Create a LED from the name that corresponds /sys/class/leds/<name></p>
+
+    </div>
+
+</div>
 
 
 
@@ -1182,120 +1333,19 @@ the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>fin
 
 
 
-<h3 id="linuxpy.thermal.TripPoint" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class=" language-python"><span class="n">TripPoint</span><span class="p">(</span><span class="n">temperature_path</span><span class="p">,</span> <span class="n">type_path</span><span class="p">)</span></code>
+<h3 id="linuxpy.led.ULED" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class=" language-python"><span class="n">ULED</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">max_brightness</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
-<a href="#linuxpy.thermal.TripPoint" class="headerlink" title="Permanent link">&para;</a></h3>
-
-
-    <div class="doc doc-contents ">
-
-
-      <p>Trip point associated with the thermal zone</p>
-
-
-<table>
-      <thead>
-        <tr>
-          <th><span class="doc-section-title">ATTRIBUTE</span></th>
-          <th><span>DESCRIPTION</span></th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td><code><span title="linuxpy.thermal.TripPoint.temperature">temperature</span></code></td>
-            <td class="doc-attribute-details">
-              <div class="doc-md-description">
-                <p>trip point temperature in milli-celsius</p>
-              </div>
-              <p>
-                  <span class="doc-attribute-annotation">
-                    <b>TYPE:</b>
-                      <code>int</code>
-                  </span>
-              </p>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td><code><span title="linuxpy.thermal.TripPoint.type">type</span></code></td>
-            <td class="doc-attribute-details">
-              <div class="doc-md-description">
-                <p>trip point type</p>
-              </div>
-              <p>
-                  <span class="doc-attribute-annotation">
-                    <b>TYPE:</b>
-                      <code>str</code>
-                  </span>
-              </p>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-class">
-
-
-
-<h3 id="linuxpy.thermal.CoolingDevice" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class=" language-python"><span class="n">CoolingDevice</span><span class="p">(</span><span class="n">syspath</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">)</span></code>
-
-<a href="#linuxpy.thermal.CoolingDevice" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.led.ULED" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
     <div class="doc doc-contents ">
             <p class="doc doc-class-bases">
-              Bases: <code><span title="linuxpy.sysfs.Device">Device</span></code></p>
+              Bases: <code><span title="linuxpy.device.BaseDevice">BaseDevice</span></code></p>
 
 
-      <p>Cooling device (fan, processor, ...)</p>
-
-
-<table>
-      <thead>
-        <tr>
-          <th><span class="doc-section-title">ATTRIBUTE</span></th>
-          <th><span>DESCRIPTION</span></th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td><code><span title="linuxpy.thermal.CoolingDevice.type">type</span></code></td>
-            <td class="doc-attribute-details">
-              <div class="doc-md-description">
-                <p>thermal zone type</p>
-              </div>
-              <p>
-                  <span class="doc-attribute-annotation">
-                    <b>TYPE:</b>
-                      <code>str</code>
-                  </span>
-              </p>
-            </td>
-          </tr>
-      </tbody>
-    </table>
+      <p>LED class for th userspace LED. This can be useful for testing triggers and
+can also be used to implement virtual LEDs.</p>
 
 
 
@@ -1308,7 +1358,62 @@ the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>fin
 
 
 
+<div class="doc doc-object doc-attribute">
 
+
+
+<h4 id="linuxpy.led.ULED.brightness" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class=" language-python"><span class="n">brightness</span><span class="p">:</span> <span class="nb">int</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#linuxpy.led.ULED.brightness" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Read new brightness. Blocks until brightness changes</p>
+    </div>
+
+</div>
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="linuxpy.led.ULED.read" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="n">read</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bytes</span></code>
+
+<a href="#linuxpy.led.ULED.read" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Read new brightness. Blocks until brightness changes</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="linuxpy.led.ULED.stream" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="n">stream</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></code>
+
+<a href="#linuxpy.led.ULED.stream" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Infinite stream of brightness change events</p>
+
+    </div>
+
+</div>
 
 
 
@@ -1322,15 +1427,15 @@ the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>fin
 <div class="doc doc-object doc-function">
 
 
-<h3 id="linuxpy.thermal.iter_thermal_zone_paths" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">iter_thermal_zone_paths</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span></code>
+<h3 id="linuxpy.led.iter_device_paths" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">iter_device_paths</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span></code>
 
-<a href="#linuxpy.thermal.iter_thermal_zone_paths" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.led.iter_device_paths" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
     <div class="doc doc-contents ">
 
-      <p>Returns an iterator over all thermal zone paths</p>
+      <p>Iterable of all LED syspaths (/sys/class/leds)</p>
 
     </div>
 
@@ -1339,15 +1444,15 @@ the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>fin
 <div class="doc doc-object doc-function">
 
 
-<h3 id="linuxpy.thermal.iter_thermal_zone_devices" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">iter_thermal_zone_devices</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ThermalZone</span><span class="p">]</span></code>
+<h3 id="linuxpy.led.iter_devices" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">iter_devices</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">LED</span><span class="p">]</span></code>
 
-<a href="#linuxpy.thermal.iter_thermal_zone_devices" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.led.iter_devices" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
     <div class="doc doc-contents ">
 
-      <p>Returns an iterator over all thermal zone devices</p>
+      <p>Iterable over all LED devices</p>
 
     </div>
 
@@ -1356,74 +1461,23 @@ the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>fin
 <div class="doc doc-object doc-function">
 
 
-<h3 id="linuxpy.thermal.iter_cooling_device_paths" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">iter_cooling_device_paths</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span></code>
+<h3 id="linuxpy.led.find" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">find</span><span class="p">(</span><span class="n">find_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">custom_match</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">LED</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">LED</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span></code>
 
-<a href="#linuxpy.thermal.iter_cooling_device_paths" class="headerlink" title="Permanent link">&para;</a></h3>
-
-
-    <div class="doc doc-contents ">
-
-      <p>Returns an iterator over all cooling device paths</p>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="linuxpy.thermal.iter_cooling_devices" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">iter_cooling_devices</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">CoolingDevice</span><span class="p">]</span></code>
-
-<a href="#linuxpy.thermal.iter_cooling_devices" class="headerlink" title="Permanent link">&para;</a></h3>
-
-
-    <div class="doc doc-contents ">
-
-      <p>Returns an iterator over all cooling devices</p>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="linuxpy.thermal.iter_devices" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">iter_devices</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ThermalZone</span><span class="p">,</span> <span class="n">CoolingDevice</span><span class="p">]]</span></code>
-
-<a href="#linuxpy.thermal.iter_devices" class="headerlink" title="Permanent link">&para;</a></h3>
-
-
-    <div class="doc doc-contents ">
-
-      <p>Returns an iterator over all thermal and cooling devices</p>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="linuxpy.thermal.find" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">find</span><span class="p">(</span><span class="n">find_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">custom_match</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Device</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Device</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span></code>
-
-<a href="#linuxpy.thermal.find" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.led.find" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
     <div class="doc doc-contents ">
 
       <p>If find_all is False:</p>
-<p>Find a device follwing the criteria matched by custom_match and kwargs.
-If no device is found matching the criteria it returns None.
-Default is to return a random first device.</p>
+<p>Find a LED follwing the criteria matched by custom_match and kwargs.
+If no LED is found matching the criteria it returns None.
+Default is to return a random LED device.</p>
 <p>If find_all is True:</p>
 <p>The result is an iterator.
-Find all devices that match the criteria custom_match and kwargs.
-If no device is found matching the criteria it returns an empty iterator.
-Default is to return an iterator over all input devices found on the system.</p>
+Find all LEDs that match the criteria custom_match and kwargs.
+If no LED is found matching the criteria it returns an empty iterator.
+Default is to return an iterator over all LEDs found on the system.</p>
 
     </div>
 
