@@ -23,6 +23,7 @@ except ImportError:
     numpy = None
 
 from linuxpy.device import device_number
+from linuxpy.io import GeventIO, fopen
 from linuxpy.video import raw
 from linuxpy.video.device import (
     BufferFlag,
@@ -810,6 +811,51 @@ for input_type in (None, Capability.STREAMING):
     @test_vivid_only(f"vivid capture ({iname})")
     def _(source=input_type):
         with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
+            capture_dev.set_input(0)
+            width, height, pixel_format = 640, 480, PixelFormat.RGB24
+            capture = VideoCapture(capture_dev, source=source)
+            capture.set_format(width, height, pixel_format)
+            fmt = capture.get_format()
+            assert fmt.width == width
+            assert fmt.height == height
+            assert fmt.pixel_format == pixel_format
+
+            capture.set_fps(120)
+            assert capture.get_fps() >= 60
+
+            with capture:
+                stream = iter(capture)
+                frame1 = next(stream)
+                test_frame(frame1, width, height, pixel_format, source)
+                frame2 = next(stream)
+                test_frame(frame2, width, height, pixel_format, source)
+
+    @test_vivid_only(f"vivid gevent capture ({iname})")
+    def _(source=input_type):
+        with Device(VIVID_CAPTURE_DEVICE, io=GeventIO) as capture_dev:
+            capture_dev.set_input(0)
+            width, height, pixel_format = 640, 480, PixelFormat.RGB24
+            capture = VideoCapture(capture_dev, source=source)
+            capture.set_format(width, height, pixel_format)
+            fmt = capture.get_format()
+            assert fmt.width == width
+            assert fmt.height == height
+            assert fmt.pixel_format == pixel_format
+
+            capture.set_fps(120)
+            assert capture.get_fps() >= 60
+
+            with capture:
+                stream = iter(capture)
+                frame1 = next(stream)
+                test_frame(frame1, width, height, pixel_format, source)
+                frame2 = next(stream)
+                test_frame(frame2, width, height, pixel_format, source)
+
+    @test_vivid_only(f"vivid sync capture ({iname})")
+    def _(source=input_type):
+        with fopen(VIVID_CAPTURE_DEVICE, rw=True, blocking=True) as fobj:
+            capture_dev = Device(fobj)
             capture_dev.set_input(0)
             width, height, pixel_format = 640, 480, PixelFormat.RGB24
             capture = VideoCapture(capture_dev, source=source)
