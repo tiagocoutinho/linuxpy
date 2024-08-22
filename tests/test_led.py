@@ -149,6 +149,13 @@ def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single
 
 
 @skip("uled not prepared", when=not ULED_PREPARED)
+@test("led brightness events")
+def _(uled=uled):
+    led = LED.from_name(uled.name)
+    assert not led.brightness_events_path.exists()
+
+
+@skip("uled not prepared", when=not ULED_PREPARED)
 @test("uled stream")
 def _(uled=uled):
     led = LED.from_name(uled.name)
