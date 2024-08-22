@@ -1539,6 +1539,11 @@ buffers = {buffers}
     def controls(self):
         return list(iter_read_controls(self.device))
 
+    @property
+    def video_standards(self) -> list[Standard]:
+        """List of video standards for the active input"""
+        return list(iter_read_video_standards(self.device))
+
 
 class BufferManager(DeviceHelper):
     def __init__(self, device: Device, buffer_type: BufferType, size: int = 2):
