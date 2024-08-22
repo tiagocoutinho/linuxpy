@@ -188,7 +188,7 @@ def iter_devices() -> Iterable[LED]:
     return (LED.from_syspath(path) for path in iter_device_paths())
 
 
-_find = make_find(iter_devices)
+_find = make_find(iter_devices, needs_open=False)
 
 
 def find(find_all: bool = False, custom_match: Optional[Callable] = None, **kwargs) -> Union[LED, Iterable[LED], None]:
