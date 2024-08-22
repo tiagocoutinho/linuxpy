@@ -62,6 +62,15 @@ def decode_triggers(text):
     return [i[1:-1] if i.startswith("[") else i for i in text.split()]
 
 
+def split_name(fname):
+    if ":" in fname:
+        if fname.count(":") == 1:
+            return "", *fname.split(":")
+        else:
+            return fname.split(":")
+    return "", "", fname
+
+
 class LED(Device):
     """Main LED class"""
 
@@ -79,15 +88,7 @@ class LED(Device):
         return f"{klass_name}({self.name})"
 
     def _build_name(self):
-        fname = self.syspath.stem
-        if ":" in fname:
-            if fname.count(":") == 1:
-                devicename = ""
-                color, function = fname.split(":")
-            else:
-                devicename, color, function = fname.split(":")
-        else:
-            devicename, color, function = "", "", fname
+        devicename, color, function = split_name(self.syspath.stem)
         self._devicename = devicename
         self._color = color
         self._function = function
