@@ -30,6 +30,7 @@ from linuxpy.video.device import (
     Capability,
     ControlClass,
     Device,
+    InputCapabilities,
     Memory,
     PixelFormat,
     Priority,
@@ -565,6 +566,7 @@ def _(display=hardware):
 
 
 VIVID_TEST_DEVICES = [Path(f"/dev/video{i}") for i in range(190, 194)]
+VIVID_CAPTURE_DEVICE, VIVID_OUTPUT_DEVICE, VIVID_META_CAPTURE_DEVICE, VIVID_META_OUTPUT_DEVICE = VIVID_TEST_DEVICES
 
 
 @cache
@@ -597,7 +599,7 @@ def _():
 @test_vivid_only("list vivid capture files")
 def _():
     video_files = list(iter_video_capture_files())
-    assert VIVID_TEST_DEVICES[0] in video_files
+    assert VIVID_CAPTURE_DEVICE in video_files
     for video_file in VIVID_TEST_DEVICES[1:]:
         assert video_file not in video_files
 
@@ -605,8 +607,8 @@ def _():
 @test_vivid_only("list vivid output files")
 def _():
     video_files = list(iter_video_output_files())
-    assert VIVID_TEST_DEVICES[1] in video_files
-    assert VIVID_TEST_DEVICES[0] not in video_files
+    assert VIVID_OUTPUT_DEVICE in video_files
+    assert VIVID_CAPTURE_DEVICE not in video_files
     for video_file in VIVID_TEST_DEVICES[2:]:
         assert video_file not in video_files
 
@@ -623,7 +625,7 @@ def _():
 def _():
     devices = list(iter_video_capture_devices())
     device_names = [dev.filename for dev in devices]
-    assert VIVID_TEST_DEVICES[0] in device_names
+    assert VIVID_CAPTURE_DEVICE in device_names
     for video_file in VIVID_TEST_DEVICES[1:]:
         assert video_file not in device_names
 
@@ -632,35 +634,36 @@ def _():
 def _():
     devices = list(iter_video_output_devices())
     device_names = [dev.filename for dev in devices]
-    assert VIVID_TEST_DEVICES[1] in device_names
-    assert VIVID_TEST_DEVICES[0] not in device_names
+    assert VIVID_OUTPUT_DEVICE in device_names
+    assert VIVID_CAPTURE_DEVICE not in device_names
     for video_file in VIVID_TEST_DEVICES[2:]:
         assert video_file not in device_names
 
 
 @test_vivid_only("controls with vivid")
 def _():
-    with Device(VIVID_TEST_DEVICES[0]) as device:
+    with Device(VIVID_CAPTURE_DEVICE) as device:
         controls = device.controls
 
         # Brightness
-        assert controls.brightness is controls["brightness"]
-        current_value = controls.brightness.value
-        assert 0 <= current_value < 250
+        brightness = controls.brightness
+        assert brightness is controls["brightness"]
+        current_value = brightness.value
+        assert brightness.minimum <= current_value <= brightness.maximum
         try:
-            controls.brightness.value = 100
-            assert controls.brightness.value == 100
+            brightness.value = 100
+            assert brightness.value == 100
         finally:
-            controls.brightness.value = current_value
+            brightness.value = current_value
 
         with raises(AttributeError):
             _ = controls.unknown_field
 
         assert ControlClass.USER in {ctrl.id - 1 for ctrl in controls.used_classes()}
-        assert controls.brightness in controls.with_class("user")
-        assert controls.brightness in controls.with_class(ControlClass.USER)
+        assert brightness in controls.with_class("user")
+        assert brightness in controls.with_class(ControlClass.USER)
 
-        assert "<IntegerControl brightness" in repr(controls.brightness)
+        assert "<IntegerControl brightness" in repr(brightness)
 
         # String
         assert controls.string is controls["string"]
@@ -694,7 +697,7 @@ def _():
 
 @test_vivid_only("info with vivid")
 def _():
-    with Device(VIVID_TEST_DEVICES[0]) as capture_dev:
+    with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
         dev_caps = capture_dev.info.device_capabilities
         assert Capability.VIDEO_CAPTURE in dev_caps
         assert Capability.STREAMING in dev_caps
@@ -704,6 +707,8 @@ def _():
 
         text = repr(capture_dev.info)
         assert "driver = " in text
+
+        capture_dev.set_input(0)
 
         assert len(capture_dev.info.frame_sizes) > 10
         assert len(capture_dev.info.formats) > 10
@@ -717,8 +722,15 @@ def _():
 
         crop = capture_dev.info.crop_capabilities
         assert not crop
+        for inp in inputs:
+            capture_dev.set_input(inp.index)
+            video_standards = capture_dev.info.video_standards
+            if InputCapabilities.STD in inp.capabilities:
+                assert video_standards
+            else:
+                assert not video_standards
 
-    with Device(VIVID_TEST_DEVICES[1]) as output_dev:
+    with Device(VIVID_OUTPUT_DEVICE) as output_dev:
         crop = output_dev.info.crop_capabilities
         assert crop
         assert BufferType.VIDEO_OUTPUT in crop
@@ -742,10 +754,27 @@ def _():
         outputs = output_dev.info.outputs
         assert len(outputs) > 0
 
+    with Device(VIVID_META_CAPTURE_DEVICE) as meta_capture_dev:
+        dev_caps = meta_capture_dev.info.device_capabilities
+        assert Capability.VIDEO_CAPTURE not in dev_caps
+        assert Capability.STREAMING in dev_caps
+        assert Capability.READWRITE in dev_caps
+        assert Capability.VIDEO_OUTPUT not in dev_caps
+        assert Capability.META_CAPTURE in dev_caps
+        assert Capability.META_OUTPUT not in dev_caps
+
+        text = repr(meta_capture_dev.info)
+        assert "driver = " in text
+
+        meta_capture_dev.set_input(0)
+
+        assert len(meta_capture_dev.info.frame_sizes) == 0
+        assert len(meta_capture_dev.info.formats) > 0
+
 
 @test_vivid_only("vivid inputs")
 def _():
-    with Device(VIVID_TEST_DEVICES[0]) as capture_dev:
+    with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
         inputs = capture_dev.info.inputs
         assert len(inputs) > 0
         active_input = capture_dev.get_input()
@@ -780,7 +809,7 @@ for input_type in (None, Capability.STREAMING):
 
     @test_vivid_only(f"vivid capture ({iname})")
     def _(source=input_type):
-        with Device(VIVID_TEST_DEVICES[0]) as capture_dev:
+        with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
             capture_dev.set_input(0)
             width, height, pixel_format = 640, 480, PixelFormat.RGB24
             capture = VideoCapture(capture_dev, source=source)
@@ -802,7 +831,7 @@ for input_type in (None, Capability.STREAMING):
 
     @test_vivid_only(f"vivid async capture ({iname})")
     async def _(source=input_type):
-        with Device(VIVID_TEST_DEVICES[0]) as capture_dev:
+        with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
             capture_dev.set_input(0)
             width, height, pixel_format = 640, 480, PixelFormat.RGB24
             capture = VideoCapture(capture_dev, source=source)
@@ -827,7 +856,7 @@ for input_type in (None, Capability.STREAMING):
 
 @test_vivid_only("vivid capture no capability")
 def _():
-    with Device(VIVID_TEST_DEVICES[1]) as output_dev:
+    with Device(VIVID_OUTPUT_DEVICE) as output_dev:
         stream = iter(output_dev)
         with raises(V4L2Error):
             next(stream)
@@ -835,7 +864,7 @@ def _():
 
 @test_vivid_only("vivid output")
 def _():
-    with Device(VIVID_TEST_DEVICES[1]) as output_dev:
+    with Device(VIVID_OUTPUT_DEVICE) as output_dev:
         width, height, pixel_format = 640, 480, PixelFormat.RGB24
         size = width * height * 3
         out = VideoOutput(output_dev)
