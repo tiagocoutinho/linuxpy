@@ -9,7 +9,7 @@ import time
 
 from ward import fixture, skip, test
 
-from linuxpy.led import LED, LED_PATH, ULED, iter_device_paths, iter_devices
+from linuxpy.led import LED, LED_PATH, ULED, find, iter_device_paths, iter_devices
 from linuxpy.util import random_name
 
 ULED_PREPARED = pathlib.Path(ULED.PATH).exists()
@@ -130,6 +130,22 @@ def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single
     assert uled_colored.name in paths
     assert uled_simple.name in paths
     assert uled_single_colon.name in paths
+
+
+@skip("uled not prepared", when=not ULED_PREPARED)
+@test("find led")
+def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single_colon=uled_single_colon):
+    devicename, color, function = uled.name.split(":")
+    led = find(function=uled.name.split(":")[-1])
+    assert led.devicename == devicename
+    assert led.color == color
+    assert led.function == function
+    assert led.name == uled.name
+    assert led.name == f"{led.devicename}:{led.color}:{led.function}"
+    assert repr(led) == f"LED({led.name})"
+
+    leds = list(find(find_all=True))
+    assert len(leds) >= 4
 
 
 @skip("uled not prepared", when=not ULED_PREPARED)
