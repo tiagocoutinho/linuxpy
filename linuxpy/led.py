@@ -62,6 +62,10 @@ def decode_triggers(text):
     return [i[1:-1] if i.startswith("[") else i for i in text.split()]
 
 
+def decode_brightness(data: bytes) -> int:
+    return int.from_bytes(data, "little")
+
+
 def split_name(fname):
     if nb_colons := fname.count(":"):
         parts = fname.split(":")
@@ -127,6 +131,17 @@ class LED(Device):
         """Tells if the LED trigger is enabled"""
         return self.trigger != "none"
 
+    @property
+    def brightness_events_path(self):
+        return self.syspath / "brightness_hw_changed"
+
+    def __iter__(self):
+        if not self.brightness_events_path.exists():
+            raise ValueError("This LED does not support hardware events")
+        with self.brightness_events_path.open("rb", buffering=0) as fobj:
+            yield decode_brightness(fobj.read(4))
+            fobj.seek(0)
+
 
 class ULED(BaseDevice):
     """
@@ -141,10 +156,6 @@ class ULED(BaseDevice):
         self.max_brightness = max_brightness
         self._brightness = None
         super().__init__(self.PATH, **kwargs)
-
-    @staticmethod
-    def decode(data: bytes) -> int:
-        return int.from_bytes(data, "little")
 
     def _on_open(self):
         data = struct.pack("64si", self.name.encode(), self.max_brightness)
@@ -165,14 +176,14 @@ class ULED(BaseDevice):
         """Read new brightness. Blocks until brightness changes"""
         data = self.raw_read()
         if data is not None:
-            self._brightness = self.decode(data)
+            self._brightness = decode_brightness(data)
         return self._brightness
 
     def stream(self) -> Iterable[int]:
         """Infinite stream of brightness change events"""
         while True:
             data = self.read()
-            self._brightness = self.decode(data)
+            self._brightness = decode_brightness(data)
             yield self._brightness
 
 
