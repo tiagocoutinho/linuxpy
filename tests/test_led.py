@@ -55,24 +55,36 @@ def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single
     assert led.devicename == devicename
     assert led.color == color
     assert led.function == function
+    assert led.name == uled.name
+    assert led.name == f"{led.devicename}:{led.color}:{led.function}"
+    assert repr(led) == f"LED({led.name})"
 
     devicename, color, function = "", "", uled_simple.name
     led = LED.from_name(uled_simple.name)
     assert led.function == function
     assert led.color == color
     assert led.devicename == devicename
+    assert led.name == led.function
+    assert led.name == uled_simple.name
+    assert repr(led) == f"LED({led.name})"
 
     devicename, color, function = uled_colored.name.split(":")
     led = LED.from_name(uled_colored.name)
     assert led.color == color
     assert led.devicename == devicename
     assert led.function == function
+    assert led.name == f"{led.devicename}:{led.color}:{led.function}"
+    assert led.name == uled_colored.name
+    assert repr(led) == f"LED({led.name})"
 
     devicename, color, function = "", *uled_single_colon.name.split(":")
     led = LED.from_name(uled_single_colon.name)
     assert led.color == color
     assert led.devicename == devicename
     assert led.function == function
+    assert led.name == f"{led.color}:{led.function}"
+    assert led.name == uled_single_colon.name
+    assert repr(led) == f"LED({led.name})"
 
 
 @skip("uled not prepared", when=not ULED_PREPARED)
