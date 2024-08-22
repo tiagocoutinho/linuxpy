@@ -63,11 +63,9 @@ def decode_triggers(text):
 
 
 def split_name(fname):
-    if ":" in fname:
-        if fname.count(":") == 1:
-            return "", *fname.split(":")
-        else:
-            return fname.split(":")
+    if nb_colons := fname.count(":"):
+        parts = fname.split(":")
+        return ("", *parts) if nb_colons == 1 else parts
     return "", "", fname
 
 
