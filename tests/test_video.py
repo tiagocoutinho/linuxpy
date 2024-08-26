@@ -962,6 +962,9 @@ def _():
 @test_vivid_only("vivid output")
 def _():
     with Device(VIVID_OUTPUT_DEVICE) as output_dev:
+        output_dev.set_output(0)
+        assert output_dev.get_output() == 0
+
         width, height, pixel_format = 640, 480, PixelFormat.RGB24
         size = width * height * 3
         out = VideoOutput(output_dev)
