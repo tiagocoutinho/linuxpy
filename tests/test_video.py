@@ -746,8 +746,6 @@ def _():
         outputs = capture_dev.info.outputs
         assert len(outputs) == 0
 
-        assert isinstance(capture_dev.get_priority(), Priority)
-
         crop = capture_dev.info.crop_capabilities
         assert not crop
         for inp in inputs:
@@ -973,3 +971,13 @@ def _():
         with out:
             data = os.urandom(size)
             out.write(data)
+
+
+@test_vivid_only("vivid priority")
+def _():
+    with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
+        assert isinstance(capture_dev.get_priority(), Priority)
+
+        capture_dev.set_priority(Priority.BACKGROUND)
+
+        assert capture_dev.get_priority() == Priority.BACKGROUND
