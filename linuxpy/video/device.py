@@ -805,20 +805,20 @@ def set_output(fd, index: int):
     ioctl(fd, IOC.S_OUTPUT, index)
 
 
-def get_std(fd):
+def get_std(fd) -> StandardID:
     out = ctypes.c_uint64()
     ioctl(fd, IOC.G_STD, out)
-    return out.value
+    return StandardID(out.value)
 
 
 def set_std(fd, std):
     ioctl(fd, IOC.S_STD, std)
 
 
-def query_std(fd):
+def query_std(fd) -> StandardID:
     out = ctypes.c_uint64()
     ioctl(fd, IOC.QUERYSTD, out)
-    return out.value
+    return StandardID(out.value)
 
 
 # Helpers
@@ -973,13 +973,13 @@ class Device(BaseDevice):
     def set_output(self, index: int):
         return set_output(self.fileno(), index)
 
-    def get_std(self):
+    def get_std(self) -> StandardID:
         return get_std(self.fileno())
 
     def set_std(self, std):
         return set_std(self.fileno(), std)
 
-    def query_std(self):
+    def query_std(self) -> StandardID:
         return query_std(self.fileno())
 
 

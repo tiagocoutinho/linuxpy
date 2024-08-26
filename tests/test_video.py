@@ -37,6 +37,7 @@ from linuxpy.video.device import (
     PixelFormat,
     Priority,
     SelectionTarget,
+    StandardID,
     V4L2Error,
     VideoCapture,
     VideoOutput,
@@ -646,6 +647,8 @@ def _():
 @test_vivid_only("controls with vivid")
 def _():
     with Device(VIVID_CAPTURE_DEVICE) as device:
+        device.set_input(0)
+
         controls = device.controls
 
         # Brightness
@@ -939,7 +942,6 @@ for input_type in (None, Capability.STREAMING):
 
             capture.set_fps(120)
             assert capture.get_fps() >= 60
-
             with capture:
                 i = 0
                 async for frame in capture:
@@ -981,3 +983,12 @@ def _():
         capture_dev.set_priority(Priority.BACKGROUND)
 
         assert capture_dev.get_priority() == Priority.BACKGROUND
+
+
+@test_vivid_only("vivid std")
+def _():
+    with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
+        capture_dev.set_input(1)
+        assert StandardID.PAL_B in capture_dev.get_std()
+
+        assert StandardID.PAL_B in capture_dev.query_std()
