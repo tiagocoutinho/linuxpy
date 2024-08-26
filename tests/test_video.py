@@ -33,6 +33,7 @@ from linuxpy.video.device import (
     Device,
     InputCapabilities,
     Memory,
+    MetaFormat,
     PixelFormat,
     Priority,
     SelectionTarget,
@@ -772,6 +773,11 @@ def _():
 
         assert len(meta_capture_dev.info.frame_sizes) == 0
         assert len(meta_capture_dev.info.formats) > 0
+
+        meta_fmt = meta_capture_dev.get_format(BufferType.META_CAPTURE)
+        assert meta_fmt.format in MetaFormat
+        assert meta_fmt.width >= 0
+        assert meta_fmt.height >= 0
 
 
 @test_vivid_only("vivid inputs")
