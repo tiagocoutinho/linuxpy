@@ -35,6 +35,7 @@ from linuxpy.video.device import (
     Memory,
     PixelFormat,
     Priority,
+    SelectionTarget,
     V4L2Error,
     VideoCapture,
     VideoOutput,
@@ -785,6 +786,25 @@ def _():
             assert capture_dev.get_input() == inputs[-1].index
         finally:
             capture_dev.set_input(active_input)
+
+
+@test_vivid_only("selection with vivid")
+def _():
+    with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
+        capture_dev.set_input(1)
+        dft_sel = capture_dev.get_selection(BufferType.VIDEO_CAPTURE, SelectionTarget.CROP_DEFAULT)
+        assert dft_sel.left >= 0
+        assert dft_sel.top >= 0
+        assert 0 < dft_sel.width < 10_000
+        assert 0 < dft_sel.height < 10_000
+
+        sel = capture_dev.get_selection(BufferType.VIDEO_CAPTURE, SelectionTarget.CROP)
+        assert sel.left >= 0
+        assert sel.top >= 0
+        assert 0 < sel.width < 10_000
+        assert 0 < sel.height < 10_000
+
+        capture_dev.set_selection(BufferType.VIDEO_CAPTURE, SelectionTarget.CROP, dft_sel)
 
 
 def test_frame(frame, width, height, pixel_format, source):

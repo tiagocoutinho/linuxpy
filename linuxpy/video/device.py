@@ -569,8 +569,8 @@ def set_selection(fd, buffer_type, target, rectangle):
 def get_selection(
     fd,
     buffer_type: BufferType,
-    target: SelectionTarget = SelectionTarget.CROP_DEFAULT,
-):
+    target: SelectionTarget = SelectionTarget.CROP,
+) -> Rect:
     sel = raw.v4l2_selection()
     sel.type = buffer_type
     sel.target = target
