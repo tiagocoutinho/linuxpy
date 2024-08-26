@@ -594,31 +594,18 @@ CTRL_TYPE_CTYPE_ARRAY = {
 
 
 CTRL_TYPE_CTYPE_STRUCT = {
-    ControlType.AREA: raw.v4l2_area,
+    # ControlType.AREA: raw.v4l2_area,
 }
 
 
 def _struct_for_ctrl_type(ctrl_type):
     ctrl_type = ControlType(ctrl_type).name.lower()
     name = f"v4l2_ctrl_{ctrl_type}"
-    return getattr(raw, name)
-
-
-def _field_for_control(control):
-    has_payload = ControlFlag.HAS_PAYLOAD in ControlFlag(control.flags)
-    if has_payload:
-        if control.type == ControlType.INTEGER:
-            return "p_s32"
-        elif control.type == ControlType.INTEGER64:
-            return "p_s64"
-        elif control.type == ControlType.STRING:
-            return "string"
-        else:
-            ctrl_name = ControlType(control.type).name.lower()
-            return f"p_{ctrl_name}"
-    if control.type == ControlType.INTEGER64:
-        return "value64"
-    return "value"
+    try:
+        return getattr(raw, name)
+    except AttributeError:
+        name = f"v4l2_{ctrl_type}"
+        return getattr(raw, name)
 
 
 def get_ctrl_type_struct(ctrl_type):
@@ -703,13 +690,13 @@ def _prepare_write_controls_values(control: raw.v4l2_query_ext_ctrl, value: obje
         else:
             array_type = CTRL_TYPE_CTYPE_ARRAY.get(control.type)
             raw_control.size = control.elem_size * control.elems
-            field = _field_for_control(control)
             # a struct: assume value is proper raw struct
             if array_type is None:
                 value = ctypes.pointer(value)
             else:
                 value = convert_to_ctypes_array(value, control.nr_of_dims, array_type)
-            setattr(raw_control, field, value)
+            ptr = ctypes.cast(value, ctypes.c_void_p)
+            raw_control.ptr = ptr
     else:
         if control.type == ControlType.INTEGER64:
             raw_control.value64 = value

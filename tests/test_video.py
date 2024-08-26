@@ -668,6 +668,15 @@ def _():
 
         assert "<IntegerControl brightness" in repr(brightness)
 
+        # I64
+        integer_64_bits = controls.integer_64_bits
+        assert integer_64_bits is controls["integer_64_bits"]
+        value = randint(integer_64_bits.minimum, integer_64_bits.maximum)
+        controls.integer_64_bits.value = value
+        assert integer_64_bits.value == value
+
+        assert "<Integer64Control integer_64_bits" in repr(integer_64_bits)
+
         # String
         assert controls.string is controls["string"]
         current_value = controls.string.value
@@ -689,6 +698,22 @@ def _():
             controls.s32_2_element_array.value = current_value
 
         assert "<CompoundControl s32_2_element_array flags=has_payload>" in repr(controls.s32_2_element_array)
+
+        # matrix 8x16
+        value = [list(range(i + 16, i + 16 + 8)) for i in range(16)]
+        controls.u16_8x16_matrix.value = value
+        result = [row[:] for row in controls.u16_8x16_matrix.value]
+        assert value == result
+
+        # struct
+        assert controls.area is controls["area"]
+        area = controls.area.value
+        assert isinstance(area, raw.v4l2_area)
+        width, height = randint(10, 1000), randint(10, 1000)
+        controls.area.value = raw.v4l2_area(width, height)
+        area = controls.area.value
+        assert area.width == width
+        assert area.height == height
 
         # Unknown
         with raises(KeyError):
