@@ -1054,13 +1054,6 @@ class Controls(dict):
         self._init_if_needed()
         self[key] = value
 
-    def __delattr__(self, key):
-        self._init_if_needed()
-        try:
-            del self[key]
-        except KeyError as error:
-            raise AttributeError(key) from error
-
     def __missing__(self, key):
         self._init_if_needed()
         for v in self.values():

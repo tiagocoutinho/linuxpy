@@ -401,6 +401,7 @@ def _(camera=hardware):
         controls = device.controls
         assert len(controls) == 3
         brightness = controls["brightness"]
+        assert controls.brightness is brightness
         contrast = controls["contrast"]
         white_balance_automatic = controls["white_balance_automatic"]
 
