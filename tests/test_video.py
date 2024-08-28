@@ -5,10 +5,8 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 import os
-import subprocess
 from contextlib import ExitStack, contextmanager
 from errno import EINVAL, ENODATA
-from functools import cache
 from inspect import isgenerator
 from math import isclose
 from pathlib import Path
@@ -573,34 +571,23 @@ VIVID_TEST_DEVICES = [Path(f"/dev/video{i}") for i in range(190, 194)]
 VIVID_CAPTURE_DEVICE, VIVID_OUTPUT_DEVICE, VIVID_META_CAPTURE_DEVICE, VIVID_META_OUTPUT_DEVICE = VIVID_TEST_DEVICES
 
 
-@cache
-def is_vivid_installed():
-    result = subprocess.run("lsmod", capture_output=True, check=False, timeout=1)
-    return result.returncode == 0 and b"vivid" in result.stdout
-
-
 def is_vivid_prepared():
     return all(path.exists() for path in VIVID_TEST_DEVICES)
 
 
-vivid_only = skip(when=not is_vivid_prepared(), reason="vivid is not prepared")(
-    skip(when=not is_vivid_installed(), reason="vivid is not installed")
-)
+vivid_only = skip(when=not is_vivid_prepared(), reason="vivid is not prepared")
 
 
-def test_vivid_only(*args, **kwargs):
-    kwargs.setdefault("tags", []).append("vivid")
-    return vivid_only(test(*args, **kwargs))
-
-
-@test_vivid_only("list vivid files")
+@vivid_only
+@test("list vivid files")
 def _():
     video_files = list(iter_video_files())
     for video_file in VIVID_TEST_DEVICES:
         assert video_file in video_files
 
 
-@test_vivid_only("list vivid capture files")
+@vivid_only
+@test("list vivid capture files")
 def _():
     video_files = list(iter_video_capture_files())
     assert VIVID_CAPTURE_DEVICE in video_files
@@ -608,7 +595,8 @@ def _():
         assert video_file not in video_files
 
 
-@test_vivid_only("list vivid output files")
+@vivid_only
+@test("list vivid output files")
 def _():
     video_files = list(iter_video_output_files())
     assert VIVID_OUTPUT_DEVICE in video_files
@@ -617,7 +605,8 @@ def _():
         assert video_file not in video_files
 
 
-@test_vivid_only("list vivid devices")
+@vivid_only
+@test("list vivid devices")
 def _():
     devices = list(iter_devices())
     device_names = [dev.filename for dev in devices]
@@ -625,7 +614,8 @@ def _():
         assert video_file in device_names
 
 
-@test_vivid_only("list vivid capture devices")
+@vivid_only
+@test("list vivid capture devices")
 def _():
     devices = list(iter_video_capture_devices())
     device_names = [dev.filename for dev in devices]
@@ -634,7 +624,8 @@ def _():
         assert video_file not in device_names
 
 
-@test_vivid_only("list vivid output devices")
+@vivid_only
+@test("list vivid output devices")
 def _():
     devices = list(iter_video_output_devices())
     device_names = [dev.filename for dev in devices]
@@ -644,7 +635,8 @@ def _():
         assert video_file not in device_names
 
 
-@test_vivid_only("controls with vivid")
+@vivid_only
+@test("controls with vivid")
 def _():
     with Device(VIVID_CAPTURE_DEVICE) as device:
         device.set_input(0)
@@ -726,7 +718,8 @@ def _():
             _ = list(controls.with_class(55))
 
 
-@test_vivid_only("info with vivid")
+@vivid_only
+@test("info with vivid")
 def _():
     with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
         dev_caps = capture_dev.info.device_capabilities
@@ -806,7 +799,8 @@ def _():
         assert meta_fmt.height >= 0
 
 
-@test_vivid_only("vivid inputs")
+@vivid_only
+@test("vivid inputs")
 def _():
     with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
         inputs = capture_dev.info.inputs
@@ -820,7 +814,8 @@ def _():
             capture_dev.set_input(active_input)
 
 
-@test_vivid_only("selection with vivid")
+@vivid_only
+@test("selection with vivid")
 def _():
     with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
         capture_dev.set_input(1)
@@ -860,7 +855,8 @@ def test_frame(frame, width, height, pixel_format, source):
 for input_type in (None, Capability.STREAMING):
     iname = "auto" if input_type is None else input_type.name
 
-    @test_vivid_only(f"vivid capture ({iname})")
+    @vivid_only
+    @test(f"vivid capture ({iname})")
     def _(source=input_type):
         with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
             capture_dev.set_input(0)
@@ -882,7 +878,8 @@ for input_type in (None, Capability.STREAMING):
                 frame2 = next(stream)
                 test_frame(frame2, width, height, pixel_format, source)
 
-    @test_vivid_only(f"vivid gevent capture ({iname})")
+    @vivid_only
+    @test(f"vivid gevent capture ({iname})")
     def _(source=input_type):
         with Device(VIVID_CAPTURE_DEVICE, io=GeventIO) as capture_dev:
             capture_dev.set_input(0)
@@ -904,7 +901,8 @@ for input_type in (None, Capability.STREAMING):
                 frame2 = next(stream)
                 test_frame(frame2, width, height, pixel_format, source)
 
-    @test_vivid_only(f"vivid sync capture ({iname})")
+    @vivid_only
+    @test(f"vivid sync capture ({iname})")
     def _(source=input_type):
         with fopen(VIVID_CAPTURE_DEVICE, rw=True, blocking=True) as fobj:
             capture_dev = Device(fobj)
@@ -927,7 +925,8 @@ for input_type in (None, Capability.STREAMING):
                 frame2 = next(stream)
                 test_frame(frame2, width, height, pixel_format, source)
 
-    @test_vivid_only(f"vivid async capture ({iname})")
+    @vivid_only
+    @test(f"vivid async capture ({iname})")
     async def _(source=input_type):
         with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
             capture_dev.set_input(0)
@@ -951,7 +950,8 @@ for input_type in (None, Capability.STREAMING):
                         break
 
 
-@test_vivid_only("vivid capture no capability")
+@vivid_only
+@test("vivid capture no capability")
 def _():
     with Device(VIVID_OUTPUT_DEVICE) as output_dev:
         stream = iter(output_dev)
@@ -959,7 +959,8 @@ def _():
             next(stream)
 
 
-@test_vivid_only("vivid output")
+@vivid_only
+@test("vivid output")
 def _():
     with Device(VIVID_OUTPUT_DEVICE) as output_dev:
         output_dev.set_output(0)
@@ -978,7 +979,8 @@ def _():
             out.write(data)
 
 
-@test_vivid_only("vivid priority")
+@vivid_only
+@test("vivid priority")
 def _():
     with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
         assert isinstance(capture_dev.get_priority(), Priority)
@@ -988,7 +990,8 @@ def _():
         assert capture_dev.get_priority() == Priority.BACKGROUND
 
 
-@test_vivid_only("vivid std")
+@vivid_only
+@test("vivid std")
 def _():
     with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
         capture_dev.set_input(1)
