@@ -36,24 +36,37 @@ $ python -m linuxpy.codegen.cli
 
 ## Running tests
 
-Some video tests will only run with a properly configured `vivid` driver.
+First make sure your user belongs to `input` and `video` groups (create those
+groups if they don't exist):
 
 ```console
+$ sudo addgroup input
+$ sudo addgroup video
+$ sudo addgroup led
+$ sudo adduser $USER input
+$ sudo adduser $USER video
+```
+
+(reboot if necessary for those changes to take effect)
+
+Change the udev rules so these groups have access to the devices used by tests:
+
+Create a new rules file (ex: `/etc/udev/rules.d/80-device.rules`):
+
+```
+KERNEL=="event[0-9]*", SUBSYSTEM=="input", GROUP="input", MODE:="0660"
+KERNEL=="uinput", SUBSYSTEM=="misc", GROUP="input", MODE:="0660"
+SUBSYSTEM=="video4linux", MODE:="0666"
+KERNEL=="uleds", GROUP="input", MODE:="0660"
+SUBSYSTEM=="leds", ACTION=="add", RUN+="/bin/chmod -R g=u,o=u /sys%p"
+SUBSYSTEM=="leds", ACTION=="change", ENV{TRIGGER}!="none", RUN+="/bin/chmod -R g=u,o=u /sys%p"
+```
+
+Finally, make sure all kernel modules are installed:
+
+```console
+$ sudo modprobe uinput
+$ sudo modprobe uleds
+$ sudo modprobe -r vivid
 $ sudo modprobe vivid n_devs=1 vid_cap_nr=190 vid_out_nr=191 meta_cap_nr=192 meta_out_nr=193
-```
-
-Additionally the user which runs the tests will need read/write access to
-`/dev/video190`, `/dev/video191`, `/dev/video192` and `/dev/video193`.
-On most systems this can be achieved by adding the user to the `video` group:
-
-```console
-$ sudo addgroup $USER video
-```
-
-Some input tests require the user which runs the tests to have read/write
-access to `/dev/uinput`.
-On most systems this can be achieved by adding the user to the `input` group:
-
-```console
-$ sudo addgroup $USER input
 ```

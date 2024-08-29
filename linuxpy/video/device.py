@@ -569,8 +569,8 @@ def set_selection(fd, buffer_type, target, rectangle):
 def get_selection(
     fd,
     buffer_type: BufferType,
-    target: SelectionTarget = SelectionTarget.CROP_DEFAULT,
-):
+    target: SelectionTarget = SelectionTarget.CROP,
+) -> Rect:
     sel = raw.v4l2_selection()
     sel.type = buffer_type
     sel.target = target
@@ -594,31 +594,18 @@ CTRL_TYPE_CTYPE_ARRAY = {
 
 
 CTRL_TYPE_CTYPE_STRUCT = {
-    ControlType.AREA: raw.v4l2_area,
+    # ControlType.AREA: raw.v4l2_area,
 }
 
 
 def _struct_for_ctrl_type(ctrl_type):
     ctrl_type = ControlType(ctrl_type).name.lower()
     name = f"v4l2_ctrl_{ctrl_type}"
-    return getattr(raw, name)
-
-
-def _field_for_control(control):
-    has_payload = ControlFlag.HAS_PAYLOAD in ControlFlag(control.flags)
-    if has_payload:
-        if control.type == ControlType.INTEGER:
-            return "p_s32"
-        elif control.type == ControlType.INTEGER64:
-            return "p_s64"
-        elif control.type == ControlType.STRING:
-            return "string"
-        else:
-            ctrl_name = ControlType(control.type).name.lower()
-            return f"p_{ctrl_name}"
-    if control.type == ControlType.INTEGER64:
-        return "value64"
-    return "value"
+    try:
+        return getattr(raw, name)
+    except AttributeError:
+        name = f"v4l2_{ctrl_type}"
+        return getattr(raw, name)
 
 
 def get_ctrl_type_struct(ctrl_type):
@@ -703,13 +690,13 @@ def _prepare_write_controls_values(control: raw.v4l2_query_ext_ctrl, value: obje
         else:
             array_type = CTRL_TYPE_CTYPE_ARRAY.get(control.type)
             raw_control.size = control.elem_size * control.elems
-            field = _field_for_control(control)
             # a struct: assume value is proper raw struct
             if array_type is None:
                 value = ctypes.pointer(value)
             else:
                 value = convert_to_ctypes_array(value, control.nr_of_dims, array_type)
-            setattr(raw_control, field, value)
+            ptr = ctypes.cast(value, ctypes.c_void_p)
+            raw_control.ptr = ptr
     else:
         if control.type == ControlType.INTEGER64:
             raw_control.value64 = value
@@ -818,20 +805,20 @@ def set_output(fd, index: int):
     ioctl(fd, IOC.S_OUTPUT, index)
 
 
-def get_std(fd):
+def get_std(fd) -> StandardID:
     out = ctypes.c_uint64()
     ioctl(fd, IOC.G_STD, out)
-    return out.value
+    return StandardID(out.value)
 
 
 def set_std(fd, std):
     ioctl(fd, IOC.S_STD, std)
 
 
-def query_std(fd):
+def query_std(fd) -> StandardID:
     out = ctypes.c_uint64()
     ioctl(fd, IOC.QUERYSTD, out)
-    return out.value
+    return StandardID(out.value)
 
 
 # Helpers
@@ -986,13 +973,13 @@ class Device(BaseDevice):
     def set_output(self, index: int):
         return set_output(self.fileno(), index)
 
-    def get_std(self):
+    def get_std(self) -> StandardID:
         return get_std(self.fileno())
 
     def set_std(self, std):
         return set_std(self.fileno(), std)
 
-    def query_std(self):
+    def query_std(self) -> StandardID:
         return query_std(self.fileno())
 
 
@@ -1066,13 +1053,6 @@ class Controls(dict):
     def __setattr__(self, key, value):
         self._init_if_needed()
         self[key] = value
-
-    def __delattr__(self, key):
-        self._init_if_needed()
-        try:
-            del self[key]
-        except KeyError as error:
-            raise AttributeError(key) from error
 
     def __missing__(self, key):
         self._init_if_needed()
