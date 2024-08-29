@@ -28,6 +28,7 @@ from linuxpy.video.device import (
     BufferType,
     Capability,
     ControlClass,
+    ControlType,
     Device,
     InputCapabilities,
     Memory,
@@ -689,7 +690,19 @@ def _():
             boolean.value = value
             assert boolean.value is expected
 
-        # String
+        # menu
+        menu = controls.menu
+        assert menu is controls["menu"]
+        assert menu.type == ControlType.MENU
+        assert menu[1] == menu.data[1]
+
+        menu.value = 1
+        assert menu.value == 1
+
+        with raises(OSError):
+            menu.value = 0
+
+        # string
         assert controls.string is controls["string"]
         current_value = controls.string.value
         try:
@@ -709,6 +722,8 @@ def _():
         finally:
             controls.s32_2_element_array.value = current_value
 
+        assert controls.s32_2_element_array.default[:] == [2, 2]
+
         assert "<CompoundControl s32_2_element_array flags=has_payload>" in repr(controls.s32_2_element_array)
 
         # matrix 8x16
@@ -726,6 +741,9 @@ def _():
         area = controls.area.value
         assert area.width == width
         assert area.height == height
+
+        # button
+        controls.button.push()
 
         # Unknown
         with raises(KeyError):
