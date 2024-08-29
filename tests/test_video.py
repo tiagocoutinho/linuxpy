@@ -673,6 +673,22 @@ def _():
 
         assert "<Integer64Control integer_64_bits" in repr(integer_64_bits)
 
+        # boolean
+        boolean = controls.boolean
+        assert boolean is controls["boolean"]
+        assert boolean.value in (True, False)
+        boolean.value = False
+        assert boolean.value is False
+        boolean.value = True
+        assert boolean.value is True
+        trues = ["true", "1", "yes", "on", "enable", True, 1, [1], {1: 2}, (1,)]
+        falses = ["false", "0", "no", "off", "disable", False, 0, [], {}, (), None]
+        interleaved = (value for pair in zip(trues, falses) for value in pair)
+        for i, value in enumerate(interleaved):
+            expected = not bool(i % 2)
+            boolean.value = value
+            assert boolean.value is expected
+
         # String
         assert controls.string is controls["string"]
         current_value = controls.string.value
