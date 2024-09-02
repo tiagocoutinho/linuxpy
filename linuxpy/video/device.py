@@ -179,6 +179,9 @@ def read_crop_capabilities(fd, buffer_type: BufferType) -> CropCapability:
     return raw_crop_caps_to_crop_caps(crop)
 
 
+ITER_BREAK = (errno.ENOTTY, errno.ENODATA, errno.EPIPE)
+
+
 def iter_read(fd, ioc, indexed_struct, start=0, stop=128, step=1, ignore_einval=False):
     for index in range(start, stop, step):
         indexed_struct.index = index
@@ -191,10 +194,7 @@ def iter_read(fd, ioc, indexed_struct, start=0, stop=128, step=1, ignore_einval=
                     continue
                 else:
                     break
-            elif error.errno == errno.ENOTTY:
-                # The ioctl is not supported by the driver
-                break
-            elif error.errno == errno.ENODATA:
+            elif error.errno in ITER_BREAK:
                 break
             else:
                 raise
