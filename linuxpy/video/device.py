@@ -821,6 +821,32 @@ def query_std(fd) -> StandardID:
     return StandardID(out.value)
 
 
+SubdevFormat = collections.namedtuple(
+    "SubdevFormat", "pad which width height code field colorspace quantization xfer_func flags stream"
+)
+
+
+def _translate_subdev_format(fmt: raw.v4l2_subdev_format):
+    return SubdevFormat(
+        pad=fmt.pad,
+        which=raw.SubdevFormatWhence(fmt.which),
+        width=fmt.format.width,
+        height=fmt.format.height,
+        code=raw.MbusPixelcode(fmt.format.code),
+        field=raw.Field(fmt.format.field),
+        colorspace=raw.Colorspace(fmt.format.colorspace),
+        quantization=raw.Quantization(fmt.format.quantization),
+        xfer_func=raw.XferFunc(fmt.format.xfer_func),
+        flags=raw.MbusFrameFormatFlag(fmt.format.flags),
+        stream=fmt.stream,
+    )
+
+
+def get_subdevice_format(fd, pad: int = 0) -> raw.v4l2_subdev_format:
+    fmt = raw.v4l2_subdev_format(pad=pad, which=raw.SubdevFormatWhence.ACTIVE)
+    return _translate_subdev_format(ioctl(fd, IOC.SUBDEV_G_FMT, fmt))
+
+
 # Helpers
 
 
