@@ -31,6 +31,9 @@ plugins:
             signature_crossrefs: true
             unwrap_annotated: true
   - search
+  - coverage:
+      page_path: coverage  # default
+      html_report_dir: htmlcov  # default
 
 theme:
   name: material
@@ -90,3 +93,4 @@ nav:
     - api/thermal.md
     - api/video.md
   - Developers corner: develop.md
+  - Coverage report: coverage.md
