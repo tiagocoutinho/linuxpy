@@ -64,6 +64,7 @@ docs = [
     "mkdocstrings[python]",
     "pygments",
     "pymdown-extensions",
+    "mkdocs-coverage",
 ]
 
 [build-system]
@@ -91,7 +92,7 @@ branch = true
 omit = ["*test*"]
 report_type = ["html", "json", "xml"]
 report = {skip_empty = true, show_missing = true}
-
+#html = {directory = "docs/htmlcov"}
 
 [tool.ruff]
 lint.select = [
