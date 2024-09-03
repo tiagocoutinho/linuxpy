@@ -988,6 +988,10 @@ class EventSubscriptionFlag(enum.IntFlag):
     pass
 
 
+class MbusFrameFormatFlag(enum.IntFlag):
+    V4L2_MBUS_FRAMEFMT_SET_CSC = 0x0001
+
+
 class Interlaced(enum.IntEnum):
     V4L2_DV_PROGRESSIVE = 0x0
     V4L2_DV_INTERLACED = 0x1
