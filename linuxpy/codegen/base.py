@@ -33,7 +33,7 @@ CTYPES_MAP = {
     "void": "None",
 }
 
-MACRO_RE = re.compile(r"#define[ \t]+(?P<name>[\w]+)[ \t]+(?P<value>.+)\s*")
+MACRO_RE = re.compile(r"#\s*define[ \t]+(?P<name>[\w]+)[ \t]+(?P<value>.+)\s*")
 
 
 class CEnum:
@@ -129,18 +129,17 @@ def lines(filename):
 
 def macro_lines(filename):
     for line in lines(filename):
-        if line.startswith("#define"):
-            matches = MACRO_RE.match(line)
-            if matches:
-                data = matches.groupdict()
-                yield data["name"], data["value"]
+        matches = MACRO_RE.match(line)
+        if matches:
+            data = matches.groupdict()
+            yield data["name"], data["value"]
 
 
 def decode_macro_value(value, context, name_map):
     value = value.replace("*/", "")
     value = value.replace("/*", "#")
     value = value.replace("struct ", "")
-    value = value.replace("(1U", "(1")
+    value = re.sub(r"(\d+)U", r"\1", value)
     value = value.strip()
     for dtype in "ui":
         for size in (8, 16, 32, 64):
@@ -309,13 +308,17 @@ def get_enums(header_filename, xml_filename, enums):
 
 
 def code_format(text, filename):
-    cmd = ["ruff", "check", "--fix", "--stdin-filename", str(filename)]
-    result = subprocess.run(cmd, capture_output=True, check=True, text=True, input=text)
-    fixed_text = result.stdout
+    try:
+        cmd = ["ruff", "check", "--fix", "--stdin-filename", str(filename)]
+        result = subprocess.run(cmd, capture_output=True, check=True, text=True, input=text)
+        text = result.stdout
 
-    cmd = ["ruff", "format", "--stdin-filename", str(filename)]
-    result = subprocess.run(cmd, capture_output=True, check=True, text=True, input=fixed_text)
-    return result.stdout
+        cmd = ["ruff", "format", "--stdin-filename", str(filename)]
+        result = subprocess.run(cmd, capture_output=True, check=True, text=True, input=text)
+        text = result.stdout
+    except Exception as error:
+        logging.error("ruff errored: %r", error)
+    return text
 
 
 def run(name, headers, template, macro_enums, output=None):
