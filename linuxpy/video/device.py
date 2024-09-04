@@ -1009,6 +1009,11 @@ class Device(BaseDevice):
         return query_std(self.fileno())
 
 
+class SubDevice(BaseDevice):
+    def get_format(self, pad: int = 0) -> SubdevFormat:
+        return get_subdevice_format(self, pad=pad)
+
+
 def create_artificial_control_class(class_id):
     return raw.v4l2_query_ext_ctrl(
         id=class_id | 1,
