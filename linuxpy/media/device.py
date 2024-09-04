@@ -14,7 +14,7 @@ from linuxpy.ioctl import ioctl
 from . import raw
 
 Entity = collections.namedtuple("Entity", "id name type flags")
-EntityDesc = collections.namedtuple("EntityDesc", "id name type flags pads outbound_links devnode")
+
 Interface = collections.namedtuple("Interface", "id type flags devnode")
 Pad = collections.namedtuple("Pad", "id entity_id flags index")
 Link = collections.namedtuple("Link", "id source_id sink_id flags")
@@ -22,6 +22,9 @@ Topology = collections.namedtuple("Topology", "version entities interfaces pads 
 DeviceInfo = collections.namedtuple(
     "DeviceInfo", "driver model serial bus_info media_version hw_revision driver_version"
 )
+EntityDesc = collections.namedtuple("EntityDesc", "id name type flags pads outbound_links devnode")
+PadDesc = collections.namedtuple("PadDesc", "entity_id flags index")
+LinkDesc = collections.namedtuple("LinkDesc", "source sink flags")
 
 
 def entity_has_flags(version: int):
@@ -122,18 +125,42 @@ def iter_read(fd, ioc, indexed_struct, start=0, stop=128, step=1):
 
 
 def iter_entities(fd):
-    raw_entity_desc = raw.media_entity_desc(id=raw.ENTITY_ID_FLAG_NEXT)
-    for desc in iter_read(fd, raw.IOC.ENUM_ENTITIES, raw_entity_desc):
+    for raw_entity_desc in iter_read(fd, raw.IOC.ENUM_ENTITIES, raw.media_entity_desc(id=raw.ENTITY_ID_FLAG_NEXT)):
+        links = raw.media_links_enum(entity=raw_entity_desc.id)
+        links.pads = (raw_entity_desc.pads * raw.media_pad_desc)()
+        links.links = (raw_entity_desc.links * raw.media_link_desc)()
+        ioctl(fd, raw.IOC.ENUM_LINKS, links)
+        pads = [PadDesc(pad.entity, raw.PadFlag(pad.flags), pad.index) for pad in links.pads[: raw_entity_desc.pads]]
+        links = [
+            LinkDesc(
+                PadDesc(link.source.entity, raw.PadFlag(link.source.flags), link.source.index),
+                PadDesc(link.sink.entity, raw.PadFlag(link.sink.flags), link.sink.index),
+                raw.LinkFlag(link.flags),
+            )
+            for link in links.links[: raw_entity_desc.links]
+        ]
         yield EntityDesc(
-            desc.id,
-            desc.name.decode(),
-            raw.EntityFunction(desc.type),
-            raw.EntityFlag(desc.flags),
-            desc.pads,
-            desc.links,
-            (desc.dev.major, desc.dev.minor),
+            raw_entity_desc.id,
+            raw_entity_desc.name.decode(),
+            raw.EntityFunction(raw_entity_desc.type),
+            raw.EntityFlag(raw_entity_desc.flags),
+            pads,
+            links,
+            (raw_entity_desc.dev.major, raw_entity_desc.dev.minor),
         )
         raw_entity_desc.id |= raw.ENTITY_ID_FLAG_NEXT
+
+
+def setup_link(
+    fd, source_entity_id: int, source_pad_index: int, sink_entity_id: int, sink_pad_index: int, enabled: bool
+):
+    link = raw.media_link_desc()
+    link.source.entity = source_entity_id
+    link.source.index = source_pad_index
+    link.sink.entity = sink_entity_id
+    link.sink.index = sink_pad_index
+    link.flags = raw.LinkFlag.ENABLED if enabled else 0
+    ioctl(fd, raw.IOC.SETUP_LINK, link)
 
 
 class Device(BaseDevice):
