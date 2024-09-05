@@ -61,6 +61,7 @@ ControlType = raw.CtrlType
 ControlClass = raw.ControlClass
 SelectionTarget = raw.SelectionTarget
 EventType = raw.EventType
+EventControlChange = raw.EventControlChange
 IOC = raw.IOC
 BufferType = raw.BufType
 BufferFlag = raw.BufferFlag
