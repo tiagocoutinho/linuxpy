@@ -731,7 +731,7 @@ def set_priority(fd, priority: Priority):
 
 def subscribe_event(
     fd,
-    event_type: EventType = EventType.ALL,
+    event_type: EventType,
     id: int = 0,
     flags: EventSubscriptionFlag = 0,
 ):
@@ -749,10 +749,9 @@ def unsubscribe_event(fd, event_type: EventType = EventType.ALL, id: int = 0):
     ioctl(fd, IOC.UNSUBSCRIBE_EVENT, sub)
 
 
-def deque_event(fd):
+def deque_event(fd) -> raw.v4l2_event:
     event = raw.v4l2_event()
-    ioctl(fd, IOC.DQEVENT, event)
-    return event
+    return ioctl(fd, IOC.DQEVENT, event)
 
 
 def set_edid(fd, edid):
@@ -1980,6 +1979,10 @@ class EventReader:
     async def __aiter__(self):
         while True:
             yield await self.aread()
+
+    def __iter__(self):
+        while True:
+            yield self.read()
 
     def __enter__(self):
         return self
