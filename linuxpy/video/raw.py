@@ -966,6 +966,18 @@ class TimeCodeFlag(enum.IntFlag):
     COLORFRAME = 0x2
 
 
+class EventSubscriptionFlag(enum.IntFlag):
+    SEND_INITIAL = 1 << 0
+    ALLOW_FEEDBACK = 1 << 1
+
+
+class EventControlChange(enum.IntEnum):
+    VALUE = 1 << 0
+    FLAGS = 1 << 1
+    RANGE = 1 << 2
+    DIMENSIONS = 1 << 3
+
+
 class EventType(enum.IntEnum):
     ALL = 0x0
     VSYNC = 0x1
@@ -974,22 +986,12 @@ class EventType(enum.IntEnum):
     FRAME_SYNC = 0x4
     SOURCE_CHANGE = 0x5
     MOTION_DET = 0x6
-    CTRL_CH_VALUE = 1 << 0
-    CTRL_CH_FLAGS = 1 << 1
-    CTRL_CH_RANGE = 1 << 2
-    CTRL_CH_DIMENSIONS = 1 << 3
     SRC_CH_RESOLUTION = 1 << 0
     MD_FL_HAVE_FRAME_SEQ = 1 << 0
-    SUB_FL_SEND_INITIAL = 1 << 0
-    SUB_FL_ALLOW_FEEDBACK = 1 << 1
-
-
-class EventSubscriptionFlag(enum.IntFlag):
-    pass
 
 
 class MbusFrameFormatFlag(enum.IntFlag):
-    V4L2_MBUS_FRAMEFMT_SET_CSC = 0x0001
+    SET_CSC = 0x1
 
 
 class Interlaced(enum.IntEnum):
