@@ -30,6 +30,10 @@ from linuxpy.video.device import (
     ControlClass,
     ControlType,
     Device,
+    EventControlChange,
+    EventReader,
+    EventSubscriptionFlag,
+    EventType,
     InputCapabilities,
     Memory,
     MetaFormat,
@@ -1033,3 +1037,42 @@ def _():
         assert StandardID.PAL_B in capture_dev.get_std()
 
         assert StandardID.PAL_B in capture_dev.query_std()
+
+
+@vivid_only
+@test("vivid events")
+def _():
+    with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
+        capture_dev.set_input(0)
+        brightness = capture_dev.controls.brightness
+        capture_dev.subscribe_event(
+            EventType.CTRL, brightness.id, EventSubscriptionFlag.ALLOW_FEEDBACK | EventSubscriptionFlag.SEND_INITIAL
+        )
+        with EventReader(capture_dev) as reader:
+            initial_value = brightness.value
+            stream = iter(reader)
+            event = next(stream)
+            assert event.u.ctrl.value == initial_value
+            new_value = initial_value + 1 if initial_value < brightness.maximum else initial_value - 1
+            brightness.value = new_value
+            for event in reader:
+                assert event.type == EventType.CTRL
+                assert event.u.ctrl.value == new_value
+                assert event.u.ctrl.changes == EventControlChange.VALUE
+                break
+
+
+@vivid_only
+@test("async vivid events")
+async def _():
+    with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
+        capture_dev.set_input(0)
+        brightness = capture_dev.controls.brightness
+        capture_dev.subscribe_event(EventType.CTRL, brightness.id, EventSubscriptionFlag.ALLOW_FEEDBACK)
+        async with EventReader(capture_dev) as reader:
+            value = brightness.value
+            brightness.value = value + 1 if value < brightness.maximum else value - 1
+            async for event in reader:
+                assert event.type == EventType.CTRL
+                assert event.u.ctrl.changes == EventControlChange.VALUE
+                break

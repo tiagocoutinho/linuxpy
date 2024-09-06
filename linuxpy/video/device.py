@@ -61,6 +61,7 @@ ControlType = raw.CtrlType
 ControlClass = raw.ControlClass
 SelectionTarget = raw.SelectionTarget
 EventType = raw.EventType
+EventControlChange = raw.EventControlChange
 IOC = raw.IOC
 BufferType = raw.BufType
 BufferFlag = raw.BufferFlag
@@ -731,7 +732,7 @@ def set_priority(fd, priority: Priority):
 
 def subscribe_event(
     fd,
-    event_type: EventType = EventType.ALL,
+    event_type: EventType,
     id: int = 0,
     flags: EventSubscriptionFlag = 0,
 ):
@@ -749,10 +750,9 @@ def unsubscribe_event(fd, event_type: EventType = EventType.ALL, id: int = 0):
     ioctl(fd, IOC.UNSUBSCRIBE_EVENT, sub)
 
 
-def deque_event(fd):
+def deque_event(fd) -> raw.v4l2_event:
     event = raw.v4l2_event()
-    ioctl(fd, IOC.DQEVENT, event)
-    return event
+    return ioctl(fd, IOC.DQEVENT, event)
 
 
 def set_edid(fd, edid):
@@ -819,6 +819,32 @@ def query_std(fd) -> StandardID:
     out = ctypes.c_uint64()
     ioctl(fd, IOC.QUERYSTD, out)
     return StandardID(out.value)
+
+
+SubdevFormat = collections.namedtuple(
+    "SubdevFormat", "pad which width height code field colorspace quantization xfer_func flags stream"
+)
+
+
+def _translate_subdev_format(fmt: raw.v4l2_subdev_format):
+    return SubdevFormat(
+        pad=fmt.pad,
+        which=raw.SubdevFormatWhence(fmt.which),
+        width=fmt.format.width,
+        height=fmt.format.height,
+        code=raw.MbusPixelcode(fmt.format.code),
+        field=raw.Field(fmt.format.field),
+        colorspace=raw.Colorspace(fmt.format.colorspace),
+        quantization=raw.Quantization(fmt.format.quantization),
+        xfer_func=raw.XferFunc(fmt.format.xfer_func),
+        flags=raw.MbusFrameFormatFlag(fmt.format.flags),
+        stream=fmt.stream,
+    )
+
+
+def get_subdevice_format(fd, pad: int = 0) -> raw.v4l2_subdev_format:
+    fmt = raw.v4l2_subdev_format(pad=pad, which=raw.SubdevFormatWhence.ACTIVE)
+    return _translate_subdev_format(ioctl(fd, IOC.SUBDEV_G_FMT, fmt))
 
 
 # Helpers
@@ -981,6 +1007,11 @@ class Device(BaseDevice):
 
     def query_std(self) -> StandardID:
         return query_std(self.fileno())
+
+
+class SubDevice(BaseDevice):
+    def get_format(self, pad: int = 0) -> SubdevFormat:
+        return get_subdevice_format(self, pad=pad)
 
 
 def create_artificial_control_class(class_id):
@@ -1949,6 +1980,10 @@ class EventReader:
     async def __aiter__(self):
         while True:
             yield await self.aread()
+
+    def __iter__(self):
+        while True:
+            yield self.read()
 
     def __enter__(self):
         return self
