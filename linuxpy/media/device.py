@@ -6,10 +6,14 @@
 
 import collections
 import errno
+from collections.abc import Iterable
+from pathlib import Path
 
 from linuxpy.ctypes import POINTER, cast, cvoidp
-from linuxpy.device import BaseDevice
+from linuxpy.device import BaseDevice, iter_device_files
 from linuxpy.ioctl import ioctl
+from linuxpy.types import PathLike
+from linuxpy.util import make_find
 
 from . import raw
 
@@ -25,6 +29,8 @@ DeviceInfo = collections.namedtuple(
 EntityDesc = collections.namedtuple("EntityDesc", "id name type flags pads outbound_links devnode")
 PadDesc = collections.namedtuple("PadDesc", "entity_id flags index")
 LinkDesc = collections.namedtuple("LinkDesc", "source sink flags")
+
+EntityFunction = raw.EntityFunction
 
 
 def entity_has_flags(version: int):
@@ -139,10 +145,11 @@ def iter_entities(fd):
             )
             for link in links.links[: raw_entity_desc.links]
         ]
+        func = raw_entity_desc.type
         yield EntityDesc(
             raw_entity_desc.id,
             raw_entity_desc.name.decode(),
-            raw.EntityFunction(raw_entity_desc.type),
+            EntityFunction(func) if func in EntityFunction else func,
             raw.EntityFlag(raw_entity_desc.flags),
             pads,
             links,
@@ -171,3 +178,16 @@ class Device(BaseDevice):
 
     def get_device_info(self):
         return get_device_info(self)
+
+
+def iter_media_files(path: PathLike = "/dev") -> Iterable[Path]:
+    """Returns an iterator over all media files"""
+    return iter_device_files(path=path, pattern="media*")
+
+
+def iter_devices(path: PathLike = "/dev", **kwargs) -> Iterable[Device]:
+    """Returns an iterator over all media devices"""
+    return (Device(name, **kwargs) for name in iter_media_files(path=path))
+
+
+find = make_find(iter_devices)
