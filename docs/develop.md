@@ -16,7 +16,7 @@ on your system.
 On a debian based run:
 
 ```console
-$ apt install castxml
+$ apt install castxml linux-headers-$(uname -r)
 ```
 
 ## Code generation
