@@ -288,6 +288,8 @@ def get_enums(header_filename, xml_filename, enums):
     nodes = etree.findall(f"Enumeration[@file='{header_id}']")
     for node in nodes:
         cname = node.get("name")
+        if not cname:
+            continue
         py_name = cname_to_pyname(cname)
         prefix = cname.upper() + "_"
         raw_names = [child.get("name") for child in node]
@@ -309,13 +311,21 @@ def get_enums(header_filename, xml_filename, enums):
 
 
 def code_format(text, filename):
-    cmd = ["ruff", "check", "--fix", "--stdin-filename", str(filename)]
-    result = subprocess.run(cmd, capture_output=True, check=True, text=True, input=text)
-    fixed_text = result.stdout
+    try:
+        cmd = ["ruff", "check", "--fix", "--stdin-filename", str(filename)]
+        result = subprocess.run(cmd, capture_output=True, check=True, text=True, input=text)
+        fixed_text = result.stdout
+    except Exception as error:
+        print(repr(error))
+        fixed_text = text
 
-    cmd = ["ruff", "format", "--stdin-filename", str(filename)]
-    result = subprocess.run(cmd, capture_output=True, check=True, text=True, input=fixed_text)
-    return result.stdout
+    try:
+        cmd = ["ruff", "format", "--stdin-filename", str(filename)]
+        result = subprocess.run(cmd, capture_output=True, check=True, text=True, input=fixed_text)
+        fixed_text = result.stdout
+    except Exception as error:
+        print(repr(error))
+    return fixed_text
 
 
 def run(name, headers, template, macro_enums, output=None):
