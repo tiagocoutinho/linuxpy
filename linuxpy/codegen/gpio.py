@@ -49,6 +49,12 @@ class GpioLineEvent(enum.IntEnum):
 
 
 class IOC(CEnum):
+    def __init__(self):
+        def filter(name, value):
+            return name.endswith("_IOCTL")
+
+        super().__init__("IOC", ["GPIO_GET_", "GPIO_V2_"], filter=filter)
+
     def add_item(self, name, value):
         name = name.removesuffix("_IOCTL")
         return super().add_item(name, value)
@@ -56,7 +62,7 @@ class IOC(CEnum):
 
 # macros from #define statements
 MACRO_ENUMS = [
-    IOC("IOC", ["GPIO_GET_", "GPIO_V2_"]),
+    IOC(),
 ]
 
 
