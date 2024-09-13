@@ -157,13 +157,14 @@ class Request(ReentrantOpen):
         self.name = name
         self.flags = flags
         self.indexes = {}
-        self.lines = []
+        self.lines = lines
+        self.chunk_lines = []
         for chunk_nb, chunk in enumerate(chunks(lines, 64)):
             chunk_lines = []
             for index, line in enumerate(chunk):
                 self.indexes[line] = chunk_nb, index
                 chunk_lines.append(line)
-            self.lines.append(chunk_lines)
+            self.chunk_lines.append(chunk_lines)
         self.requests = None
         super().__init__()
 
@@ -177,17 +178,25 @@ class Request(ReentrantOpen):
         async for event in async_event_stream(self.iter_fileno()):
             yield event
 
+    def __getitem__(self, key: int | tuple | slice):
+        """Get values"""
+        if isinstance(key, int):
+            key = (key,)
+        elif isinstance(key, slice):
+            key = self.lines[key]
+        return self.get_values(key)
+
     def close(self):
         for request in self.requests or ():
             os.close(request.fd)
         self.requests = None
 
     def open(self):
-        self.requests = tuple(get_line(self.device, self.name, lines, self.flags) for lines in self.lines)
+        self.requests = tuple(get_line(self.device, self.name, lines, self.flags) for lines in self.chunk_lines)
 
     def get_values(self, lines: None | list[int] | tuple[int] = None):
         if lines is None:
-            lines = tuple(line for lines in self.lines for line in lines)
+            lines = tuple(line for lines in self.chunk_lines for line in lines)
 
         chunks = {}
         for line in lines:
