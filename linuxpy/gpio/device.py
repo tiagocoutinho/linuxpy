@@ -20,6 +20,8 @@ from linuxpy.gpio.device import ...
 
 import collections
 import fcntl
+import functools
+import operator
 import os
 import pathlib
 import selectors
@@ -29,7 +31,7 @@ from linuxpy.device import BaseDevice, ReentrantOpen, iter_device_files
 from linuxpy.gpio import raw
 from linuxpy.gpio.raw import IOC
 from linuxpy.ioctl import ioctl
-from linuxpy.types import Iterable, PathLike
+from linuxpy.types import Collection, Iterable, PathLike, Sequence
 from linuxpy.util import astream, chunks, make_find
 
 Info = collections.namedtuple("Info", "name label lines")
@@ -83,7 +85,7 @@ def get_info(fd) -> Info:
     return Info(chip.name, chip.label, [get_line_info(fd, line) for line in range(chip.lines)])
 
 
-def get_line(fd, consumer_name: str, lines, flags: LineFlag, blocking=False):
+def request_line(fd, consumer_name: str, lines: Sequence[int], flags: LineFlag, blocking=False):
     num_lines = len(lines)
     req = raw.gpio_v2_line_request()
     req.consumer = consumer_name.encode()
@@ -120,35 +122,94 @@ def read_one_event(req_fd) -> LineEvent:
     )
 
 
-def event_selector(fds: list[int]) -> selectors.BaseSelector:
+def event_selector(fds: Collection[int]) -> selectors.BaseSelector:
     selector = selectors.DefaultSelector()
     for fd in fds:
         selector.register(fd, selectors.EVENT_READ)
     return selector
 
 
-def fd_stream(fds: list[int], timeout: float | None = None):
+def fd_stream(fds: Collection[int], timeout: float | None = None):
     selector = event_selector(fds)
     while True:
         for key, _ in selector.select(timeout):
             yield key.fileobj
 
 
-def event_stream(fds: list[int], timeout: float | None = None):
+def event_stream(fds: Collection[int], timeout: float | None = None):
     for fd in fd_stream(fds, timeout):
         yield read_one_event(fd)
 
 
-async def async_fd_stream(fds: list[int]):
+async def async_fd_stream(fds: Collection[int]):
     selector = event_selector(fds)
     async for events in astream(selector, selector.select):
         for key, _ in events:
             yield key.fileobj
 
 
-async def async_event_stream(fds: list[int]):
+async def async_event_stream(fds: Collection[int]):
     async for fd in async_fd_stream(fds):
         yield read_one_event(fd)
+
+
+class LineRequest(ReentrantOpen):
+    def __init__(self, device, lines: Sequence[int], name: str = "", flags: LineFlag = LineFlag(0)):
+        assert len(lines) <= 64
+        self.device = device
+        self.name = name
+        self.flags = flags
+        self.lines = lines
+        self.indexes = {line: index for index, line in enumerate(lines)}
+        self.request = None
+        super().__init__()
+
+    def __iter__(self):
+        return event_stream((self,))
+
+    async def __aiter__(self):
+        async for event in async_event_stream((self,)):
+            yield event
+
+    def __getitem__(self, key: int | tuple | slice):
+        """Get values"""
+        if isinstance(key, int):
+            return self.get_values((key,))[key]
+        if isinstance(key, slice):
+            key = self.lines[key]
+        return self.get_values(key)
+
+    def fileno(self):
+        return self.request.fd
+
+    def close(self):
+        if self.request is None:
+            return
+        os.close(self.request.fd)
+        self.request = None
+
+    def open(self):
+        self.request = request_line(self.device, self.name, self.lines, self.flags)
+
+    def get_values(self, lines: Collection[int] | None = None) -> dict[int, int]:
+        if lines is None:
+            lines = self.lines
+
+        mask = functools.reduce(operator.or_, (1 << self.indexes[line] for line in lines), 0)
+        values = get_values(self, mask)
+        return {line: (values.bits >> self.indexes[line]) & 1 for line in lines}
+
+    def set_values(self, values: dict[int, int | bool]):
+        mask, bits = 0, 0
+        for line, value in values.items():
+            index = self.indexes[line]
+            mask |= 1 << index
+            if value:
+                bits |= 1 << index
+        return set_values(self, mask, bits)
+
+    def read_one(self) -> LineEvent:
+        return next(iter(self))
 
 
 class Request(ReentrantOpen):
@@ -181,8 +242,8 @@ class Request(ReentrantOpen):
     def __getitem__(self, key: int | tuple | slice):
         """Get values"""
         if isinstance(key, int):
-            key = (key,)
-        elif isinstance(key, slice):
+            return self.get_values((key,))[key]
+        if isinstance(key, slice):
             key = self.lines[key]
         return self.get_values(key)
 
@@ -192,7 +253,7 @@ class Request(ReentrantOpen):
         self.requests = None
 
     def open(self):
-        self.requests = tuple(get_line(self.device, self.name, lines, self.flags) for lines in self.chunk_lines)
+        self.requests = tuple(request_line(self.device, self.name, lines, self.flags) for lines in self.chunk_lines)
 
     def get_values(self, lines: None | list[int] | tuple[int] = None):
         if lines is None:
@@ -246,7 +307,7 @@ class Device(BaseDevice):
         return Request(self, lines, name, flags)
 
     def __getitem__(self, key: int | tuple | slice):
-        """Request line"""
+        """Request line(s)"""
         if isinstance(key, int):
             key = (key,)
         elif isinstance(key, slice):
