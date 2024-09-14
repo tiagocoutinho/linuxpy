@@ -69,8 +69,12 @@ MACRO_ENUMS = [
 this_dir = pathlib.Path(__file__).parent
 
 
+def decode_name(name: str) -> str:
+    return name.removeprefix("gpio_v2_").removeprefix("gpio_")
+
+
 def main(output=this_dir.parent / "gpio" / "raw.py"):
-    run(__name__, HEADERS, TEMPLATE, MACRO_ENUMS, output=output)
+    run(__name__, HEADERS, TEMPLATE, MACRO_ENUMS, output=output, decode_enum_name=decode_name)
 
 
 if __name__ == "__main__":

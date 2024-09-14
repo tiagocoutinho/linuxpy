@@ -13,7 +13,14 @@ The recommended way is to use one of the find methods to create a Device object
 and use it within a context manager like:
 
 ```python
-from linuxpy.gpio.device import ...
+from linuxpy.gpio.device import find, LineFlag
+
+with find() as gpio:
+    # request lines 5 and 6
+    lines = gpio[5, 6]
+    lines.flags = LineFlag.ACTIVE_LOW
+    with lines:
+        print(lines[:])
 
 ```
 """
@@ -38,7 +45,9 @@ Info = collections.namedtuple("Info", "name label lines")
 ChipInfo = collections.namedtuple("ChipInfo", "name label lines")
 LineInfo = collections.namedtuple("LineInfo", "name consumer offset flags attributes")
 
-LineFlag = raw.GpioV2LineFlag
+LineFlag = raw.LineFlag
+LineAttrId = raw.LineAttrId
+LineEventId = raw.LineEventId
 LineEvent = collections.namedtuple("LineEvent", "timestamp type line sequence line_sequence")
 
 
@@ -64,11 +73,11 @@ def get_line_info(fd, line: int) -> LineInfo:
     attributes = LineAttributes()
     for i in range(info.num_attrs):
         attr = info.attrs[i]
-        if attr.id == raw.GpioV2LineAttrId.FLAGS:
+        if attr.id == LineAttrId.FLAGS:
             attributes.flags = LineFlag(attr.flags)
-        elif attr.id == raw.GpioV2LineAttrId.OUTPUT_VALUES:
+        elif attr.id == LineAttrId.OUTPUT_VALUES:
             attributes.indexes = [x for x, y in enumerate(bin(attr.values)[2:][::-1]) if y != "0"]
-        elif attr.id == raw.GpioV2LineAttrId.DEBOUNCE:
+        elif attr.id == LineAttrId.DEBOUNCE:
             attributes.debounce_period = attr.debounce_period_us / 1_000_000
 
     return LineInfo(
@@ -115,7 +124,7 @@ def read_one_event(req_fd) -> LineEvent:
     event = raw.gpio_v2_line_event.from_buffer_copy(data)
     return LineEvent(
         event.timestamp_ns * 1e-9,
-        raw.GpioV2LineEventId(event.id),
+        LineEventId(event.id),
         event.offset,
         event.seqno,
         event.line_seqno,
