@@ -7,7 +7,7 @@
 """
 Human friendly interface to linux GPIO subsystem.
 
-The heart of linuxpy GPIO library is the [`Device`][linuxpy.gio.device.Device]
+The heart of linuxpy GPIO library is the [`Device`][linuxpy.gpio.device.Device]
 class.
 The recommended way is to use one of the find methods to create a Device object
 and use it within a context manager like:
@@ -162,13 +162,16 @@ async def async_event_stream(fds: Collection[int]):
         yield read_one_event(fd)
 
 
-def expand_from_list(key: int | slice | tuple, maximum) -> list[int]:
+def expand_from_list(key: int | slice | tuple, minimum, maximum) -> list[int]:
     """Used internally in __getitem__ to expand the given key"""
     if isinstance(key, int):
         return [key]
     if isinstance(key, slice):
-        return list(range(maximum)[key])
-    return [line for item in key for line in expand_from_list(item, maximum)]
+        start = minimum if key.start is None else key.start
+        stop = maximum + 1 if key.stop is None else key.stop
+        key = slice(start, stop, key.step)
+        return list(range(maximum + 1)[key])
+    return [line for item in key for line in expand_from_list(item, minimum, maximum)]
 
 
 class LineRequest(ReentrantOpen):
@@ -178,7 +181,6 @@ class LineRequest(ReentrantOpen):
         self.name = name
         self.flags = flags
         self.lines = lines
-        self.max_line = max(lines)
         self.indexes = {line: index for index, line in enumerate(lines)}
         self.request = None
         super().__init__()
@@ -194,8 +196,20 @@ class LineRequest(ReentrantOpen):
         """Get values"""
         if isinstance(key, int):
             return self.get_values((key,))[key]
-        lines = expand_from_list(key, self.max_line)
+        lines = expand_from_list(key, self.min_line, self.max_line)
         return self.get_values(lines)
+
+    @property
+    def min_line(self):
+        if not hasattr(self, "_min_line"):
+            self._min_line = min(self.lines)
+        return self._min_line
+
+    @property
+    def max_line(self):
+        if not hasattr(self, "_max_line"):
+            self._max_line = max(self.lines)
+        return self._max_line
 
     def fileno(self):
         return self.request.fd
@@ -240,11 +254,14 @@ class Request(ReentrantOpen):
             self.line_requests.append(line_request)
             for line in chunk:
                 self.line_map[line] = line_request
-        self.max_line = max(lines)
         super().__init__()
 
-    def iter_fileno(self):
-        return (request.fd for request in self.requests)
+    def __getitem__(self, key: int | tuple | slice):
+        """Get values"""
+        if isinstance(key, int):
+            return self.get_values((key,))[key]
+        lines = expand_from_list(key, self.min_line, self.max_line)
+        return self.get_values(lines)
 
     def __iter__(self):
         return event_stream(self.line_requests)
@@ -253,12 +270,20 @@ class Request(ReentrantOpen):
         async for event in async_event_stream(self.line_requests):
             yield event
 
-    def __getitem__(self, key: int | tuple | slice):
-        """Get values"""
-        if isinstance(key, int):
-            return self.get_values((key,))[key]
-        lines = expand_from_list(key, self.max_line)
-        return self.get_values(lines)
+    @property
+    def min_line(self):
+        if not hasattr(self, "_min_line"):
+            self._min_line = min(self.lines)
+        return self._min_line
+
+    @property
+    def max_line(self):
+        if not hasattr(self, "_max_line"):
+            self._max_line = max(self.lines)
+        return self._max_line
+
+    def iter_fileno(self):
+        return (request.fd for request in self.requests)
 
     def close(self):
         for line_request in self.line_requests:
@@ -302,7 +327,7 @@ class Device(BaseDevice):
 
     def __getitem__(self, key: int | tuple | slice):
         """Request line(s)"""
-        lines = expand_from_list(key, len(self))
+        lines = expand_from_list(key, 0, len(self))
         return self.request(lines)
 
     def get_info(self) -> Info:
@@ -310,8 +335,7 @@ class Device(BaseDevice):
 
     def request(self, lines: list[int] | tuple[int] | None = None, name: str = "", flags: LineFlag = LineFlag(0)):
         if lines is None:
-            chip_info = get_chip_info(self)
-            lines = tuple(range(0, chip_info.lines))
+            lines = tuple(range(len(self)))
         return Request(self, lines, name, flags)
 
 
