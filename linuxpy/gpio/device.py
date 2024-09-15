@@ -162,6 +162,15 @@ async def async_event_stream(fds: Collection[int]):
         yield read_one_event(fd)
 
 
+def expand_from_list(key: int | slice | tuple, maximum) -> list[int]:
+    """Used internally in __getitem__ to expand the given key"""
+    if isinstance(key, int):
+        return [key]
+    if isinstance(key, slice):
+        return list(range(maximum)[key])
+    return [line for item in key for line in expand_from_list(item, maximum)]
+
+
 class LineRequest(ReentrantOpen):
     def __init__(self, device, lines: Sequence[int], name: str = "", flags: LineFlag = LineFlag(0)):
         assert len(lines) <= 64
@@ -169,6 +178,7 @@ class LineRequest(ReentrantOpen):
         self.name = name
         self.flags = flags
         self.lines = lines
+        self.max_line = max(lines)
         self.indexes = {line: index for index, line in enumerate(lines)}
         self.request = None
         super().__init__()
@@ -184,9 +194,8 @@ class LineRequest(ReentrantOpen):
         """Get values"""
         if isinstance(key, int):
             return self.get_values((key,))[key]
-        if isinstance(key, slice):
-            key = self.lines[key]
-        return self.get_values(key)
+        lines = expand_from_list(key, self.max_line)
+        return self.get_values(lines)
 
     def fileno(self):
         return self.request.fd
@@ -231,6 +240,7 @@ class Request(ReentrantOpen):
             self.line_requests.append(line_request)
             for line in chunk:
                 self.line_map[line] = line_request
+        self.max_line = max(lines)
         super().__init__()
 
     def iter_fileno(self):
@@ -247,9 +257,8 @@ class Request(ReentrantOpen):
         """Get values"""
         if isinstance(key, int):
             return self.get_values((key,))[key]
-        if isinstance(key, slice):
-            key = self.lines[key]
-        return self.get_values(key)
+        lines = expand_from_list(key, self.max_line)
+        return self.get_values(lines)
 
     def close(self):
         for line_request in self.line_requests:
@@ -286,6 +295,16 @@ class Request(ReentrantOpen):
 class Device(BaseDevice):
     PREFIX = "/dev/gpiochip"
 
+    def __len__(self):
+        if not hasattr(self, "_len"):
+            self._len = get_chip_info(self).lines
+        return self._len
+
+    def __getitem__(self, key: int | tuple | slice):
+        """Request line(s)"""
+        lines = expand_from_list(key, len(self))
+        return self.request(lines)
+
     def get_info(self) -> Info:
         return get_info(self)
 
@@ -294,15 +313,6 @@ class Device(BaseDevice):
             chip_info = get_chip_info(self)
             lines = tuple(range(0, chip_info.lines))
         return Request(self, lines, name, flags)
-
-    def __getitem__(self, key: int | tuple | slice):
-        """Request line(s)"""
-        if isinstance(key, int):
-            key = (key,)
-        elif isinstance(key, slice):
-            chip_info = get_chip_info(self)
-            key = tuple(range(*key.indices(chip_info.lines)))
-        return self.request(key)
 
 
 def iter_gpio_files(path: PathLike = "/dev") -> Iterable[pathlib.Path]:
