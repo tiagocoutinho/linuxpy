@@ -39,7 +39,7 @@ from linuxpy.gpio import raw
 from linuxpy.gpio.raw import IOC
 from linuxpy.ioctl import ioctl
 from linuxpy.types import Collection, Iterable, PathLike, Sequence
-from linuxpy.util import astream, chunks, make_find
+from linuxpy.util import astream, bit_indexes, chunks, make_find
 
 Info = collections.namedtuple("Info", "name label lines")
 ChipInfo = collections.namedtuple("ChipInfo", "name label lines")
@@ -53,7 +53,7 @@ LineEvent = collections.namedtuple("LineEvent", "timestamp type line sequence li
 
 class LineAttributes:
     def __init__(self):
-        self.flags = raw.GpioV2LineFlag(0)
+        self.flags = LineFlag(0)
         self.indexes = []
         self.debounce_period = 0
 
@@ -76,7 +76,7 @@ def get_line_info(fd, line: int) -> LineInfo:
         if attr.id == LineAttrId.FLAGS:
             attributes.flags = LineFlag(attr.flags)
         elif attr.id == LineAttrId.OUTPUT_VALUES:
-            attributes.indexes = [x for x, y in enumerate(bin(attr.values)[2:][::-1]) if y != "0"]
+            attributes.indexes = bit_indexes(attr.vlaues)
         elif attr.id == LineAttrId.DEBOUNCE:
             attributes.debounce_period = attr.debounce_period_us / 1_000_000
 
@@ -104,7 +104,7 @@ def request_line(fd, consumer_name: str, lines: Sequence[int], flags: LineFlag, 
     req.config.num_attrs = 0  # for now only support generic config
     ioctl(fd, IOC.GET_LINE, req)
     if not blocking:
-        flag = fcntl.fcntl(fd, fcntl.F_GETFL)
+        flag = fcntl.fcntl(req.fd, fcntl.F_GETFL)
         fcntl.fcntl(req.fd, fcntl.F_SETFL, flag | os.O_NONBLOCK)
     return req
 
@@ -168,13 +168,14 @@ def expand_from_list(key: int | slice | tuple, minimum, maximum) -> list[int]:
         return [key]
     if isinstance(key, slice):
         start = minimum if key.start is None else key.start
-        stop = maximum + 1 if key.stop is None else key.stop
-        key = slice(start, stop, key.step)
-        return list(range(maximum + 1)[key])
+        key = slice(start, key.stop, key.step)
+        return list(range(maximum)[key])
     return [line for item in key for line in expand_from_list(item, minimum, maximum)]
 
 
-class LineRequest(ReentrantOpen):
+class _Request(ReentrantOpen):
+    """Raw line request. Not to be used directly"""
+
     def __init__(self, device, lines: Sequence[int], name: str = "", flags: LineFlag = LineFlag(0)):
         assert len(lines) <= 64
         self.device = device
@@ -182,7 +183,7 @@ class LineRequest(ReentrantOpen):
         self.flags = flags
         self.lines = lines
         self.indexes = {line: index for index, line in enumerate(lines)}
-        self.request = None
+        self.fd = None
         super().__init__()
 
     def __iter__(self):
@@ -192,41 +193,19 @@ class LineRequest(ReentrantOpen):
         async for event in async_event_stream((self,)):
             yield event
 
-    def __getitem__(self, key: int | tuple | slice):
-        """Get values"""
-        if isinstance(key, int):
-            return self.get_values((key,))[key]
-        lines = expand_from_list(key, self.min_line, self.max_line)
-        return self.get_values(lines)
-
-    @property
-    def min_line(self):
-        if not hasattr(self, "_min_line"):
-            self._min_line = min(self.lines)
-        return self._min_line
-
-    @property
-    def max_line(self):
-        if not hasattr(self, "_max_line"):
-            self._max_line = max(self.lines)
-        return self._max_line
-
     def fileno(self):
-        return self.request.fd
+        return self.fd
 
     def close(self):
-        if self.request is None:
+        if self.fd is None:
             return
-        os.close(self.request.fd)
-        self.request = None
+        os.close(self.fd)
+        self.fd = None
 
     def open(self):
-        self.request = request_line(self.device, self.name, self.lines, self.flags)
+        self.fd = request_line(self.device, self.name, self.lines, self.flags).fd
 
-    def get_values(self, lines: Collection[int] | None = None) -> dict[int, int]:
-        if lines is None:
-            lines = self.lines
-
+    def get_values(self, lines: Collection[int]) -> dict[int, int]:
         mask = functools.reduce(operator.or_, (1 << self.indexes[line] for line in lines), 0)
         values = get_values(self, mask)
         return {line: (values.bits >> self.indexes[line]) & 1 for line in lines}
@@ -240,28 +219,33 @@ class LineRequest(ReentrantOpen):
                 bits |= 1 << index
         return set_values(self, mask, bits)
 
-    def read_one(self) -> LineEvent:
-        return next(iter(self))
-
 
 class Request(ReentrantOpen):
     def __init__(self, device, lines: list[int] | tuple[int], name: str = "", flags: LineFlag = LineFlag(0)):
         self.lines = lines
-        self.line_requests = []
-        self.line_map = {}
+        self.line_requests: list[_Request] = []
+        self.line_map: dict[int, _Request] = {}
         for chunk in chunks(lines, 64):
-            line_request = LineRequest(device, chunk, name, flags)
+            line_request = _Request(device, chunk, name, flags)
             self.line_requests.append(line_request)
             for line in chunk:
                 self.line_map[line] = line_request
         super().__init__()
 
-    def __getitem__(self, key: int | tuple | slice):
+    def __getitem__(self, key: int | tuple | slice) -> int | dict:
         """Get values"""
         if isinstance(key, int):
             return self.get_values((key,))[key]
-        lines = expand_from_list(key, self.min_line, self.max_line)
+        lines = expand_from_list(key, self.min_line, self.max_line + 1)
         return self.get_values(lines)
+
+    def __setitem__(self, key: int | tuple | slice, value: int | Sequence[int]):
+        if isinstance(key, int):
+            values = {key: value}
+        else:
+            lines = expand_from_list(key, self.min_line, self.max_line + 1)
+            values = dict(zip(lines, value))
+        self.set_values(values)
 
     def __iter__(self):
         return event_stream(self.line_requests)
@@ -313,19 +297,16 @@ class Request(ReentrantOpen):
         for request_line, local_lines in request_lines.items():
             request_line.set_values(local_lines)
 
-    def read_one(self) -> LineEvent:
-        return next(iter(self))
-
 
 class Device(BaseDevice):
     PREFIX = "/dev/gpiochip"
 
-    def __len__(self):
+    def __len__(self) -> int:
         if not hasattr(self, "_len"):
             self._len = get_chip_info(self).lines
         return self._len
 
-    def __getitem__(self, key: int | tuple | slice):
+    def __getitem__(self, key: int | tuple | slice) -> Request:
         """Request line(s)"""
         lines = expand_from_list(key, 0, len(self))
         return self.request(lines)
@@ -333,9 +314,11 @@ class Device(BaseDevice):
     def get_info(self) -> Info:
         return get_info(self)
 
-    def request(self, lines: list[int] | tuple[int] | None = None, name: str = "", flags: LineFlag = LineFlag(0)):
+    def request(
+        self, lines: list[int] | tuple[int] | None = None, name: str = "", flags: LineFlag = LineFlag(0)
+    ) -> Request:
         if lines is None:
-            lines = tuple(range(len(self)))
+            lines = list(range(len(self)))
         return Request(self, lines, name, flags)
 
 
