@@ -5,10 +5,11 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 import os
+import socket
 from contextlib import ExitStack, contextmanager
 from inspect import isgenerator
 from itertools import count
-from math import ceil
+from math import ceil, isclose
 from pathlib import Path
 from unittest import mock
 
@@ -16,7 +17,7 @@ from ward import each, fixture, raises, test
 
 from linuxpy.device import device_number
 from linuxpy.gpio import raw
-from linuxpy.gpio.device import Device, Request, expand_from_list, iter_devices, iter_gpio_files
+from linuxpy.gpio.device import Device, LineEventId, Request, expand_from_list, iter_devices, iter_gpio_files
 from linuxpy.util import bit_indexes
 
 
@@ -24,7 +25,7 @@ def FD():
     return next(FD._FD)
 
 
-FD._FD = count(1001, 2)
+FD._FD = count(10_001, 2)
 
 
 class Hardware:
@@ -87,11 +88,22 @@ class Hardware:
                 arg.label = self.label
                 arg.lines = self.nb_lines
             elif ioc == raw.IOC.GET_LINE:
-                request_fd = FD()
-                arg.fd = request_fd
-                self.requests[request_fd] = arg
+                reader, writer = socket.socketpair()
+                arg.fd = reader.fileno()
+                self.requests[arg.fd] = arg, (reader, writer)
+            elif ioc == raw.IOC.GET_LINEINFO:
+                arg.name = f"Line{arg.offset}".encode()
+                arg.flags = raw.LineFlag.INPUT
+                if arg.offset == 1:
+                    arg.consumer = b"another fellow"
+                    arg.flags = raw.LineFlag.USED | raw.LineFlag.OUTPUT
+                    arg.num_attrs = 3
+                    arg.attrs[0] = raw.gpio_v2_line_attribute(id=raw.LineAttrId.FLAGS, flags=raw.LineFlag.ACTIVE_LOW)
+                    arg.attrs[1] = raw.gpio_v2_line_attribute(id=raw.LineAttrId.OUTPUT_VALUES, values=0)
+                    arg.attrs[2] = raw.gpio_v2_line_attribute(id=raw.LineAttrId.DEBOUNCE, debounce_period_us=99_123_456)
+
         else:
-            request = self.requests[fd]
+            request, (reader, writer) = self.requests[fd]
             if ioc == raw.IOC.LINE_GET_VALUES:
                 bits = 0
                 for index in bit_indexes(arg.mask):
@@ -111,6 +123,23 @@ class Hardware:
     def fcntl(self, fd, cmd, arg=0):
         assert fd in self.requests
         return 0
+
+    def trigger_event(
+        self,
+        fd,
+        line: int,
+        event_type: LineEventId = LineEventId.RISING_EDGE,
+        seqno: int = 2,
+        line_seqno: int = 1,
+        timestamp_ns: int = 1_000_000,
+    ):
+        if not isinstance(fd, int):
+            fd = fd.fileno()
+        _, (reader, writer) = self.requests[fd]
+        event = raw.gpio_v2_line_event(
+            timestamp_ns=timestamp_ns, id=event_type, offset=line, seqno=seqno, line_seqno=line_seqno
+        )
+        writer.sendall(bytes(event))
 
 
 @contextmanager
@@ -206,8 +235,15 @@ def _(chip=emulate_gpiochip):
 
     with device:
         info = device.get_info()
-        assert info.name == chip.name.decode()
-        assert info.label == chip.label.decode()
+    assert info.name == chip.name.decode()
+    assert info.label == chip.label.decode()
+    assert len(info.lines) == chip.nb_lines
+    l1 = info.lines[1]
+    assert l1.flags == raw.LineFlag.USED | raw.LineFlag.OUTPUT
+    assert l1.name == "Line1"
+    assert l1.consumer == "another fellow"
+    assert l1.attributes.flags == raw.LineFlag.ACTIVE_LOW
+    assert isclose(l1.attributes.debounce_period, 99.123456)
 
 
 @test("make request")
@@ -234,6 +270,9 @@ def _(chip=emulate_gpiochip):
             assert request.min_line == 1
             assert request.max_line == 12
             assert request.lines == lines
+
+            # close the request to make sure it always succeeds
+            request.close()
 
 
 @test("get value")
@@ -295,3 +334,57 @@ def _(chip=emulate_gpiochip):
 
             request[:] = 9 * [1]
             assert request[:] == {i: 1 for i in range(1, 10)}
+
+
+@test("event stream")
+def _(chip=emulate_gpiochip):
+    with Device(chip.filename) as device:
+        line = 11
+        with device[line] as request:
+            line_request = request.line_requests[0]
+            chip.trigger_event(line_request, line, LineEventId.RISING_EDGE, 55, 22, 1_999_999_000)
+            chip.trigger_event(line_request, line, LineEventId.FALLING_EDGE, 57, 23, 2_999_999_000)
+            for i, event in enumerate(request):
+                assert event.line == line
+                if not i:
+                    assert isclose(event.timestamp, 1.999_999)
+                    assert event.sequence == 55
+                    assert event.line_sequence == 22
+                    assert event.type == LineEventId.RISING_EDGE
+                else:
+                    assert isclose(event.timestamp, 2.999_999)
+                    assert event.sequence == 57
+                    assert event.line_sequence == 23
+                    assert event.type == LineEventId.FALLING_EDGE
+                if i > 0:
+                    break
+
+
+@test("async event stream")
+async def _(chip=emulate_gpiochip):
+    with Device(chip.filename) as device:
+        line = 11
+        with device[line] as request:
+            line_request = request.line_requests[0]
+            chip.trigger_event(line_request, line, LineEventId.RISING_EDGE, 55, 22, 1_999_999_000)
+            chip.trigger_event(line_request, line, LineEventId.FALLING_EDGE, 57, 23, 2_999_999_000)
+            stream = aiter(request)
+            try:
+                i = 0
+                async for event in stream:
+                    assert event.line == line
+                    if not i:
+                        assert isclose(event.timestamp, 1.999_999)
+                        assert event.sequence == 55
+                        assert event.line_sequence == 22
+                        assert event.type == LineEventId.RISING_EDGE
+                    else:
+                        assert isclose(event.timestamp, 2.999_999)
+                        assert event.sequence == 57
+                        assert event.line_sequence == 23
+                        assert event.type == LineEventId.FALLING_EDGE
+                    i += 1
+                    if i > 0:
+                        break
+            finally:
+                await stream.aclose()
