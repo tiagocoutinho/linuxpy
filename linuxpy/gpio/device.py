@@ -149,14 +149,22 @@ def event_stream(fds: Collection[int], timeout: float | None = None):
 
 async def async_fd_stream(fds: Collection[int]):
     selector = event_selector(fds)
-    async for events in astream(selector, selector.select):
-        for key, _ in events:
-            yield key.fileobj
+    stream = astream(selector.fileno(), selector.select)
+    try:
+        async for events in stream:
+            for key, _ in events:
+                yield key.fileobj
+    finally:
+        await stream.aclose()
 
 
 async def async_event_stream(fds: Collection[int]):
-    async for fd in async_fd_stream(fds):
-        yield read_one_event(fd)
+    stream = async_fd_stream(fds)
+    try:
+        async for fd in stream:
+            yield read_one_event(fd)
+    finally:
+        await stream.aclose()
 
 
 def expand_from_list(key: int | slice | tuple, minimum, maximum) -> list[int]:
@@ -182,13 +190,6 @@ class _Request(ReentrantOpen):
         self.indexes = {line: index for index, line in enumerate(lines)}
         self.fd = None
         super().__init__()
-
-    def __iter__(self):
-        return event_stream((self,))
-
-    async def __aiter__(self):
-        async for event in async_event_stream((self,)):
-            yield event
 
     def fileno(self):
         return self.fd
@@ -245,11 +246,10 @@ class Request(ReentrantOpen):
         self.set_values(values)
 
     def __iter__(self):
-        return event_stream(self.line_requests)
+        return event_stream(self.filenos())
 
-    async def __aiter__(self):
-        async for event in async_event_stream(self.line_requests):
-            yield event
+    def __aiter__(self):
+        return async_event_stream(self.filenos())
 
     @property
     def min_line(self):
@@ -263,8 +263,8 @@ class Request(ReentrantOpen):
             self._max_line = max(self.lines)
         return self._max_line
 
-    def iter_fileno(self):
-        return (request.fd for request in self.requests)
+    def filenos(self):
+        return [request.fd for request in self.line_requests]
 
     def close(self):
         for line_request in self.line_requests:
