@@ -57,9 +57,6 @@ class LineAttributes:
         self.indexes = []
         self.debounce_period = 0
 
-    def __repr__(self):
-        return f"Attrs(flags={self.flags}, indexes={self.indexes}, debounce_period={self.debounce_period})"
-
 
 def get_chip_info(fd) -> ChipInfo:
     info = raw.gpiochip_info()
@@ -76,7 +73,7 @@ def get_line_info(fd, line: int) -> LineInfo:
         if attr.id == LineAttrId.FLAGS:
             attributes.flags = LineFlag(attr.flags)
         elif attr.id == LineAttrId.OUTPUT_VALUES:
-            attributes.indexes = bit_indexes(attr.vlaues)
+            attributes.indexes = bit_indexes(attr.values)
         elif attr.id == LineAttrId.DEBOUNCE:
             attributes.debounce_period = attr.debounce_period_us / 1_000_000
 
