@@ -38,7 +38,7 @@ from linuxpy.device import BaseDevice, ReentrantOpen, iter_device_files
 from linuxpy.gpio import raw
 from linuxpy.gpio.raw import IOC
 from linuxpy.ioctl import ioctl
-from linuxpy.types import Collection, Iterable, Optional, PathLike, Sequence, Union
+from linuxpy.types import AsyncIterator, Collection, Iterable, Optional, PathLike, Sequence, Union
 from linuxpy.util import astream, bit_indexes, chunks, make_find
 
 Info = collections.namedtuple("Info", "name label lines")
@@ -135,34 +135,20 @@ def event_selector(fds: Collection[int]) -> selectors.BaseSelector:
     return selector
 
 
-def fd_stream(fds: Collection[int], timeout: Optional[float] = None):
+def event_stream(fds: Collection[int], timeout: Optional[float] = None) -> Iterable[LineEvent]:
     selector = event_selector(fds)
     while True:
         for key, _ in selector.select(timeout):
-            yield key.fileobj
+            yield read_one_event(key.fileobj)
 
 
-def event_stream(fds: Collection[int], timeout: Optional[float] = None):
-    for fd in fd_stream(fds, timeout):
-        yield read_one_event(fd)
-
-
-async def async_fd_stream(fds: Collection[int]):
+async def async_event_stream(fds: Collection[int]) -> AsyncIterator[LineEvent]:
     selector = event_selector(fds)
     stream = astream(selector.fileno(), selector.select)
     try:
         async for events in stream:
             for key, _ in events:
-                yield key.fileobj
-    finally:
-        await stream.aclose()
-
-
-async def async_event_stream(fds: Collection[int]):
-    stream = async_fd_stream(fds)
-    try:
-        async for fd in stream:
-            yield read_one_event(fd)
+                yield read_one_event(key.fileobj)
     finally:
         await stream.aclose()
 
@@ -250,25 +236,25 @@ class Request(ReentrantOpen):
             values = dict(zip(lines, value))
         self.set_values(values)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterable[LineEvent]:
         return event_stream(self.filenos())
 
-    def __aiter__(self):
+    def __aiter__(self) -> AsyncIterator[LineEvent]:
         return async_event_stream(self.filenos())
 
     @property
-    def min_line(self):
+    def min_line(self) -> int:
         if not hasattr(self, "_min_line"):
             self._min_line = min(self.lines)
         return self._min_line
 
     @property
-    def max_line(self):
+    def max_line(self) -> int:
         if not hasattr(self, "_max_line"):
             self._max_line = max(self.lines)
         return self._max_line
 
-    def filenos(self):
+    def filenos(self) -> list[int]:
         return [request.fd for request in self.line_requests]
 
     def close(self):
@@ -279,7 +265,7 @@ class Request(ReentrantOpen):
         for line_request in self.line_requests:
             line_request.open()
 
-    def get_values(self, lines: Optional[Sequence[int]] = None):
+    def get_values(self, lines: Optional[Sequence[int]] = None) -> dict[int, int]:
         if lines is None:
             lines = self.lines
         request_lines = {}
