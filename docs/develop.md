@@ -45,6 +45,7 @@ $ sudo addgroup video
 $ sudo addgroup led
 $ sudo adduser $USER input
 $ sudo adduser $USER video
+$ sudo adduser $USER led
 ```
 
 (reboot if necessary for those changes to take effect)
@@ -56,10 +57,18 @@ Create a new rules file (ex: `/etc/udev/rules.d/80-device.rules`):
 ```
 KERNEL=="event[0-9]*", SUBSYSTEM=="input", GROUP="input", MODE:="0660"
 KERNEL=="uinput", SUBSYSTEM=="misc", GROUP="input", MODE:="0660"
-SUBSYSTEM=="video4linux", MODE:="0666"
+SUBSYSTEM=="video4linux", GROUP="video", MODE:="0660"
 KERNEL=="uleds", GROUP="input", MODE:="0660"
 SUBSYSTEM=="leds", ACTION=="add", RUN+="/bin/chmod -R g=u,o=u /sys%p"
 SUBSYSTEM=="leds", ACTION=="change", ENV{TRIGGER}!="none", RUN+="/bin/chmod -R g=u,o=u /sys%p"
+SUBSYSTEM=="gpio", GROUP="input", MODE:="0660"
+```
+
+Reload the rules:
+
+```console
+$ sudo udevadm control --reload-rules
+$ sudo udevadm trigger
 ```
 
 Finally, make sure all kernel modules are installed:

@@ -7,7 +7,8 @@
 
 Human friendly interface to linux subsystems using python.
 
-Provides python access to several linux subsystems like V4L2, input and MIDI.
+Provides python access to several linux subsystems like V4L2, GPIO, Led, thermal,
+input and MIDI.
 
 There is experimental, undocumented, incomplete and unstable access to USB.
 

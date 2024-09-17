@@ -70,11 +70,11 @@ class {self.name}(enum.{self.klass}):
 
 
 class CStruct:
-    def __init__(self, node, node_members, pack=False):
+    def __init__(self, node, name, node_members, pack=False):
         self.node = node
         self.node_members = node_members
         self.pack = pack
-        self.name = node.get("name")
+        self.name = name
         self.parent = None
         self.fields = []
         self.children = {}
@@ -215,7 +215,7 @@ def find_xml_base_type(etree, context, type_id):
         type_id = node.get("type")
 
 
-def get_structs(header_filename, xml_filename):
+def get_structs(header_filename, xml_filename, decode_name):
     etree = xml.etree.ElementTree.parse(xml_filename)
     header_tag = etree.find(f"File[@name='{header_filename}']")
     structs = {}
@@ -234,7 +234,10 @@ def get_structs(header_filename, xml_filename):
         fields = (etree.find(f"*[@id='{member_id}']") for member_id in member_ids)
         fields = [field for field in fields if field.tag not in {"Union", "Struct", "Unimplemented"}]
         pack = int(node.get("align")) == 8
-        struct = CStruct(node, fields, pack)
+        name = node.get("name")
+        if name:
+            name = decode_name(name)
+        struct = CStruct(node, name, fields, pack)
         structs[struct.id] = struct
     for struct in structs.values():
         if struct.context_id != "_1":
@@ -278,7 +281,7 @@ def cname_to_pyname(
     return "".join(map(str.capitalize, name.split(splitby)))
 
 
-def get_enums(header_filename, xml_filename, enums):
+def get_enums(header_filename, xml_filename, enums, decode_name):
     etree = xml.etree.ElementTree.parse(xml_filename)
     header_tag = etree.find(f"File[@name='{header_filename}']")
     structs = {}
@@ -288,7 +291,9 @@ def get_enums(header_filename, xml_filename, enums):
     nodes = etree.findall(f"Enumeration[@file='{header_id}']")
     for node in nodes:
         cname = node.get("name")
-        py_name = cname_to_pyname(cname)
+        if not cname:
+            continue
+        py_name = cname_to_pyname(decode_name(cname))
         prefix = cname.upper() + "_"
         raw_names = [child.get("name") for child in node]
         common_prefix = os.path.commonprefix(raw_names)
@@ -309,16 +314,28 @@ def get_enums(header_filename, xml_filename, enums):
 
 
 def code_format(text, filename):
-    cmd = ["ruff", "check", "--fix", "--stdin-filename", str(filename)]
-    result = subprocess.run(cmd, capture_output=True, check=True, text=True, input=text)
-    fixed_text = result.stdout
+    try:
+        cmd = ["ruff", "check", "--fix", "--stdin-filename", str(filename)]
+        result = subprocess.run(cmd, capture_output=True, check=True, text=True, input=text)
+        fixed_text = result.stdout
+    except Exception as error:
+        print(repr(error))
+        fixed_text = text
 
-    cmd = ["ruff", "format", "--stdin-filename", str(filename)]
-    result = subprocess.run(cmd, capture_output=True, check=True, text=True, input=fixed_text)
-    return result.stdout
+    try:
+        cmd = ["ruff", "format", "--stdin-filename", str(filename)]
+        result = subprocess.run(cmd, capture_output=True, check=True, text=True, input=fixed_text)
+        fixed_text = result.stdout
+    except Exception as error:
+        print(repr(error))
+    return fixed_text
 
 
-def run(name, headers, template, macro_enums, output=None):
+def nullf(x):
+    return x
+
+
+def run(name, headers, template, macro_enums, output=None, decode_struct_name=nullf, decode_enum_name=nullf):
     cache = {}
     temp_dir = tempfile.mkdtemp()
     logging.info("Starting %s...", name)
@@ -330,10 +347,10 @@ def run(name, headers, template, macro_enums, output=None):
         xml_filename = os.path.join(temp_dir, base_header + ".xml")
         cmd = f"castxml --castxml-output=1.0.0 -o {xml_filename} {header}"
         assert os.system(cmd) == 0
-        new_structs = get_structs(header, xml_filename)
+        new_structs = get_structs(header, xml_filename, decode_name=decode_struct_name)
         structs += list(new_structs.values())
 
-        get_enums(header, xml_filename, macro_enums)
+        get_enums(header, xml_filename, macro_enums, decode_name=decode_enum_name)
 
     structs_definition = "\n\n".join(struct.class_text for struct in structs if struct.parent is None)
     structs_fields = "\n".join(struct.fields_text for struct in structs if struct.parent is None)

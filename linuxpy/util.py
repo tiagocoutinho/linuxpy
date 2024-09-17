@@ -22,7 +22,7 @@ def iter_chunks(lst: Sequence, size: int) -> Iterable:
     return (lst[i : i + size] for i in range(0, len(lst), size))
 
 
-def chunks(lst: Sequence, size) -> tuple:
+def chunks(lst: Sequence, size: int) -> tuple:
     """
     Batch data from the sequence into groups of length n.
     The last batch may be shorter than size.

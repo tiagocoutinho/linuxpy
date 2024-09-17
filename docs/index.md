@@ -13,11 +13,11 @@ hide:
 
 Human friendly interface to linux subsystems using python.
 
-Provides python access to several linux subsystems like V4L2, input and MIDI.
+Provides python access to several linux subsystems like V4L2, input, GPIO and MIDI.
 
 There is experimental, undocumented, incomplete and unstable access to USB.
 
-Need fine control over Webcams, MIDI devices, thermal sensors and cooling
+Need fine control over Webcams, GPIO, MIDI devices, thermal sensors and cooling
 devices, joysticks, gamepads, keyboards, mice or even the keyboard light on
 your laptop?
 
