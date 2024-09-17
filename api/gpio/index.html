@@ -12,13 +12,13 @@
         <meta name="author" content="Tiago Coutinho">
       
       
-        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/user_guide/led/">
+        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/api/gpio/">
       
       
-        <link rel="prev" href="../input/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../midi/">
+        <link rel="next" href="../input/">
       
       
       <link rel="icon" href="../../img/favicon.ico">
@@ -26,7 +26,7 @@
     
     
       
-        <title>💡 Led - LinuxPy</title>
+        <title>⚡ GPIO API - LinuxPy</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#led" class="md-skip">
+        <a href="#gpio-api" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              💡 Led
+              ⚡ GPIO API
             
           </span>
         </div>
@@ -211,13 +211,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../user_guide/" class="md-tabs__link">
           
   
     
@@ -233,11 +231,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../api/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
     
@@ -352,6 +352,205 @@
       
   
   
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../user_guide/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    User guide
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            User guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/gpio/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ⚡ GPIO
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/input/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    🕹️ Input
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/led/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    💡 Led
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/midi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    🎹 MIDI Sequencer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/thermal/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    🌡️ Thermal and cooling
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user_guide/video/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    🎥 Video
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -388,7 +587,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           
@@ -397,68 +596,26 @@
               
   
   <span class="md-ellipsis">
-    User guide
+    API Reference
   </span>
   
 
             </a>
             
               
-              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
-            User guide
+            API Reference
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../gpio/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    ⚡ GPIO
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../input/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    🕹️ Input
-  </span>
-  
-
-      </a>
-    </li>
-  
-
               
             
               
@@ -477,165 +634,18 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    ⚡ GPIO API
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  <span class="md-ellipsis">
-    💡 Led
-  </span>
-  
-
-      </a>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../midi/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    🎹 MIDI Sequencer
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../thermal/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    🌡️ Thermal and cooling
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../video/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    🎥 Video
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-      
-        
-          
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
-          
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../../api/" class="md-nav__link ">
-              
-  
-  <span class="md-ellipsis">
-    API Reference
-  </span>
-  
-
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            API Reference
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/gpio/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -644,6 +654,116 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;device
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" device">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.Request" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Request
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" Request">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.Request.__getitem__" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__getitem__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.Device" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Device
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" Device">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.Device.__getitem__" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__getitem__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.expand_from_list" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;expand_from_list
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.iter_gpio_files" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_gpio_files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.iter_devices" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_devices
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -656,7 +776,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/input/" class="md-nav__link">
+      <a href="../input/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -677,7 +797,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/led/" class="md-nav__link">
+      <a href="../led/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -698,7 +818,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/midi/" class="md-nav__link">
+      <a href="../midi/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -719,7 +839,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/thermal/" class="md-nav__link">
+      <a href="../thermal/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -740,7 +860,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/video/" class="md-nav__link">
+      <a href="../video/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -821,6 +941,104 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;device
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" device">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.Request" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Request
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" Request">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.Request.__getitem__" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__getitem__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.Device" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Device
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" Device">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.Device.__getitem__" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__getitem__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.expand_from_list" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;expand_from_list
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.iter_gpio_files" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_gpio_files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.iter_devices" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_devices
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -834,20 +1052,211 @@
                   
 
 
-<h1 id="led">💡 Led<a class="headerlink" href="#led" title="Permanent link">&para;</a></h1>
-<p>Human friendly interface to linux led handling.</p>
-<p>Without further ado:</p>
-<div class="termy" data-ty-macos>
-  <span data-ty="input" data-ty-prompt="$">python</span>
-  <span data-ty="input" data-ty-prompt=">>>">from linuxpy.led import find</span>
-  <span data-ty="input" data-ty-prompt=">>>">caps_lock = find(function="capslock")</span>
-  <span data-ty="input" data-ty-prompt=">>>">print(caps_lock.max_brightness)</span>
-  <span data-ty>1</span>
-  <span data-ty="input" data-ty-prompt=">>>">print(caps_lock.brightness)</span>
-  <span data-ty>0</span>
-  <span data-ty="input" data-ty-prompt=">>>">caps_lock.brightness = 1</span>
-  <span data-ty="input" data-ty-prompt=">>>">print(caps_lock.brightness)</span>
-  <span data-ty>1</span>
+<h1 id="gpio-api">⚡ GPIO API<a class="headerlink" href="#gpio-api" title="Permanent link">&para;</a></h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="linuxpy.gpio.device" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>linuxpy.gpio.device</code>
+
+
+<a href="#linuxpy.gpio.device" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Human friendly interface to linux GPIO subsystem.</p>
+<p>The heart of linuxpy GPIO library is the <a class="autorefs autorefs-internal" href="#linuxpy.gpio.device.Device"><code>Device</code></a>
+class.
+The recommended way is to use one of the find methods to create a Device object
+and use it within a context manager like:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.gpio.device</span> <span class="kn">import</span> <span class="n">find</span><span class="p">,</span> <span class="n">LineFlag</span>
+
+<span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
+    <span class="c1"># request lines 5 and 6</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">gpio</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">flags</span> <span class="o">=</span> <span class="n">LineFlag</span><span class="o">.</span><span class="n">ACTIVE_LOW</span>
+    <span class="k">with</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">lines</span><span class="p">[:])</span>
+</code></pre></div>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="linuxpy.gpio.device.Request" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class=" language-python"><span class="n">Request</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="n">LineFlag</span> <span class="o">=</span> <span class="n">LineFlag</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">blocking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></code>
+
+<a href="#linuxpy.gpio.device.Request" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="linuxpy.device.ReentrantOpen">ReentrantOpen</span></code></p>
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="linuxpy.gpio.device.Request.__getitem__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="fm">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">slice</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span></code>
+
+<a href="#linuxpy.gpio.device.Request.__getitem__" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get values</p>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="linuxpy.gpio.device.Device" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class=" language-python"><span class="n">Device</span><span class="p">(</span><span class="n">name_or_file</span><span class="p">,</span> <span class="n">read_write</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">io</span><span class="o">=</span><span class="n">IO</span><span class="p">)</span></code>
+
+<a href="#linuxpy.gpio.device.Device" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="linuxpy.device.BaseDevice">BaseDevice</span></code></p>
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="linuxpy.gpio.device.Device.__getitem__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="fm">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">slice</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Request</span></code>
+
+<a href="#linuxpy.gpio.device.Device.__getitem__" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Request line(s)</p>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="linuxpy.gpio.device.expand_from_list" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">expand_from_list</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">slice</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span> <span class="n">minimum</span><span class="p">,</span> <span class="n">maximum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></code>
+
+<a href="#linuxpy.gpio.device.expand_from_list" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Used internally in <strong>getitem</strong> to expand the given key</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="linuxpy.gpio.device.iter_gpio_files" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">iter_gpio_files</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span> <span class="o">=</span> <span class="s1">&#39;/dev&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span></code>
+
+<a href="#linuxpy.gpio.device.iter_gpio_files" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Returns an iterator over all GPIO chip files</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="linuxpy.gpio.device.iter_devices" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">iter_devices</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span> <span class="o">=</span> <span class="s1">&#39;/dev&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Device</span><span class="p">]</span></code>
+
+<a href="#linuxpy.gpio.device.iter_devices" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Returns an iterator over all GPIO chip devices</p>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
 </div>
 
 

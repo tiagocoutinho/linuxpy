@@ -12,13 +12,13 @@
         <meta name="author" content="Tiago Coutinho">
       
       
-        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/user_guide/led/">
+        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/user_guide/gpio/">
       
       
-        <link rel="prev" href="../input/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../midi/">
+        <link rel="next" href="../input/">
       
       
       <link rel="icon" href="../../img/favicon.ico">
@@ -26,7 +26,7 @@
     
     
       
-        <title>💡 Led - LinuxPy</title>
+        <title>⚡ GPIO - LinuxPy</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#led" class="md-skip">
+        <a href="#gpio" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              💡 Led
+              ⚡ GPIO
             
           </span>
         </div>
@@ -423,10 +423,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../gpio/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -435,6 +444,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -465,19 +475,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../led/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -486,7 +487,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -834,20 +834,16 @@
                   
 
 
-<h1 id="led">💡 Led<a class="headerlink" href="#led" title="Permanent link">&para;</a></h1>
-<p>Human friendly interface to linux led handling.</p>
+<h1 id="gpio">⚡ GPIO<a class="headerlink" href="#gpio" title="Permanent link">&para;</a></h1>
+<p>Human friendly interface to linux GPIO handling.</p>
 <p>Without further ado:</p>
 <div class="termy" data-ty-macos>
   <span data-ty="input" data-ty-prompt="$">python</span>
-  <span data-ty="input" data-ty-prompt=">>>">from linuxpy.led import find</span>
-  <span data-ty="input" data-ty-prompt=">>>">caps_lock = find(function="capslock")</span>
-  <span data-ty="input" data-ty-prompt=">>>">print(caps_lock.max_brightness)</span>
-  <span data-ty>1</span>
-  <span data-ty="input" data-ty-prompt=">>>">print(caps_lock.brightness)</span>
-  <span data-ty>0</span>
-  <span data-ty="input" data-ty-prompt=">>>">caps_lock.brightness = 1</span>
-  <span data-ty="input" data-ty-prompt=">>>">print(caps_lock.brightness)</span>
-  <span data-ty>1</span>
+  <span data-ty="input" data-ty-prompt=">>>">from linuxpy.gpio import find</span>
+  <span data-ty="input" data-ty-prompt=">>>">with find() as gpio:</span>
+  <span data-ty="input" data-ty-prompt="...">    with gpio[1, 2, 5:8] as lines:</span>
+  <span data-ty="input" data-ty-prompt=">>>">        print(lines[:])</span>
+  <span data-ty>{1: 0, 2: 1, 5: 0, 6: 1, 7:0}</span>
 </div>
 
 
