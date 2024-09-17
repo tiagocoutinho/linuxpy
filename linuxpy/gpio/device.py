@@ -181,12 +181,15 @@ def expand_from_list(key: Union[int, slice, tuple], minimum, maximum) -> list[in
 class _Request(ReentrantOpen):
     """Raw line request. Not to be used directly"""
 
-    def __init__(self, device, lines: Sequence[int], name: str = "", flags: LineFlag = LineFlag(0)):
+    def __init__(
+        self, device, lines: Sequence[int], name: str = "", flags: LineFlag = LineFlag(0), blocking: bool = False
+    ):
         assert len(lines) <= 64
         self.device = device
         self.name = name
         self.flags = flags
         self.lines = lines
+        self.blocking = blocking
         self.indexes = {line: index for index, line in enumerate(lines)}
         self.fd = None
         super().__init__()
@@ -201,7 +204,7 @@ class _Request(ReentrantOpen):
         self.fd = None
 
     def open(self):
-        self.fd = request_line(self.device, self.name, self.lines, self.flags).fd
+        self.fd = request_line(self.device, self.name, self.lines, self.flags, self.blocking).fd
 
     def get_values(self, lines: Collection[int]) -> dict[int, int]:
         mask = functools.reduce(operator.or_, (1 << self.indexes[line] for line in lines), 0)
@@ -219,12 +222,14 @@ class _Request(ReentrantOpen):
 
 
 class Request(ReentrantOpen):
-    def __init__(self, device, lines: Sequence[int], name: str = "", flags: LineFlag = LineFlag(0)):
+    def __init__(
+        self, device, lines: Sequence[int], name: str = "", flags: LineFlag = LineFlag(0), blocking: bool = False
+    ):
         self.lines = lines
         self.line_requests: list[_Request] = []
         self.line_map: dict[int, _Request] = {}
         for chunk in chunks(lines, 64):
-            line_request = _Request(device, chunk, name, flags)
+            line_request = _Request(device, chunk, name, flags, blocking)
             self.line_requests.append(line_request)
             for line in chunk:
                 self.line_map[line] = line_request

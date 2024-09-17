@@ -250,62 +250,72 @@ def _(chip=emulate_gpiochip):
 def _(chip=emulate_gpiochip):
     nb_lines = chip.nb_lines
     with Device(chip.filename) as device:
-        for request in (device[:], device.request(), Request(None, list(range(nb_lines)))):
-            assert len(request.lines) == nb_lines
-            assert request.min_line == 0
-            assert request.max_line == nb_lines - 1
-            assert len(request.line_requests) == ceil(nb_lines / 64)
+        for blocking in (True, False):
+            for request in (device[:], device.request(), Request(None, list(range(nb_lines)))):
+                request.blocking = blocking
+                assert len(request.lines) == nb_lines
+                assert request.min_line == 0
+                assert request.max_line == nb_lines - 1
+                assert len(request.line_requests) == ceil(nb_lines / 64)
 
-        for request in (device[1], device.request([1]), Request(None, [1])):
-            assert len(request.lines) == 1
-            assert len(request.line_requests) == 1
-            assert request.min_line == 1
-            assert request.max_line == 1
-            assert request.lines == [1]
+            for request in (device[1], device.request([1]), Request(None, [1])):
+                assert len(request.lines) == 1
+                assert len(request.line_requests) == 1
+                assert request.min_line == 1
+                assert request.max_line == 1
+                assert request.lines == [1]
 
-        lines = [1, 5, 10, 12]
-        for request in (device[1, 5, 10:14:2], device.request(lines), Request(None, lines)):
-            assert len(request.lines) == 4
-            assert len(request.line_requests) == 1
-            assert request.min_line == 1
-            assert request.max_line == 12
-            assert request.lines == lines
+            lines = [1, 5, 10, 12]
+            for request in (device[1, 5, 10:14:2], device.request(lines), Request(None, lines)):
+                assert len(request.lines) == 4
+                assert len(request.line_requests) == 1
+                assert request.min_line == 1
+                assert request.max_line == 12
+                assert request.lines == lines
 
-            # close the request to make sure it always succeeds
-            request.close()
+                # close the request to make sure it always succeeds
+                request.close()
 
 
 @test("get value")
 def _(chip=emulate_gpiochip):
+    def assert_request(request):
+        for values in (request[:], request.get_values()):
+            assert len(values) == 9
+            for i in range(1, 10):
+                expected = 1 if i % 2 else 0
+                assert values[i] == expected
+
+        lines = [2, 3, 5, 7]
+        for values in (request[2, 3:8:2], request.get_values(lines)):
+            assert len(values) == len(lines)
+            for i in lines:
+                expected = 1 if i % 2 else 0
+                assert values[i] == expected
+
+        expected = {2: 0, 1: 1}
+        assert request[1] == expected[1]
+        assert request[2] == expected[2]
+        assert request[1, 2] == expected
+        assert request[1:3] == expected
+
+        with raises(KeyError):
+            request[0]
+
+        with raises(KeyError):
+            request[20]
+
+        with raises(KeyError):
+            request[-1]
+
     with Device(chip.filename) as device:
         with device[1:10] as request:
-            for values in (request[:], request.get_values()):
-                assert len(values) == 9
-                for i in range(1, 10):
-                    expected = 1 if i % 2 else 0
-                    assert values[i] == expected
+            assert_request(request)
 
-            lines = [2, 3, 5, 7]
-            for values in (request[2, 3:8:2], request.get_values(lines)):
-                assert len(values) == len(lines)
-                for i in lines:
-                    expected = 1 if i % 2 else 0
-                    assert values[i] == expected
-
-            expected = {2: 0, 1: 1}
-            assert request[1] == expected[1]
-            assert request[2] == expected[2]
-            assert request[1, 2] == expected
-            assert request[1:3] == expected
-
-            with raises(KeyError):
-                request[0]
-
-            with raises(KeyError):
-                request[20]
-
-            with raises(KeyError):
-                request[-1]
+        for blocking in (False, True):
+            request = Request(device, list(range(1, 10)), name="Me", blocking=blocking)
+            with request:
+                assert_request(request)
 
 
 @test("set value")
