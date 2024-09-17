@@ -38,7 +38,7 @@ from linuxpy.device import BaseDevice, ReentrantOpen, iter_device_files
 from linuxpy.gpio import raw
 from linuxpy.gpio.raw import IOC
 from linuxpy.ioctl import ioctl
-from linuxpy.types import Collection, Iterable, PathLike, Sequence
+from linuxpy.types import Collection, Iterable, Optional, PathLike, Sequence, Union
 from linuxpy.util import astream, bit_indexes, chunks, make_find
 
 Info = collections.namedtuple("Info", "name label lines")
@@ -135,14 +135,14 @@ def event_selector(fds: Collection[int]) -> selectors.BaseSelector:
     return selector
 
 
-def fd_stream(fds: Collection[int], timeout: float | None = None):
+def fd_stream(fds: Collection[int], timeout: Optional[float] = None):
     selector = event_selector(fds)
     while True:
         for key, _ in selector.select(timeout):
             yield key.fileobj
 
 
-def event_stream(fds: Collection[int], timeout: float | None = None):
+def event_stream(fds: Collection[int], timeout: Optional[float] = None):
     for fd in fd_stream(fds, timeout):
         yield read_one_event(fd)
 
@@ -167,7 +167,7 @@ async def async_event_stream(fds: Collection[int]):
         await stream.aclose()
 
 
-def expand_from_list(key: int | slice | tuple, minimum, maximum) -> list[int]:
+def expand_from_list(key: Union[int, slice, tuple], minimum, maximum) -> list[int]:
     """Used internally in __getitem__ to expand the given key"""
     if isinstance(key, int):
         return [key]
@@ -208,7 +208,7 @@ class _Request(ReentrantOpen):
         values = get_values(self, mask)
         return {line: (values.bits >> self.indexes[line]) & 1 for line in lines}
 
-    def set_values(self, values: dict[int, int | bool]):
+    def set_values(self, values: dict[int, Union[int, bool]]):
         mask, bits = 0, 0
         for line, value in values.items():
             index = self.indexes[line]
@@ -219,7 +219,7 @@ class _Request(ReentrantOpen):
 
 
 class Request(ReentrantOpen):
-    def __init__(self, device, lines: list[int] | tuple[int], name: str = "", flags: LineFlag = LineFlag(0)):
+    def __init__(self, device, lines: Sequence[int], name: str = "", flags: LineFlag = LineFlag(0)):
         self.lines = lines
         self.line_requests: list[_Request] = []
         self.line_map: dict[int, _Request] = {}
@@ -230,14 +230,14 @@ class Request(ReentrantOpen):
                 self.line_map[line] = line_request
         super().__init__()
 
-    def __getitem__(self, key: int | tuple | slice) -> int | dict:
+    def __getitem__(self, key: Union[int, tuple, slice]) -> Union[int, dict]:
         """Get values"""
         if isinstance(key, int):
             return self.get_values((key,))[key]
         lines = expand_from_list(key, self.min_line, self.max_line + 1)
         return self.get_values(lines)
 
-    def __setitem__(self, key: int | tuple | slice, value: int | Sequence[int]):
+    def __setitem__(self, key: Union[int, tuple, slice], value: Union[int, Sequence[int]]):
         if isinstance(key, int):
             values = {key: value}
         else:
@@ -274,7 +274,7 @@ class Request(ReentrantOpen):
         for line_request in self.line_requests:
             line_request.open()
 
-    def get_values(self, lines: None | list[int] | tuple[int] = None):
+    def get_values(self, lines: Optional[Sequence[int]] = None):
         if lines is None:
             lines = self.lines
         request_lines = {}
@@ -286,7 +286,7 @@ class Request(ReentrantOpen):
             result.update(request_line.get_values(local_lines))
         return result
 
-    def set_values(self, values: dict[int, int | bool]):
+    def set_values(self, values: dict[int, Union[int, bool]]):
         request_lines = {}
         for line, value in values.items():
             request_line = self.line_map[line]
@@ -303,7 +303,7 @@ class Device(BaseDevice):
             self._len = get_chip_info(self).lines
         return self._len
 
-    def __getitem__(self, key: int | tuple | slice) -> Request:
+    def __getitem__(self, key: Union[int, tuple, slice]) -> Request:
         """Request line(s)"""
         lines = expand_from_list(key, 0, len(self))
         return self.request(lines)
@@ -311,9 +311,7 @@ class Device(BaseDevice):
     def get_info(self) -> Info:
         return get_info(self)
 
-    def request(
-        self, lines: list[int] | tuple[int] | None = None, name: str = "", flags: LineFlag = LineFlag(0)
-    ) -> Request:
+    def request(self, lines: Optional[Sequence[int]] = None, name: str = "", flags: LineFlag = LineFlag(0)) -> Request:
         if lines is None:
             lines = list(range(len(self)))
         return Request(self, lines, name, flags)

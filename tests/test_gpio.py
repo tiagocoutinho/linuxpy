@@ -368,7 +368,7 @@ async def _(chip=emulate_gpiochip):
             line_request = request.line_requests[0]
             chip.trigger_event(line_request, line, LineEventId.RISING_EDGE, 55, 22, 1_999_999_000)
             chip.trigger_event(line_request, line, LineEventId.FALLING_EDGE, 57, 23, 2_999_999_000)
-            stream = aiter(request)
+            stream = request.__aiter__()
             try:
                 i = 0
                 async for event in stream:
