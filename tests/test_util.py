@@ -43,6 +43,12 @@ def _():
     assert Version(4, 5, 7) > v
     assert (4, 5, 7) > v
     assert (4, 5, 5) < v
+    assert (4 << 16) + (5 << 8) + 5 < v
+
+    # Provoke __gt__ to be called. ward makes some weird changes to assert x > y and
+    # transforms it into x <= y!
+    r = Version(4, 5, 7) > v
+    assert r
 
     with raises(ValueError) as error:
         assert v > "hello"
