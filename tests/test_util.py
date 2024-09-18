@@ -6,7 +6,7 @@
 
 from ward import raises, test
 
-from linuxpy.util import Version, bcd_version, bcd_version_tuple, make_find
+from linuxpy.util import Version, bcd_version, bcd_version_tuple, make_find, to_fd
 
 for bcd, expected in [
     (0x3, (3,)),
@@ -79,3 +79,25 @@ def _():
     assert all(a is b for a, b in zip(devices, find(find_all=True)))
     assert all(a is b for a, b in zip(devices[1:2], find(find_all=True, i=1)))
     assert all(a is b for a, b in zip(devices[1:3], find(find_all=True, custom_match=lambda device: device.i > 0)))
+
+
+@test("to_fd")
+def _():
+    class F:
+        def __init__(self, fd):
+            self.fd = fd
+
+        def fileno(self):
+            return self.fd
+
+    assert to_fd(10) == 10
+    assert to_fd(F(55)) == 55
+
+    with raises(ValueError):
+        to_fd(-1)
+
+    with raises(ValueError):
+        to_fd(F(-2))
+
+    with raises(ValueError):
+        to_fd("bla")
