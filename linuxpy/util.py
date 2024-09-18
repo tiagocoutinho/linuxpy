@@ -9,9 +9,20 @@
 import asyncio
 import contextlib
 import random
+import selectors
 import string
 
-from .types import Callable, Iterable, Iterator, Optional, Sequence, Union
+from .types import (
+    AsyncIterator,
+    Callable,
+    Collection,
+    FileDescriptorLike,
+    Iterable,
+    Iterator,
+    Optional,
+    Sequence,
+    Union,
+)
 
 
 def iter_chunks(lst: Sequence, size: int) -> Iterable:
@@ -44,9 +55,34 @@ def bcd_version(bcd: int) -> str:
     return ".".join(str(i) for i in bcd_version_tuple(bcd))
 
 
+def to_fd(fd: FileDescriptorLike):
+    """Return a file descriptor from a file object.
+
+    Parameters:
+    fd -- file object or file descriptor
+
+    Returns:
+    corresponding file descriptor
+
+    Raises:
+    ValueError if the object is invalid
+    """
+    if not isinstance(fd, int):
+        try:
+            fd = int(fd.fileno())
+        except (AttributeError, TypeError, ValueError):
+            raise ValueError(f"Invalid file object: {fd!r}") from None
+    if fd < 0:
+        raise ValueError(f"Invalid file descriptor: {fd}")
+    return fd
+
+
 @contextlib.contextmanager
-def add_reader_asyncio(fd: int, callback: Callable[[], None], *args, loop: Optional[asyncio.AbstractEventLoop] = None):
+def add_reader_asyncio(
+    fd: FileDescriptorLike, callback: Callable[[]], *args, loop: Optional[asyncio.AbstractEventLoop] = None
+):
     """Add reader during the context and remove it after"""
+    fd = to_fd(fd)
     if loop is None:
         loop = asyncio.get_event_loop()
     loop.add_reader(fd, callback, *args)
@@ -56,7 +92,7 @@ def add_reader_asyncio(fd: int, callback: Callable[[], None], *args, loop: Optio
         loop.remove_reader(fd)
 
 
-async def astream(fd, read_func, max_buffer_size=10):
+async def astream(fd: FileDescriptorLike, read_func: Callable[[]], max_buffer_size=10) -> AsyncIterator:
     queue = asyncio.Queue(maxsize=max_buffer_size)
 
     def feed():
@@ -66,6 +102,68 @@ async def astream(fd, read_func, max_buffer_size=10):
         while True:
             event = await queue.get()
             yield event
+
+
+def Selector(fds: Collection[FileDescriptorLike], events=selectors.EVENT_READ) -> selectors.DefaultSelector:
+    """A selectors.DefaultSelector with given fds registered"""
+    selector = selectors.DefaultSelector()
+    for fd in fds:
+        selector.register(fd, events)
+    return selector
+
+
+SelectorEventMask = int
+SelectorEvent = tuple[selectors.SelectorKey, SelectorEventMask]
+
+
+def selector_stream(selector: selectors.BaseSelector, timeout: Optional[float] = None) -> Iterable[SelectorEvent]:
+    """A stream of selector read events"""
+    while True:
+        yield from selector.select(timeout)
+
+
+def selector_file_stream(
+    fds: Collection[FileDescriptorLike], timeout: Optional[float] = None
+) -> Iterable[SelectorEvent]:
+    """A stream of selector read events"""
+    yield from selector_stream(Selector(fds), timeout)
+
+
+def file_stream(fds: Collection[FileDescriptorLike], timeout: Optional[float] = None) -> Iterable[FileDescriptorLike]:
+    """A stream of read ready files"""
+    yield from (key.fileobj for key, _ in selector_file_stream(fds, timeout))
+
+
+async def async_selector_stream(selector: selectors.BaseSelector) -> AsyncIterator[SelectorEvent]:
+    """An asyncronous stream of selector read events"""
+    stream = astream(selector, selector.select)
+    try:
+        async for events in stream:
+            for event in events:
+                yield event
+    finally:
+        await stream.aclose()
+
+
+async def async_selector_file_stream(fds: Collection[FileDescriptorLike]):
+    """An asyncronous stream of selector read events"""
+    selector = Selector(fds)
+    stream = async_selector_stream(selector)
+    try:
+        async for event in stream:
+            yield event
+    finally:
+        await stream.aclose()
+
+
+async def async_file_stream(fds: Collection[FileDescriptorLike]):
+    """An asyncronous stream of read ready files"""
+    stream = async_selector_file_stream(fds)
+    try:
+        async for key, _ in stream:
+            yield key.fileobj
+    finally:
+        await stream.aclose()
 
 
 def make_find(iter_devices: Callable[[], Iterator], needs_open=True) -> Callable:

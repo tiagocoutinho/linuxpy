@@ -5,7 +5,6 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 import collections.abc
-import io
 import os
 import pathlib
 import typing
@@ -24,10 +23,25 @@ else:
 
     Buffer = typing_extensions.Buffer
 
-File = io.FileIO
+if hasattr(typing, "TypeAlias"):  # 3.11+
+    TypeAlias = typing.TypeAlias
+else:
+    import typing_extensions
+
+    TypeAlias = typing_extensions.TypeAlias
+
 Union = typing.Union
 Optional = typing.Optional
 PathLike = Union[str, pathlib.Path, os.PathLike]
+
+
+class HasFileno(typing.Protocol):
+    def fileno(self) -> int: ...
+
+
+FileDescriptor = int
+FileDescriptorLike = Union[FileDescriptor, HasFileno]
+
 
 Iterable = collections.abc.Iterable
 Iterator = collections.abc.Iterator
@@ -37,5 +51,6 @@ Generator = typing.Generator
 Callable = collections.abc.Callable
 Sequence = collections.abc.Sequence
 Collection = collections.abc.Collection
+
 
 T = typing.TypeVar("T")
