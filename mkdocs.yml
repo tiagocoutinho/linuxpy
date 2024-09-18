@@ -23,8 +23,9 @@ plugins:
             separate_signature: false
             show_source: false
             show_bases: true
+            show_inheritance_diagram: false
             show_root_heading: true
-            show_signature_annotations: true
+            show_signature_annotations: false
             show_submodules: true
             show_symbol_type_heading: true
             show_symbol_type_toc: true
