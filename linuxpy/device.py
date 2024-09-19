@@ -10,7 +10,7 @@ import os
 import pathlib
 from io import IOBase
 
-from linuxpy.types import Optional, PathLike
+from linuxpy.types import Iterable, Optional, PathLike
 
 from .io import IO
 
@@ -21,6 +21,8 @@ log = logging.getLogger(__name__)
 
 
 class ReentrantOpen(contextlib.AbstractContextManager):
+    """Base for a reusable, reentrant (but not thread safe) open/close context manager"""
+
     def __init__(self):
         self._context_level = 0
 
@@ -36,14 +38,16 @@ class ReentrantOpen(contextlib.AbstractContextManager):
             self.close()
 
     def open(self):
+        """Mandatory override for concrete sub-class"""
         raise NotImplementedError
 
     def close(self):
+        """Mandatory override for concrete sub-class"""
         raise NotImplementedError
 
 
 def device_number(path: PathLike) -> Optional[int]:
-    """Retrieves device"""
+    """Retrieves device number from a path like. Example: gives 12 for /dev/video12"""
     num = ""
     for c in str(path)[::-1]:
         if c.isdigit():
@@ -54,7 +58,7 @@ def device_number(path: PathLike) -> Optional[int]:
 
 
 def is_device_file(path: PathLike, read_write: bool = True):
-    """Check if path is a readable (and, optionally, writable) character device."""
+    """Check if path like is a readable (and, optionally, writable) character device."""
     path = pathlib.Path(path)
     if not path.is_char_device():
         return False
@@ -64,7 +68,8 @@ def is_device_file(path: PathLike, read_write: bool = True):
     return True
 
 
-def iter_device_files(path: PathLike = "/dev", pattern: str = "*"):
+def iter_device_files(path: PathLike = "/dev", pattern: str = "*") -> Iterable[pathlib.Path]:
+    """Iterable of accessible (read & write) char device files under the given path"""
     path = pathlib.Path(path)
     items = path.glob(pattern)
 
@@ -72,6 +77,8 @@ def iter_device_files(path: PathLike = "/dev", pattern: str = "*"):
 
 
 class BaseDevice(ReentrantOpen):
+    """Base class for a reentrant device"""
+
     PREFIX = None
 
     def __init__(self, name_or_file, read_write=True, io=IO):
@@ -107,9 +114,11 @@ class BaseDevice(ReentrantOpen):
 
     @classmethod
     def from_id(cls, did: int, **kwargs):
+        """Create a new Device from the given id"""
         return cls(f"{cls.PREFIX}{did}", **kwargs)
 
     def open(self):
+        """Open the device if not already open. Triggers _on_open after the underlying OS open has succeeded"""
         if not self._fobj:
             self.log.info("opening %s", self.filename)
             self._fobj = self.io.open(self.filename, self._read_write)
@@ -117,6 +126,7 @@ class BaseDevice(ReentrantOpen):
             self.log.info("opened %s", self.filename)
 
     def close(self):
+        """Closes the device if not already closed. Triggers _on_close before the underlying OS open has succeeded"""
         if not self.closed:
             self._on_close()
             self.log.info("closing %s", self.filename)
@@ -124,13 +134,19 @@ class BaseDevice(ReentrantOpen):
             self._fobj = None
             self.log.info("closed %s", self.filename)
 
-    def fileno(self):
+    def fileno(self) -> int:
+        """Return the underlying file descriptor (an integer) of the stream if it exists"""
         return self._fobj.fileno()
 
     @property
-    def closed(self):
+    def closed(self) -> bool:
+        """True if the stream is closed. Always succeeds"""
         return self._fobj is None or self._fobj.closed
 
     @property
-    def is_blocking(self):
+    def is_blocking(self) -> bool:
+        """
+        True if the underlying OS is opened in blocking mode.
+        Raises error if device is not opened.
+        """
         return os.get_blocking(self.fileno())

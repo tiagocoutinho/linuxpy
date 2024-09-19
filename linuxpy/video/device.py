@@ -1835,9 +1835,8 @@ class MemorySource(ReentrantOpen):
         with self.frame_reader:
             yield from self.frame_reader
 
-    async def __aiter__(self) -> AsyncIterator[Frame]:
-        async for frame in astream(self.device.fileno(), self.raw_read):
-            yield frame
+    def __aiter__(self) -> AsyncIterator[Frame]:
+        return astream(self.device.fileno(), self.raw_read)
 
     @property
     def device(self) -> Device:

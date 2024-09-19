@@ -23,6 +23,7 @@ plugins:
             separate_signature: false
             show_source: false
             show_bases: true
+            show_inheritance_diagram: false
             show_root_heading: true
             show_signature_annotations: true
             show_submodules: true
@@ -94,5 +95,8 @@ nav:
     - api/midi.md
     - api/thermal.md
     - api/video.md
+    - Internal:
+      - api/device.md
+      - api/util.md
   - Developers corner: develop.md
   - Coverage report: coverage.md

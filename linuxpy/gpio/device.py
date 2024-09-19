@@ -31,15 +31,14 @@ import functools
 import operator
 import os
 import pathlib
-import selectors
 
 from linuxpy.ctypes import sizeof
 from linuxpy.device import BaseDevice, ReentrantOpen, iter_device_files
 from linuxpy.gpio import raw
 from linuxpy.gpio.raw import IOC
 from linuxpy.ioctl import ioctl
-from linuxpy.types import Collection, Iterable, Optional, PathLike, Sequence, Union
-from linuxpy.util import astream, bit_indexes, chunks, make_find
+from linuxpy.types import AsyncIterator, Collection, FDLike, Iterable, Optional, PathLike, Sequence, Union
+from linuxpy.util import async_event_stream as async_events, bit_indexes, chunks, event_stream as events, make_find
 
 Info = collections.namedtuple("Info", "name label lines")
 ChipInfo = collections.namedtuple("ChipInfo", "name label lines")
@@ -58,13 +57,15 @@ class LineAttributes:
         self.debounce_period = 0
 
 
-def get_chip_info(fd) -> ChipInfo:
+def get_chip_info(fd: FDLike) -> ChipInfo:
+    """Reads the chip information"""
     info = raw.gpiochip_info()
     ioctl(fd, IOC.CHIPINFO, info)
     return ChipInfo(info.name.decode(), info.label.decode(), info.lines)
 
 
-def get_line_info(fd, line: int) -> LineInfo:
+def get_line_info(fd: FDLike, line: int) -> LineInfo:
+    """Reads the given line information"""
     info = raw.gpio_v2_line_info(offset=line)
     ioctl(fd, IOC.GET_LINEINFO, info)
     attributes = LineAttributes()
@@ -86,12 +87,16 @@ def get_line_info(fd, line: int) -> LineInfo:
     )
 
 
-def get_info(fd) -> Info:
+def get_info(fd: FDLike) -> Info:
+    """Reads the given line information"""
     chip = get_chip_info(fd)
     return Info(chip.name, chip.label, [get_line_info(fd, line) for line in range(chip.lines)])
 
 
-def request_line(fd, consumer_name: str, lines: Sequence[int], flags: LineFlag, blocking=False):
+def request_line(
+    fd: FDLike, consumer_name: str, lines: Sequence[int], flags: LineFlag, blocking=False
+) -> raw.gpio_v2_line_request:
+    """Make a request to reserve the given line(s)"""
     num_lines = len(lines)
     req = raw.gpio_v2_line_request()
     req.consumer = consumer_name.encode()
@@ -106,18 +111,34 @@ def request_line(fd, consumer_name: str, lines: Sequence[int], flags: LineFlag, 
     return req
 
 
-def get_values(req_fd, mask: int) -> raw.gpio_v2_line_values:
+def get_values(req_fd: FDLike, mask: int) -> raw.gpio_v2_line_values:
+    """
+    Read line values.
+    The mask is a bitmap identifying the lines, with each bit number corresponding to
+    the index of the line reserved in the given req_fd.
+    """
     result = raw.gpio_v2_line_values(mask=mask)
     return ioctl(req_fd, IOC.LINE_GET_VALUES, result)
 
 
-def set_values(req_fd, mask: int, bits: int) -> raw.gpio_v2_line_values:
+def set_values(req_fd: FDLike, mask: int, bits: int) -> raw.gpio_v2_line_values:
+    """
+    Set line values.
+
+    Parameters:
+        mask: The mask is a bitmap identifying the lines, with each bit number corresponding to
+              the index of the line reserved in the given req_fd.
+        bits: The bits is a bitmap containing the value of the lines, set to 1 for active and 0
+              for inactive.
+    """
     result = raw.gpio_v2_line_values(mask=mask, bits=bits)
     return ioctl(req_fd, IOC.LINE_SET_VALUES, result)
 
 
-def read_one_event(req_fd) -> LineEvent:
-    data = os.read(req_fd, sizeof(raw.gpio_v2_line_event))
+def read_one_event(req_fd: FDLike) -> LineEvent:
+    """Read one event from the given request file descriptor"""
+    fd = req_fd if isinstance(req_fd, int) else req_fd.fileno()
+    data = os.read(fd, sizeof(raw.gpio_v2_line_event))
     event = raw.gpio_v2_line_event.from_buffer_copy(data)
     return LineEvent(
         event.timestamp_ns * 1e-9,
@@ -128,43 +149,8 @@ def read_one_event(req_fd) -> LineEvent:
     )
 
 
-def event_selector(fds: Collection[int]) -> selectors.BaseSelector:
-    selector = selectors.DefaultSelector()
-    for fd in fds:
-        selector.register(fd, selectors.EVENT_READ)
-    return selector
-
-
-def fd_stream(fds: Collection[int], timeout: Optional[float] = None):
-    selector = event_selector(fds)
-    while True:
-        for key, _ in selector.select(timeout):
-            yield key.fileobj
-
-
-def event_stream(fds: Collection[int], timeout: Optional[float] = None):
-    for fd in fd_stream(fds, timeout):
-        yield read_one_event(fd)
-
-
-async def async_fd_stream(fds: Collection[int]):
-    selector = event_selector(fds)
-    stream = astream(selector.fileno(), selector.select)
-    try:
-        async for events in stream:
-            for key, _ in events:
-                yield key.fileobj
-    finally:
-        await stream.aclose()
-
-
-async def async_event_stream(fds: Collection[int]):
-    stream = async_fd_stream(fds)
-    try:
-        async for fd in stream:
-            yield read_one_event(fd)
-    finally:
-        await stream.aclose()
+event_stream = functools.partial(events, read=read_one_event)
+async_event_stream = functools.partial(async_events, read=read_one_event)
 
 
 def expand_from_list(key: Union[int, slice, tuple], minimum, maximum) -> list[int]:
@@ -182,7 +168,12 @@ class _Request(ReentrantOpen):
     """Raw line request. Not to be used directly"""
 
     def __init__(
-        self, device, lines: Sequence[int], name: str = "", flags: LineFlag = LineFlag(0), blocking: bool = False
+        self,
+        device: "Device",
+        lines: Sequence[int],
+        name: str = "",
+        flags: LineFlag = LineFlag(0),
+        blocking: bool = False,
     ):
         assert len(lines) <= 64
         self.device = device
@@ -250,25 +241,25 @@ class Request(ReentrantOpen):
             values = dict(zip(lines, value))
         self.set_values(values)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterable[LineEvent]:
         return event_stream(self.filenos())
 
-    def __aiter__(self):
+    def __aiter__(self) -> AsyncIterator[LineEvent]:
         return async_event_stream(self.filenos())
 
     @property
-    def min_line(self):
+    def min_line(self) -> int:
         if not hasattr(self, "_min_line"):
             self._min_line = min(self.lines)
         return self._min_line
 
     @property
-    def max_line(self):
+    def max_line(self) -> int:
         if not hasattr(self, "_max_line"):
             self._max_line = max(self.lines)
         return self._max_line
 
-    def filenos(self):
+    def filenos(self) -> list[int]:
         return [request.fd for request in self.line_requests]
 
     def close(self):
@@ -279,7 +270,7 @@ class Request(ReentrantOpen):
         for line_request in self.line_requests:
             line_request.open()
 
-    def get_values(self, lines: Optional[Sequence[int]] = None):
+    def get_values(self, lines: Optional[Sequence[int]] = None) -> dict[int, int]:
         if lines is None:
             lines = self.lines
         request_lines = {}
