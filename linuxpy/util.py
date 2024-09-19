@@ -16,7 +16,7 @@ from .types import (
     AsyncIterator,
     Callable,
     Collection,
-    FileDescriptorLike,
+    FDLike,
     Iterable,
     Iterator,
     Optional,
@@ -56,7 +56,7 @@ def bcd_version(bcd: int) -> str:
     return ".".join(str(i) for i in bcd_version_tuple(bcd))
 
 
-def to_fd(fd: FileDescriptorLike):
+def to_fd(fd: FDLike):
     """Return a file descriptor from a file object.
 
     Parameters:
@@ -79,9 +79,7 @@ def to_fd(fd: FileDescriptorLike):
 
 
 @contextlib.contextmanager
-def add_reader_asyncio(
-    fd: FileDescriptorLike, callback: Callable, *args, loop: Optional[asyncio.AbstractEventLoop] = None
-):
+def add_reader_asyncio(fd: FDLike, callback: Callable, *args, loop: Optional[asyncio.AbstractEventLoop] = None):
     """Add reader during the context and remove it after"""
     fd = to_fd(fd)
     if loop is None:
@@ -93,7 +91,7 @@ def add_reader_asyncio(
         loop.remove_reader(fd)
 
 
-async def astream(fd: FileDescriptorLike, read_func: Callable, max_buffer_size=10) -> AsyncIterator:
+async def astream(fd: FDLike, read_func: Callable, max_buffer_size=10) -> AsyncIterator:
     queue = asyncio.Queue(maxsize=max_buffer_size)
 
     def feed():
@@ -105,7 +103,7 @@ async def astream(fd: FileDescriptorLike, read_func: Callable, max_buffer_size=1
             yield event
 
 
-def Selector(fds: Collection[FileDescriptorLike], events=selectors.EVENT_READ) -> selectors.DefaultSelector:
+def Selector(fds: Collection[FDLike], events=selectors.EVENT_READ) -> selectors.DefaultSelector:
     """A selectors.DefaultSelector with given fds registered"""
     selector = selectors.DefaultSelector()
     for fd in fds:
@@ -123,26 +121,24 @@ def selector_stream(selector: selectors.BaseSelector, timeout: Optional[float] =
         yield from selector.select(timeout)
 
 
-def selector_file_stream(
-    fds: Collection[FileDescriptorLike], timeout: Optional[float] = None
-) -> Iterable[SelectorEvent]:
-    """A stream of selector read events"""
+def selector_file_stream(fds: Collection[FDLike], timeout: Optional[float] = None) -> Iterable[SelectorEvent]:
+    """An inifinte stream of selector read events"""
     yield from selector_stream(Selector(fds), timeout)
 
 
-def file_stream(fds: Collection[FileDescriptorLike], timeout: Optional[float] = None) -> Iterable[FileDescriptorLike]:
-    """A stream of read ready files"""
+def file_stream(fds: Collection[FDLike], timeout: Optional[float] = None) -> Iterable[FDLike]:
+    """An infinite stream of read ready file descriptors"""
     yield from (key.fileobj for key, _ in selector_file_stream(fds, timeout))
 
 
-def event_stream(
-    fds: Collection[FileDescriptorLike], read: Callable[[FileDescriptorLike], T], timeout: Optional[float] = None
-) -> Iterable[T]:
+def event_stream(fds: Collection[FDLike], read: Callable[[FDLike], T], timeout: Optional[float] = None) -> Iterable[T]:
+    """An infinite stream of events. The given read callable is called for each file
+    that is reported as ready"""
     yield from (read(fd) for fd in file_stream(fds))
 
 
 async def async_selector_stream(selector: selectors.BaseSelector) -> AsyncIterator[SelectorEvent]:
-    """An asyncronous stream of selector read events"""
+    """An asyncronous infinite stream of selector read events"""
     stream = astream(selector, selector.select)
     try:
         async for events in stream:
@@ -152,8 +148,8 @@ async def async_selector_stream(selector: selectors.BaseSelector) -> AsyncIterat
         await stream.aclose()
 
 
-async def async_selector_file_stream(fds: Collection[FileDescriptorLike]) -> AsyncIterator[SelectorEvent]:
-    """An asyncronous stream of selector read events"""
+async def async_selector_file_stream(fds: Collection[FDLike]) -> AsyncIterator[SelectorEvent]:
+    """An asyncronous infinite stream of selector read events"""
     selector = Selector(fds)
     stream = async_selector_stream(selector)
     try:
@@ -163,8 +159,8 @@ async def async_selector_file_stream(fds: Collection[FileDescriptorLike]) -> Asy
         await stream.aclose()
 
 
-async def async_file_stream(fds: Collection[FileDescriptorLike]) -> AsyncIterator[FileDescriptorLike]:
-    """An asyncronous stream of read ready files"""
+async def async_file_stream(fds: Collection[FDLike]) -> AsyncIterator[FDLike]:
+    """An asyncronous infinite stream of read ready files"""
     stream = async_selector_file_stream(fds)
     try:
         async for key, _ in stream:
@@ -173,8 +169,9 @@ async def async_file_stream(fds: Collection[FileDescriptorLike]) -> AsyncIterato
         await stream.aclose()
 
 
-async def async_event_stream(fds: Collection[FileDescriptorLike], read: Callable[[FileDescriptorLike], T]):
-    """An asyncronous stream of events"""
+async def async_event_stream(fds: Collection[FDLike], read: Callable[[FDLike], T]):
+    """An asyncronous stream of events. The given read callable is called for each file
+    that is reported as ready"""
     stream = async_file_stream(fds)
     try:
         async for fd in stream:
@@ -313,7 +310,12 @@ class Version:
         return self.major, self.minor, self.patch
 
 
-def bit_indexes(number):
+def bit_indexes(number: int) -> list[int]:
+    """
+    Return the list of indexes that have an active bit on the number.
+
+    Example bit_indexes(74) gives [1, 3, 6] (74 == 0b1001010)
+    """
     return [i for i, c in enumerate(bin(number)[:1:-1]) if c == "1"]
 
 
@@ -321,6 +323,11 @@ ascii_alphanumeric = string.ascii_letters + string.digits
 
 
 def random_name(min_length=32, max_length=32):
+    """
+    Generates a random name like text of ascii characters (letters or digits).
+
+    The first character is always a letter
+    """
     if not (k := random.randint(min_length, max_length)):
         return ""
     first = random.choice(string.ascii_letters)

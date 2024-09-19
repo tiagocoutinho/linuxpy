@@ -37,7 +37,7 @@ from linuxpy.device import BaseDevice, ReentrantOpen, iter_device_files
 from linuxpy.gpio import raw
 from linuxpy.gpio.raw import IOC
 from linuxpy.ioctl import ioctl
-from linuxpy.types import AsyncIterator, Collection, FileDescriptorLike, Iterable, Optional, PathLike, Sequence, Union
+from linuxpy.types import AsyncIterator, Collection, FDLike, Iterable, Optional, PathLike, Sequence, Union
 from linuxpy.util import async_event_stream as async_events, bit_indexes, chunks, event_stream as events, make_find
 
 Info = collections.namedtuple("Info", "name label lines")
@@ -57,14 +57,14 @@ class LineAttributes:
         self.debounce_period = 0
 
 
-def get_chip_info(fd: FileDescriptorLike) -> ChipInfo:
+def get_chip_info(fd: FDLike) -> ChipInfo:
     """Reads the chip information"""
     info = raw.gpiochip_info()
     ioctl(fd, IOC.CHIPINFO, info)
     return ChipInfo(info.name.decode(), info.label.decode(), info.lines)
 
 
-def get_line_info(fd: FileDescriptorLike, line: int) -> LineInfo:
+def get_line_info(fd: FDLike, line: int) -> LineInfo:
     """Reads the given line information"""
     info = raw.gpio_v2_line_info(offset=line)
     ioctl(fd, IOC.GET_LINEINFO, info)
@@ -87,14 +87,14 @@ def get_line_info(fd: FileDescriptorLike, line: int) -> LineInfo:
     )
 
 
-def get_info(fd: FileDescriptorLike) -> Info:
+def get_info(fd: FDLike) -> Info:
     """Reads the given line information"""
     chip = get_chip_info(fd)
     return Info(chip.name, chip.label, [get_line_info(fd, line) for line in range(chip.lines)])
 
 
 def request_line(
-    fd: FileDescriptorLike, consumer_name: str, lines: Sequence[int], flags: LineFlag, blocking=False
+    fd: FDLike, consumer_name: str, lines: Sequence[int], flags: LineFlag, blocking=False
 ) -> raw.gpio_v2_line_request:
     """Make a request to reserve the given line(s)"""
     num_lines = len(lines)
@@ -111,7 +111,7 @@ def request_line(
     return req
 
 
-def get_values(req_fd: FileDescriptorLike, mask: int) -> raw.gpio_v2_line_values:
+def get_values(req_fd: FDLike, mask: int) -> raw.gpio_v2_line_values:
     """
     Read line values.
     The mask is a bitmap identifying the lines, with each bit number corresponding to
@@ -121,7 +121,7 @@ def get_values(req_fd: FileDescriptorLike, mask: int) -> raw.gpio_v2_line_values
     return ioctl(req_fd, IOC.LINE_GET_VALUES, result)
 
 
-def set_values(req_fd: FileDescriptorLike, mask: int, bits: int) -> raw.gpio_v2_line_values:
+def set_values(req_fd: FDLike, mask: int, bits: int) -> raw.gpio_v2_line_values:
     """
     Set line values.
 
@@ -135,11 +135,8 @@ def set_values(req_fd: FileDescriptorLike, mask: int, bits: int) -> raw.gpio_v2_
     return ioctl(req_fd, IOC.LINE_SET_VALUES, result)
 
 
-def read_one_event(req_fd: FileDescriptorLike) -> LineEvent:
-    """
-    Read one event from the given request file descriptor
-    If
-    """
+def read_one_event(req_fd: FDLike) -> LineEvent:
+    """Read one event from the given request file descriptor"""
     fd = req_fd if isinstance(req_fd, int) else req_fd.fileno()
     data = os.read(fd, sizeof(raw.gpio_v2_line_event))
     event = raw.gpio_v2_line_event.from_buffer_copy(data)
@@ -171,7 +168,12 @@ class _Request(ReentrantOpen):
     """Raw line request. Not to be used directly"""
 
     def __init__(
-        self, device, lines: Sequence[int], name: str = "", flags: LineFlag = LineFlag(0), blocking: bool = False
+        self,
+        device: "Device",
+        lines: Sequence[int],
+        name: str = "",
+        flags: LineFlag = LineFlag(0),
+        blocking: bool = False,
     ):
         assert len(lines) <= 64
         self.device = device

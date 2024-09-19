@@ -39,8 +39,8 @@ class HasFileno(typing.Protocol):
     def fileno(self) -> int: ...
 
 
-FileDescriptor = int
-FileDescriptorLike = Union[FileDescriptor, HasFileno]
+FD = int
+FDLike = Union[FD, HasFileno]
 
 
 Iterable = collections.abc.Iterable
