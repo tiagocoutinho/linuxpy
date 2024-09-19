@@ -5,11 +5,12 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 import asyncio
+import os
 import pathlib
 import uuid
 from contextlib import contextmanager
 
-from ward import each, fixture, raises, skip, test
+from ward import fixture, raises, skip, test
 
 from linuxpy.input.device import (
     Device,
@@ -33,12 +34,13 @@ def wait_for_new_device():
 
     async def wait():
         while True:
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(0.01)
             new = set(base_dir.glob("event*")) - before
             if new:
                 assert len(new) == 1
                 filename = new.pop()
-                return Device(filename)
+                if os.access(filename, os.W_OK):
+                    return Device(filename)
 
     yield wait
 
@@ -53,7 +55,7 @@ async def gamepad():
             yield device, simulator
 
 
-@fixture
+@fixture()
 async def mouse():
     name = uuid.uuid4().hex
     with wait_for_new_device() as device_finder:
@@ -64,13 +66,26 @@ async def mouse():
 
 
 @skip(when=not is_uinput_available(), reason="uinput is not available")
-@test("find device")
-async def _(find=each(find_gamepad, find_mouse), uclass=each(UGamepad, UMouse)):
+@test("find gamepad")
+async def _():
     name = uuid.uuid4().hex
     with wait_for_new_device() as device_finder:
-        with uclass(name=name) as simulator:
+        with UGamepad(name=name) as simulator:
             await device_finder()
-            device = find(name=name)
+            device = find_gamepad(name=name)
+            caps = device.capabilities
+            del caps[EventType.SYN]
+            assert device.name == simulator.name
+            assert caps == simulator.CAPABILITIES
+
+
+@test("find mouse")
+async def _():
+    name = uuid.uuid4().hex
+    with wait_for_new_device() as device_finder:
+        with UMouse(name=name) as simulator:
+            await device_finder()
+            device = find_mouse(name=name)
             caps = device.capabilities
             del caps[EventType.SYN]
             assert device.name == simulator.name
