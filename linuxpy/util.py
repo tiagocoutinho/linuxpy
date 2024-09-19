@@ -21,6 +21,7 @@ from .types import (
     Iterator,
     Optional,
     Sequence,
+    T,
     Union,
 )
 
@@ -134,6 +135,12 @@ def file_stream(fds: Collection[FileDescriptorLike], timeout: Optional[float] = 
     yield from (key.fileobj for key, _ in selector_file_stream(fds, timeout))
 
 
+def event_stream(
+    fds: Collection[FileDescriptorLike], read: Callable[[FileDescriptorLike], T], timeout: Optional[float] = None
+) -> Iterable[T]:
+    yield from (read(fd) for fd in file_stream(fds))
+
+
 async def async_selector_stream(selector: selectors.BaseSelector) -> AsyncIterator[SelectorEvent]:
     """An asyncronous stream of selector read events"""
     stream = astream(selector, selector.select)
@@ -145,7 +152,7 @@ async def async_selector_stream(selector: selectors.BaseSelector) -> AsyncIterat
         await stream.aclose()
 
 
-async def async_selector_file_stream(fds: Collection[FileDescriptorLike]):
+async def async_selector_file_stream(fds: Collection[FileDescriptorLike]) -> AsyncIterator[SelectorEvent]:
     """An asyncronous stream of selector read events"""
     selector = Selector(fds)
     stream = async_selector_stream(selector)
@@ -156,12 +163,22 @@ async def async_selector_file_stream(fds: Collection[FileDescriptorLike]):
         await stream.aclose()
 
 
-async def async_file_stream(fds: Collection[FileDescriptorLike]):
+async def async_file_stream(fds: Collection[FileDescriptorLike]) -> AsyncIterator[FileDescriptorLike]:
     """An asyncronous stream of read ready files"""
     stream = async_selector_file_stream(fds)
     try:
         async for key, _ in stream:
             yield key.fileobj
+    finally:
+        await stream.aclose()
+
+
+async def async_event_stream(fds: Collection[FileDescriptorLike], read: Callable[[FileDescriptorLike], T]):
+    """An asyncronous stream of events"""
+    stream = async_file_stream(fds)
+    try:
+        async for fd in stream:
+            yield read(fd)
     finally:
         await stream.aclose()
 

@@ -38,7 +38,7 @@ from linuxpy.gpio import raw
 from linuxpy.gpio.raw import IOC
 from linuxpy.ioctl import ioctl
 from linuxpy.types import AsyncIterator, Collection, FileDescriptorLike, Iterable, Optional, PathLike, Sequence, Union
-from linuxpy.util import async_file_stream, bit_indexes, chunks, file_stream, make_find
+from linuxpy.util import async_event_stream as async_events, bit_indexes, chunks, event_stream as events, make_find
 
 Info = collections.namedtuple("Info", "name label lines")
 ChipInfo = collections.namedtuple("ChipInfo", "name label lines")
@@ -152,18 +152,8 @@ def read_one_event(req_fd: FileDescriptorLike) -> LineEvent:
     )
 
 
-def event_stream(fds: Collection[FileDescriptorLike], timeout: Optional[float] = None) -> Iterable[LineEvent]:
-    for fd in file_stream(fds, timeout):
-        yield read_one_event(fd)
-
-
-async def async_event_stream(fds: Collection[FileDescriptorLike]) -> AsyncIterator[LineEvent]:
-    stream = async_file_stream(fds)
-    try:
-        async for fd in stream:
-            yield read_one_event(fd)
-    finally:
-        await stream.aclose()
+event_stream = functools.partial(events, read=read_one_event)
+async_event_stream = functools.partial(async_events, read=read_one_event)
 
 
 def expand_from_list(key: Union[int, slice, tuple], minimum, maximum) -> list[int]:
