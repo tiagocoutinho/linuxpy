@@ -25,7 +25,7 @@ plugins:
             show_bases: true
             show_inheritance_diagram: false
             show_root_heading: true
-            show_signature_annotations: false
+            show_signature_annotations: true
             show_submodules: true
             show_symbol_type_heading: true
             show_symbol_type_toc: true
@@ -95,5 +95,8 @@ nav:
     - api/midi.md
     - api/thermal.md
     - api/video.md
+    - Internal:
+      - api/device.md
+      - api/util.md
   - Developers corner: develop.md
   - Coverage report: coverage.md
