@@ -79,7 +79,7 @@ def to_fd(fd: FileDescriptorLike):
 
 @contextlib.contextmanager
 def add_reader_asyncio(
-    fd: FileDescriptorLike, callback: Callable[[]], *args, loop: Optional[asyncio.AbstractEventLoop] = None
+    fd: FileDescriptorLike, callback: Callable, *args, loop: Optional[asyncio.AbstractEventLoop] = None
 ):
     """Add reader during the context and remove it after"""
     fd = to_fd(fd)
@@ -92,7 +92,7 @@ def add_reader_asyncio(
         loop.remove_reader(fd)
 
 
-async def astream(fd: FileDescriptorLike, read_func: Callable[[]], max_buffer_size=10) -> AsyncIterator:
+async def astream(fd: FileDescriptorLike, read_func: Callable, max_buffer_size=10) -> AsyncIterator:
     queue = asyncio.Queue(maxsize=max_buffer_size)
 
     def feed():
