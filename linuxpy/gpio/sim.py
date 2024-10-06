@@ -28,11 +28,12 @@ from pathlib import Path
 
 from linuxpy.configfs import CONFIGFS_PATH
 from linuxpy.gpio.device import get_chip_info
+from linuxpy.types import Optional, Union
 
-GPIOSIM_PATH: None | Path = None if CONFIGFS_PATH is None else CONFIGFS_PATH / "gpio-sim"
+GPIOSIM_PATH: Optional[Path] = None if CONFIGFS_PATH is None else CONFIGFS_PATH / "gpio-sim"
 
 
-def find_gpio_sim_file(num_lines=None) -> Path | None:
+def find_gpio_sim_file(num_lines=None) -> Optional[Path]:
     """Best effort to find
 
     Returns:
@@ -77,7 +78,7 @@ class GPIOSim:
 
     def destroy(self): ...
 
-    def live(self, value: bool | int):
+    def live(self, value: Union[bool, int]):
         self.write("live", 1 if value else 0)
 
     def enable(self):

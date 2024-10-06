@@ -6,6 +6,8 @@
 
 from pathlib import Path
 
+from linuxpy.types import Optional
+
 from .mounts import configfs
 
-CONFIGFS_PATH: Path | None = configfs()
+CONFIGFS_PATH: Optional[Path] = configfs()

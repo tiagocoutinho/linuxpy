@@ -7,7 +7,7 @@
 import functools
 from pathlib import Path
 
-from .types import Generator, NamedTuple
+from .types import Generator, NamedTuple, Optional
 
 PROC_PATH = Path("/proc")
 MOUNTS_PATH: Path = PROC_PATH / "mounts"
@@ -32,7 +32,7 @@ def cache() -> tuple[MountInfo, ...]:
 
 
 @functools.cache
-def get_mount_point(dev_type, fs_type=None) -> Path | None:
+def get_mount_point(dev_type, fs_type=None) -> Optional[Path]:
     if fs_type is None:
         fs_type = dev_type
     for _dev_type, mount_point, _fs_type, *_ in cache():
@@ -40,9 +40,9 @@ def get_mount_point(dev_type, fs_type=None) -> Path | None:
             return Path(mount_point)
 
 
-def sysfs() -> Path | None:
+def sysfs() -> Optional[Path]:
     return get_mount_point("sysfs")
 
 
-def configfs() -> Path | None:
+def configfs() -> Optional[Path]:
     return get_mount_point("configfs")
