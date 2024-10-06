@@ -12,13 +12,14 @@ import pathlib
 from linuxpy.types import Callable
 from linuxpy.util import make_find
 
+from . import mounts
 from .magic import Magic
 from .statfs import get_fs_type
 from .types import Iterable, Optional
 
 MAGIC = Magic.SYSFS
 
-MOUNT_PATH = pathlib.Path("/sys")
+MOUNT_PATH = mounts.sysfs()
 DEVICE_PATH = MOUNT_PATH / "bus/usb/devices"
 CLASS_PATH = MOUNT_PATH / "class"
 THERMAL_PATH = CLASS_PATH / "thermal"
