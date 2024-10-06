@@ -10,8 +10,11 @@ else:
     CONFIGFS_PATH = pathlib.Path("/sys/kernel/config/gpio-sim")
 
 
-def Line(name, direction="input"):
-    return {"name": name, "hog": {"name": f"{name}-hog", "direction": direction}}
+def Line(name, direction=None):
+    result = {"name": name}
+    if direction:
+        result["hog"] = {"name": f"{name}-hog", "direction": direction}
+    return result
 
 
 DEFAULT = {
@@ -21,10 +24,11 @@ DEFAULT = {
             "lines": [
                 Line("L-I0"),
                 Line("L-I1"),
+                Line("L-I2", "input"),
                 Line("L-O0", "output-high"),
                 Line("L-O1", "output-low"),
             ]
-        }
+        },
     ],
 }
 
@@ -49,13 +53,17 @@ if path.exists():
     for directory, _, _ in path.walk(top_down=False):
         directory.rmdir()
 
+
 mkdir(path)
 for bank_id, bank in enumerate(cfg["banks"]):
     lines = bank["lines"]
 
     bpath = path / f"gpio-bank{bank_id}"
     mkdir(bpath)
-    (bpath / "num_lines").write_text(str(len(lines)))
+    blabel = bank.get("name", f"gpio-sim-bank{bank_id}")
+
+    (bpath / "num_lines").write_text("16")
+    (bpath / "label").write_text(blabel)
     for line_id, line in enumerate(lines):
         lpath = bpath / f"line{line_id}"
         mkdir(lpath)
