@@ -131,6 +131,7 @@ def set_values(req_fd: FDLike, mask: int, bits: int) -> raw.gpio_v2_line_values:
         bits: The bits is a bitmap containing the value of the lines, set to 1 for active and 0
               for inactive.
     """
+    print(mask, bits)
     result = raw.gpio_v2_line_values(mask=mask, bits=bits)
     return ioctl(req_fd, IOC.LINE_SET_VALUES, result)
 
@@ -182,27 +183,27 @@ class _Request(ReentrantOpen):
         self.lines = lines
         self.blocking = blocking
         self.indexes = {line: index for index, line in enumerate(lines)}
-        self.fd = None
+        self.fd = -1
         super().__init__()
 
-    def fileno(self):
+    def fileno(self) -> int:
         return self.fd
 
     def close(self):
-        if self.fd is None:
+        if self.fd < 0:
             return
         os.close(self.fd)
-        self.fd = None
+        self.fd = -1
 
     def open(self):
-        self.fd = request_line(self.device, self.name, self.lines, self.flags, self.blocking).fd
+        self.fd: int = request_line(self.device, self.name, self.lines, self.flags, self.blocking).fd
 
     def get_values(self, lines: Collection[int]) -> dict[int, int]:
         mask = functools.reduce(operator.or_, (1 << self.indexes[line] for line in lines), 0)
         values = get_values(self, mask)
         return {line: (values.bits >> self.indexes[line]) & 1 for line in lines}
 
-    def set_values(self, values: dict[int, Union[int, bool]]):
+    def set_values(self, values: dict[int, Union[int, bool]]) -> raw.gpio_v2_line_values:
         mask, bits = 0, 0
         for line, value in values.items():
             index = self.indexes[line]
@@ -234,7 +235,7 @@ class Request(ReentrantOpen):
         return self.get_values(lines)
 
     def __setitem__(self, key: Union[int, tuple, slice], value: Union[int, Sequence[int]]):
-        if isinstance(key, int):
+        if isinstance(key, int) and isinstance(value, int):
             values = {key: value}
         else:
             lines = expand_from_list(key, self.min_line, self.max_line + 1)
