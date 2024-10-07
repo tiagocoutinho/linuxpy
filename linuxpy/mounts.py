@@ -21,7 +21,8 @@ class MountInfo(NamedTuple):
 
 
 def gen_read() -> Generator[MountInfo, None, None]:
-    for line in MOUNTS_PATH.open():
+    data = MOUNTS_PATH.read_text()
+    for line in data.splitlines():
         dev_type, mount_point, fs_type, attrs, *_ = line.split()
         yield MountInfo(dev_type, mount_point, fs_type, attrs.split(","))
 
