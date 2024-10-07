@@ -7,9 +7,9 @@
 import functools
 from pathlib import Path
 
+from .proc import PROC_PATH
 from .types import Generator, NamedTuple, Optional
 
-PROC_PATH = Path("/proc")
 MOUNTS_PATH: Path = PROC_PATH / "mounts"
 
 
