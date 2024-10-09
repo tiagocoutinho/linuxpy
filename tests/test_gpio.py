@@ -16,8 +16,9 @@ from unittest import mock
 from ward import each, fixture, raises, test
 
 from linuxpy.device import device_number
-from linuxpy.gpio import raw
+from linuxpy.gpio import device, raw
 from linuxpy.gpio.device import Device, LineEventId, Request, expand_from_list, iter_devices, iter_gpio_files
+from linuxpy.gpio.sim import find_gpio_sim_file
 from linuxpy.util import bit_indexes
 
 
@@ -189,9 +190,9 @@ def _():
     with gpio_files(["/dev/gpiochip33", "/dev/gpiochip55"]) as expected_files:
         devices = list(iter_devices())
         assert len(devices) == 2
-        for device in devices:
-            assert isinstance(device, Device)
-        assert {device.filename for device in devices} == {Path(filename) for filename in expected_files}
+        for dev in devices:
+            assert isinstance(dev, Device)
+        assert {dev.filename for dev in devices} == {Path(filename) for filename in expected_files}
 
 
 @test("device creation")
@@ -398,3 +399,138 @@ async def _(chip=emulate_gpiochip):
                         break
             finally:
                 await stream.aclose()
+
+
+sim_file = find_gpio_sim_file()
+
+
+@test("sim read chip info")
+def _():
+    with sim_file.open() as chip:
+        info = device.get_chip_info(chip)
+        assert "gpio-sim" in info.label
+        assert info.lines == 16
+
+
+@test("sim device open")
+def _():
+    device = Device(sim_file)
+    assert device.closed
+    device.open()
+    assert not device.closed
+    assert device.fileno() > 0
+
+
+@test("sim get info")
+def _():
+    device = Device(sim_file)
+
+    with raises(AttributeError):
+        device.get_info()
+
+    with device:
+        info = device.get_info()
+    assert info.name == sim_file.stem
+    assert "gpio-sim" in info.label
+    assert len(info.lines) == 16
+    l0 = info.lines[0]
+    assert l0.flags == raw.LineFlag.INPUT
+    assert l0.name == "L-I0"
+    assert l0.consumer == ""
+    assert l0.attributes.flags == 0
+    assert isclose(l0.attributes.debounce_period, 0)
+
+    l1 = info.lines[1]
+    assert l1.flags == raw.LineFlag.INPUT
+    assert l1.name == "L-I1"
+    assert l1.consumer == ""
+    assert l1.attributes.flags == 0
+
+    l2 = info.lines[2]
+    assert l2.flags == raw.LineFlag.USED | raw.LineFlag.INPUT
+    assert l2.name == "L-I2"
+    assert l2.consumer == "L-I2-hog"
+    assert l2.attributes.flags == 0
+
+    l3 = info.lines[3]
+    assert l3.flags == raw.LineFlag.USED | raw.LineFlag.OUTPUT
+    assert l3.name == "L-O0"
+    assert l3.consumer == "L-O0-hog"
+    assert l3.attributes.flags == 0
+
+    l4 = info.lines[4]
+    assert l4.flags == raw.LineFlag.USED | raw.LineFlag.OUTPUT
+    assert l4.name == "L-O1"
+    assert l4.consumer == "L-O1-hog"
+    assert l4.attributes.flags == 0
+
+
+@test("sim make request")
+def _():
+    nb_lines = 16
+    with Device(sim_file) as device:
+        for blocking in (True, False):
+            for request in (device[:], device.request(), Request(None, list(range(nb_lines)))):
+                request.blocking = blocking
+                assert len(request.lines) == nb_lines
+                assert request.min_line == 0
+                assert request.max_line == nb_lines - 1
+                assert len(request.line_requests) == ceil(nb_lines / 64)
+
+            for request in (device[1], device.request([1]), Request(None, [1])):
+                assert len(request.lines) == 1
+                assert len(request.line_requests) == 1
+                assert request.min_line == 1
+                assert request.max_line == 1
+                assert request.lines == [1]
+
+            lines = [1, 5, 10, 12]
+            for request in (device[1, 5, 10:14:2], device.request(lines), Request(None, lines)):
+                assert len(request.lines) == 4
+                assert len(request.line_requests) == 1
+                assert request.min_line == 1
+                assert request.max_line == 12
+                assert request.lines == lines
+
+                # close the request to make sure it always succeeds
+                request.close()
+
+
+@test("sim get value")
+def _():
+    def assert_request(request):
+        for values in (request[:], request.get_values()):
+            assert len(values) == 10
+            for i in range(6, 16):
+                expected = 0
+                assert values[i] == expected
+
+        lines = [6, 9, 11, 13]
+        for values in (request[6, 9:14:2], request.get_values(lines)):
+            assert len(values) == len(lines)
+            for i in lines:
+                expected = 0
+                assert values[i] == expected
+
+        assert request[6] == 0
+        assert request[9] == 0
+        assert request[6, 9] == {6: 0, 9: 0}
+        assert request[9:14:2] == {9: 0, 11: 0, 13: 0}
+
+        with raises(KeyError):
+            request[0]
+
+        with raises(KeyError):
+            request[20]
+
+        with raises(KeyError):
+            request[-1]
+
+    with Device(sim_file) as device:
+        with device[6:16] as request:
+            assert_request(request)
+
+        for blocking in (False, True):
+            request = Request(device, list(range(6, 16)), name="Me", blocking=blocking)
+            with request:
+                assert_request(request)

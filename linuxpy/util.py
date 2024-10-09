@@ -8,6 +8,7 @@
 
 import asyncio
 import contextlib
+import functools
 import random
 import selectors
 import string
@@ -76,6 +77,28 @@ def to_fd(fd: FDLike):
     if fd < 0:
         raise ValueError(f"Invalid file descriptor: {fd}")
     return fd
+
+
+int16 = functools.partial(int, base=16)
+
+
+def try_numeric(text: str):
+    """
+    Try to translate given text into int, int base 16 or float.
+    Returns the orig and return the original text if it fails.
+
+    Args:
+        text (str): text to be translated
+
+    Returns:
+        int, float or str: The converted text
+    """
+    for func in (int, int16, float):
+        try:
+            return func(text)
+        except ValueError:
+            pass
+    return text
 
 
 @contextlib.contextmanager

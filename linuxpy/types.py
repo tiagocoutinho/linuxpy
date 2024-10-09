@@ -51,6 +51,6 @@ Generator = typing.Generator
 Callable = collections.abc.Callable
 Sequence = collections.abc.Sequence
 Collection = collections.abc.Collection
-
+NamedTuple = typing.NamedTuple
 
 T = typing.TypeVar("T")
