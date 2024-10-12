@@ -293,6 +293,12 @@ class Request(ReentrantOpen):
 
 
 class Device(BaseDevice):
+    """
+    A device represents a connection to the underlying gpio chip
+
+
+    """
+
     PREFIX = "/dev/gpiochip"
 
     def __len__(self) -> int:
@@ -306,6 +312,13 @@ class Device(BaseDevice):
         return self.request(lines)
 
     def get_info(self) -> Info:
+        """
+        Reads all information available including chip info and detailed information
+        about each chip line information
+
+        Returns:
+            Info: The full chip information
+        """
         return get_info(self)
 
     def request(self, lines: Optional[Sequence[int]] = None, name: str = "", flags: LineFlag = LineFlag(0)) -> Request:
