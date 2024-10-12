@@ -11,6 +11,9 @@ hide:
 [![License][license]]()
 [![CI][CI]](https://github.com/tiagocoutinho/linuxpy/actions/workflows/ci.yml)
 
+[![Source][source]](https://github.com/tiagocoutinho/linuxpy/)
+[![Documentation][documentation]](https://tiagocoutinho.github.io/linuxpy/)
+
 Human friendly interface to linux subsystems using python.
 
 Provides python access to several linux subsystems like V4L2, input, GPIO and MIDI.
@@ -101,3 +104,5 @@ with providing a common API on different platforms.
 [pypi-status]: https://img.shields.io/pypi/status/linuxpy.svg
 [license]: https://img.shields.io/pypi/l/linuxpy.svg
 [CI]: https://github.com/tiagocoutinho/linuxpy/actions/workflows/ci.yml/badge.svg
+[documentation]: https://img.shields.io/badge/Documentation-blue?color=grey&logo=mdBook
+[source]: https://img.shields.io/badge/Source-grey?logo=git
