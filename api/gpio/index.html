@@ -725,6 +725,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.Device.get_info" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_info
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1159,6 +1168,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.Device.get_info" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_info
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1383,6 +1401,8 @@ and use it within a context manager like:</p>
               Bases: <code><a class="autorefs autorefs-internal" title="linuxpy.device.BaseDevice" href="../device/#linuxpy.device.BaseDevice">BaseDevice</a></code></p>
 
 
+      <p>A device represents a connection to the underlying gpio chip</p>
+
 
 
 
@@ -1408,6 +1428,52 @@ and use it within a context manager like:</p>
     <div class="doc doc-contents ">
 
       <p>Request line(s)</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="linuxpy.gpio.device.Device.get_info" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="n">get_info</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Info</span></code>
+
+<a href="#linuxpy.gpio.device.Device.get_info" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Reads all information available including chip info and detailed information
+about each chip line information</p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">RETURNS</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>Info</code>
+            </td>
+            <td class="doc-returns-details">
+              <div class="doc-md-description">
+                <p>The full chip information</p>
+              </div>
+                <p>
+                  <span class="doc-returns-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="linuxpy.gpio.device.Info">Info</span></code>
+                  </span>
+                </p>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
     </div>
 
