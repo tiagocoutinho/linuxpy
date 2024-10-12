@@ -437,6 +437,7 @@ def _():
     assert l0.flags == raw.LineFlag.INPUT
     assert l0.name == "L-I0"
     assert l0.consumer == ""
+    assert l0.offset == 0
     assert l0.attributes.flags == 0
     assert isclose(l0.attributes.debounce_period, 0)
 
@@ -444,24 +445,28 @@ def _():
     assert l1.flags == raw.LineFlag.INPUT
     assert l1.name == "L-I1"
     assert l1.consumer == ""
+    assert l1.offset == 1
     assert l1.attributes.flags == 0
 
     l2 = info.lines[2]
     assert l2.flags == raw.LineFlag.USED | raw.LineFlag.INPUT
     assert l2.name == "L-I2"
     assert l2.consumer == "L-I2-hog"
+    assert l2.offset == 2
     assert l2.attributes.flags == 0
 
     l3 = info.lines[3]
     assert l3.flags == raw.LineFlag.USED | raw.LineFlag.OUTPUT
     assert l3.name == "L-O0"
     assert l3.consumer == "L-O0-hog"
+    assert l3.offset == 3
     assert l3.attributes.flags == 0
 
     l4 = info.lines[4]
     assert l4.flags == raw.LineFlag.USED | raw.LineFlag.OUTPUT
     assert l4.name == "L-O1"
     assert l4.consumer == "L-O1-hog"
+    assert l4.offset == 4
     assert l4.attributes.flags == 0
 
 
@@ -494,6 +499,14 @@ def _():
 
                 # close the request to make sure it always succeeds
                 request.close()
+
+            with device.request([5, 12], "myself", raw.LineFlag.OUTPUT) as request:
+                info = device.get_info()
+                l5 = info.lines[5]
+                assert l5.flags == raw.LineFlag.USED | raw.LineFlag.OUTPUT
+                assert l5.name == "L-O2"
+                assert l5.consumer == "myself"
+                assert l5.attributes.flags == 0
 
 
 @test("sim get value")

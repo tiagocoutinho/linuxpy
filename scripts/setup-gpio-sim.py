@@ -27,6 +27,7 @@ DEFAULT = {
                 Line("L-I2", "input"),
                 Line("L-O0", "output-high"),
                 Line("L-O1", "output-low"),
+                Line("L-O2"),
             ]
         },
     ],
