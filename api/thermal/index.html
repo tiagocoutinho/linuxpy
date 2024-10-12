@@ -574,6 +574,8 @@
       
         
       
+        
+      
     
     
       
@@ -880,6 +882,100 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Internal
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            Internal
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../device/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Device
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../util/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Utilities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1079,7 +1175,7 @@
 
     <div class="doc doc-contents first">
 
-        <p>Human friendly interface to linux thermal subsystem.</p>
+      <p>Human friendly interface to linux thermal subsystem.</p>
 <p>The heart of linuxpy thermal library are the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.ThermalZone"><code>ThermalZone</code></a>
 and <a class="autorefs autorefs-internal" href="#linuxpy.thermal.CoolingDevice"><code>CoolingDevice</code></a> classes.</p>
 <p>Probably the most common way to create a thermal device is through
@@ -1114,7 +1210,7 @@ the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>fin
               Bases: <code><span title="linuxpy.sysfs.Device">Device</span></code></p>
 
 
-        <p>Thermal sensor</p>
+      <p>Thermal sensor</p>
 
 
 <table>
@@ -1274,7 +1370,7 @@ the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>fin
     <div class="doc doc-contents ">
 
 
-        <p>Trip point associated with the thermal zone</p>
+      <p>Trip point associated with the thermal zone</p>
 
 
 <table>
@@ -1352,7 +1448,7 @@ the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>fin
               Bases: <code><span title="linuxpy.sysfs.Device">Device</span></code></p>
 
 
-        <p>Cooling device (fan, processor, ...)</p>
+      <p>Cooling device (fan, processor, ...)</p>
 
 
 <table>
@@ -1413,7 +1509,7 @@ the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>fin
 
     <div class="doc doc-contents ">
 
-        <p>Returns an iterator over all thermal zone paths</p>
+      <p>Returns an iterator over all thermal zone paths</p>
 
     </div>
 
@@ -1430,7 +1526,7 @@ the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>fin
 
     <div class="doc doc-contents ">
 
-        <p>Returns an iterator over all thermal zone devices</p>
+      <p>Returns an iterator over all thermal zone devices</p>
 
     </div>
 
@@ -1447,7 +1543,7 @@ the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>fin
 
     <div class="doc doc-contents ">
 
-        <p>Returns an iterator over all cooling device paths</p>
+      <p>Returns an iterator over all cooling device paths</p>
 
     </div>
 
@@ -1464,7 +1560,7 @@ the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>fin
 
     <div class="doc doc-contents ">
 
-        <p>Returns an iterator over all cooling devices</p>
+      <p>Returns an iterator over all cooling devices</p>
 
     </div>
 
@@ -1481,7 +1577,7 @@ the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>fin
 
     <div class="doc doc-contents ">
 
-        <p>Returns an iterator over all thermal and cooling devices</p>
+      <p>Returns an iterator over all thermal and cooling devices</p>
 
     </div>
 
@@ -1498,7 +1594,7 @@ the <a class="autorefs autorefs-internal" href="#linuxpy.thermal.find"><code>fin
 
     <div class="doc doc-contents ">
 
-        <p>If find_all is False:</p>
+      <p>If find_all is False:</p>
 <p>Find a device follwing the criteria matched by custom_match and kwargs.
 If no device is found matching the criteria it returns None.
 Default is to return a random first device.</p>

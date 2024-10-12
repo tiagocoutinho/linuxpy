@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Coverage report</title>
-    <link rel="icon" sizes="32x32" href="favicon_32_cb_58284776.png">
-    <link rel="stylesheet" href="style_cb_8e611ae1.css" type="text/css">
-    <script src="coverage_html_cb_6fb7b396.js" defer></script>
+    <link rel="icon" sizes="32x32" href="favicon_32.png">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script type="text/javascript" src="coverage_html.js" defer></script>
 </head>
 <body class="indexfile">
 <header>
@@ -16,13 +16,13 @@
         <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
             <label for="help_panel_state">
-                <img id="keyboard_icon" src="keybd_closed_cb_ce680311.png" alt="Show/hide keyboard shortcuts">
+                <img id="keyboard_icon" src="keybd_closed.png" alt="Show/hide keyboard shortcuts" />
             </label>
             <div id="help_panel">
                 <p class="legend">Shortcuts on this page</p>
                 <div class="keyhelp">
                     <p>
-                        <kbd>f</kbd>
+                        <kbd>n</kbd>
                         <kbd>s</kbd>
                         <kbd>m</kbd>
                         <kbd>x</kbd>
@@ -43,20 +43,11 @@
             </div>
         </aside>
         <form id="filter_container">
-            <input id="filter" type="text" value="" placeholder="filter...">
-            <div>
-                <input id="hide100" type="checkbox" >
-                <label for="hide100">hide covered</label>
-            </div>
+            <input id="filter" type="text" value="" placeholder="filter..." />
         </form>
-        <h2>
-                <a class="button current">Files</a>
-                <a class="button" href="function_index.html">Functions</a>
-                <a class="button" href="class_index.html">Classes</a>
-        </h2>
         <p class="text">
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.6.1">coverage.py v7.6.1</a>,
-            created at 2024-09-17 09:35 +0200
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.2.7">coverage.py v7.2.7</a>,
+            created at 2024-10-12 08:02 +0200
         </p>
     </div>
 </header>
@@ -64,18 +55,18 @@
     <table class="index" data-sortable>
         <thead>
             <tr class="tablehead" title="Click to sort">
-                <th id="file" class="name left" aria-sort="none" data-shortcut="f">File<span class="arrows"></span></th>
-                <th id="statements" aria-sort="none" data-default-sort-order="descending" data-shortcut="s">statements<span class="arrows"></span></th>
-                <th id="missing" aria-sort="none" data-default-sort-order="descending" data-shortcut="m">missing<span class="arrows"></span></th>
-                <th id="excluded" aria-sort="none" data-default-sort-order="descending" data-shortcut="x">excluded<span class="arrows"></span></th>
-                <th id="branches" aria-sort="none" data-default-sort-order="descending" data-shortcut="b">branches<span class="arrows"></span></th>
-                <th id="partial" aria-sort="none" data-default-sort-order="descending" data-shortcut="p">partial<span class="arrows"></span></th>
-                <th id="coverage" class="right" aria-sort="none" data-shortcut="c">coverage<span class="arrows"></span></th>
+                <th class="name left" aria-sort="none" data-shortcut="n">Module</th>
+                <th aria-sort="none" data-default-sort-order="descending" data-shortcut="s">statements</th>
+                <th aria-sort="none" data-default-sort-order="descending" data-shortcut="m">missing</th>
+                <th aria-sort="none" data-default-sort-order="descending" data-shortcut="x">excluded</th>
+                <th aria-sort="none" data-default-sort-order="descending" data-shortcut="b">branches</th>
+                <th aria-sort="none" data-default-sort-order="descending" data-shortcut="p">partial</th>
+                <th class="right" aria-sort="none" data-shortcut="c">coverage</th>
             </tr>
         </thead>
         <tbody>
-            <tr class="region">
-                <td class="name left"><a href="z_46277a319a8b8728___init___py.html">linuxpy/__init__.py</a></td>
+            <tr class="file">
+                <td class="name left"><a href="d_46277a319a8b8728___init___py.html">linuxpy/__init__.py</a></td>
                 <td>1</td>
                 <td>0</td>
                 <td>0</td>
@@ -83,8 +74,17 @@
                 <td>0</td>
                 <td class="right" data-ratio="1 1">100%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_46277a319a8b8728_constants_py.html">linuxpy/constants.py</a></td>
+            <tr class="file">
+                <td class="name left"><a href="d_46277a319a8b8728_configfs_py.html">linuxpy/configfs.py</a></td>
+                <td>4</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="4 4">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="d_46277a319a8b8728_constants_py.html">linuxpy/constants.py</a></td>
                 <td>2</td>
                 <td>0</td>
                 <td>0</td>
@@ -92,8 +92,8 @@
                 <td>0</td>
                 <td class="right" data-ratio="2 2">100%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_46277a319a8b8728_ctypes_py.html">linuxpy/ctypes.py</a></td>
+            <tr class="file">
+                <td class="name left"><a href="d_46277a319a8b8728_ctypes_py.html">linuxpy/ctypes.py</a></td>
                 <td>70</td>
                 <td>11</td>
                 <td>0</td>
@@ -101,26 +101,35 @@
                 <td>1</td>
                 <td class="right" data-ratio="62 82">76%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_46277a319a8b8728_device_py.html">linuxpy/device.py</a></td>
+            <tr class="file">
+                <td class="name left"><a href="d_46277a319a8b8728_device_py.html">linuxpy/device.py</a></td>
                 <td>93</td>
                 <td>4</td>
                 <td>0</td>
-                <td>20</td>
+                <td>26</td>
                 <td>3</td>
-                <td class="right" data-ratio="106 113">94%</td>
+                <td class="right" data-ratio="112 119">94%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_6e93c5a12165e676_device_py.html">linuxpy/gpio/device.py</a></td>
-                <td>217</td>
+            <tr class="file">
+                <td class="name left"><a href="d_6e93c5a12165e676___init___py.html">linuxpy/gpio/__init__.py</a></td>
                 <td>0</td>
                 <td>0</td>
-                <td>74</td>
-                <td>5</td>
-                <td class="right" data-ratio="286 291">98%</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_6e93c5a12165e676_raw_py.html">linuxpy/gpio/raw.py</a></td>
+            <tr class="file">
+                <td class="name left"><a href="d_6e93c5a12165e676_device_py.html">linuxpy/gpio/device.py</a></td>
+                <td>195</td>
+                <td>0</td>
+                <td>0</td>
+                <td>58</td>
+                <td>1</td>
+                <td class="right" data-ratio="252 253">99%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="d_6e93c5a12165e676_raw_py.html">linuxpy/gpio/raw.py</a></td>
                 <td>96</td>
                 <td>0</td>
                 <td>0</td>
@@ -128,17 +137,35 @@
                 <td>0</td>
                 <td class="right" data-ratio="96 96">100%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_756d96e38b1c5b79_device_py.html">linuxpy/input/device.py</a></td>
-                <td>403</td>
+            <tr class="file">
+                <td class="name left"><a href="d_6e93c5a12165e676_sim_py.html">linuxpy/gpio/sim.py</a></td>
+                <td>13</td>
+                <td>0</td>
+                <td>0</td>
+                <td>9</td>
+                <td>2</td>
+                <td class="right" data-ratio="20 22">91%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="d_756d96e38b1c5b79___init___py.html">linuxpy/input/__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="d_756d96e38b1c5b79_device_py.html">linuxpy/input/device.py</a></td>
+                <td>406</td>
                 <td>66</td>
                 <td>0</td>
-                <td>74</td>
+                <td>100</td>
                 <td>14</td>
-                <td class="right" data-ratio="377 477">79%</td>
+                <td class="right" data-ratio="410 506">81%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_756d96e38b1c5b79_raw_py.html">linuxpy/input/raw.py</a></td>
+            <tr class="file">
+                <td class="name left"><a href="d_756d96e38b1c5b79_raw_py.html">linuxpy/input/raw.py</a></td>
                 <td>937</td>
                 <td>0</td>
                 <td>0</td>
@@ -146,35 +173,35 @@
                 <td>0</td>
                 <td class="right" data-ratio="937 937">100%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_46277a319a8b8728_io_py.html">linuxpy/io.py</a></td>
+            <tr class="file">
+                <td class="name left"><a href="d_46277a319a8b8728_io_py.html">linuxpy/io.py</a></td>
                 <td>33</td>
                 <td>0</td>
                 <td>0</td>
-                <td>10</td>
+                <td>14</td>
                 <td>2</td>
-                <td class="right" data-ratio="41 43">95%</td>
+                <td class="right" data-ratio="45 47">96%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_46277a319a8b8728_ioctl_py.html">linuxpy/ioctl.py</a></td>
-                <td>37</td>
+            <tr class="file">
+                <td class="name left"><a href="d_46277a319a8b8728_ioctl_py.html">linuxpy/ioctl.py</a></td>
+                <td>38</td>
                 <td>2</td>
                 <td>0</td>
                 <td>8</td>
                 <td>2</td>
-                <td class="right" data-ratio="41 45">91%</td>
+                <td class="right" data-ratio="42 46">91%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_46277a319a8b8728_led_py.html">linuxpy/led.py</a></td>
-                <td>108</td>
+            <tr class="file">
+                <td class="name left"><a href="d_46277a319a8b8728_led_py.html">linuxpy/led.py</a></td>
+                <td>110</td>
                 <td>8</td>
                 <td>0</td>
-                <td>23</td>
+                <td>39</td>
                 <td>3</td>
-                <td class="right" data-ratio="115 131">88%</td>
+                <td class="right" data-ratio="131 149">88%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_46277a319a8b8728_magic_py.html">linuxpy/magic.py</a></td>
+            <tr class="file">
+                <td class="name left"><a href="d_46277a319a8b8728_magic_py.html">linuxpy/magic.py</a></td>
                 <td>85</td>
                 <td>0</td>
                 <td>0</td>
@@ -182,17 +209,26 @@
                 <td>0</td>
                 <td class="right" data-ratio="85 85">100%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_1d2efd12aca92e25_device_py.html">linuxpy/midi/device.py</a></td>
-                <td>503</td>
+            <tr class="file">
+                <td class="name left"><a href="d_1d2efd12aca92e25___init___py.html">linuxpy/midi/__init__.py</a></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="d_1d2efd12aca92e25_device_py.html">linuxpy/midi/device.py</a></td>
+                <td>506</td>
                 <td>57</td>
                 <td>0</td>
-                <td>96</td>
+                <td>184</td>
                 <td>14</td>
-                <td class="right" data-ratio="516 599">86%</td>
+                <td class="right" data-ratio="607 690">88%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_1d2efd12aca92e25_raw_py.html">linuxpy/midi/raw.py</a></td>
+            <tr class="file">
+                <td class="name left"><a href="d_1d2efd12aca92e25_raw_py.html">linuxpy/midi/raw.py</a></td>
                 <td>277</td>
                 <td>0</td>
                 <td>0</td>
@@ -200,53 +236,80 @@
                 <td>0</td>
                 <td class="right" data-ratio="277 277">100%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_46277a319a8b8728_statfs_py.html">linuxpy/statfs.py</a></td>
+            <tr class="file">
+                <td class="name left"><a href="d_46277a319a8b8728_mounts_py.html">linuxpy/mounts.py</a></td>
+                <td>29</td>
+                <td>0</td>
+                <td>0</td>
+                <td>12</td>
+                <td>0</td>
+                <td class="right" data-ratio="41 41">100%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="d_46277a319a8b8728_proc_py.html">linuxpy/proc.py</a></td>
+                <td>34</td>
+                <td>0</td>
+                <td>0</td>
+                <td>14</td>
+                <td>1</td>
+                <td class="right" data-ratio="47 48">98%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="d_46277a319a8b8728_statfs_py.html">linuxpy/statfs.py</a></td>
                 <td>36</td>
                 <td>7</td>
                 <td>0</td>
-                <td>2</td>
+                <td>4</td>
                 <td>0</td>
-                <td class="right" data-ratio="29 38">76%</td>
+                <td class="right" data-ratio="31 40">78%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_46277a319a8b8728_sysfs_py.html">linuxpy/sysfs.py</a></td>
-                <td>96</td>
+            <tr class="file">
+                <td class="name left"><a href="d_46277a319a8b8728_sysfs_py.html">linuxpy/sysfs.py</a></td>
+                <td>97</td>
                 <td>29</td>
                 <td>0</td>
-                <td>18</td>
+                <td>36</td>
                 <td>2</td>
-                <td class="right" data-ratio="71 114">62%</td>
+                <td class="right" data-ratio="88 133">66%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_46277a319a8b8728_types_py.html">linuxpy/types.py</a></td>
-                <td>26</td>
-                <td>2</td>
+            <tr class="file">
+                <td class="name left"><a href="d_46277a319a8b8728_types_py.html">linuxpy/types.py</a></td>
+                <td>33</td>
+                <td>6</td>
                 <td>0</td>
+                <td>8</td>
                 <td>4</td>
+                <td class="right" data-ratio="31 41">76%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="d_46277a319a8b8728_util_py.html">linuxpy/util.py</a></td>
+                <td>167</td>
                 <td>2</td>
-                <td class="right" data-ratio="26 30">87%</td>
-            </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_46277a319a8b8728_util_py.html">linuxpy/util.py</a></td>
-                <td>103</td>
-                <td>3</td>
                 <td>0</td>
-                <td>30</td>
-                <td>2</td>
-                <td class="right" data-ratio="128 133">96%</td>
+                <td>64</td>
+                <td>9</td>
+                <td class="right" data-ratio="220 231">95%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_5c536d3fd10eb2d2_device_py.html">linuxpy/video/device.py</a></td>
-                <td>1492</td>
-                <td>239</td>
+            <tr class="file">
+                <td class="name left"><a href="d_5c536d3fd10eb2d2___init___py.html">linuxpy/video/__init__.py</a></td>
                 <td>0</td>
-                <td>324</td>
-                <td>43</td>
-                <td class="right" data-ratio="1474 1816">81%</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="right" data-ratio="0 0">100%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_5c536d3fd10eb2d2_raw_py.html">linuxpy/video/raw.py</a></td>
+            <tr class="file">
+                <td class="name left"><a href="d_5c536d3fd10eb2d2_device_py.html">linuxpy/video/device.py</a></td>
+                <td>1497</td>
+                <td>241</td>
+                <td>0</td>
+                <td>416</td>
+                <td>42</td>
+                <td class="right" data-ratio="1570 1913">82%</td>
+            </tr>
+            <tr class="file">
+                <td class="name left"><a href="d_5c536d3fd10eb2d2_raw_py.html">linuxpy/video/raw.py</a></td>
                 <td>2320</td>
                 <td>0</td>
                 <td>0</td>
@@ -254,8 +317,8 @@
                 <td>0</td>
                 <td class="right" data-ratio="2320 2320">100%</td>
             </tr>
-            <tr class="region">
-                <td class="name left"><a href="z_5c536d3fd10eb2d2_util_py.html">linuxpy/video/util.py</a></td>
+            <tr class="file">
+                <td class="name left"><a href="d_5c536d3fd10eb2d2_util_py.html">linuxpy/video/util.py</a></td>
                 <td>4</td>
                 <td>0</td>
                 <td>0</td>
@@ -267,33 +330,32 @@
         <tfoot>
             <tr class="total">
                 <td class="name left">Total</td>
-                <td>6939</td>
-                <td>428</td>
+                <td>7083</td>
+                <td>433</td>
                 <td>0</td>
-                <td>695</td>
-                <td>93</td>
-                <td class="right" data-ratio="6994 7634">92%</td>
+                <td>1004</td>
+                <td>100</td>
+                <td class="right" data-ratio="7435 8087">92%</td>
             </tr>
         </tfoot>
     </table>
     <p id="no_rows">
         No items found using the specified filter.
     </p>
-        <p>4 empty files skipped.</p>
 </main>
 <footer>
     <div class="content">
         <p>
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.6.1">coverage.py v7.6.1</a>,
-            created at 2024-09-17 09:35 +0200
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.2.7">coverage.py v7.2.7</a>,
+            created at 2024-10-12 08:02 +0200
         </p>
     </div>
     <aside class="hidden">
-        <a id="prevFileLink" class="nav" href="z_5c536d3fd10eb2d2_util_py.html"></a>
-        <a id="nextFileLink" class="nav" href="z_46277a319a8b8728___init___py.html"></a>
-        <button type="button" class="button_prev_file" data-shortcut="["></button>
-        <button type="button" class="button_next_file" data-shortcut="]"></button>
-        <button type="button" class="button_show_hide_help" data-shortcut="?"></button>
+        <a id="prevFileLink" class="nav" href="d_5c536d3fd10eb2d2_util_py.html"/>
+        <a id="nextFileLink" class="nav" href="d_46277a319a8b8728___init___py.html"/>
+        <button type="button" class="button_prev_file" data-shortcut="["/>
+        <button type="button" class="button_next_file" data-shortcut="]"/>
+        <button type="button" class="button_show_hide_help" data-shortcut="?"/>
     </aside>
 </footer>
 </body>

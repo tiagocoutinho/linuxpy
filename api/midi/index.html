@@ -574,6 +574,8 @@
       
         
       
+        
+      
     
     
       
@@ -1282,6 +1284,100 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Internal
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            Internal
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../device/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Device
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../util/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Utilities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1883,7 +1979,7 @@
 
     <div class="doc doc-contents first">
 
-        <p>Human friendly interface to linux MIDI subsystem.</p>
+      <p>Human friendly interface to linux MIDI subsystem.</p>
 <p>The heart of linuxpy MIDI library is the <a class="autorefs autorefs-internal" href="#linuxpy.midi.device.Sequencer"><code>Sequencer</code></a>
 class.
 Usually you need only one instance of Sequencer for your application.
@@ -1938,7 +2034,7 @@ The recommended way is to use it within a context manager like:</p>
               Bases: <code>Exception</code></p>
 
 
-        <p>MIDI error</p>
+      <p>MIDI error</p>
 
 
     </div>
@@ -1957,10 +2053,10 @@ The recommended way is to use it within a context manager like:</p>
 
     <div class="doc doc-contents ">
             <p class="doc doc-class-bases">
-              Bases: <code><span title="linuxpy.device.BaseDevice">BaseDevice</span></code></p>
+              Bases: <code><a class="autorefs autorefs-internal" title="linuxpy.device.BaseDevice" href="../device/#linuxpy.device.BaseDevice">BaseDevice</a></code></p>
 
 
-        <p>Central MIDI class.</p>
+      <p>Central MIDI class.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.midi.device</span> <span class="kn">import</span> <span class="n">Sequencer</span>
 
 <span class="k">with</span> <span class="n">Sequencer</span><span class="p">(</span><span class="s2">&quot;My MIDI App&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">midi</span><span class="p">:</span>
@@ -1999,7 +2095,7 @@ The recommended way is to use it within a context manager like:</p>
 
     <div class="doc doc-contents ">
 
-        <p>Current Client information</p>
+      <p>Current Client information</p>
     </div>
 
 </div>
@@ -2020,7 +2116,7 @@ The recommended way is to use it within a context manager like:</p>
 
     <div class="doc doc-contents ">
 
-        <p>Current Client information</p>
+      <p>Current Client information</p>
     </div>
 
 </div>
@@ -2041,7 +2137,7 @@ The recommended way is to use it within a context manager like:</p>
 
     <div class="doc doc-contents ">
 
-        <p>Current running mode</p>
+      <p>Current running mode</p>
     </div>
 
 </div>
@@ -2062,7 +2158,7 @@ The recommended way is to use it within a context manager like:</p>
 
     <div class="doc doc-contents ">
 
-        <p>Current system information</p>
+      <p>Current system information</p>
     </div>
 
 </div>
@@ -2083,7 +2179,7 @@ The recommended way is to use it within a context manager like:</p>
 
     <div class="doc doc-contents ">
 
-        <p>An iterator over all open clients on the system. It returns new Client each time</p>
+      <p>An iterator over all open clients on the system. It returns new Client each time</p>
     </div>
 
 </div>
@@ -2104,7 +2200,7 @@ The recommended way is to use it within a context manager like:</p>
 
     <div class="doc doc-contents ">
 
-        <p>Returns a new list of all clients on the system</p>
+      <p>Returns a new list of all clients on the system</p>
     </div>
 
 </div>
@@ -2125,7 +2221,7 @@ The recommended way is to use it within a context manager like:</p>
 
     <div class="doc doc-contents ">
 
-        <p>An iterator over all open ports on the system.
+      <p>An iterator over all open ports on the system.
 It returns new Port objects each time</p>
     </div>
 
@@ -2147,7 +2243,7 @@ It returns new Port objects each time</p>
 
     <div class="doc doc-contents ">
 
-        <p>Returns a new list of all open ports on the system.
+      <p>Returns a new list of all open ports on the system.
 It returns new Port objects each time</p>
     </div>
 
@@ -2166,7 +2262,7 @@ It returns new Port objects each time</p>
 
     <div class="doc doc-contents ">
 
-        <p>Build an infinite iterator that streams MIDI events from the
+      <p>Build an infinite iterator that streams MIDI events from the
 subscribed ports.
 You'll need an open sequencer before using it:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.midi.device</span> <span class="kn">import</span> <span class="n">Sequencer</span>
@@ -2197,7 +2293,7 @@ You'll need an open sequencer before using it:</p>
 
     <div class="doc doc-contents ">
 
-        <p>Build an infinite async iterator that streams MIDI events from the
+      <p>Build an infinite async iterator that streams MIDI events from the
 subscribed ports.
 You'll need an open sequencer before using it:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
@@ -2228,7 +2324,7 @@ You'll need an open sequencer before using it:</p>
 
     <div class="doc doc-contents ">
 
-        <p>Returns a Client for the given ID or raises an error if the client
+      <p>Returns a Client for the given ID or raises an error if the client
 doesn't exist.
 It returns new Client object each time</p>
 
@@ -2247,7 +2343,7 @@ It returns new Client object each time</p>
 
     <div class="doc doc-contents ">
 
-        <p>Returns a Port for the given address or raises an error if the port
+      <p>Returns a Port for the given address or raises an error if the port
 doesn't exist.
 It returns new Port object each time</p>
 
@@ -2266,7 +2362,7 @@ It returns new Port object each time</p>
 
     <div class="doc doc-contents ">
 
-        <p>Create a new local port. By default it will create a MIDI generic
+      <p>Create a new local port. By default it will create a MIDI generic
 application Input/Output port.</p>
 
     </div>
@@ -2284,7 +2380,7 @@ application Input/Output port.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Delete a previously created local port. If the port has any
+      <p>Delete a previously created local port. If the port has any
 subscriptions they will be closed before the port is deleted</p>
 
     </div>
@@ -2302,7 +2398,7 @@ subscriptions they will be closed before the port is deleted</p>
 
     <div class="doc doc-contents ">
 
-        <p>Subscribe a source port to a destination port</p>
+      <p>Subscribe a source port to a destination port</p>
 
     </div>
 
@@ -2319,7 +2415,7 @@ subscriptions they will be closed before the port is deleted</p>
 
     <div class="doc doc-contents ">
 
-        <p>Unsubscribe a previously subscribed source port to a destination port</p>
+      <p>Unsubscribe a previously subscribed source port to a destination port</p>
 
     </div>
 
@@ -2336,7 +2432,7 @@ subscriptions they will be closed before the port is deleted</p>
 
     <div class="doc doc-contents ">
 
-        <p>Read list of pending events. If the sequencer is opened in blocking
+      <p>Read list of pending events. If the sequencer is opened in blocking
 mode and there are no events it blocks until at least one event occurs
 otherwise as OSError is raised.</p>
 <p>Use the <code>read()</code> call instead because it handles blocking vs
@@ -2357,7 +2453,7 @@ non-blocking variants transperently.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Read list of pending events. If there are no events it blocks until at
+      <p>Read list of pending events. If there are no events it blocks until at
 least one event occurs and returns it.</p>
 <p>Use the <code>read()</code> call instead because it handles blocking vs
 non-blocking variants transperently.</p>
@@ -2377,7 +2473,7 @@ non-blocking variants transperently.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Read list of pending events. If there are no events it blocks until at
+      <p>Read list of pending events. If there are no events it blocks until at
 least one event occurs and returns it.
 This method assumes the internal file descriptior was opened in
 non-blocking mode.</p>
@@ -2399,7 +2495,7 @@ non-blocking variants transperently</p>
 
     <div class="doc doc-contents ">
 
-        <p>Read list of pending events. If there are no events it blocks until at
+      <p>Read list of pending events. If there are no events it blocks until at
 least one event occurs and returns it</p>
 
     </div>
@@ -2417,7 +2513,7 @@ least one event occurs and returns it</p>
 
     <div class="doc doc-contents ">
 
-        <p>Send an event message</p>
+      <p>Send an event message</p>
 
     </div>
 
@@ -2434,7 +2530,7 @@ least one event occurs and returns it</p>
 
     <div class="doc doc-contents ">
 
-        <p>Send a message of the given type from a specific port to the destination
+      <p>Send a message of the given type from a specific port to the destination
 address(es). Use kwargs to pass specific event arguments like velocity in
 a "note on" event.</p>
 <p>event_type can be an instance of EventType or the equivalent number or
@@ -2469,7 +2565,7 @@ a case insensitive string matching the event type (ex: "noteon", "NOTEON",
     <div class="doc doc-contents ">
 
 
-        <p>MIDI sequencer client. Don't instantiate this object directly
+      <p>MIDI sequencer client. Don't instantiate this object directly
 Use instead <code>Sequencer.get_client()</code></p>
 
 
@@ -2499,7 +2595,7 @@ Use instead <code>Sequencer.get_client()</code></p>
 
     <div class="doc doc-contents ">
 
-        <p>Client name</p>
+      <p>Client name</p>
     </div>
 
 </div>
@@ -2520,7 +2616,7 @@ Use instead <code>Sequencer.get_client()</code></p>
 
     <div class="doc doc-contents ">
 
-        <p>True if the client was created by the MIDI sequencer that it
+      <p>True if the client was created by the MIDI sequencer that it
 references or False otherwise"</p>
     </div>
 
@@ -2542,7 +2638,7 @@ references or False otherwise"</p>
 
     <div class="doc doc-contents ">
 
-        <p>An iterator over all open ports for this client. It returns new Port each time</p>
+      <p>An iterator over all open ports for this client. It returns new Port each time</p>
     </div>
 
 </div>
@@ -2563,7 +2659,7 @@ references or False otherwise"</p>
 
     <div class="doc doc-contents ">
 
-        <p>Returns a new list of all open ports for this client</p>
+      <p>Returns a new list of all open ports for this client</p>
     </div>
 
 </div>
@@ -2581,7 +2677,7 @@ references or False otherwise"</p>
 
     <div class="doc doc-contents ">
 
-        <p>The client ID</p>
+      <p>The client ID</p>
 
     </div>
 
@@ -2608,7 +2704,7 @@ references or False otherwise"</p>
     <div class="doc doc-contents ">
 
 
-        <p>MIDI sequencer port. Don't instantiate this object directly
+      <p>MIDI sequencer port. Don't instantiate this object directly
 Use instead <code>Sequencer.get_port()</code></p>
 
 
@@ -2638,7 +2734,7 @@ Use instead <code>Sequencer.get_port()</code></p>
 
     <div class="doc doc-contents ">
 
-        <p>Port name</p>
+      <p>Port name</p>
     </div>
 
 </div>
@@ -2659,7 +2755,7 @@ Use instead <code>Sequencer.get_port()</code></p>
 
     <div class="doc doc-contents ">
 
-        <p>True if the port was created by the MIDI sequencer that it
+      <p>True if the port was created by the MIDI sequencer that it
 references or False otherwise"</p>
     </div>
 
@@ -2681,7 +2777,7 @@ references or False otherwise"</p>
 
     <div class="doc doc-contents ">
 
-        <p>The client ID</p>
+      <p>The client ID</p>
     </div>
 
 </div>
@@ -2702,7 +2798,7 @@ references or False otherwise"</p>
 
     <div class="doc doc-contents ">
 
-        <p>The port ID</p>
+      <p>The port ID</p>
     </div>
 
 </div>
@@ -2723,7 +2819,7 @@ references or False otherwise"</p>
 
     <div class="doc doc-contents ">
 
-        <p>The port type</p>
+      <p>The port type</p>
     </div>
 
 </div>
@@ -2744,7 +2840,7 @@ references or False otherwise"</p>
 
     <div class="doc doc-contents ">
 
-        <p>The port capabilities</p>
+      <p>The port capabilities</p>
     </div>
 
 </div>
@@ -2765,7 +2861,7 @@ references or False otherwise"</p>
 
     <div class="doc doc-contents ">
 
-        <p>The port address</p>
+      <p>The port address</p>
     </div>
 
 </div>
@@ -2783,7 +2879,7 @@ references or False otherwise"</p>
 
     <div class="doc doc-contents ">
 
-        <p>The port ID</p>
+      <p>The port ID</p>
 
     </div>
 
@@ -2800,7 +2896,7 @@ references or False otherwise"</p>
 
     <div class="doc doc-contents ">
 
-        <p>Connect this port to a remote port. After connecting, this port will
+      <p>Connect this port to a remote port. After connecting, this port will
 receive events originating from the source port.</p>
 <p>Example:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.midi.device</span> <span class="kn">import</span> <span class="n">Sequencer</span>
@@ -2827,7 +2923,7 @@ receive events originating from the source port.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Disconnect this port from a previously connected source port.</p>
+      <p>Disconnect this port from a previously connected source port.</p>
 
     </div>
 
@@ -2844,7 +2940,7 @@ receive events originating from the source port.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Connect this port to a remote port. After connecting, events
+      <p>Connect this port to a remote port. After connecting, events
 originating from this port will be sent to the destination port.</p>
 <p>Example:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.midi.device</span> <span class="kn">import</span> <span class="n">Sequencer</span>
@@ -2871,7 +2967,7 @@ originating from this port will be sent to the destination port.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Disconnect this port from a previously connected destination port.</p>
+      <p>Disconnect this port from a previously connected destination port.</p>
 
     </div>
 
@@ -2888,7 +2984,7 @@ originating from this port will be sent to the destination port.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Delete this port. Raises MidiError if port is not local.
+      <p>Delete this port. Raises MidiError if port is not local.
 Any subscriptions are canceled before the port is deleted.</p>
 
     </div>
@@ -2906,7 +3002,7 @@ Any subscriptions are canceled before the port is deleted.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Send a message of the given type from to the destination address(es).
+      <p>Send a message of the given type from to the destination address(es).
 Use kwargs to pass specific event arguments like velocity in a
 "note on" event.</p>
 <p>event_type can be an instance of EventType or the equivalent number or
@@ -2941,7 +3037,7 @@ a case insensitive string matching the event type (ex: "noteon", "NOTEON",
     <div class="doc doc-contents ">
 
 
-        <p>Event message object result of listening on a sequencer</p>
+      <p>Event message object result of listening on a sequencer</p>
 
 
 
@@ -2967,7 +3063,7 @@ a case insensitive string matching the event type (ex: "noteon", "NOTEON",
 
     <div class="doc doc-contents ">
 
-        <p>Serialize the Event in a bytes ready to be sent</p>
+      <p>Serialize the Event in a bytes ready to be sent</p>
 
     </div>
 
@@ -2988,7 +3084,7 @@ a case insensitive string matching the event type (ex: "noteon", "NOTEON",
 
     <div class="doc doc-contents ">
 
-        <p>Create new Event of the given type</p>
+      <p>Create new Event of the given type</p>
 
     </div>
 
@@ -3014,7 +3110,7 @@ a case insensitive string matching the event type (ex: "noteon", "NOTEON",
 
     <div class="doc doc-contents ">
 
-        <p>Convert to low level snd_seq_addr</p>
+      <p>Convert to low level snd_seq_addr</p>
 
     </div>
 
@@ -3031,7 +3127,7 @@ a case insensitive string matching the event type (ex: "noteon", "NOTEON",
 
     <div class="doc doc-contents ">
 
-        <p>Infinite stream of events coming from the given sequencer</p>
+      <p>Infinite stream of events coming from the given sequencer</p>
 
     </div>
 
@@ -3052,7 +3148,7 @@ a case insensitive string matching the event type (ex: "noteon", "NOTEON",
 
     <div class="doc doc-contents ">
 
-        <p>Infinite async stream of events coming from the given sequencer</p>
+      <p>Infinite async stream of events coming from the given sequencer</p>
 
     </div>
 
