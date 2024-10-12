@@ -337,4 +337,4 @@ def iter_devices(path: PathLike = "/dev", **kwargs) -> Iterable[Device]:
     return (Device(name, **kwargs) for name in iter_gpio_files(path=path))
 
 
-find = make_find(iter_devices)
+find = make_find(iter_devices, needs_open=False)
