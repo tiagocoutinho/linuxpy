@@ -9,6 +9,7 @@ import pathlib
 from linuxpy.codegen.base import CEnum, run
 
 HEADERS = [
+    "/usr/include/linux/spi/spi.h",
     "/usr/include/linux/spi/spidev.h",
 ]
 
@@ -42,9 +43,18 @@ from linuxpy.ctypes import Struct, Union, POINTER, cvoidp
 {iocs_body}"""
 
 
+class Mode32(CEnum):
+    def add_item(self, name, value):
+        if "_BITUL" in value:
+            value = value.replace("_BITUL(", "").replace(")", "")
+            value = f"1 << {value}"
+        super().add_item(name, value)
+
+
 # macros from #define statements
 MACRO_ENUMS = [
     CEnum("IOC", "SPI_IOC_"),
+    Mode32("Mode32", "SPI_", klass="IntFlag", filter=lambda k, v: "MASK" not in k),
 ]
 
 
