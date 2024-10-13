@@ -131,7 +131,6 @@ def set_values(req_fd: FDLike, mask: int, bits: int) -> raw.gpio_v2_line_values:
         bits: The bits is a bitmap containing the value of the lines, set to 1 for active and 0
               for inactive.
     """
-    print(mask, bits)
     result = raw.gpio_v2_line_values(mask=mask, bits=bits)
     return ioctl(req_fd, IOC.LINE_SET_VALUES, result)
 
@@ -218,6 +217,8 @@ class Request(ReentrantOpen):
         self, device, lines: Sequence[int], name: str = "", flags: LineFlag = LineFlag(0), blocking: bool = False
     ):
         self.lines = lines
+        self._name = name
+        self._flags = flags
         self.line_requests: list[_Request] = []
         self.line_map: dict[int, _Request] = {}
         for chunk in chunks(lines, 64):
