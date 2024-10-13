@@ -126,6 +126,23 @@ async def astream(fd: FDLike, read_func: Callable, max_buffer_size=10) -> AsyncI
             yield event
 
 
+class aclosing(contextlib.AbstractAsyncContextManager):
+    """Async context manager for safely finalizing an asynchronously cleaned-up
+    resource such as an async generator, calling its ``aclose()`` method.
+
+    This is a copy of contextlib.aclosing needed for python 3.9 compatibility
+    """
+
+    def __init__(self, thing):
+        self.thing = thing
+
+    async def __aenter__(self):
+        return self.thing
+
+    async def __aexit__(self, *exc_info):
+        await self.thing.aclose()
+
+
 def Selector(fds: Collection[FDLike], events=selectors.EVENT_READ) -> selectors.DefaultSelector:
     """A selectors.DefaultSelector with given fds registered"""
     selector = selectors.DefaultSelector()
@@ -162,45 +179,33 @@ def event_stream(fds: Collection[FDLike], read: Callable[[FDLike], T], timeout: 
 
 async def async_selector_stream(selector: selectors.BaseSelector) -> AsyncIterator[SelectorEvent]:
     """An asyncronous infinite stream of selector read events"""
-    stream = astream(selector, selector.select)
-    try:
+    async with aclosing(astream(selector, selector.select)) as stream:
         async for events in stream:
             for event in events:
                 yield event
-    finally:
-        await stream.aclose()
 
 
 async def async_selector_file_stream(fds: Collection[FDLike]) -> AsyncIterator[SelectorEvent]:
     """An asyncronous infinite stream of selector read events"""
     selector = Selector(fds)
-    stream = async_selector_stream(selector)
-    try:
+    async with aclosing(async_selector_stream(selector)) as stream:
         async for event in stream:
             yield event
-    finally:
-        await stream.aclose()
 
 
 async def async_file_stream(fds: Collection[FDLike]) -> AsyncIterator[FDLike]:
     """An asyncronous infinite stream of read ready files"""
-    stream = async_selector_file_stream(fds)
-    try:
+    async with aclosing(async_selector_file_stream(fds)) as stream:
         async for key, _ in stream:
             yield key.fileobj
-    finally:
-        await stream.aclose()
 
 
 async def async_event_stream(fds: Collection[FDLike], read: Callable[[FDLike], T]):
     """An asyncronous stream of events. The given read callable is called for each file
     that is reported as ready"""
-    stream = async_file_stream(fds)
-    try:
+    async with aclosing(async_file_stream(fds)) as stream:
         async for fd in stream:
             yield read(fd)
-    finally:
-        await stream.aclose()
 
 
 def make_find(iter_devices: Callable[[], Iterator], needs_open=True) -> Callable:

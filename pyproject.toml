@@ -86,7 +86,7 @@ path = ["tests"]
 progress-style = ["inline"]
 test_output_style = "test-per-line"
 hook_module = ["ward_coverage"]
-show-slowest = 3
+show-slowest = 10
 
 [tool.ward.plugins.coverage]
 branch = true
