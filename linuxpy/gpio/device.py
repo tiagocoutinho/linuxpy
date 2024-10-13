@@ -256,10 +256,14 @@ class Request(ReentrantOpen):
         return self.get_values(lines)
 
     def __setitem__(self, key: Union[int, tuple, slice], value: Union[int, Sequence[int]]):
-        if isinstance(key, int) and isinstance(value, int):
+        if isinstance(key, int):
+            if not isinstance(value, int):
+                raise ValueError("set value for single line must be 0 or 1")
             values = {key: value}
         else:
             lines = expand_from_list(key, self.min_line, self.max_line + 1)
+            if isinstance(value, int):
+                value = len(lines) * (value,)
             values = dict(zip(lines, value))
         self.set_values(values)
 
