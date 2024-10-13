@@ -435,6 +435,17 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    ⚡ GPIO
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -444,6 +455,76 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#basics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#working-with-lines-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working with lines: Request
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Working with lines: Request">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#writting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Writting
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reading
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#edge-detection-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      Edge detection events
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -917,6 +998,65 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#basics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#working-with-lines-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working with lines: Request
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Working with lines: Request">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#writting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Writting
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reading
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#edge-detection-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      Edge detection events
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -937,10 +1077,139 @@
   <span data-ty="input" data-ty-prompt="$">python</span>
   <span data-ty="input" data-ty-prompt=">>>">from linuxpy.gpio import find</span>
   <span data-ty="input" data-ty-prompt=">>>">with find() as gpio:</span>
-  <span data-ty="input" data-ty-prompt="...">    with gpio[1, 2, 5:8] as lines:</span>
+  <span data-ty="input" data-ty-prompt="...">    with gpio.request([1, 2, 5:8]) as lines:</span>
   <span data-ty="input" data-ty-prompt=">>>">        print(lines[:])</span>
   <span data-ty>{1: 0, 2: 1, 5: 0, 6: 1, 7:0}</span>
 </div>
+
+<h2 id="basics">Basics<a class="headerlink" href="#basics" title="Permanent link">&para;</a></h2>
+<p>The GPIO interface consists of a Device class representing a single gpiochip.</p>
+<p>The Device works as a context manager but you can also manually handle open/close.</p>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.gpio</span> <span class="kn">import</span> <span class="n">Device</span>
+
+<span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">gpio</span><span class="o">.</span><span class="n">get_info</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">lines</span><span class="p">))</span>
+    <span class="n">l0</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;L0: </span><span class="si">{</span><span class="n">l0</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> </span><span class="si">{</span><span class="n">l0</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># output should look somethig like:</span>
+<span class="c1"># gpiochip0 INT3450:00 32</span>
+<span class="c1"># L0: &#39;&#39; INPUT</span>
+</code></pre></div>
+<p>The example above also shows how to obtain information about the gpio device
+including up to date information about line usage.</p>
+<p>linuxpy provides a <code>find</code> helper that makes it easier on single chip systems
+to work without knowing the chip number. So the example above can be written
+using <code>find</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.gpio</span> <span class="kn">import</span> <span class="n">find</span>
+
+<span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">gpio</span><span class="o">.</span><span class="n">get_info</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">lines</span><span class="p">))</span>
+    <span class="n">l0</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;L0: </span><span class="si">{</span><span class="n">l0</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> </span><span class="si">{</span><span class="n">l0</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="working-with-lines-request">Working with lines: Request<a class="headerlink" href="#working-with-lines-request" title="Permanent link">&para;</a></h2>
+<p>Lines need to be requested before working with them.
+A request for line(s) reserves it for exclusive access by the requestor.</p>
+<p>The API uses a context manager and it looks like this:</p>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">gpio</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span> <span class="s2">&quot;my sweet app&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">OUTPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="o">...</span>
+</code></pre></div>
+<p>The request is only sent at the entry of the context manager. This allows
+you to create the request object lazily and tweek it's parameters before
+actually reserving the lines.</p>
+<p>Linuxpy transparently handles requests with more than 64 lines.</p>
+<p>A helper is provided for 'dict like' access. So the example above can also be
+written as:</p>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">gpio</span><span class="o">.</span><span class="n">request</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my sweet app&quot;</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">flags</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">OUTPUT</span>
+    <span class="k">with</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="o">...</span>
+</code></pre></div>
+<h3 id="writting">Writting<a class="headerlink" href="#writting" title="Permanent link">&para;</a></h3>
+<p>To change OUTPUT line(s) value(s) simply invoke the <code>set_values</code> method on
+the request object:</p>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span> <span class="s2">&quot;my sweet app&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">OUTPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">set_values</span><span class="p">({</span><span class="mi">5</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+</code></pre></div>
+<p>The example above reserves lines 5 and 7 for <strong>output</strong> by a client (aka
+consumer) called <em>my sweet app</em>. It then sets line 5 to 1.
+As you can see, it is possible to write only the lines you're interested.</p>
+<p>A helper is provided for 'dict like' access. So the example above can also be
+written as:</p>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span> <span class="s2">&quot;my sweet app&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">OUTPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">lines</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+</code></pre></div>
+<p>The dict like API also supports setting multiple lines. Here are some examples:</p>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">)),</span> <span class="s2">&quot;16 lines reserved&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">OUTPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="c1"># write line 5</span>
+        <span class="n">lines</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># set lines 7, 5, to 0 and 1 respectively</span>
+        <span class="n">lines</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+        <span class="c1"># set all lines to 0</span>
+        <span class="n">lines</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># set lines 3, 10 to 0 and lines 12 to 1, 13 to 0 and 14 to 1</span>
+        <span class="n">lines</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">:</span><span class="mi">15</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+<p>A current limitation is all lines in the request must share the same
+configuration. This is a linuxpy limitation as linux supports different line
+configurations in the same request.</p>
+<h3 id="reading">Reading<a class="headerlink" href="#reading" title="Permanent link">&para;</a></h3>
+<p>Reading line values is very similar to writting:</p>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span> <span class="s2">&quot;my sweet app&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">INPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">get_values</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">])</span>
+
+        <span class="c1"># values will be something like {5: 0, 12: 1}</span>
+</code></pre></div>
+<p>The "dict like" API is also supported for reading so the above example could be
+written as:</p>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span> <span class="s2">&quot;my sweet app&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">INPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+</code></pre></div>
+<p>A more complex reads also works:</p>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">)),</span> <span class="s2">&quot;16 lines reserved&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">INPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="c1"># read lines 7, 5</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+        <span class="c1"># read all lines</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[:]</span>
+        <span class="c1"># read lines 3, 6, 10, 12, 14</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">:</span><span class="mi">16</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+</code></pre></div>
+<h2 id="edge-detection-events">Edge detection events<a class="headerlink" href="#edge-detection-events" title="Permanent link">&para;</a></h2>
+<p>The request object can be used as an infinite iterator to watch for line events:</p>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="s2">&quot;a client&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">INPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> #</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">sequence</span><span class="si">}</span><span class="s2"> detected for line </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>Reading one event is easy:</p>
+<div class="highlight"><pre><span></span><code><span class="n">event</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span>
+</code></pre></div>
+<p>Async API is also supported:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="s2">&quot;a client&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">INPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="k">async</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> #</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">sequence</span><span class="si">}</span><span class="s2"> detected for line </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</code></pre></div>
 
 
 
