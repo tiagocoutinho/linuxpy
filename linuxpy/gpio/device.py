@@ -228,6 +228,26 @@ class Request(ReentrantOpen):
                 self.line_map[line] = line_request
         super().__init__()
 
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @name.setter
+    def name(self, name) -> None:
+        self._name = name
+        for req in self.line_requests:
+            req.name = name
+
+    @property
+    def flags(self) -> LineFlag:
+        return self._flags
+
+    @flags.setter
+    def flags(self, flags: LineFlag):
+        self._flags = flags
+        for req in self.line_requests:
+            req.flags = flags
+
     def __getitem__(self, key: Union[int, tuple, slice]) -> Union[int, dict]:
         """Get values"""
         if isinstance(key, int):
