@@ -346,6 +346,12 @@ def _(chip=emulate_gpiochip):
             request[:] = 9 * [1]
             assert request[:] == {i: 1 for i in range(1, 10)}
 
+            request[:] = 0
+            assert request[:] == {i: 0 for i in range(1, 10)}
+
+            request[3, 4, 7:10] = 1, 0, 1, 0, 1
+            assert request[3, 4, 7:10] == {3: 1, 4: 0, 7: 1, 8: 0, 9: 1}
+
 
 @test("event stream")
 def _(chip=emulate_gpiochip):
@@ -547,3 +553,32 @@ def _():
             request = Request(device, list(range(6, 16)), name="Me", blocking=blocking)
             with request:
                 assert_request(request)
+
+
+@test("sim set value")
+def _():
+    with Device(sim_file) as device:
+        with device.request(list(range(5, 14)), "test", flags=raw.LineFlag.OUTPUT) as request:
+            request.set_values({10: 1})
+            assert request[10] == 1
+
+            request.set_values({5: 0, 6: 1})
+            assert request[5, 6] == {5: 0, 6: 1}
+
+            request[9] = 1
+            assert request[5, 6, 9] == {5: 0, 6: 1, 9: 1}
+
+            request[11, 12] = [1, 0]
+            assert request[11, 12] == {11: 1, 12: 0}
+
+            request[9:12] = 0
+            assert request[9:12] == {9: 0, 10: 0, 11: 0}
+
+            request[:] = 9 * [1]
+            assert request[:] == {i: 1 for i in range(5, 14)}
+
+            request[:] = 0
+            assert request[:] == {i: 0 for i in range(5, 14)}
+
+            request[7, 8, 11:14] = 1, 0, 1, 0, 1
+            assert request[7, 8, 11:14] == {7: 1, 8: 0, 11: 1, 12: 0, 13: 1}
