@@ -8,7 +8,193 @@ Without further ado:
   <span data-ty="input" data-ty-prompt="$">python</span>
   <span data-ty="input" data-ty-prompt=">>>">from linuxpy.gpio import find</span>
   <span data-ty="input" data-ty-prompt=">>>">with find() as gpio:</span>
-  <span data-ty="input" data-ty-prompt="...">    with gpio[1, 2, 5:8] as lines:</span>
+  <span data-ty="input" data-ty-prompt="...">    with gpio.request([1, 2, 5:8]) as lines:</span>
   <span data-ty="input" data-ty-prompt=">>>">        print(lines[:])</span>
   <span data-ty>{1: 0, 2: 1, 5: 0, 6: 1, 7:0}</span>
 </div>
+
+## Basics
+
+The GPIO interface consists of a Device class representing a single gpiochip.
+
+The Device works as a context manager but you can also manually handle open/close.
+
+Example:
+
+```python
+from linuxpy.gpio import Device
+
+with Device.from_id(0) as gpio:
+    info = gpio.get_info()
+    print(info.name, info.label, len(info.lines))
+    l0 = info.lines[0]
+    print(f"L0: {l0.name!r} {l0.flags.name}")
+
+# output should look somethig like:
+# gpiochip0 INT3450:00 32
+# L0: '' INPUT
+```
+
+The example above also shows how to obtain information about the gpio device
+including up to date information about line usage.
+
+linuxpy provides a `find` helper that makes it easier on single chip systems
+to work without knowing the chip number. So the example above can be written
+using `find`:
+
+```python
+from linuxpy.gpio import find
+
+with find() as gpio:
+    info = gpio.get_info()
+    print(info.name, info.label, len(info.lines))
+    l0 = info.lines[0]
+    print(f"L0: {l0.name!r} {l0.flags.name}")
+```
+
+## Working with lines: Request
+
+Lines need to be requested before working with them.
+A request for line(s) reserves it for exclusive access by the requestor.
+
+The API uses a context manager and it looks like this:
+
+```python
+with find() as gpio:
+    with gpio.request([5, 12], "my sweet app", raw.LineFlag.OUTPUT) as lines:
+        ...
+```
+
+The request is only sent at the entry of the context manager. This allows
+you to create the request object lazily and tweek it's parameters before
+actually reserving the lines.
+
+Linuxpy transparently handles requests with more than 64 lines.
+
+A helper is provided for 'dict like' access. So the example above can also be
+written as:
+
+```python
+with find() as gpio:
+    lines = gpio.request[5, 12]
+    lines.name = "my sweet app"
+    lines.flags = raw.LineFlag.OUTPUT
+    with lines:
+        ...
+```
+
+### Writting
+
+To change OUTPUT line(s) value(s) simply invoke the `set_values` method on
+the request object:
+
+```python
+with find() as gpio:
+    with device.request([5, 12], "my sweet app", raw.LineFlag.OUTPUT) as lines:
+        lines.set_values({5: 1})
+```
+
+The example above reserves lines 5 and 7 for **output** by a client (aka
+consumer) called *my sweet app*. It then sets line 5 to 1.
+As you can see, it is possible to write only the lines you're interested.
+
+A helper is provided for 'dict like' access. So the example above can also be
+written as:
+
+```python
+with find() as gpio:
+    with device.request([5, 12], "my sweet app", raw.LineFlag.OUTPUT) as lines:
+        lines[5] = 1
+```
+
+The dict like API also supports setting multiple lines. Here are some examples:
+
+```python
+with find() as gpio:
+    with device.request(tuple(range(16)), "16 lines reserved", raw.LineFlag.OUTPUT) as lines:
+        # write line 5
+        lines[5] = 1
+        # set lines 7, 5, to 0 and 1 respectively
+        lines[7, 5] = 0, 1
+        # set all lines to 0
+        lines[:] = 0
+        # set lines 3, 10 to 0 and lines 12 to 1, 13 to 0 and 14 to 1
+        lines[3, 10, 12:15] = (0, 0, 1, 0, 1)
+```
+
+A current limitation is all lines in the request must share the same
+configuration. This is a linuxpy limitation as linux supports different line
+configurations in the same request.
+
+### Reading
+
+Reading line values is very similar to writting:
+
+```python
+with find() as gpio:
+    with device.request([5, 12], "my sweet app", raw.LineFlag.INPUT) as lines:
+        values = lines.get_values([5, 12])
+
+        # values will be something like {5: 0, 12: 1}
+```
+
+The "dict like" API is also supported for reading so the above example could be
+written as:
+
+```python
+with find() as gpio:
+    with device.request([5, 12], "my sweet app", raw.LineFlag.INPUT) as lines:
+        values = lines[5, 12]
+
+```
+
+A more complex reads also works:
+
+```python
+
+with find() as gpio:
+    with device.request(tuple(range(16)), "16 lines reserved", raw.LineFlag.INPUT) as lines:
+        # read lines 7, 5
+        values = lines[7, 5]
+        # read all lines
+        values = lines[:]
+        # read lines 3, 6, 10, 12, 14
+        values = lines[3, 6, 10:16:2]
+```
+
+
+## Edge detection events
+
+The request object can be used as an infinite iterator to watch for line events:
+
+```python
+
+with find() as gpio:
+    with device.request([1, 4], "a client", raw.LineFlag.INPUT) as lines:
+        for event in lines:
+            print(f"{event.type.name} #{event.sequence} detected for line {event.line}")
+```
+
+Reading one event is easy:
+
+```python
+
+event = next(iter(lines))
+
+```
+
+Async API is also supported:
+
+```python
+import asyncio
+
+
+async def main():
+    with find() as gpio:
+        with device.request([1, 4], "a client", raw.LineFlag.INPUT) as lines:
+            async for event in lines:
+                print(f"{event.type.name} #{event.sequence} detected for line {event.line}")
+
+
+asyncio.run(main())
+```
