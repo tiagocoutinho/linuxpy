@@ -42,7 +42,7 @@ from linuxpy.util import async_event_stream as async_events, bit_indexes, chunks
 
 Info = collections.namedtuple("Info", "name label lines")
 ChipInfo = collections.namedtuple("ChipInfo", "name label lines")
-LineInfo = collections.namedtuple("LineInfo", "name consumer offset flags attributes")
+LineInfo = collections.namedtuple("LineInfo", "name consumer line flags attributes")
 
 LineFlag = raw.LineFlag
 LineAttrId = raw.LineAttrId
