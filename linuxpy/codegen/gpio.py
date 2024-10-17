@@ -33,10 +33,8 @@ from linuxpy.ctypes import u8, u16, u32, cuint, cint, cchar, culonglong
 from linuxpy.ctypes import Struct, Union, POINTER, cvoidp
 
 
-class GpioLineEvent(enum.IntEnum):
-    REQUESTED = 1
-    RELEASED = 2
-    CONFIG = 3
+MAX_LINES = 64
+MAX_ATTRS = 10
 
 
 {enums_body}

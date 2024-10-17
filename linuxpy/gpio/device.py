@@ -26,19 +26,31 @@ with find() as gpio:
 """
 
 import collections
+import contextlib
 import fcntl
 import functools
-import operator
 import os
 import pathlib
 
 from linuxpy.ctypes import sizeof, u32
 from linuxpy.device import BaseDevice, ReentrantOpen, iter_device_files
-from linuxpy.gpio import raw
-from linuxpy.gpio.raw import IOC
 from linuxpy.ioctl import ioctl
 from linuxpy.types import AsyncIterator, Collection, FDLike, Iterable, Optional, PathLike, Sequence, Union
-from linuxpy.util import async_event_stream as async_events, bit_indexes, chunks, event_stream as events, make_find
+from linuxpy.util import (
+    aclosing,
+    async_event_stream as async_events,
+    bit_indexes,
+    chunks,
+    event_stream as events,
+    index_mask,
+    make_find,
+    sentinel,
+    sequence_indexes,
+)
+
+from . import raw
+from .config import encode_request, parse_config
+from .raw import IOC
 
 Info = collections.namedtuple("Info", "name label lines")
 ChipInfo = collections.namedtuple("ChipInfo", "name label lines")
@@ -47,6 +59,7 @@ LineInfo = collections.namedtuple("LineInfo", "name consumer line flags attribut
 LineFlag = raw.LineFlag
 LineAttrId = raw.LineAttrId
 LineEventId = raw.LineEventId
+LineChangedType = raw.LineChangedType
 LineEvent = collections.namedtuple("LineEvent", "timestamp type line sequence line_sequence")
 LineInfoEvent = collections.namedtuple("LineInfoEvent", "name consumer line flags attributes timestamp type")
 
@@ -55,7 +68,7 @@ class LineAttributes:
     def __init__(self):
         self.flags = LineFlag(0)
         self.indexes = []
-        self.debounce_period = 0
+        self.debounce_period = None
 
 
 def decode_line_info(info: raw.gpio_v2_line_info) -> LineInfo:
@@ -120,32 +133,28 @@ def get_info(fd: FDLike) -> Info:
     return Info(chip.name, chip.label, [get_line_info(fd, line) for line in range(chip.lines)])
 
 
-def request_line(
-    fd: FDLike, consumer_name: str, lines: Sequence[int], flags: LineFlag, blocking=False
-) -> raw.gpio_v2_line_request:
+def raw_request(fd: FDLike, request: raw.gpio_v2_line_request, blocking=False):
+    ioctl(fd, IOC.GET_LINE, request)
+    if not blocking:
+        flag = fcntl.fcntl(request.fd, fcntl.F_GETFL)
+        fcntl.fcntl(request.fd, fcntl.F_SETFL, flag | os.O_NONBLOCK)
+    return request
+
+
+def request(fd: FDLike, config: dict, blocking: bool = False) -> raw.gpio_v2_line_request:
     """Make a request to reserve the given line(s)
 
     Args:
         fd (FDLike): a gpiochip file number or file like object
-        consumer_name (str): consumer name (max 32 chars)
-        lines (Sequence[int]): list of lines to reserve
-        flags (LineFlag): common flags
+        config (dict): line config as specified in GPIO line configuration request
         blocking (bool, optional): Make the return FD blocking. Defaults to False.
 
     Returns:
         raw.gpio_v2_line_request: The details of the request. Field `fd` contains the new open file descritor
     """
-    num_lines = len(lines)
-    req = raw.gpio_v2_line_request()
-    req.consumer = consumer_name.encode()
-    req.num_lines = num_lines
-    req.offsets[:num_lines] = lines
-    req.config.flags = flags
-    req.config.num_attrs = 0  # for now only support generic config
-    ioctl(fd, IOC.GET_LINE, req)
-    if not blocking:
-        flag = fcntl.fcntl(req.fd, fcntl.F_GETFL)
-        fcntl.fcntl(req.fd, fcntl.F_SETFL, flag | os.O_NONBLOCK)
+
+    req = encode_request(config)
+    raw_request(fd, req, blocking=blocking)
     return req
 
 
@@ -180,6 +189,11 @@ def set_values(req_fd: FDLike, mask: int, bits: int) -> raw.gpio_v2_line_values:
     """
     result = raw.gpio_v2_line_values(mask=mask, bits=bits)
     return ioctl(req_fd, IOC.LINE_SET_VALUES, result)
+
+
+def set_config(req_fd: FDLike, flags: LineFlag):
+    config = raw.gpio_v2_line_config(flags=flags)
+    return ioctl(req_fd, IOC.LINE_SET_CONFIG, config)
 
 
 def read_one_event(req_fd: FDLike) -> LineEvent:
@@ -225,7 +239,7 @@ def read_one_line_info_event(fd: FDLike) -> LineInfoEvent:
         info.flags,
         info.attributes,
         event.timestamp_ns * 1e-9,
-        type=raw.GpioLineEvent(event.event_type),
+        type=LineChangedType(event.event_type),
     )
 
 
@@ -253,67 +267,15 @@ class _Request(ReentrantOpen):
     def __init__(
         self,
         device: "Device",
-        lines: Sequence[int],
-        name: str = "",
-        flags: LineFlag = LineFlag(0),
+        config: dict,
         blocking: bool = False,
     ):
-        assert len(lines) <= 64
         self.device = device
-        self.name = name
-        self.flags = flags
-        self.lines = lines
+        self.config = config
         self.blocking = blocking
-        self.indexes = {line: index for index, line in enumerate(lines)}
+        lines = (line["line"] for line in config["lines"])
+        self.line_indexes = sequence_indexes(lines)
         self.fd = -1
-        super().__init__()
-
-    def fileno(self) -> int:
-        return self.fd
-
-    def close(self):
-        if self.fd < 0:
-            return
-        os.close(self.fd)
-        self.fd = -1
-
-    def open(self):
-        self.fd: int = request_line(self.device, self.name, self.lines, self.flags, self.blocking).fd
-
-    def get_values(self, lines: Collection[int]) -> dict[int, int]:
-        mask = functools.reduce(operator.or_, (1 << self.indexes[line] for line in lines), 0)
-        values = get_values(self, mask)
-        return {line: (values.bits >> self.indexes[line]) & 1 for line in lines}
-
-    def set_values(self, values: dict[int, Union[int, bool]]) -> raw.gpio_v2_line_values:
-        mask, bits = 0, 0
-        for line, value in values.items():
-            index = self.indexes[line]
-            mask |= 1 << index
-            if value:
-                bits |= 1 << index
-        return set_values(self, mask, bits)
-
-
-class Request(ReentrantOpen):
-    """A lazy request to reserve lines on a chip
-
-    Prefered creation from the `Device.request()` method.
-    """
-
-    def __init__(
-        self, device, lines: Sequence[int], name: str = "", flags: LineFlag = LineFlag(0), blocking: bool = False
-    ):
-        self.lines = lines
-        self._name = name
-        self._flags = flags
-        self.line_requests: list[_Request] = []
-        self.line_map: dict[int, _Request] = {}
-        for chunk in chunks(lines, 64):
-            line_request = _Request(device, chunk, name, flags, blocking)
-            self.line_requests.append(line_request)
-            for line in chunk:
-                self.line_map[line] = line_request
         super().__init__()
 
     @property
@@ -326,7 +288,7 @@ class Request(ReentrantOpen):
         Returns:
             str: consumer name
         """
-        return self._name
+        return self.config["name"]
 
     @name.setter
     def name(self, name: str) -> None:
@@ -336,19 +298,84 @@ class Request(ReentrantOpen):
         Args:
             name (str): new requestor name
         """
-        self._name = name
-        for req in self.line_requests:
-            req.name = name
+        self.config["name"] = name
+
+    def fileno(self) -> int:
+        return self.fd
+
+    def close(self):
+        if self.fd < 0:
+            return
+        os.close(self.fd)
+        self.fd = -1
+
+    def open(self):
+        self.fd: int = request(self.device, self.config, self.blocking).fd
+
+    def get_values(self, lines: Sequence[int]) -> dict[int, int]:
+        mask = index_mask(self.line_indexes, lines)
+        values = get_values(self, mask)
+        return {line: (values.bits >> self.line_indexes[line]) & 1 for line in lines}
+
+    def set_values(self, values: dict[int, Union[int, bool]]) -> raw.gpio_v2_line_values:
+        mask, bits = 0, 0
+        for line, value in values.items():
+            index = self.line_indexes[line]
+            mask |= 1 << index
+            if value:
+                bits |= 1 << index
+        return set_values(self, mask, bits)
+
+
+class Request(ReentrantOpen):
+    """A lazy request to reserve lines on a chip
+
+    Prefered creation from the `Device.request()` method.
+    """
+
+    def __init__(self, device, config: dict, blocking: bool = False):
+        self.config = config
+        cfg = dict(config)
+        lines = cfg.pop("lines")
+        self.line_requests: list[_Request] = []
+        self.line_map: dict[int, _Request] = {}
+        for chunk in chunks(lines, 64):
+            line_request = _Request(device, {**cfg, "lines": chunk}, blocking)
+            self.line_requests.append(line_request)
+            for line in chunk:
+                self.line_map[line["line"]] = line_request
+        super().__init__()
+
+    def __len__(self):
+        return len(self.config["lines"])
 
     @property
-    def flags(self) -> LineFlag:
-        return self._flags
+    def lines(self):
+        return [line["line"] for line in self.config["lines"]]
 
-    @flags.setter
-    def flags(self, flags: LineFlag):
-        self._flags = flags
+    @property
+    def name(self) -> str:
+        """Requestor name
+
+        Change the requestor name must be called before the request is open
+        to take effect
+
+        Returns:
+            str: consumer name
+        """
+        return self.config["name"]
+
+    @name.setter
+    def name(self, name: str) -> None:
+        """Set requestor name. Must be called before the request is open
+        to take effect
+
+        Args:
+            name (str): new requestor name
+        """
+        self.config["name"] = name
         for req in self.line_requests:
-            req.flags = flags
+            req.name = name
 
     def __getitem__(self, key: Union[int, tuple, slice]) -> Union[int, dict]:
         """Reads lines values
@@ -530,21 +557,14 @@ class Device(BaseDevice):
         return async_event_info_stream((self,))
 
     def info_stream(self, lines: Collection[int]) -> Iterable[LineInfoEvent]:
-        watched = set(lines) - self._watch_lines
-        self.watch_lines(watched)
-        try:
+        with self.watching(lines):
             yield from iter(self)
-        finally:
-            self.unwatch_lines(watched)
 
     async def async_info_stream(self, lines: Collection[int]) -> AsyncIterator[LineInfoEvent]:
-        watched = set(lines) - self._watch_lines
-        self.watch_lines(watched)
-        try:
-            async for event in self:
-                yield event
-        finally:
-            self.unwatch_lines(watched)
+        with self.watching(lines):
+            async with aclosing(self.__aiter__()) as stream:
+                async for event in stream:
+                    yield event
 
     def get_info(self) -> Info:
         """
@@ -564,13 +584,21 @@ class Device(BaseDevice):
 
     def watch_lines(self, lines: Collection[int]):
         for line in lines:
-            watch_line_info(self, line)
+            self.watch_line(line)
 
     def unwatch_lines(self, lines: Collection[int]):
         for line in lines:
-            unwatch_line_info(self, line)
+            self.unwatch_line(line)
 
-    def request(self, lines: Optional[Sequence[int]] = None, name: str = "", flags: LineFlag = LineFlag(0)) -> Request:
+    @contextlib.contextmanager
+    def watching(self, lines):
+        self.watch_lines(lines)
+        try:
+            yield
+        finally:
+            self.unwatch_lines(lines)
+
+    def request(self, config: Optional[Union[dict, list]] = None, blocking: Union[bool, object] = sentinel) -> Request:
         """Create a request to reserve a list of lines on this chip
 
         !!! note
@@ -579,16 +607,16 @@ class Device(BaseDevice):
             by this method in a context manager or manually call open/close.
 
         Args:
-            lines (Optional[Sequence[int]], optional): Lists of lines. Defaults to None. Default is to reserve all lines
-            name (str, optional): the requestor (aka consumer) name. Defaults to "".
-            flags (LineFlag, optional): Flags on the request. Defaults to LineFlag(0).
+            config (dict): lines configuration
+            lines (Union[bool, sentinel], optional): blocking mode
 
         Returns:
             Request: A new request object
         """
-        if lines is None:
-            lines = list(range(len(self)))
-        return Request(self, lines, name, flags)
+        if blocking is sentinel:
+            blocking = self.is_blocking
+        config = parse_config(config, len(self))
+        return Request(self, config, blocking)
 
 
 def iter_gpio_files(path: PathLike = "/dev") -> Iterable[pathlib.Path]:

@@ -24,6 +24,7 @@ KERNEL=="gpio-sim", SUBSYSTEM=="config", RUN+="/bin/chmod -R 775 /sys/kernel/con
 See https://www.kernel.org/doc/html/latest/admin-guide/gpio/gpio-sim.html for details
 """
 
+import logging
 from pathlib import Path
 
 from linuxpy.configfs import CONFIGFS_PATH
@@ -31,6 +32,8 @@ from linuxpy.gpio.device import get_chip_info
 from linuxpy.types import Optional
 
 GPIOSIM_PATH: Optional[Path] = None if CONFIGFS_PATH is None else CONFIGFS_PATH / "gpio-sim"
+
+log = logging.getLogger("gpio-sim")
 
 
 def find_gpio_sim_file(num_lines=None) -> Optional[Path]:
@@ -45,3 +48,56 @@ def find_gpio_sim_file(num_lines=None) -> Optional[Path]:
             if "gpio-sim" in info.label:
                 if num_lines is None or info.lines == num_lines:
                     return path
+
+
+def mkdir(path):
+    log.info("Creating %s", path)
+    path.mkdir()
+
+
+def rmdir(path):
+    log.info("Removing %s", path)
+    path.rmdir()
+
+
+class Device:
+    def __init__(self, config):
+        self.config = config
+        self.path: Path = GPIOSIM_PATH / config["name"]
+
+    @property
+    def live_path(self) -> Path:
+        return self.path / "live"
+
+    def cleanup(self):
+        if self.path.exists():
+            self.live_path.write_text("0")
+            for directory, _, _ in self.path.walk(top_down=False):
+                directory.rmdir()
+
+    def load_config(self):
+        mkdir(self.path)
+
+        for bank_id, bank in enumerate(self.config["banks"]):
+            lines = bank["lines"]
+
+            bpath = self.path / f"gpio-bank{bank_id}"
+            mkdir(bpath)
+            blabel = bank.get("name", f"gpio-sim-bank{bank_id}")
+
+            (bpath / "num_lines").write_text("16")
+            (bpath / "label").write_text(blabel)
+            for line_id, line in enumerate(lines):
+                lpath = bpath / f"line{line_id}"
+                mkdir(lpath)
+                (lpath / "name").write_text(line.get("name", f"L-{line_id}"))
+                if hog := line.get("hog"):
+                    hpath = lpath / "hog"
+                    mkdir(hpath)
+                    (hpath / "name").write_text(hog["name"])
+                    (hpath / "direction").write_text(hog["direction"])
+
+    @property
+    def live(self):
+        path = self.live_path
+        return path.exists() and int(self.live_path.read_bytes()) != 0

@@ -9,6 +9,7 @@
 import asyncio
 import contextlib
 import functools
+import operator
 import random
 import selectors
 import string
@@ -25,6 +26,9 @@ from .types import (
     T,
     Union,
 )
+
+#: used to distinguish passing or not a kwargs
+sentinel = object()
 
 
 def iter_chunks(lst: Sequence, size: int) -> Iterable:
@@ -345,6 +349,38 @@ def bit_indexes(number: int) -> list[int]:
     Example bit_indexes(74) gives [1, 3, 6] (74 == 0b1001010)
     """
     return [i for i, c in enumerate(bin(number)[:1:-1]) if c == "1"]
+
+
+def sequence_indexes(it: Iterable[T]) -> dict[T, int]:
+    """Return a map with key being the value in the given iterable and value
+    the index where it appears in the map. If the same element appears more
+    than once then the last occurence is returned.
+    Elements must be non mutable so they can appear in the returned map
+    Example:
+
+    `sequence_indexes([10, "bla", 1]) == {10: 0, "bla": 1, 1: 2}`
+
+    Args:
+        lines (Iterable[int]): The iterable to be returned
+
+    Returns:
+        dict[int, int]: map of values and their indexes
+    """
+    return {elem: index for index, elem in enumerate(it)}
+
+
+def index_mask(indexes: dict[T, int], elements: Iterable[T]) -> int:
+    """Return a bit mask with active bits from elements. The bit index
+    for each element is given by the indexes
+
+    Args:
+        indexes (dict[T, int]): bit index map
+        elements (Iterable[T]): list of active elements
+
+    Returns:
+        int: bit mask
+    """
+    return functools.reduce(operator.or_, (1 << indexes[element] for element in elements), 0)
 
 
 ascii_alphanumeric = string.ascii_letters + string.digits
