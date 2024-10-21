@@ -834,6 +834,24 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.Device.__iter__" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__iter__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.Device.__aiter__" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__aiter__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#linuxpy.gpio.device.Device.get_info" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_info
@@ -884,9 +902,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.gpio.device.request_line" class="md-nav__link">
+  <a href="#linuxpy.gpio.device.request" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;request_line
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;request
     </span>
   </a>
   
@@ -1394,6 +1412,24 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.Device.__iter__" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__iter__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.gpio.device.Device.__aiter__" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__aiter__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#linuxpy.gpio.device.Device.get_info" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_info
@@ -1444,9 +1480,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.gpio.device.request_line" class="md-nav__link">
+  <a href="#linuxpy.gpio.device.request" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;request_line
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;request
     </span>
   </a>
   
@@ -1541,7 +1577,7 @@
 
     <div class="doc doc-contents first">
 
-      <p>Human friendly interface to linux GPIO subsystem.</p>
+        <p>Human friendly interface to linux GPIO subsystem.</p>
 <p>The heart of linuxpy GPIO library is the <a class="autorefs autorefs-internal" href="#linuxpy.gpio.device.Device"><code>Device</code></a>
 class.
 The recommended way is to use one of the find methods to create a Device object
@@ -1572,7 +1608,7 @@ and use it within a context manager like:</p>
 
 
 <h3 id="linuxpy.gpio.device.Request" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class=" language-python"><span class="n">Request</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="n">LineFlag</span> <span class="o">=</span> <span class="n">LineFlag</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">blocking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></code>
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class=" language-python"><span class="n">Request</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">blocking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></code>
 
 <a href="#linuxpy.gpio.device.Request" class="headerlink" title="Permanent link">&para;</a></h3>
 
@@ -1582,7 +1618,7 @@ and use it within a context manager like:</p>
               Bases: <code><a class="autorefs autorefs-internal" title="linuxpy.device.ReentrantOpen" href="../device/#linuxpy.device.ReentrantOpen">ReentrantOpen</a></code></p>
 
 
-      <p>A lazy request to reserve lines on a chip</p>
+        <p>A lazy request to reserve lines on a chip</p>
 <p>Prefered creation from the <code>Device.request()</code> method.</p>
 
 
@@ -1613,7 +1649,7 @@ and use it within a context manager like:</p>
 
     <div class="doc doc-contents ">
 
-      <p>Requestor name</p>
+        <p>Requestor name</p>
 <p>Change the requestor name must be called before the request is open
 to take effect</p>
 
@@ -1664,7 +1700,7 @@ to take effect</p>
 
     <div class="doc doc-contents ">
 
-      <p>The smallest line number in the request</p>
+        <p>The smallest line number in the request</p>
 
 
 <table>
@@ -1713,7 +1749,7 @@ to take effect</p>
 
     <div class="doc doc-contents ">
 
-      <p>The biggest line number in the request</p>
+        <p>The biggest line number in the request</p>
 
 
 <table>
@@ -1759,7 +1795,7 @@ to take effect</p>
 
     <div class="doc doc-contents ">
 
-      <p>Reads lines values</p>
+        <p>Reads lines values</p>
 
 
 <table>
@@ -1826,7 +1862,7 @@ to take effect</p>
 
     <div class="doc doc-contents ">
 
-      <p>Sets the given lines values</p>
+        <p>Sets the given lines values</p>
 
 
 <table>
@@ -1907,7 +1943,7 @@ to take effect</p>
 
     <div class="doc doc-contents ">
 
-      <p>Infinite stream of line events</p>
+        <p>Infinite stream of line events</p>
 
 
 <table>
@@ -1948,7 +1984,7 @@ to take effect</p>
 
     <div class="doc doc-contents ">
 
-      <p>Asynchronous stream of line events</p>
+        <p>Asynchronous stream of line events</p>
 
 
 <table>
@@ -1989,7 +2025,7 @@ to take effect</p>
 
     <div class="doc doc-contents ">
 
-      <p>List of underlying request file numbers</p>
+        <p>List of underlying request file numbers</p>
 
 
 <table>
@@ -2030,7 +2066,7 @@ to take effect</p>
 
     <div class="doc doc-contents ">
 
-      <p>Closes the underling request files. If request is not
+        <p>Closes the underling request files. If request is not
 open nothing is done.</p>
 
     </div>
@@ -2048,7 +2084,7 @@ open nothing is done.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Opens the underling request files effectively reserving the lines</p>
+        <p>Opens the underling request files effectively reserving the lines</p>
 
     </div>
 
@@ -2065,7 +2101,7 @@ open nothing is done.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Reads values for the given lines</p>
+        <p>Reads values for the given lines</p>
 
 
 <table>
@@ -2136,7 +2172,7 @@ open nothing is done.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Writes new values on the given lines</p>
+        <p>Writes new values on the given lines</p>
 
 
 <table>
@@ -2181,7 +2217,7 @@ open nothing is done.</p>
 
 
 <h3 id="linuxpy.gpio.device.Device" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class=" language-python"><span class="n">Device</span><span class="p">(</span><span class="n">name_or_file</span><span class="p">,</span> <span class="n">read_write</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">io</span><span class="o">=</span><span class="n">IO</span><span class="p">)</span></code>
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class=" language-python"><span class="n">Device</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
 <a href="#linuxpy.gpio.device.Device" class="headerlink" title="Permanent link">&para;</a></h3>
 
@@ -2191,7 +2227,7 @@ open nothing is done.</p>
               Bases: <code><a class="autorefs autorefs-internal" title="linuxpy.device.BaseDevice" href="../device/#linuxpy.device.BaseDevice">BaseDevice</a></code></p>
 
 
-      <p>A device represents a connection to the underlying gpio chip</p>
+        <p>A device represents a connection to the underlying gpio chip</p>
 
 
 
@@ -2217,7 +2253,7 @@ open nothing is done.</p>
 
     <div class="doc doc-contents ">
 
-      <p>The number of lines in this chip</p>
+        <p>The number of lines in this chip</p>
 
 
 <table>
@@ -2262,7 +2298,7 @@ open nothing is done.</p>
 
     <div class="doc doc-contents ">
 
-      <p>create a request for the given lines. Equivalent to <code>device.request(key)</code></p>
+        <p>create a request for the given lines. Equivalent to <code>device.request(key)</code></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The request is not active after this call. You need to use the request object returned
@@ -2330,6 +2366,88 @@ by this method in a context manager or manually call open/close.</p>
 <div class="doc doc-object doc-function">
 
 
+<h4 id="linuxpy.gpio.device.Device.__iter__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="fm">__iter__</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">LineInfoEvent</span><span class="p">]</span></code>
+
+<a href="#linuxpy.gpio.device.Device.__iter__" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Infinite stream of line info events</p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">RETURNS</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <span class="doc-returns-annotation">
+                    <code><span title="linuxpy.types.Iterable">Iterable</span>[<span title="linuxpy.gpio.device.LineInfoEvent">LineInfoEvent</span>]</code>
+                </span>
+            </td>
+            <td class="doc-returns-details">
+              <div class="doc-md-description">
+                <p>Iterable[LineInfoEvent]: the stream of line info events</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="linuxpy.gpio.device.Device.__aiter__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="fm">__aiter__</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="n">LineInfoEvent</span><span class="p">]</span></code>
+
+<a href="#linuxpy.gpio.device.Device.__aiter__" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Asynchronous stream of line events</p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">RETURNS</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <span class="doc-returns-annotation">
+                    <code><span title="linuxpy.types.AsyncIterator">AsyncIterator</span>[<span title="linuxpy.gpio.device.LineInfoEvent">LineInfoEvent</span>]</code>
+                </span>
+            </td>
+            <td class="doc-returns-details">
+              <div class="doc-md-description">
+                <p>AsyncIterator[LineInfoEvent]: the asynchronous stream of line info events</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
 <h4 id="linuxpy.gpio.device.Device.get_info" class="doc doc-heading">
 <code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="n">get_info</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Info</span></code>
 
@@ -2338,7 +2456,7 @@ by this method in a context manager or manually call open/close.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Reads all information available including chip info and detailed information
+        <p>Reads all information available including chip info and detailed information
 about each chip line information</p>
 
 
@@ -2377,14 +2495,14 @@ about each chip line information</p>
 
 
 <h4 id="linuxpy.gpio.device.Device.request" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="n">request</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="n">LineFlag</span> <span class="o">=</span> <span class="n">LineFlag</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">Request</span></code>
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="n">request</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Collection</span><span class="p">,</span> <span class="nb">list</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">blocking</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="n">sentinel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Request</span></code>
 
 <a href="#linuxpy.gpio.device.Device.request" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
     <div class="doc doc-contents ">
 
-      <p>Create a request to reserve a list of lines on this chip</p>
+        <p>Create a request to reserve a list of lines on this chip</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The request is not active after this call. You need to use the request object returned
@@ -2401,15 +2519,15 @@ by this method in a context manager or manually call open/close.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>lines</code></td>
+            <td><code>config</code></td>
             <td class="doc-param-details">
               <div class="doc-md-description">
-                <p>Lists of lines. Defaults to None. Default is to reserve all lines</p>
+                <p>lines configuration</p>
               </div>
               <p>
                   <span class="doc-param-annotation">
                     <b>TYPE:</b>
-                      <code><span title="linuxpy.types.Optional">Optional</span>[<span title="linuxpy.types.Sequence">Sequence</span>[int]]</code>
+                      <code>dict</code>
                   </span>
                   <span class="doc-param-default">
                     <b>DEFAULT:</b>
@@ -2419,37 +2537,15 @@ by this method in a context manager or manually call open/close.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>name</code></td>
+            <td><code>lines</code></td>
             <td class="doc-param-details">
               <div class="doc-md-description">
-                <p>the requestor (aka consumer) name. Defaults to "".</p>
+                <p>blocking mode</p>
               </div>
               <p>
                   <span class="doc-param-annotation">
                     <b>TYPE:</b>
-                      <code>str</code>
-                  </span>
-                  <span class="doc-param-default">
-                    <b>DEFAULT:</b>
-                      <code>&#39;&#39;</code>
-                  </span>
-              </p>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td><code>flags</code></td>
-            <td class="doc-param-details">
-              <div class="doc-md-description">
-                <p>Flags on the request. Defaults to LineFlag(0).</p>
-              </div>
-              <p>
-                  <span class="doc-param-annotation">
-                    <b>TYPE:</b>
-                      <code><span title="linuxpy.gpio.device.LineFlag">LineFlag</span></code>
-                  </span>
-                  <span class="doc-param-default">
-                    <b>DEFAULT:</b>
-                      <code><span title="linuxpy.gpio.device.LineFlag">LineFlag</span>(0)</code>
+                      <code><span title="linuxpy.types.Union">Union</span>[bool, <span title="linuxpy.util.sentinel">sentinel</span>]</code>
                   </span>
               </p>
             </td>
@@ -2509,7 +2605,7 @@ by this method in a context manager or manually call open/close.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Reads the chip information</p>
+        <p>Reads the chip information</p>
 
 
 <table>
@@ -2580,7 +2676,7 @@ by this method in a context manager or manually call open/close.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Reads the given line information</p>
+        <p>Reads the given line information</p>
 
 
 <table>
@@ -2665,7 +2761,7 @@ by this method in a context manager or manually call open/close.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Reads the given chip the full information</p>
+        <p>Reads the given chip the full information</p>
 
 
 <table>
@@ -2728,15 +2824,15 @@ by this method in a context manager or manually call open/close.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="linuxpy.gpio.device.request_line" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">request_line</span><span class="p">(</span><span class="n">fd</span><span class="p">:</span> <span class="n">FDLike</span><span class="p">,</span> <span class="n">consumer_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">flags</span><span class="p">:</span> <span class="n">LineFlag</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">raw</span><span class="o">.</span><span class="n">gpio_v2_line_request</span></code>
+<h3 id="linuxpy.gpio.device.request" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">request</span><span class="p">(</span><span class="n">fd</span><span class="p">:</span> <span class="n">FDLike</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">blocking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">raw</span><span class="o">.</span><span class="n">gpio_v2_line_request</span></code>
 
-<a href="#linuxpy.gpio.device.request_line" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.gpio.device.request" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
     <div class="doc doc-contents ">
 
-      <p>Make a request to reserve the given line(s)</p>
+        <p>Make a request to reserve the given line(s)</p>
 
 
 <table>
@@ -2762,43 +2858,15 @@ by this method in a context manager or manually call open/close.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>consumer_name</code></td>
+            <td><code>config</code></td>
             <td class="doc-param-details">
               <div class="doc-md-description">
-                <p>consumer name (max 32 chars)</p>
+                <p>line config as specified in GPIO line configuration request</p>
               </div>
               <p>
                   <span class="doc-param-annotation">
                     <b>TYPE:</b>
-                      <code>str</code>
-                  </span>
-              </p>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td><code>lines</code></td>
-            <td class="doc-param-details">
-              <div class="doc-md-description">
-                <p>list of lines to reserve</p>
-              </div>
-              <p>
-                  <span class="doc-param-annotation">
-                    <b>TYPE:</b>
-                      <code><span title="linuxpy.types.Sequence">Sequence</span>[int]</code>
-                  </span>
-              </p>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td><code>flags</code></td>
-            <td class="doc-param-details">
-              <div class="doc-md-description">
-                <p>common flags</p>
-              </div>
-              <p>
-                  <span class="doc-param-annotation">
-                    <b>TYPE:</b>
-                      <code><span title="linuxpy.gpio.device.LineFlag">LineFlag</span></code>
+                      <code>dict</code>
                   </span>
               </p>
             </td>
@@ -2863,7 +2931,7 @@ by this method in a context manager or manually call open/close.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Read lines values.</p>
+        <p>Read lines values.</p>
 
 
 <table>
@@ -2945,7 +3013,7 @@ by this method in a context manager or manually call open/close.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Set lines values.</p>
+        <p>Set lines values.</p>
 
 
 <table>
@@ -3042,7 +3110,7 @@ by this method in a context manager or manually call open/close.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Read one event from the given request file descriptor</p>
+        <p>Read one event from the given request file descriptor</p>
 
 
 <table>
@@ -3113,7 +3181,7 @@ by this method in a context manager or manually call open/close.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Used internally in <strong>getitem</strong> to expand the given key</p>
+        <p>Used internally in <strong>getitem</strong> to expand the given key</p>
 
     </div>
 
@@ -3130,7 +3198,7 @@ by this method in a context manager or manually call open/close.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Returns an iterator over all GPIO chip files.</p>
+        <p>Returns an iterator over all GPIO chip files.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Only files for which the current user has read and write access are returned</p>
@@ -3205,7 +3273,7 @@ by this method in a context manager or manually call open/close.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Returns an iterator over all GPIO chip devices</p>
+        <p>Returns an iterator over all GPIO chip devices</p>
 
 
 <table>

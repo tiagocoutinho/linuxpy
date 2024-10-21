@@ -1098,6 +1098,24 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#linuxpy.util.sequence_indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;sequence_indexes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.util.index_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;index_mask
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#linuxpy.util.random_name" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;random_name
@@ -1434,6 +1452,24 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#linuxpy.util.sequence_indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;sequence_indexes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.util.index_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;index_mask
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#linuxpy.util.random_name" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;random_name
@@ -1477,7 +1513,7 @@
 
     <div class="doc doc-contents first">
 
-      <p>Utility functions used by the library. Mostly for internal usage</p>
+        <p>Utility functions used by the library. Mostly for internal usage</p>
 
 
 
@@ -1505,7 +1541,7 @@
               Bases: <code><span title="contextlib.AbstractAsyncContextManager">AbstractAsyncContextManager</span></code></p>
 
 
-      <p>Async context manager for safely finalizing an asynchronously cleaned-up
+        <p>Async context manager for safely finalizing an asynchronously cleaned-up
 resource such as an async generator, calling its <code>aclose()</code> method.</p>
 <p>This is a copy of contextlib.aclosing needed for python 3.9 compatibility</p>
 
@@ -1543,7 +1579,7 @@ resource such as an async generator, calling its <code>aclose()</code> method.</
     <div class="doc doc-contents ">
 
 
-      <p>Simple version supporting only a.b.c format</p>
+        <p>Simple version supporting only a.b.c format</p>
 
 
 
@@ -1572,7 +1608,7 @@ resource such as an async generator, calling its <code>aclose()</code> method.</
 
     <div class="doc doc-contents ">
 
-      <p>Returns a 3 element tuple representing the version
+        <p>Returns a 3 element tuple representing the version
 so <code>Version(3,2,1).tuple()</code> yields the tuple <code>(3, 2, 1)</code></p>
     </div>
 
@@ -1595,7 +1631,7 @@ so <code>Version(3,2,1).tuple()</code> yields the tuple <code>(3, 2, 1)</code></
 
     <div class="doc doc-contents ">
 
-      <p>Create a Version from any sequence/iterable of 3 elements</p>
+        <p>Create a Version from any sequence/iterable of 3 elements</p>
 <p>Examples that create a Version "3.2.1" object:
 <div class="highlight"><pre><span></span><code><span class="n">Version</span><span class="o">.</span><span class="n">from_tuple</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 <span class="n">Version</span><span class="o">.</span><span class="n">from_tuple</span><span class="p">([</span><span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">])</span>
@@ -1625,7 +1661,7 @@ so <code>Version(3,2,1).tuple()</code> yields the tuple <code>(3, 2, 1)</code></
 
     <div class="doc doc-contents ">
 
-      <p>Create a Version from text</p>
+        <p>Create a Version from text</p>
 <p>Example that create a Version "3.2.1" object:
 <div class="highlight"><pre><span></span><code><span class="n">Version</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">&quot;3.2.1&quot;</span><span class="p">)</span>
 </code></pre></div></p>
@@ -1649,7 +1685,7 @@ so <code>Version(3,2,1).tuple()</code> yields the tuple <code>(3, 2, 1)</code></
 
     <div class="doc doc-contents ">
 
-      <p>Create a Version from an integer where each member corresponds to
+        <p>Create a Version from an integer where each member corresponds to
 one byte in the integer so that 0xFFFEFD corresponds to 255.254.253</p>
 <p>Example that create a Version "3.2.1" object:
 <div class="highlight"><pre><span></span><code><span class="n">Version</span><span class="o">.</span><span class="n">from_number</span><span class="p">((</span><span class="mi">3</span><span class="o">&lt;&lt;</span><span class="mi">16</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span><span class="o">&lt;&lt;</span><span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -1679,7 +1715,7 @@ one byte in the integer so that 0xFFFEFD corresponds to 255.254.253</p>
 
     <div class="doc doc-contents ">
 
-      <p>Batch data from the sequence into groups of length n.
+        <p>Batch data from the sequence into groups of length n.
 The last batch may be shorter than size.</p>
 
     </div>
@@ -1697,7 +1733,7 @@ The last batch may be shorter than size.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Batch data from the sequence into groups of length n.
+        <p>Batch data from the sequence into groups of length n.
 The last batch may be shorter than size.</p>
 
     </div>
@@ -1715,7 +1751,7 @@ The last batch may be shorter than size.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Returns the tuple version of a BCD (binary-coded decimal) number</p>
+        <p>Returns the tuple version of a BCD (binary-coded decimal) number</p>
 
     </div>
 
@@ -1732,7 +1768,7 @@ The last batch may be shorter than size.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Returns the text version of a BCD (binary-coded decimal) number</p>
+        <p>Returns the text version of a BCD (binary-coded decimal) number</p>
 
     </div>
 
@@ -1749,7 +1785,7 @@ The last batch may be shorter than size.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Return a file descriptor from a file object.</p>
+        <p>Return a file descriptor from a file object.</p>
 <p>Parameters:
 fd -- file object or file descriptor</p>
 <p>Returns:
@@ -1772,7 +1808,7 @@ ValueError if the object is invalid</p>
 
     <div class="doc doc-contents ">
 
-      <p>Try to translate given text into int, int base 16 or float.
+        <p>Try to translate given text into int, int base 16 or float.
 Returns the orig and return the original text if it fails.</p>
 
 
@@ -1837,7 +1873,7 @@ Returns the orig and return the original text if it fails.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Add reader during the context and remove it after</p>
+        <p>Add reader during the context and remove it after</p>
 
     </div>
 
@@ -1854,7 +1890,7 @@ Returns the orig and return the original text if it fails.</p>
 
     <div class="doc doc-contents ">
 
-      <p>A selectors.DefaultSelector with given fds registered</p>
+        <p>A selectors.DefaultSelector with given fds registered</p>
 
     </div>
 
@@ -1871,7 +1907,7 @@ Returns the orig and return the original text if it fails.</p>
 
     <div class="doc doc-contents ">
 
-      <p>A stream of selector read events</p>
+        <p>A stream of selector read events</p>
 
     </div>
 
@@ -1888,7 +1924,7 @@ Returns the orig and return the original text if it fails.</p>
 
     <div class="doc doc-contents ">
 
-      <p>An inifinte stream of selector read events</p>
+        <p>An inifinte stream of selector read events</p>
 
     </div>
 
@@ -1905,7 +1941,7 @@ Returns the orig and return the original text if it fails.</p>
 
     <div class="doc doc-contents ">
 
-      <p>An infinite stream of read ready file descriptors</p>
+        <p>An infinite stream of read ready file descriptors</p>
 
     </div>
 
@@ -1922,7 +1958,7 @@ Returns the orig and return the original text if it fails.</p>
 
     <div class="doc doc-contents ">
 
-      <p>An infinite stream of events. The given read callable is called for each file
+        <p>An infinite stream of events. The given read callable is called for each file
 that is reported as ready</p>
 
     </div>
@@ -1944,7 +1980,7 @@ that is reported as ready</p>
 
     <div class="doc doc-contents ">
 
-      <p>An asyncronous infinite stream of selector read events</p>
+        <p>An asyncronous infinite stream of selector read events</p>
 
     </div>
 
@@ -1965,7 +2001,7 @@ that is reported as ready</p>
 
     <div class="doc doc-contents ">
 
-      <p>An asyncronous infinite stream of selector read events</p>
+        <p>An asyncronous infinite stream of selector read events</p>
 
     </div>
 
@@ -1986,7 +2022,7 @@ that is reported as ready</p>
 
     <div class="doc doc-contents ">
 
-      <p>An asyncronous infinite stream of read ready files</p>
+        <p>An asyncronous infinite stream of read ready files</p>
 
     </div>
 
@@ -2007,7 +2043,7 @@ that is reported as ready</p>
 
     <div class="doc doc-contents ">
 
-      <p>An asyncronous stream of events. The given read callable is called for each file
+        <p>An asyncronous stream of events. The given read callable is called for each file
 that is reported as ready</p>
 
     </div>
@@ -2025,7 +2061,7 @@ that is reported as ready</p>
 
     <div class="doc doc-contents ">
 
-      <p>Create a find function for the given callable. The callable should
+        <p>Create a find function for the given callable. The callable should
 return an iterable where each element has the context manager capability
 (ie, it can be used in a with statement)</p>
 
@@ -2044,8 +2080,166 @@ return an iterable where each element has the context manager capability
 
     <div class="doc doc-contents ">
 
-      <p>Return the list of indexes that have an active bit on the number.</p>
+        <p>Return the list of indexes that have an active bit on the number.</p>
 <p>Example bit_indexes(74) gives [1, 3, 6] (74 == 0b1001010)</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="linuxpy.util.sequence_indexes" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">sequence_indexes</span><span class="p">(</span><span class="n">it</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span></code>
+
+<a href="#linuxpy.util.sequence_indexes" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return a map with key being the value in the given iterable and value
+the index where it appears in the map. If the same element appears more
+than once then the last occurence is returned.
+Elements must be non mutable so they can appear in the returned map
+Example:</p>
+<p><code>sequence_indexes([10, "bla", 1]) == {10: 0, "bla": 1, 1: 2}</code></p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">PARAMETER</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>lines</code></td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>The iterable to be returned</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="linuxpy.types.Iterable">Iterable</span>[int]</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">RETURNS</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <span class="doc-returns-annotation">
+                    <code>dict[<span title="linuxpy.types.T">T</span>, int]</code>
+                </span>
+            </td>
+            <td class="doc-returns-details">
+              <div class="doc-md-description">
+                <p>dict[int, int]: map of values and their indexes</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="linuxpy.util.index_mask" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">index_mask</span><span class="p">(</span><span class="n">indexes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">elements</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span></code>
+
+<a href="#linuxpy.util.index_mask" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return a bit mask with active bits from elements. The bit index
+for each element is given by the indexes</p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">PARAMETER</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>indexes</code></td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>bit index map</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code>dict[<span title="linuxpy.types.T">T</span>, int]</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>elements</code></td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>list of active elements</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="linuxpy.types.Iterable">Iterable</span>[<span title="linuxpy.types.T">T</span>]</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">RETURNS</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>int</code>
+            </td>
+            <td class="doc-returns-details">
+              <div class="doc-md-description">
+                <p>bit mask</p>
+              </div>
+                <p>
+                  <span class="doc-returns-annotation">
+                    <b>TYPE:</b>
+                      <code>int</code>
+                  </span>
+                </p>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
     </div>
 
@@ -2062,7 +2256,7 @@ return an iterable where each element has the context manager capability
 
     <div class="doc doc-contents ">
 
-      <p>Generates a random name like text of ascii characters (letters or digits).</p>
+        <p>Generates a random name like text of ascii characters (letters or digits).</p>
 <p>The first character is always a letter</p>
 
     </div>

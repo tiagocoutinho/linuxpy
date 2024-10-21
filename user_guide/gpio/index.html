@@ -491,6 +491,51 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#line-number" class="md-nav__link">
+    <span class="md-ellipsis">
+      line number
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-of-line-numbers-or-line-configurations" class="md-nav__link">
+    <span class="md-ellipsis">
+      list of line numbers or line configurations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dictionary" class="md-nav__link">
+    <span class="md-ellipsis">
+      dictionary
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      helpers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#line-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      Line details
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#writting" class="md-nav__link">
     <span class="md-ellipsis">
       Writting
@@ -1024,6 +1069,51 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#line-number" class="md-nav__link">
+    <span class="md-ellipsis">
+      line number
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-of-line-numbers-or-line-configurations" class="md-nav__link">
+    <span class="md-ellipsis">
+      list of line numbers or line configurations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dictionary" class="md-nav__link">
+    <span class="md-ellipsis">
+      dictionary
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      helpers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#line-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      Line details
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#writting" class="md-nav__link">
     <span class="md-ellipsis">
       Writting
@@ -1077,9 +1167,9 @@
   <span data-ty="input" data-ty-prompt="$">python</span>
   <span data-ty="input" data-ty-prompt=">>>">from linuxpy.gpio import find</span>
   <span data-ty="input" data-ty-prompt=">>>">with find() as gpio:</span>
-  <span data-ty="input" data-ty-prompt="...">    with gpio.request([1, 2, 5:8]) as lines:</span>
+  <span data-ty="input" data-ty-prompt="...">    with gpio.request([1, 2, 8]) as lines:</span>
   <span data-ty="input" data-ty-prompt=">>>">        print(lines[:])</span>
-  <span data-ty>{1: 0, 2: 1, 5: 0, 6: 1, 7:0}</span>
+  <span data-ty>{1: 0, 2: 1, 8:0}</span>
 </div>
 
 <h2 id="basics">Basics<a class="headerlink" href="#basics" title="Permanent link">&para;</a></h2>
@@ -1113,30 +1203,129 @@ using <code>find</code>:</p>
 </code></pre></div>
 <h2 id="working-with-lines-request">Working with lines: Request<a class="headerlink" href="#working-with-lines-request" title="Permanent link">&para;</a></h2>
 <p>Lines need to be requested before working with them.
-A request for line(s) reserves it for exclusive access by the requestor.</p>
+A request for line(s) reserves it at the OS level for exclusive access by the
+requestor.</p>
 <p>The API uses a context manager and it looks like this:</p>
 <div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
-    <span class="k">with</span> <span class="n">gpio</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span> <span class="s2">&quot;my sweet app&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">OUTPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">gpio</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">])</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
         <span class="o">...</span>
 </code></pre></div>
-<p>The request is only sent at the entry of the context manager. This allows
-you to create the request object lazily and tweek it's parameters before
-actually reserving the lines.</p>
+<p>The request is only sent to the OS at the entry of the context manager.</p>
+<p>The above example uses lines 5 and 12 in INPUT mode which is the default.</p>
 <p>Linuxpy transparently handles requests with more than 64 lines.</p>
-<p>A helper is provided for 'dict like' access. So the example above can also be
-written as:</p>
+<p>The request argument is intented to supports all possible configurations needed.
+It can have different forms:</p>
+<h3 id="line-number">line number<a class="headerlink" href="#line-number" title="Permanent link">&para;</a></h3>
+<p>A single line is reserved with the default configuration (see below for defaults).</p>
+<p>Example:</p>
 <div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
-    <span class="n">lines</span> <span class="o">=</span> <span class="n">gpio</span><span class="o">.</span><span class="n">request</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
-    <span class="n">lines</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my sweet app&quot;</span>
-    <span class="n">lines</span><span class="o">.</span><span class="n">flags</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">OUTPUT</span>
-    <span class="k">with</span> <span class="n">lines</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">gpio</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
         <span class="o">...</span>
 </code></pre></div>
+<h3 id="list-of-line-numbers-or-line-configurations">list of line numbers or line configurations<a class="headerlink" href="#list-of-line-numbers-or-line-configurations" title="Permanent link">&para;</a></h3>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">gpio</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;line&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;direction&quot;</span><span class="p">:</span> <span class="s2">&quot;output&quot;</span><span class="p">})</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="o">...</span>
+</code></pre></div>
+<p>Reserves line 5 with default configuration and line 6 as output.</p>
+<h3 id="dictionary">dictionary<a class="headerlink" href="#dictionary" title="Permanent link">&para;</a></h3>
+<p>With keys:
+* <em>name</em>: the reservation name
+* <em>lines</em>: the lines to be reserved. Can be
+    * a line number
+    * list of line numbers or line configs
+    * a dict where key is line number and value a line config with "line" ommited</p>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;myself&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;lines&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;line&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;direction&quot;</span><span class="p">:</span> <span class="s2">&quot;output&quot;</span><span class="p">}],</span>
+<span class="p">}</span>
+
+<span class="c1"># the same above with line config map:</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;myself&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;lines&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="mi">5</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="mi">6</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;direction&quot;</span><span class="p">:</span> <span class="s2">&quot;output&quot;</span><span class="p">},</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">gpio</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">config</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="o">...</span>
+</code></pre></div>
+<h3 id="helpers">helpers<a class="headerlink" href="#helpers" title="Permanent link">&para;</a></h3>
+<p>A line configuration helper is provided:</p>
+<div class="highlight"><pre><span></span><code><span class="n">CLine</span><span class="p">(</span><span class="n">nb</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span> <span class="n">drive</span><span class="p">,</span> <span class="n">edge</span><span class="p">,</span> <span class="n">clock</span><span class="p">,</span> <span class="n">debounce</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span>
+</code></pre></div>
+<p>Example:
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.gpio.device</span> <span class="kn">import</span> <span class="n">CLine</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;myself&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;lines&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">CLine</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">CLine</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">)]</span>
+<span class="p">}</span>
+
+<span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">gpio</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">config</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="o">...</span>
+</code></pre></div></p>
+<p>Selecting input / output lines is a common pattern. Linuxpy provides</p>
+<ul>
+<li><code>ClineIn(n, **options)</code> &lt;=&gt; <code>{"line":n, "direction": "input", **options)</code></li>
+<li><code>ClineOut(n, **options)</code> &lt;=&gt; <code>{"line":n, "direction": "output", **options)</code></li>
+</ul>
+<h3 id="line-details">Line details<a class="headerlink" href="#line-details" title="Permanent link">&para;</a></h3>
+<p>Here are the line configuration options with their restrictions and defaults:</p>
+<ul>
+<li><em>direction</em>:<ul>
+<li>possible values: <code>input</code>, <code>output</code></li>
+<li>default: <strong>input</strong></li>
+</ul>
+</li>
+<li><em>active</em>:<ul>
+<li>possible values: <code>active</code>, <code>low</code></li>
+<li>default: <strong>active</strong></li>
+</ul>
+</li>
+<li><em>bias</em>:<ul>
+<li>possbile values: <code>pull-up</code>, <code>pull-down</code>, <code>none</code></li>
+<li>default: <strong>none</strong></li>
+</ul>
+</li>
+<li><em>clock</em>:<ul>
+<li>possbile values: <code>realtime</code>, <code>hte</code>, <code>monotonic</code></li>
+<li>default: <strong>monotonic</strong></li>
+</ul>
+</li>
+<li><em>edge</em>:<ul>
+<li>possbile values: <code>rising</code>, <code>falling</code>, <code>both</code>, <code>none</code></li>
+<li>default: <strong>none</strong></li>
+<li>restrictions: only valid for INPUT lines</li>
+</ul>
+</li>
+<li><em>drive</em>:<ul>
+<li>possbile values: <code>drain</code>, <code>source</code>, <code>push-pull</code>.</li>
+<li>default: <strong>push-pull</strong></li>
+<li>restrictions: only valid for OUTPUT lines</li>
+</ul>
+</li>
+<li><em>debounce</em>:<ul>
+<li>possible values: number (int or float) &gt; 0. Debounce in seconds with micro-second precision</li>
+<li>default: use the current debouce</li>
+<li>restrictions: only valid for OUTPUT lines</li>
+</ul>
+</li>
+</ul>
 <h3 id="writting">Writting<a class="headerlink" href="#writting" title="Permanent link">&para;</a></h3>
+<p>In the following examples we will use the <code>CLineOut</code> helper which is short for
+<code>CLine(direction="output")</code>.</p>
 <p>To change OUTPUT line(s) value(s) simply invoke the <code>set_values</code> method on
 the request object:</p>
 <div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
-    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span> <span class="s2">&quot;my sweet app&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">OUTPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="n">CLineOut</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">CLineOut</span><span class="p">(</span><span class="mi">7</span><span class="p">)])</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
         <span class="n">lines</span><span class="o">.</span><span class="n">set_values</span><span class="p">({</span><span class="mi">5</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
 </code></pre></div>
 <p>The example above reserves lines 5 and 7 for <strong>output</strong> by a client (aka
@@ -1145,12 +1334,13 @@ As you can see, it is possible to write only the lines you're interested.</p>
 <p>A helper is provided for 'dict like' access. So the example above can also be
 written as:</p>
 <div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
-    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span> <span class="s2">&quot;my sweet app&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">OUTPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="n">CLineOut</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">CLineOut</span><span class="p">(</span><span class="mi">7</span><span class="p">)])</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
         <span class="n">lines</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 </code></pre></div>
-<p>The dict like API also supports setting multiple lines. Here are some examples:</p>
+<p>The dict like API also supports setting multiple lines.</p>
+<p>Here are some examples using the CLineOut helper:</p>
 <div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
-    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">)),</span> <span class="s2">&quot;16 lines reserved&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">OUTPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="n">CLineOut</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">)])</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
         <span class="c1"># write line 5</span>
         <span class="n">lines</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="c1"># set lines 7, 5, to 0 and 1 respectively</span>
@@ -1160,26 +1350,24 @@ written as:</p>
         <span class="c1"># set lines 3, 10 to 0 and lines 12 to 1, 13 to 0 and 14 to 1</span>
         <span class="n">lines</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">:</span><span class="mi">15</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
-<p>A current limitation is all lines in the request must share the same
-configuration. This is a linuxpy limitation as linux supports different line
-configurations in the same request.</p>
 <h3 id="reading">Reading<a class="headerlink" href="#reading" title="Permanent link">&para;</a></h3>
 <p>Reading line values is very similar to writting:</p>
 <div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
-    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span> <span class="s2">&quot;my sweet app&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">INPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">get_values</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">])</span>
+    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="n">CLineIn</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span> <span class="n">CLineIn</span><span class="p">(</span><span class="mi">12</span><span class="p">])</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">get_values</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">12</span><span class="p">])</span>
 
-        <span class="c1"># values will be something like {5: 0, 12: 1}</span>
+        <span class="c1"># values will be something like {6: 0, 12: 1}</span>
 </code></pre></div>
+<p>In the above example with</p>
 <p>The "dict like" API is also supported for reading so the above example could be
 written as:</p>
 <div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
-    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span> <span class="s2">&quot;my sweet app&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">INPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="n">CLineIn</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span> <span class="n">CLineIn</span><span class="p">(</span><span class="mi">12</span><span class="p">])</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
 </code></pre></div>
 <p>A more complex reads also works:</p>
 <div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
-    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">)),</span> <span class="s2">&quot;16 lines reserved&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">INPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="n">CLineIn</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">)])</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
         <span class="c1"># read lines 7, 5</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
         <span class="c1"># read all lines</span>
@@ -1190,7 +1378,7 @@ written as:</p>
 <h2 id="edge-detection-events">Edge detection events<a class="headerlink" href="#edge-detection-events" title="Permanent link">&para;</a></h2>
 <p>The request object can be used as an infinite iterator to watch for line events:</p>
 <div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
-    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="s2">&quot;a client&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">INPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> #</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">sequence</span><span class="si">}</span><span class="s2"> detected for line </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
@@ -1203,7 +1391,7 @@ written as:</p>
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="s2">&quot;a client&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">LineFlag</span><span class="o">.</span><span class="n">INPUT</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
             <span class="k">async</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> #</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">sequence</span><span class="si">}</span><span class="s2"> detected for line </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
