@@ -46,6 +46,7 @@ from linuxpy.util import (
     make_find,
     sentinel,
     sequence_indexes,
+    to_fd,
 )
 
 from . import raw
@@ -227,8 +228,7 @@ def unwatch_line_info(fd: FDLike, line: int):
 
 
 def read_one_line_info_event(fd: FDLike) -> LineInfoEvent:
-    if not isinstance(fd, int):
-        fd = fd.fileno()
+    fd = to_fd(fd)
     data = os.read(fd, sizeof(raw.gpio_v2_line_info_changed))
     event = raw.gpio_v2_line_info_changed.from_buffer_copy(data)
     info = decode_line_info(event.info)
@@ -598,7 +598,9 @@ class Device(BaseDevice):
         finally:
             self.unwatch_lines(lines)
 
-    def request(self, config: Optional[Union[dict, list]] = None, blocking: Union[bool, object] = sentinel) -> Request:
+    def request(
+        self, config: Optional[Union[Collection, list]] = None, blocking: Union[bool, object] = sentinel
+    ) -> Request:
         """Create a request to reserve a list of lines on this chip
 
         !!! note

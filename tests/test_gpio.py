@@ -21,7 +21,9 @@ from ward import each, fixture, raises, test
 from linuxpy.device import device_number
 from linuxpy.gpio import device, raw
 from linuxpy.gpio.config import (
-    ConfigLine,
+    CLine,
+    CLineIn,
+    CLineOut,
     check_line_config,
     encode_config,
     encode_line_config,
@@ -222,21 +224,21 @@ def _():
 
 @test("encode config")
 def _():
-    result = encode_config([ConfigLine(5)])
+    result = encode_config([CLineIn(5)])
     assert result.num_attrs == 0
     assert LineFlag(result.flags) == LineFlag.INPUT
 
     cfg = raw.gpio_v2_line_config()
-    result = encode_config([ConfigLine(5)], cfg)
+    result = encode_config([CLineIn(5)], cfg)
     assert result is cfg
     assert result.num_attrs == 0
     assert LineFlag(result.flags) == LineFlag.INPUT
 
-    result = encode_config([ConfigLine(5), ConfigLine(6)])
+    result = encode_config([CLineIn(5), CLineIn(6)])
     assert result.num_attrs == 0
     assert LineFlag(result.flags) == LineFlag.INPUT
 
-    result = encode_config([ConfigLine(5), ConfigLine(6, "output")])
+    result = encode_config([CLineIn(5), CLineOut(6)])
     assert result.num_attrs == 2
     assert result.flags == 0
     assert result.attrs[0].mask == 0b01
@@ -244,7 +246,7 @@ def _():
     assert result.attrs[1].mask == 0b10
     assert LineFlag(result.attrs[1].attr.flags) == LineFlag.OUTPUT
 
-    result = encode_config([ConfigLine(6, "output", debounce=0.02), ConfigLine(5)])
+    result = encode_config([CLineOut(6, debounce=0.02), CLineIn(5)])
     assert result.num_attrs == 3
     assert result.flags == 0
     assert result.attrs[0].mask == 0b01
@@ -253,6 +255,27 @@ def _():
     assert LineFlag(result.attrs[1].attr.flags) == LineFlag.INPUT
     assert result.attrs[2].mask == 0b01
     assert LineFlag(result.attrs[2].attr.debounce_period_us) == 20_000
+
+    result = encode_config(
+        [
+            CLineOut(6, debounce=0.01),
+            CLineIn(5),
+            CLineOut(12, drive="drain", debounce=0.01),
+            CLineIn(7, edge="rising"),
+        ]
+    )
+    assert result.num_attrs == 5
+    assert result.flags == 0
+    assert result.attrs[0].mask == 0b01
+    assert LineFlag(result.attrs[0].attr.flags) == LineFlag.OUTPUT
+    assert result.attrs[1].mask == 0b10
+    assert LineFlag(result.attrs[1].attr.flags) == LineFlag.INPUT
+    assert result.attrs[2].mask == 0b100
+    assert LineFlag(result.attrs[2].attr.flags) == LineFlag.OUTPUT | LineFlag.OPEN_DRAIN
+    assert result.attrs[3].mask == 0b1000
+    assert LineFlag(result.attrs[3].attr.flags) == LineFlag.INPUT | LineFlag.EDGE_RISING
+    assert result.attrs[4].mask == 0b101
+    assert LineFlag(result.attrs[4].attr.debounce_period_us) == 10_000
 
 
 @test("parse config lines")
@@ -277,8 +300,8 @@ def _():
     for key, value in fields:
         keys.append(key)
         values.append(value)
-        assert ConfigLine(55, **{key: value}) == {key: value, "line": 55}
-        assert ConfigLine(56, *values) == dict(zip(keys, values), line=56)
+        assert CLine(55, **{key: value}) == {key: value, "line": 55}
+        assert CLine(56, *values) == dict(zip(keys, values), line=56)
 
 
 @test("parse config")
@@ -386,6 +409,8 @@ def _(chip=emulate_gpiochip):
         for blocking in (True, False):
             for request in (device[:], device.request()):
                 request.blocking = blocking
+                assert request.name == "linuxpy"
+                assert all(lr.name == "linuxpy" for lr in request.line_requests)
                 assert len(request.lines) == nb_lines
                 assert request.min_line == 0
                 assert request.max_line == nb_lines - 1
@@ -482,6 +507,9 @@ def _(chip=emulate_gpiochip):
 
             request[3, 4, 7:10] = 1, 0, 1, 0, 1
             assert request[3, 4, 7:10] == {3: 1, 4: 0, 7: 1, 8: 0, 9: 1}
+
+            with raises(ValueError):
+                request[1] = [0, 1]
 
 
 @test("event stream")
@@ -635,7 +663,7 @@ def _():
                 # close the request to make sure it always succeeds
                 request.close()
 
-            config = {"name": "myself", "lines": [ConfigLine(5, "output"), ConfigLine(12, "output")]}
+            config = {"name": "myself", "lines": [CLine(5, "output"), CLine(12, "output")]}
             with device.request(config) as request:
                 info = device.get_info()
                 l5 = info.lines[5]
@@ -646,9 +674,9 @@ def _():
 
             # complex config
             config = [
-                ConfigLine(6, "output"),
-                ConfigLine(7, "input", edge="rising"),
-                ConfigLine(8, "output", clock="monotonic"),  # , bias="pull-up"),
+                CLine(6, "output"),
+                CLine(7, "input", edge="rising"),
+                CLine(8, "output", clock="monotonic"),  # , bias="pull-up"),
             ]
             request = device.request(config)
             request.name = "linuxpy-tests"
@@ -702,7 +730,7 @@ def _():
 @test("sim set value")
 def _():
     with Device(sim_file) as device:
-        with device.request([ConfigLine(i, "output") for i in range(5, 14)]) as request:
+        with device.request([CLine(i, "output") for i in range(5, 14)]) as request:
             request.set_values({10: 1})
             assert request[10] == 1
 

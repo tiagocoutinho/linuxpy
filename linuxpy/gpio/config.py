@@ -25,6 +25,8 @@ config = {
 """
 
 import collections
+import functools
+from collections.abc import Mapping
 
 from linuxpy.types import Collection, Optional, Sequence, Union
 from linuxpy.util import index_mask, sentinel, sequence_indexes
@@ -40,6 +42,7 @@ def check_line_config(line_config: dict):
     direction = LineFlag[direction]
     bias = line_config.get("bias", sentinel)
     clock = line_config.get("clock", sentinel)
+    active = line_config.get("active", sentinel)
 
     drive = line_config.get("drive", sentinel)
     debounce = line_config.get("debounce", sentinel)
@@ -66,6 +69,10 @@ def check_line_config(line_config: dict):
     else:
         raise ValueError("direction can only be output or input")
 
+    if active is not sentinel:
+        if active.lower() not in ("high", "low"):
+            raise ValueError("active must be 'rising', 'high' or 'low'")
+
     if bias is not sentinel:
         if bias.lower() not in ("pull-up", "pull-down"):
             raise ValueError("bias must be 'pull-up' or 'pull-down'")
@@ -75,41 +82,69 @@ def check_line_config(line_config: dict):
             raise ValueError("drive must be 'monotonic', 'realtime' or 'hte'")
 
 
-_CONFIG_DIRECTION_MAP: dict[str, LineFlag] = {
+_CONFIG_DIRECTION_MAP: dict[Union[str, LineFlag], LineFlag] = {
     "input": LineFlag.INPUT,
     "output": LineFlag.OUTPUT,
+    "none": LineFlag.INPUT,
     "": LineFlag.INPUT,
+    LineFlag.INPUT: LineFlag.INPUT,
+    LineFlag.OUTPUT: LineFlag.OUTPUT,
 }
 
 
-_CONFIG_EDGE_MAP: dict[str, LineFlag] = {
+_CONFIG_EDGE_MAP: dict[Union[str, LineFlag], LineFlag] = {
     "rising": LineFlag.EDGE_RISING,
     "falling": LineFlag.EDGE_FALLING,
     "both": LineFlag.EDGE_RISING | LineFlag.EDGE_FALLING,
     "": LineFlag(0),
+    "none": LineFlag(0),
+    LineFlag(0): LineFlag(0),
+    LineFlag.EDGE_RISING: LineFlag.EDGE_RISING,
+    LineFlag.EDGE_FALLING: LineFlag.EDGE_FALLING,
+    LineFlag.EDGE_RISING | LineFlag.EDGE_FALLING: LineFlag.EDGE_RISING | LineFlag.EDGE_FALLING,
 }
 
 
-_CONFIG_DRIVE_MAP: dict[str, LineFlag] = {
+_CONFIG_DRIVE_MAP: dict[Union[str, LineFlag], LineFlag] = {
     "drain": LineFlag.OPEN_DRAIN,
     "source": LineFlag.OPEN_SOURCE,
     "push-pull": LineFlag(0),
     "": LineFlag(0),
+    "none": LineFlag(0),
+    LineFlag.OPEN_DRAIN: LineFlag.OPEN_DRAIN,
+    LineFlag.OPEN_SOURCE: LineFlag.OPEN_SOURCE,
+    LineFlag(0): LineFlag(0),
 }
 
 
-_CONFIG_BIAS_MAP: dict[str, LineFlag] = {
+_CONFIG_BIAS_MAP: dict[Union[str, LineFlag], LineFlag] = {
     "pull-up": LineFlag.BIAS_PULL_UP,
     "pull-down": LineFlag.BIAS_PULL_DOWN,
     "": LineFlag(0),
+    "none": LineFlag(0),
+    LineFlag.BIAS_PULL_UP: LineFlag.BIAS_PULL_UP,
+    LineFlag.BIAS_PULL_DOWN: LineFlag.BIAS_PULL_DOWN,
+    LineFlag(0): LineFlag(0),
 }
 
 
-_CONFIG_CLOCK_MAP: dict[str, LineFlag] = {
+_CONFIG_CLOCK_MAP: dict[Union[str, LineFlag], LineFlag] = {
     "realtime": LineFlag.EVENT_CLOCK_REALTIME,
     "hte": LineFlag.EVENT_CLOCK_HTE,
     "": LineFlag(0),
     "monotonic": LineFlag(0),
+    LineFlag.EVENT_CLOCK_REALTIME: LineFlag.EVENT_CLOCK_REALTIME,
+    LineFlag.EVENT_CLOCK_HTE: LineFlag.EVENT_CLOCK_HTE,
+    LineFlag(0): LineFlag(0),
+}
+
+
+_CONFIG_ACTIVE: dict[Union[str, LineFlag], LineFlag] = {
+    "high": LineFlag(0),
+    "low": LineFlag.ACTIVE_LOW,
+    LineFlag.ACTIVE_LOW: LineFlag.ACTIVE_LOW,
+    "": LineFlag(0),
+    LineFlag(0): LineFlag(0),
 }
 
 
@@ -119,12 +154,14 @@ def encode_line_config(line_config: dict) -> tuple[int, LineFlag, Union[int, Non
     clock = line_config.get("clock", "").lower()
     drive = line_config.get("drive", "").lower()
     edge = line_config.get("edge", "").lower()
+    active = line_config.get("active", "").lower()
     flags = (
         _CONFIG_DIRECTION_MAP[direction]
         | _CONFIG_EDGE_MAP[edge]
         | _CONFIG_DRIVE_MAP[drive]
         | _CONFIG_BIAS_MAP[bias]
         | _CONFIG_CLOCK_MAP[clock]
+        | _CONFIG_ACTIVE[active]
     )
 
     debounce = line_config.get("debounce", None)
@@ -202,22 +239,26 @@ def parse_config_lines(lines: Union[Collection, int]) -> list[dict]:
         return [{**cfg, "line": line} for line, cfg in lines.items()]
     if isinstance(lines, (list, tuple)):
         return [parse_config_line(line) for line in lines]
-    raise ValueError("lines must be an int, a sequence of int or dict or dict")
+    raise TypeError("lines must be an int, a sequence of int or dict or dict")
 
 
-def parse_config(config: Optional[Union[Collection, int]], nb_lines: int):
+def parse_config(config: Optional[Union[Collection, int]], nb_lines: int) -> dict:
     if config is None:
-        config = tuple(range(nb_lines))
+        result = {"lines": tuple(range(nb_lines))}
     elif isinstance(config, int):
-        config = (config,)
-    if isinstance(config, (list, tuple)):
-        config = {"lines": config}
-    config["lines"] = parse_config_lines(config["lines"])
-    config.setdefault("name", "linuxpy")
-    return config
+        result = {"lines": (config,)}
+    elif isinstance(config, Sequence):
+        result = {"lines": config}
+    elif isinstance(config, Mapping):
+        result = config
+    else:
+        raise TypeError("config must be an int, list or dict")
+    result["lines"] = parse_config_lines(result["lines"])
+    result.setdefault("name", "linuxpy")
+    return result
 
 
-def ConfigLine(nb, direction="", bias="", drive="", edge="", clock="", debounce=None):
+def CLine(nb, direction="", bias="", drive="", edge="", clock="", debounce=None):
     result = {"line": nb}
     if direction:
         result["direction"] = direction
@@ -232,6 +273,10 @@ def ConfigLine(nb, direction="", bias="", drive="", edge="", clock="", debounce=
     if debounce is not None:
         result["debounce"] = debounce
     return result
+
+
+CLineIn = functools.partial(CLine, direction="input")
+CLineOut = functools.partial(CLine, direction="output")
 
 
 def Config(lines, name="linuxpy"):
