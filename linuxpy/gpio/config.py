@@ -186,11 +186,10 @@ def encode_config_lines(
     if raw_config is None:
         raw_config = gpio_v2_line_config()
 
-    if len(flags) == 1 and not debounces:
-        general_flags, lines = flags.popitem()
-        raw_config.flags = general_flags
-        raw_config.num_attrs = 0
-        return raw_config
+    flags_lines = collections.Counter({flag: len(lines) for flag, lines in flags.items()})
+    general_flags, _ = flags_lines.most_common(1)[0]
+    flags.pop(general_flags)
+    raw_config.flags = general_flags
 
     line_indexes = sequence_indexes(line[0] for line in lines)
     for idx, (flag, flag_lines) in enumerate(flags.items()):

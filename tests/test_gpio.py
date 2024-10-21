@@ -234,27 +234,23 @@ def _():
     assert result.num_attrs == 0
     assert LineFlag(result.flags) == LineFlag.INPUT
 
-    result = encode_config([CLineIn(5), CLineIn(6)])
+    result = encode_config([CLineIn(5) for i in range(5, 10)])
     assert result.num_attrs == 0
     assert LineFlag(result.flags) == LineFlag.INPUT
 
     result = encode_config([CLineIn(5), CLineOut(6)])
-    assert result.num_attrs == 2
-    assert result.flags == 0
-    assert result.attrs[0].mask == 0b01
-    assert LineFlag(result.attrs[0].attr.flags) == LineFlag.INPUT
-    assert result.attrs[1].mask == 0b10
-    assert LineFlag(result.attrs[1].attr.flags) == LineFlag.OUTPUT
+    assert result.num_attrs == 1
+    assert LineFlag(result.flags) == LineFlag.INPUT
+    assert result.attrs[0].mask == 0b10
+    assert LineFlag(result.attrs[0].attr.flags) == LineFlag.OUTPUT
 
     result = encode_config([CLineOut(6, debounce=0.02), CLineIn(5)])
-    assert result.num_attrs == 3
-    assert result.flags == 0
-    assert result.attrs[0].mask == 0b01
-    assert LineFlag(result.attrs[0].attr.flags) == LineFlag.OUTPUT
-    assert result.attrs[1].mask == 0b10
-    assert LineFlag(result.attrs[1].attr.flags) == LineFlag.INPUT
-    assert result.attrs[2].mask == 0b01
-    assert LineFlag(result.attrs[2].attr.debounce_period_us) == 20_000
+    assert result.num_attrs == 2
+    assert LineFlag(result.flags) == LineFlag.OUTPUT
+    assert LineFlag(result.attrs[0].attr.flags) == LineFlag.INPUT
+    assert result.attrs[0].mask == 0b10
+    assert result.attrs[1].mask == 0b01
+    assert LineFlag(result.attrs[1].attr.debounce_period_us) == 20_000
 
     result = encode_config(
         [
@@ -262,20 +258,19 @@ def _():
             CLineIn(5),
             CLineOut(12, drive="drain", debounce=0.01),
             CLineIn(7, edge="rising"),
+            CLineIn(55, edge="rising"),
         ]
     )
-    assert result.num_attrs == 5
-    assert result.flags == 0
+    assert LineFlag(result.flags) == LineFlag.INPUT | LineFlag.EDGE_RISING
+    assert result.num_attrs == 4
     assert result.attrs[0].mask == 0b01
     assert LineFlag(result.attrs[0].attr.flags) == LineFlag.OUTPUT
     assert result.attrs[1].mask == 0b10
     assert LineFlag(result.attrs[1].attr.flags) == LineFlag.INPUT
     assert result.attrs[2].mask == 0b100
     assert LineFlag(result.attrs[2].attr.flags) == LineFlag.OUTPUT | LineFlag.OPEN_DRAIN
-    assert result.attrs[3].mask == 0b1000
-    assert LineFlag(result.attrs[3].attr.flags) == LineFlag.INPUT | LineFlag.EDGE_RISING
-    assert result.attrs[4].mask == 0b101
-    assert LineFlag(result.attrs[4].attr.debounce_period_us) == 10_000
+    assert result.attrs[3].mask == 0b101
+    assert LineFlag(result.attrs[3].attr.debounce_period_us) == 10_000
 
 
 @test("parse config lines")
