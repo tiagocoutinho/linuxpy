@@ -167,8 +167,8 @@ Here are the line configuration options with their restrictions and defaults:
     * possible values: `input`, `output`
     * default: **input**
 * *active*:
-    * possible values: `active`, `low`
-    * default: **active**
+    * possible values: `high`, `low`
+    * default: **high**
 * *bias*:
     * possbile values: `pull-up`, `pull-down`, `none`
     * default: **none**
