@@ -4,8 +4,11 @@
 # Copyright (c) 2024 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
+import asyncio
 import os
 import socket
+import threading
+import time
 from contextlib import ExitStack, contextmanager
 from inspect import isgenerator
 from itertools import count
@@ -17,9 +20,26 @@ from ward import each, fixture, raises, test
 
 from linuxpy.device import device_number
 from linuxpy.gpio import device, raw
-from linuxpy.gpio.device import Device, LineEventId, Request, expand_from_list, iter_devices, iter_gpio_files
+from linuxpy.gpio.config import (
+    CLine,
+    CLineIn,
+    CLineOut,
+    check_line_config,
+    encode_config,
+    encode_line_config,
+    parse_config,
+    parse_config_lines,
+)
+from linuxpy.gpio.device import (
+    Device,
+    LineEventId,
+    LineFlag,
+    expand_from_list,
+    iter_devices,
+    iter_gpio_files,
+)
 from linuxpy.gpio.sim import find_gpio_sim_file
-from linuxpy.util import bit_indexes
+from linuxpy.util import aclosing, bit_indexes
 
 
 def FD():
@@ -161,6 +181,136 @@ def emulate_gpiochip():
         yield hardware
 
 
+@test("encode line config")
+def _():
+    line, flags, debounce = encode_line_config({"line": 5})
+    assert line == 5
+    assert flags == LineFlag.INPUT
+    assert debounce is None
+
+    line_config = {
+        "line": 5,
+        "direction": "output",
+    }
+    line, flags, debounce = encode_line_config(line_config)
+    assert line == line_config["line"]
+    assert flags == LineFlag.OUTPUT
+    assert debounce is None
+
+
+@test("check encode line config errors")
+def _():
+    with raises(KeyError):
+        check_line_config({})
+
+    with raises(ValueError):
+        check_line_config({"line": "hello"})
+
+    with raises(ValueError):
+        check_line_config({"line": -5})
+
+    with raises(ValueError):
+        check_line_config({"line": 1, "direction": "output", "edge": "rising"})
+
+    with raises(ValueError):
+        check_line_config({"line": 1, "direction": "input", "drive": "drain"})
+
+    with raises(ValueError):
+        check_line_config({"line": 1, "direction": "input", "drive": "drain"})
+
+    with raises(ValueError):
+        check_line_config({"line": 1, "direction": "input", "debounce": 0.001})
+
+
+@test("encode config")
+def _():
+    result = encode_config([CLineIn(5)])
+    assert result.num_attrs == 0
+    assert LineFlag(result.flags) == LineFlag.INPUT
+
+    cfg = raw.gpio_v2_line_config()
+    result = encode_config([CLineIn(5)], cfg)
+    assert result is cfg
+    assert result.num_attrs == 0
+    assert LineFlag(result.flags) == LineFlag.INPUT
+
+    result = encode_config([CLineIn(5) for i in range(5, 10)])
+    assert result.num_attrs == 0
+    assert LineFlag(result.flags) == LineFlag.INPUT
+
+    result = encode_config([CLineIn(5), CLineOut(6)])
+    assert result.num_attrs == 1
+    assert LineFlag(result.flags) == LineFlag.INPUT
+    assert result.attrs[0].mask == 0b10
+    assert LineFlag(result.attrs[0].attr.flags) == LineFlag.OUTPUT
+
+    result = encode_config([CLineOut(6, debounce=0.02), CLineIn(5)])
+    assert result.num_attrs == 2
+    assert LineFlag(result.flags) == LineFlag.OUTPUT
+    assert LineFlag(result.attrs[0].attr.flags) == LineFlag.INPUT
+    assert result.attrs[0].mask == 0b10
+    assert result.attrs[1].mask == 0b01
+    assert LineFlag(result.attrs[1].attr.debounce_period_us) == 20_000
+
+    result = encode_config(
+        [
+            CLineOut(6, debounce=0.01),
+            CLineIn(5),
+            CLineOut(12, drive="drain", debounce=0.01),
+            CLineIn(7, edge="rising"),
+            CLineIn(55, edge="rising"),
+        ]
+    )
+    assert LineFlag(result.flags) == LineFlag.INPUT | LineFlag.EDGE_RISING
+    assert result.num_attrs == 4
+    assert result.attrs[0].mask == 0b01
+    assert LineFlag(result.attrs[0].attr.flags) == LineFlag.OUTPUT
+    assert result.attrs[1].mask == 0b10
+    assert LineFlag(result.attrs[1].attr.flags) == LineFlag.INPUT
+    assert result.attrs[2].mask == 0b100
+    assert LineFlag(result.attrs[2].attr.flags) == LineFlag.OUTPUT | LineFlag.OPEN_DRAIN
+    assert result.attrs[3].mask == 0b101
+    assert LineFlag(result.attrs[3].attr.debounce_period_us) == 10_000
+
+
+@test("parse config lines")
+def _():
+    assert parse_config_lines(12) == [{"line": 12}]
+    assert parse_config_lines((10, 4)) == [{"line": 10}, {"line": 4}]
+    assert parse_config_lines([{"line": 10}, {"line": 4}]) == [{"line": 10}, {"line": 4}]
+    assert parse_config_lines({10: {}, 4: {}}) == [{"line": 10}, {"line": 4}]
+
+
+@test("build config line")
+def _():
+    fields = (
+        ("direction", "output"),
+        ("bias", "pull-up"),
+        ("drive", "source"),
+        ("edge", "falling"),
+        ("clock", "hte"),
+        ("debounce", 0.001),
+    )
+    keys, values = [], []
+    for key, value in fields:
+        keys.append(key)
+        values.append(value)
+        assert CLine(55, **{key: value}) == {key: value, "line": 55}
+        assert CLine(56, *values) == dict(zip(keys, values), line=56)
+
+
+@test("parse config")
+def _():
+    assert parse_config(None, 16) == {"name": "linuxpy", "lines": [{"line": i} for i in range(16)]}
+    assert parse_config(34, 16) == {"name": "linuxpy", "lines": [{"line": 34}]}
+    assert parse_config([13, 4], 16) == {"name": "linuxpy", "lines": [{"line": 13}, {"line": 4}]}
+    assert parse_config({"lines": [13, 4]}, 16) == {"name": "linuxpy", "lines": [{"line": 13}, {"line": 4}]}
+    assert parse_config({"name": "client1", "lines": {4: {}, 12: {}}}, 16) == {
+        "name": "client1",
+        "lines": [{"line": 4}, {"line": 12}],
+    }
+
+
 @test("expand list")
 def _():
     assert [5] == expand_from_list(5, None, None)
@@ -252,14 +402,16 @@ def _(chip=emulate_gpiochip):
     nb_lines = chip.nb_lines
     with Device(chip.filename) as device:
         for blocking in (True, False):
-            for request in (device[:], device.request(), Request(None, list(range(nb_lines)))):
+            for request in (device[:], device.request()):
                 request.blocking = blocking
+                assert request.name == "linuxpy"
+                assert all(lr.name == "linuxpy" for lr in request.line_requests)
                 assert len(request.lines) == nb_lines
                 assert request.min_line == 0
                 assert request.max_line == nb_lines - 1
                 assert len(request.line_requests) == ceil(nb_lines / 64)
 
-            for request in (device[1], device.request([1]), Request(None, [1])):
+            for request in (device[1], device.request([1])):
                 assert len(request.lines) == 1
                 assert len(request.line_requests) == 1
                 assert request.min_line == 1
@@ -267,7 +419,7 @@ def _(chip=emulate_gpiochip):
                 assert request.lines == [1]
 
             lines = [1, 5, 10, 12]
-            for request in (device[1, 5, 10:14:2], device.request(lines), Request(None, lines)):
+            for request in (device[1, 5, 10:14:2], device.request(lines)):
                 assert len(request.lines) == 4
                 assert len(request.line_requests) == 1
                 assert request.min_line == 1
@@ -314,8 +466,7 @@ def _(chip=emulate_gpiochip):
             assert_request(request)
 
         for blocking in (False, True):
-            request = Request(device, list(range(1, 10)), name="Me", blocking=blocking)
-            with request:
+            with device.request({"name": "me", "lines": list(range(1, 10))}, blocking=blocking) as request:
                 assert_request(request)
 
 
@@ -352,6 +503,9 @@ def _(chip=emulate_gpiochip):
             request[3, 4, 7:10] = 1, 0, 1, 0, 1
             assert request[3, 4, 7:10] == {3: 1, 4: 0, 7: 1, 8: 0, 9: 1}
 
+            with raises(ValueError):
+                request[1] = [0, 1]
+
 
 @test("event stream")
 def _(chip=emulate_gpiochip):
@@ -385,8 +539,7 @@ async def _(chip=emulate_gpiochip):
             line_request = request.line_requests[0]
             chip.trigger_event(line_request, line, LineEventId.RISING_EDGE, 55, 22, 1_999_999_000)
             chip.trigger_event(line_request, line, LineEventId.FALLING_EDGE, 57, 23, 2_999_999_000)
-            stream = request.__aiter__()
-            try:
+            async with aclosing(request.__aiter__()) as stream:
                 i = 0
                 async for event in stream:
                     assert event.line == line
@@ -403,8 +556,6 @@ async def _(chip=emulate_gpiochip):
                     i += 1
                     if i > 0:
                         break
-            finally:
-                await stream.aclose()
 
 
 sim_file = find_gpio_sim_file()
@@ -443,36 +594,36 @@ def _():
     assert l0.flags == raw.LineFlag.INPUT
     assert l0.name == "L-I0"
     assert l0.consumer == ""
-    assert l0.offset == 0
+    assert l0.line == 0
     assert l0.attributes.flags == 0
-    assert isclose(l0.attributes.debounce_period, 0)
+    assert l0.attributes.debounce_period is None
 
     l1 = info.lines[1]
     assert l1.flags == raw.LineFlag.INPUT
     assert l1.name == "L-I1"
     assert l1.consumer == ""
-    assert l1.offset == 1
+    assert l1.line == 1
     assert l1.attributes.flags == 0
 
     l2 = info.lines[2]
     assert l2.flags == raw.LineFlag.USED | raw.LineFlag.INPUT
     assert l2.name == "L-I2"
     assert l2.consumer == "L-I2-hog"
-    assert l2.offset == 2
+    assert l2.line == 2
     assert l2.attributes.flags == 0
 
     l3 = info.lines[3]
     assert l3.flags == raw.LineFlag.USED | raw.LineFlag.OUTPUT
     assert l3.name == "L-O0"
     assert l3.consumer == "L-O0-hog"
-    assert l3.offset == 3
+    assert l3.line == 3
     assert l3.attributes.flags == 0
 
     l4 = info.lines[4]
     assert l4.flags == raw.LineFlag.USED | raw.LineFlag.OUTPUT
     assert l4.name == "L-O1"
     assert l4.consumer == "L-O1-hog"
-    assert l4.offset == 4
+    assert l4.line == 4
     assert l4.attributes.flags == 0
 
 
@@ -481,14 +632,15 @@ def _():
     nb_lines = 16
     with Device(sim_file) as device:
         for blocking in (True, False):
-            for request in (device[:], device.request(), Request(None, list(range(nb_lines)))):
+            for request in (device[:], device.request()):
+                assert len(request) == nb_lines
                 request.blocking = blocking
                 assert len(request.lines) == nb_lines
                 assert request.min_line == 0
                 assert request.max_line == nb_lines - 1
                 assert len(request.line_requests) == ceil(nb_lines / 64)
 
-            for request in (device[1], device.request([1]), Request(None, [1])):
+            for request in (device[1], device.request([1])):
                 assert len(request.lines) == 1
                 assert len(request.line_requests) == 1
                 assert request.min_line == 1
@@ -496,7 +648,7 @@ def _():
                 assert request.lines == [1]
 
             lines = [1, 5, 10, 12]
-            for request in (device[1, 5, 10:14:2], device.request(lines), Request(None, lines)):
+            for request in (device[1, 5, 10:14:2], device.request(lines)):
                 assert len(request.lines) == 4
                 assert len(request.line_requests) == 1
                 assert request.min_line == 1
@@ -506,13 +658,30 @@ def _():
                 # close the request to make sure it always succeeds
                 request.close()
 
-            with device.request([5, 12], "myself", raw.LineFlag.OUTPUT) as request:
+            config = {"name": "myself", "lines": [CLine(5, "output"), CLine(12, "output")]}
+            with device.request(config) as request:
                 info = device.get_info()
                 l5 = info.lines[5]
                 assert l5.flags == raw.LineFlag.USED | raw.LineFlag.OUTPUT
                 assert l5.name == "L-O2"
                 assert l5.consumer == "myself"
                 assert l5.attributes.flags == 0
+
+            # complex config
+            config = [
+                CLine(6, "output"),
+                CLine(7, "input", edge="rising"),
+                CLine(8, "output", clock="monotonic"),  # , bias="pull-up"),
+            ]
+            request = device.request(config)
+            request.name = "linuxpy-tests"
+            with request:
+                info = device.get_info()
+                l6 = info.lines[6]
+                assert l6.flags == raw.LineFlag.USED | raw.LineFlag.OUTPUT
+                assert l6.name == ""
+                assert l6.consumer == request.name
+                assert l6.attributes.flags == 0
 
 
 @test("sim get value")
@@ -549,16 +718,14 @@ def _():
         with device[6:16] as request:
             assert_request(request)
 
-        for blocking in (False, True):
-            request = Request(device, list(range(6, 16)), name="Me", blocking=blocking)
-            with request:
-                assert_request(request)
+        with device.request({"name": "Me", "lines": list(range(6, 16))}) as request:
+            assert_request(request)
 
 
 @test("sim set value")
 def _():
     with Device(sim_file) as device:
-        with device.request(list(range(5, 14)), "test", flags=raw.LineFlag.OUTPUT) as request:
+        with device.request([CLine(i, "output") for i in range(5, 14)]) as request:
             request.set_values({10: 1})
             assert request[10] == 1
 
@@ -582,3 +749,113 @@ def _():
 
             request[7, 8, 11:14] = 1, 0, 1, 0, 1
             assert request[7, 8, 11:14] == {7: 1, 8: 0, 11: 1, 12: 0, 13: 1}
+
+
+@test("sim line config event")
+def _():
+    def run():
+        time.sleep(0.001)
+        with Device(sim_file) as dev:
+            with dev.request([5, 10, 15]):
+                pass
+
+    task = threading.Thread(target=run)
+    task.start()
+
+    with Device(sim_file) as device:
+        names_req = {"L-O2", ""}
+        lines_req = {5, 15}
+        names_rel = set(names_req)
+        lines_rel = set(lines_req)
+
+        i = 0
+        for event in device.info_stream(list(lines_req)):
+            if i < 2:
+                names_req.remove(event.name)
+                lines_req.remove(event.line)
+                assert event.flags == raw.LineFlag.USED | raw.LineFlag.INPUT
+                assert event.type == raw.LineChangedType.REQUESTED
+            else:
+                names_rel.remove(event.name)
+                lines_rel.remove(event.line)
+                assert event.flags == raw.LineFlag.INPUT
+                assert event.type == raw.LineChangedType.RELEASED
+
+            assert event.attributes.flags == raw.LineFlag(0)
+            assert event.attributes.indexes == []
+            assert event.attributes.debounce_period is None
+            i += 1
+            if i == len(lines_req) + len(lines_rel):
+                break
+
+    with Device(sim_file) as device:
+        with device.watching([5, 15]):
+            stream = iter(device)
+            before = time.monotonic()
+            with device.request([5, 10, 15]):
+                after = time.monotonic()
+                names = {"L-O2", ""}
+                lines = {5, 15}
+                for _ in range(2):
+                    event = next(stream)
+                    # name and line must be in the sets for test to succeed
+                    names.remove(event.name)
+                    lines.remove(event.line)
+                    assert event.flags == raw.LineFlag.USED | raw.LineFlag.INPUT
+                    assert event.type == raw.LineChangedType.REQUESTED
+                    assert before < event.timestamp < after
+                    assert event.attributes.flags == raw.LineFlag(0)
+                    assert event.attributes.indexes == []
+                    assert event.attributes.debounce_period is None
+                before = time.monotonic()
+            after = time.monotonic()
+            names = {"L-O2", ""}
+            lines = {5, 15}
+            for _ in range(2):
+                event = next(stream)
+                names.remove(event.name)
+                lines.remove(event.line)
+                assert event.flags == raw.LineFlag.INPUT
+                assert event.type == raw.LineChangedType.RELEASED
+                assert before < event.timestamp < after
+                assert event.attributes.flags == raw.LineFlag(0)
+                assert event.attributes.indexes == []
+                assert event.attributes.debounce_period is None
+
+
+@test("async sim line config event")
+async def _():
+    async def run():
+        await asyncio.sleep(0.001)
+        with Device(sim_file) as dev:
+            with dev.request([5, 10, 15]):
+                pass
+
+    asyncio.create_task(run())
+
+    with Device(sim_file) as device:
+        names_req = {"L-O2", ""}
+        lines_req = {5, 15}
+        names_rel = set(names_req)
+        lines_rel = set(lines_req)
+
+        i = 0
+        async with aclosing(device.async_info_stream(list(lines_req))) as stream:
+            async for event in stream:
+                if i < 2:
+                    names_req.remove(event.name)
+                    lines_req.remove(event.line)
+                    assert event.flags == raw.LineFlag.USED | raw.LineFlag.INPUT
+                    assert event.type == raw.LineChangedType.REQUESTED
+                else:
+                    names_rel.remove(event.name)
+                    lines_rel.remove(event.line)
+                    assert event.flags == raw.LineFlag.INPUT
+                    assert event.type == raw.LineChangedType.RELEASED
+
+                assert event.attributes.flags == raw.LineFlag(0)
+                assert event.attributes.indexes == []
+                assert event.attributes.debounce_period is None
+                i += 1
+                if i == len(lines_req) + len(lines_rel):
+                    break

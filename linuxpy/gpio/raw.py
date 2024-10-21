@@ -15,11 +15,8 @@ import enum
 from linuxpy.ctypes import Struct, Union, cchar, cint, cuint, culonglong, u32
 from linuxpy.ioctl import IOR as _IOR, IOWR as _IOWR
 
-
-class GpioLineEvent(enum.IntEnum):
-    REQUESTED = 1
-    RELEASED = 2
-    CONFIG = 3
+MAX_LINES = 64
+MAX_ATTRS = 10
 
 
 class LineFlag(enum.IntFlag):
