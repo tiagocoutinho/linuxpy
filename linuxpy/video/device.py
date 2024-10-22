@@ -1847,8 +1847,10 @@ class MemorySource(ReentrantOpen):
 
     def release_buffers(self):
         self.device.log.info("Freeing buffers...")
-        self.buffer_manager.free_buffers(self.source)
+        for buf in self.buffers:
+            buf.close()
         self.buffers = None
+        self.buffer_manager.free_buffers(self.source)
         self.format = None
         self.device.log.info("Buffers freed")
 
