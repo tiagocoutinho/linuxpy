@@ -301,8 +301,11 @@ def get_enums(header_filename, xml_filename, enums, decode_name):
             continue
         py_name = cname_to_pyname(decode_name(cname))
         prefix = cname.upper() + "_"
-        raw_names = [child.get("name") for child in node]
-        common_prefix = os.path.commonprefix(raw_names)
+        if len(node) > 1:
+            raw_names = [child.get("name") for child in node]
+            common_prefix = os.path.commonprefix(raw_names)
+        else:
+            common_prefix = ""
         values = []
         for child in node:
             name = child.get("name")
