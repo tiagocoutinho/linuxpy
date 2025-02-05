@@ -56,7 +56,7 @@ def get_fix_screen_info(fd) -> FixScreenInfo:
     return _translate_fix_fix_screen_info(info)
 
 
-def get_raw_var_screen_info(fd):
+def get_raw_var_screen_info(fd) -> raw.fb_var_screeninfo:
     return ioctl(fd, raw.IOC.GET_VSCREENINFO, raw.fb_var_screeninfo())
 
 

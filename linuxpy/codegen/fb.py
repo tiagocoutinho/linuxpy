@@ -42,15 +42,21 @@ from linuxpy.ctypes import Struct, Union, POINTER, cvoidp
 {iocs_body}
 """
 
+
+def no_mask(key, value):
+    return not key.endswith("_MASK")
+
+
 # macros from #define statements
 MACRO_ENUMS = [
     CEnum("Type", "FB_TYPE_"),
-    CEnum("Text", "FB_AUX_TEXT_"),
+    CEnum("Text", "FB_AUX_TEXT_", filter=no_mask),
     CEnum("VGAPlanes", "FB_AUX_VGA_PLANES_"),
     CEnum("Visual", "FB_VISUAL_"),
     CEnum("Acceleration", "FB_ACCEL_"),
+    CEnum("Activate", ["FB_ACTIVATE_", "FB_CHANGE_"], klass="IntFlag", filter=no_mask),
     CEnum("Sync", "FB_SYNC_", klass="IntFlag"),
-    CEnum("VarMode", "FB_VMODE_", klass="IntFlag"),
+    CEnum("VarMode", "FB_VMODE_", klass="IntFlag", filter=no_mask),
     CEnum("Rotation", "FB_ROTATE_"),
     CEnum("VESABlank", "VESA_"),
     CEnum("VarBlank", "FB_VBLANK_", klass="IntFlag"),
