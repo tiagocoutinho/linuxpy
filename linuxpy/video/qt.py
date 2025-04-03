@@ -27,6 +27,7 @@ class QCamera(QtCore.QObject):
         self.capture = VideoCapture(device)
         self._stop = False
         self._stream = None
+        self._notifier = None
         self._state = "stopped"
 
     def on_frame(self):
@@ -63,8 +64,12 @@ class QCamera(QtCore.QObject):
         self.setState("running")
 
     def stop(self):
-        self._notifier.setEnabled(False)
-        self._stream.close()
+        if self._notifier is not None:
+            self._notifier.setEnabled(False)
+            self._notifier = None
+        if self._stream is not None:
+            self._stream.close()
+            self._stream = None
         self.capture.close()
         self.device.close()
         self._notifier = None
