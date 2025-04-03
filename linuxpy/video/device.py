@@ -95,7 +95,7 @@ MetaFormat.human_str = lambda self: human_pixel_format(self.value)
 
 ImageFormat = collections.namedtuple("ImageFormat", "type description flags pixel_format")
 
-MetaFmt = collections.namedtuple("MetaFmt", "format max_buffer_size width height bytes_per_line")
+MetaFormat = collections.namedtuple("MetaFormat", "format max_buffer_size width height bytes_per_line")
 
 Format = collections.namedtuple("Format", "width height pixel_format size")
 
@@ -475,10 +475,10 @@ def get_raw_format(fd, buffer_type) -> raw.v4l2_format:
     return fmt
 
 
-def get_format(fd, buffer_type) -> Format:
+def get_format(fd, buffer_type) -> Format | MetaFormat:
     f = get_raw_format(fd, buffer_type)
     if buffer_type in {BufferType.META_CAPTURE, BufferType.META_OUTPUT}:
-        return MetaFmt(
+        return MetaFormat(
             format=MetaFormat(f.fmt.meta.dataformat),
             max_buffer_size=f.fmt.meta.buffersize,
             width=f.fmt.meta.width,
