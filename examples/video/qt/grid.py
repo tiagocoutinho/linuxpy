@@ -31,9 +31,6 @@ def main():
         logging.info("Stopping all cameras...")
         for qcamera in qcameras:
             qcamera.stop()
-        logging.info("waiting for cameras to stop...")
-        for qcamera in qcameras:
-            qcamera.wait()
         logging.info("Done!")
 
     app = QtWidgets.QApplication([])

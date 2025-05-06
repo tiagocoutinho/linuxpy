@@ -31,7 +31,7 @@ async def run(device):
             if new - last_update > 0.1:
                 elapsed = new - start
                 print(
-                    f"frame {frame.frame_nb:04d} {len(frame)/1000:.1f} Kb at {fps:.1f} fps ; "
+                    f"frame {frame.frame_nb:04d} {len(frame) / 1000:.1f} Kb at {fps:.1f} fps ; "
                     f" data={data[0]}; {elapsed=:.2f} s;",
                     end="\r",
                 )
