@@ -16,7 +16,7 @@ from math import ceil, isclose
 from pathlib import Path
 from unittest import mock
 
-from ward import each, fixture, raises, test
+from ward import each, fixture, raises, skip, test
 
 from linuxpy.device import device_number
 from linuxpy.gpio import device, raw
@@ -561,6 +561,7 @@ async def _(chip=emulate_gpiochip):
 sim_file = find_gpio_sim_file()
 
 
+@skip("gpio-sim not prepared", when=sim_file is None)
 @test("sim read chip info")
 def _():
     with sim_file.open() as chip:
@@ -569,6 +570,7 @@ def _():
         assert info.lines == 16
 
 
+@skip("gpio-sim not prepared", when=sim_file is None)
 @test("sim device open")
 def _():
     device = Device(sim_file)
@@ -578,6 +580,7 @@ def _():
     assert device.fileno() > 0
 
 
+@skip("gpio-sim not prepared", when=sim_file is None)
 @test("sim get info")
 def _():
     device = Device(sim_file)
@@ -627,6 +630,7 @@ def _():
     assert l4.attributes.flags == 0
 
 
+@skip("gpio-sim not prepared", when=sim_file is None)
 @test("sim make request")
 def _():
     nb_lines = 16
@@ -684,6 +688,7 @@ def _():
                 assert l6.attributes.flags == 0
 
 
+@skip("gpio-sim not prepared", when=sim_file is None)
 @test("sim get value")
 def _():
     def assert_request(request):
@@ -722,6 +727,7 @@ def _():
             assert_request(request)
 
 
+@skip("gpio-sim not prepared", when=sim_file is None)
 @test("sim set value")
 def _():
     with Device(sim_file) as device:
@@ -751,6 +757,7 @@ def _():
             assert request[7, 8, 11:14] == {7: 1, 8: 0, 11: 1, 12: 0, 13: 1}
 
 
+@skip("gpio-sim not prepared", when=sim_file is None)
 @test("sim line config event")
 def _():
     def run():
@@ -823,6 +830,7 @@ def _():
                 assert event.attributes.debounce_period is None
 
 
+@skip("gpio-sim not prepared", when=sim_file is None)
 @test("async sim line config event")
 async def _():
     async def run():
