@@ -23,12 +23,12 @@ klass = {
                     0: {"name": "None"},
                     1: {"name": "AT-commands (v.25ter)"},
                     2: {"name": "AT-commands (PCCA101)"},
-                    3: {"name": "AT-commands (PCCA101 + " "wakeup)"},
+                    3: {"name": "AT-commands (PCCA101 + wakeup)"},
                     4: {"name": "AT-commands (GSM)"},
                     5: {"name": "AT-commands (3G)"},
                     6: {"name": "AT-commands (CDMA)"},
-                    254: {"name": "Defined by command set " "descriptor"},
-                    255: {"name": "Vendor Specific (MSFT " "RNDIS?)"},
+                    254: {"name": "Defined by command set descriptor"},
+                    255: {"name": "Vendor Specific (MSFT RNDIS?)"},
                 },
                 "name": "Abstract (modem)",
             },
@@ -61,7 +61,7 @@ klass = {
     5: {"name": "Physical Interface Device"},
     6: {
         "children": {
-            1: {"children": {1: {"name": "Picture Transfer Protocol " "(PIMA 15470)"}}, "name": "Still Image Capture"}
+            1: {"children": {1: {"name": "Picture Transfer Protocol (PIMA 15470)"}}, "name": "Still Image Capture"}
         },
         "name": "Imaging",
     },
@@ -72,7 +72,7 @@ klass = {
                     0: {"name": "Reserved/Undefined"},
                     1: {"name": "Unidirectional"},
                     2: {"name": "Bidirectional"},
-                    3: {"name": "IEEE 1284.4 compatible " "bidirectional"},
+                    3: {"name": "IEEE 1284.4 compatible bidirectional"},
                     255: {"name": "Vendor Specific"},
                 },
                 "name": "Printer",
@@ -189,16 +189,16 @@ klass = {
             1: {
                 "children": {
                     1: {"name": "Bluetooth"},
-                    2: {"name": "Ultra WideBand Radio " "Control"},
+                    2: {"name": "Ultra WideBand Radio Control"},
                     3: {"name": "RNDIS"},
                 },
                 "name": "Radio Frequency",
             },
             2: {
                 "children": {
-                    1: {"name": "Host Wire Adapter " "Control/Data Streaming"},
-                    2: {"name": "Device Wire Adapter " "Control/Data Streaming"},
-                    3: {"name": "Device Wire Adapter " "Isochronous Streaming"},
+                    1: {"name": "Host Wire Adapter Control/Data Streaming"},
+                    2: {"name": "Device Wire Adapter Control/Data Streaming"},
+                    3: {"name": "Device Wire Adapter Isochronous Streaming"},
                 },
                 "name": "Wireless USB Wire Adapter",
             },
@@ -211,7 +211,7 @@ klass = {
             2: {
                 "children": {
                     1: {"name": "Interface Association"},
-                    2: {"name": "Wire Adapter Multifunction " "Peripheral"},
+                    2: {"name": "Wire Adapter Multifunction Peripheral"},
                 },
                 "name": "?",
             },
@@ -230,7 +230,7 @@ klass = {
     },
     255: {
         "children": {
-            255: {"children": {255: {"name": "Vendor Specific " "Protocol"}}, "name": "Vendor Specific Subclass"}
+            255: {"children": {255: {"name": "Vendor Specific Protocol"}}, "name": "Vendor Specific Subclass"}
         },
         "name": "Vendor Specific Class",
     },
