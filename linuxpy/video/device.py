@@ -30,7 +30,7 @@ from linuxpy.device import (
 )
 from linuxpy.io import IO
 from linuxpy.ioctl import ioctl
-from linuxpy.types import AsyncIterator, Buffer, Callable, Iterable, Iterator, Optional, PathLike, Self
+from linuxpy.types import AsyncIterator, Buffer, Callable, Iterable, Iterator, Optional, PathLike, Self, Union
 from linuxpy.util import astream, bit_indexes, make_find
 
 from . import raw
@@ -475,7 +475,7 @@ def get_raw_format(fd, buffer_type) -> raw.v4l2_format:
     return fmt
 
 
-def get_format(fd, buffer_type) -> Format | MetaFormat:
+def get_format(fd, buffer_type) -> Union[Format, MetaFormat]:
     f = get_raw_format(fd, buffer_type)
     if buffer_type in {BufferType.META_CAPTURE, BufferType.META_OUTPUT}:
         return MetaFormat(
