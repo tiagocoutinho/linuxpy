@@ -495,10 +495,10 @@ def _(chip=emulate_gpiochip):
             assert request[1, 2] == {2: 1, 1: 0}
 
             request[:] = 9 * [1]
-            assert request[:] == {i: 1 for i in range(1, 10)}
+            assert request[:] == dict.fromkeys(range(1, 10), 1)
 
             request[:] = 0
-            assert request[:] == {i: 0 for i in range(1, 10)}
+            assert request[:] == dict.fromkeys(range(1, 10), 0)
 
             request[3, 4, 7:10] = 1, 0, 1, 0, 1
             assert request[3, 4, 7:10] == {3: 1, 4: 0, 7: 1, 8: 0, 9: 1}
@@ -742,10 +742,10 @@ def _():
             assert request[9:12] == {9: 0, 10: 0, 11: 0}
 
             request[:] = 9 * [1]
-            assert request[:] == {i: 1 for i in range(5, 14)}
+            assert request[:] == dict.fromkeys(range(5, 14), 1)
 
             request[:] = 0
-            assert request[:] == {i: 0 for i in range(5, 14)}
+            assert request[:] == dict.fromkeys(range(5, 14), 0)
 
             request[7, 8, 11:14] = 1, 0, 1, 0, 1
             assert request[7, 8, 11:14] == {7: 1, 8: 0, 11: 1, 12: 0, 13: 1}

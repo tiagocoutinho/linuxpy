@@ -86,7 +86,7 @@ def to_fd(fd: FDLike):
 int16 = functools.partial(int, base=16)
 
 
-def try_numeric(text: str):
+def try_numeric(text: str, order=(int, int16, float)):
     """
     Try to translate given text into int, int base 16 or float.
     Returns the orig and return the original text if it fails.
@@ -97,7 +97,7 @@ def try_numeric(text: str):
     Returns:
         int, float or str: The converted text
     """
-    for func in (int, int16, float):
+    for func in order:
         try:
             return func(text)
         except ValueError:
