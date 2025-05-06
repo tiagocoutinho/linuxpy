@@ -1,3 +1,9 @@
+#
+# This file is part of the linuxpy project
+#
+# Copyright (c) 2023 Tiago Coutinho
+# Distributed under the GPLv3 license. See LICENSE for more info.
+
 from pathlib import Path
 
 from linuxpy.util import try_numeric
@@ -39,6 +45,10 @@ def iter_cpu_info():
         yield info
 
 
+def cpu_info():
+    return tuple(iter_cpu_info())
+
+
 def iter_mem_info():
     data = MEM_INFO_PATH.read_text()
     for line in data.splitlines():
@@ -48,6 +58,10 @@ def iter_mem_info():
         else:
             value = try_numeric(value)
         yield key, value
+
+
+def mem_info():
+    return dict(iter_mem_info())
 
 
 def iter_modules():
@@ -66,6 +80,10 @@ def iter_modules():
         yield mod
 
 
+def modules():
+    return tuple(iter_modules())
+
+
 def iter_stat():
     CPU = "user", "nice", "system", "idle", "iowait", "irq", "softirq", "steal", "guest", "guest_nice"
     data = STAT_PATH.read_text()
@@ -82,6 +100,10 @@ def iter_stat():
         else:
             continue
         yield name, payload
+
+
+def stat():
+    return dict(iter_stat())
 
 
 def iter_dev():
@@ -117,6 +139,10 @@ def iter_dev():
         }
 
 
+def dev():
+    return tuple(iter_dev())
+
+
 def iter_wireless():
     with WIRELESS_PATH.open() as fobj:
         lines = fobj.readlines()
@@ -141,9 +167,21 @@ def iter_wireless():
         }
 
 
+def wireless():
+    return tuple(iter_wireless())
+
+
 def iter_netstat():
     return _iter_read_kv(NETSTAT_PATH)
 
 
+def netstat():
+    return dict(iter_netstat())
+
+
 def iter_snmp():
     return _iter_read_kv(SNMP_PATH)
+
+
+def snmp():
+    return dict(iter_snmp())
