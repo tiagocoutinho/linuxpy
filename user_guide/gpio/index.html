@@ -1365,12 +1365,16 @@ It can have different forms:</p>
 </code></pre></div>
 <p>Reserves line 5 with default configuration and line 6 as output.</p>
 <h3 id="dictionary">dictionary<a class="headerlink" href="#dictionary" title="Permanent link">&para;</a></h3>
-<p>With keys:
-* <em>name</em>: the reservation name
-* <em>lines</em>: the lines to be reserved. Can be
-    * a line number
-    * list of line numbers or line configs
-    * a dict where key is line number and value a line config with "line" ommited</p>
+<p>With keys:</p>
+<ul>
+<li><em>name</em>: the reservation name</li>
+<li><em>lines</em>: the lines to be reserved. Can be<ul>
+<li>a line number</li>
+<li>list of line numbers or line configs</li>
+<li>a dict where key is line number and value a line config with "line" ommited</li>
+</ul>
+</li>
+</ul>
 <p>Example:</p>
 <div class="highlight"><pre><span></span><code><span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;myself&quot;</span><span class="p">,</span>
