@@ -45,15 +45,19 @@ def mkdir(path):
     path.mkdir()
 
 
+def cleanup(path):
+    # clean up first
+    if path.exists():
+        live.write_text("0")
+        for directory, _, _ in path.walk(top_down=False):
+            directory.rmdir()
+
+
 path = CONFIGFS_PATH / cfg["name"]
 live = path / "live"
 
-# clean up first
-if path.exists():
-    live.write_text("0")
-    for directory, _, _ in path.walk(top_down=False):
-        directory.rmdir()
 
+cleanup(path)
 
 mkdir(path)
 for bank_id, bank in enumerate(cfg["banks"]):
