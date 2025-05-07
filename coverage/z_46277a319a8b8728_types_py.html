@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Coverage for linuxpy/types.py: 83%</title>
+    <title>Coverage for linuxpy/types.py: 76%</title>
     <link rel="icon" sizes="32x32" href="favicon_32_cb_58284776.png">
     <link rel="stylesheet" href="style_cb_8e611ae1.css" type="text/css">
     <script src="coverage_html_cb_6fb7b396.js" defer></script>
@@ -12,7 +12,7 @@
     <div class="content">
         <h1>
             <span class="text">Coverage for </span><b>linuxpy/types.py</b>:
-            <span class="pc_cov">83%</span>
+            <span class="pc_cov">76%</span>
         </h1>
         <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
@@ -56,8 +56,8 @@
         </aside>
         <h2>
             <span class="text">33 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">30<span class="text"> run</span></button>
-            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">3<span class="text"> missing</span></button>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">27<span class="text"> run</span></button>
+            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">6<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">0<span class="text"> excluded</span></button>
             <button type="button" class="par run show_par button_toggle_par" value="par" data-shortcut="p" title="Toggle lines partially run">4<span class="text"> partial</span></button>
         </h2>
@@ -66,8 +66,8 @@
             <a id="indexLink" class="nav" href="covindex.html">&Hat; index</a> &nbsp; &nbsp;
             <a id="nextFileLink" class="nav" href="z_46277a319a8b8728_util_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.6.1">coverage.py v7.6.1</a>,
-            created at 2024-10-18 07:40 +0200
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
+            created at 2025-05-06 08:23 +0200
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -93,26 +93,26 @@
     <p class="run"><span class="n"><a id="t9" href="#t9">9</a></span><span class="t"><span class="key">import</span> <span class="nam">pathlib</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t10" href="#t10">10</a></span><span class="t"><span class="key">import</span> <span class="nam">typing</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t11" href="#t11">11</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="par run show_par"><span class="n"><a id="t12" href="#t12">12</a></span><span class="t"><span class="key">if</span> <span class="nam">hasattr</span><span class="op">(</span><span class="nam">typing</span><span class="op">,</span> <span class="str">"Self"</span><span class="op">)</span><span class="op">:</span>  <span class="com"># 3.11+</span>&nbsp;</span><span class="r"><span class="annotate short">12&#x202F;&#x219B;&#x202F;13</span><span class="annotate long">line 12 didn't jump to line 13 because the condition on line 12 was never true</span></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t13" href="#t13">13</a></span><span class="t">    <span class="nam">Self</span> <span class="op">=</span> <span class="nam">typing</span><span class="op">.</span><span class="nam">Self</span>&nbsp;</span><span class="r"></span></p>
+    <p class="par run show_par"><span class="n"><a id="t12" href="#t12">12</a></span><span class="t"><span class="key">if</span> <span class="nam">hasattr</span><span class="op">(</span><span class="nam">typing</span><span class="op">,</span> <span class="str">"Self"</span><span class="op">)</span><span class="op">:</span>  <span class="com"># 3.11+</span>&nbsp;</span><span class="r"><span class="annotate short">12&#x202F;&#x219B;&#x202F;15</span><span class="annotate long">line 12 didn't jump to line 15 because the condition on line 12 was always true</span></span></p>
+    <p class="run"><span class="n"><a id="t13" href="#t13">13</a></span><span class="t">    <span class="nam">Self</span> <span class="op">=</span> <span class="nam">typing</span><span class="op">.</span><span class="nam">Self</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t14" href="#t14">14</a></span><span class="t"><span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t15" href="#t15">15</a></span><span class="t">    <span class="key">import</span> <span class="nam">typing_extensions</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t15" href="#t15">15</a></span><span class="t">    <span class="key">import</span> <span class="nam">typing_extensions</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t16" href="#t16">16</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t17" href="#t17">17</a></span><span class="t">    <span class="nam">Self</span> <span class="op">=</span> <span class="nam">typing_extensions</span><span class="op">.</span><span class="nam">Self</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t17" href="#t17">17</a></span><span class="t">    <span class="nam">Self</span> <span class="op">=</span> <span class="nam">typing_extensions</span><span class="op">.</span><span class="nam">Self</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t18" href="#t18">18</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="par run show_par"><span class="n"><a id="t19" href="#t19">19</a></span><span class="t"><span class="key">if</span> <span class="nam">hasattr</span><span class="op">(</span><span class="nam">collections</span><span class="op">.</span><span class="nam">abc</span><span class="op">,</span> <span class="str">"Buffer"</span><span class="op">)</span><span class="op">:</span>  <span class="com"># 3.12+</span>&nbsp;</span><span class="r"><span class="annotate short">19&#x202F;&#x219B;&#x202F;20</span><span class="annotate long">line 19 didn't jump to line 20 because the condition on line 19 was never true</span></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t20" href="#t20">20</a></span><span class="t">    <span class="nam">Buffer</span> <span class="op">=</span> <span class="nam">collections</span><span class="op">.</span><span class="nam">abc</span><span class="op">.</span><span class="nam">Buffer</span>&nbsp;</span><span class="r"></span></p>
+    <p class="par run show_par"><span class="n"><a id="t19" href="#t19">19</a></span><span class="t"><span class="key">if</span> <span class="nam">hasattr</span><span class="op">(</span><span class="nam">collections</span><span class="op">.</span><span class="nam">abc</span><span class="op">,</span> <span class="str">"Buffer"</span><span class="op">)</span><span class="op">:</span>  <span class="com"># 3.12+</span>&nbsp;</span><span class="r"><span class="annotate short">19&#x202F;&#x219B;&#x202F;22</span><span class="annotate long">line 19 didn't jump to line 22 because the condition on line 19 was always true</span></span></p>
+    <p class="run"><span class="n"><a id="t20" href="#t20">20</a></span><span class="t">    <span class="nam">Buffer</span> <span class="op">=</span> <span class="nam">collections</span><span class="op">.</span><span class="nam">abc</span><span class="op">.</span><span class="nam">Buffer</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t21" href="#t21">21</a></span><span class="t"><span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t22" href="#t22">22</a></span><span class="t">    <span class="key">import</span> <span class="nam">typing_extensions</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t22" href="#t22">22</a></span><span class="t">    <span class="key">import</span> <span class="nam">typing_extensions</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t23" href="#t23">23</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t24" href="#t24">24</a></span><span class="t">    <span class="nam">Buffer</span> <span class="op">=</span> <span class="nam">typing_extensions</span><span class="op">.</span><span class="nam">Buffer</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t24" href="#t24">24</a></span><span class="t">    <span class="nam">Buffer</span> <span class="op">=</span> <span class="nam">typing_extensions</span><span class="op">.</span><span class="nam">Buffer</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t25" href="#t25">25</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="par run show_par"><span class="n"><a id="t26" href="#t26">26</a></span><span class="t"><span class="key">if</span> <span class="nam">hasattr</span><span class="op">(</span><span class="nam">typing</span><span class="op">,</span> <span class="str">"TypeAlias"</span><span class="op">)</span><span class="op">:</span>  <span class="com"># 3.11+</span>&nbsp;</span><span class="r"><span class="annotate short">26&#x202F;&#x219B;&#x202F;27</span><span class="annotate long">line 26 didn't jump to line 27 because the condition on line 26 was never true</span></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t27" href="#t27">27</a></span><span class="t">    <span class="nam">TypeAlias</span> <span class="op">=</span> <span class="nam">typing</span><span class="op">.</span><span class="nam">TypeAlias</span>&nbsp;</span><span class="r"></span></p>
+    <p class="par run show_par"><span class="n"><a id="t26" href="#t26">26</a></span><span class="t"><span class="key">if</span> <span class="nam">hasattr</span><span class="op">(</span><span class="nam">typing</span><span class="op">,</span> <span class="str">"TypeAlias"</span><span class="op">)</span><span class="op">:</span>  <span class="com"># 3.11+</span>&nbsp;</span><span class="r"><span class="annotate short">26&#x202F;&#x219B;&#x202F;29</span><span class="annotate long">line 26 didn't jump to line 29 because the condition on line 26 was always true</span></span></p>
+    <p class="run"><span class="n"><a id="t27" href="#t27">27</a></span><span class="t">    <span class="nam">TypeAlias</span> <span class="op">=</span> <span class="nam">typing</span><span class="op">.</span><span class="nam">TypeAlias</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t28" href="#t28">28</a></span><span class="t"><span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t29" href="#t29">29</a></span><span class="t">    <span class="key">import</span> <span class="nam">typing_extensions</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t29" href="#t29">29</a></span><span class="t">    <span class="key">import</span> <span class="nam">typing_extensions</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t30" href="#t30">30</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t31" href="#t31">31</a></span><span class="t">    <span class="nam">TypeAlias</span> <span class="op">=</span> <span class="nam">typing_extensions</span><span class="op">.</span><span class="nam">TypeAlias</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t31" href="#t31">31</a></span><span class="t">    <span class="nam">TypeAlias</span> <span class="op">=</span> <span class="nam">typing_extensions</span><span class="op">.</span><span class="nam">TypeAlias</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t32" href="#t32">32</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t33" href="#t33">33</a></span><span class="t"><span class="nam">Union</span> <span class="op">=</span> <span class="nam">typing</span><span class="op">.</span><span class="nam">Union</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t34" href="#t34">34</a></span><span class="t"><span class="nam">Optional</span> <span class="op">=</span> <span class="nam">typing</span><span class="op">.</span><span class="nam">Optional</span>&nbsp;</span><span class="r"></span></p>
@@ -120,7 +120,7 @@
     <p class="pln"><span class="n"><a id="t36" href="#t36">36</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t37" href="#t37">37</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t38" href="#t38">38</a></span><span class="t"><span class="key">class</span> <span class="nam">HasFileno</span><span class="op">(</span><span class="nam">typing</span><span class="op">.</span><span class="nam">Protocol</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="par run show_par"><span class="n"><a id="t39" href="#t39">39</a></span><span class="t">    <span class="key">def</span> <span class="nam">fileno</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span> <span class="op">-></span> <span class="nam">int</span><span class="op">:</span> <span class="op">...</span>&nbsp;</span><span class="r"><span class="annotate short">39&#x202F;&#x219B;&#x202F;exit</span><span class="annotate long">line 39 didn't jump to line 39 because </span></span></p>
+    <p class="par run show_par"><span class="n"><a id="t39" href="#t39">39</a></span><span class="t">    <span class="key">def</span> <span class="nam">fileno</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span> <span class="op">-></span> <span class="nam">int</span><span class="op">:</span> <span class="op">...</span>&nbsp;</span><span class="r"><span class="annotate short">39&#x202F;&#x219B;&#x202F;exit</span><span class="annotate long">line 39 didn't return from function 'fileno' because </span></span></p>
     <p class="pln"><span class="n"><a id="t40" href="#t40">40</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t41" href="#t41">41</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t42" href="#t42">42</a></span><span class="t"><span class="nam">FD</span> <span class="op">=</span> <span class="nam">int</span>&nbsp;</span><span class="r"></span></p>
@@ -146,8 +146,8 @@
             <a class="nav" href="covindex.html">&Hat; index</a> &nbsp; &nbsp;
             <a class="nav" href="z_46277a319a8b8728_util_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.6.1">coverage.py v7.6.1</a>,
-            created at 2024-10-18 07:40 +0200
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
+            created at 2025-05-06 08:23 +0200
         </p>
     </div>
 </footer>
