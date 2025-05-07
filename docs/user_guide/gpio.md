@@ -102,6 +102,7 @@ Reserves line 5 with default configuration and line 6 as output.
 ### dictionary
 
 With keys:
+
 * *name*: the reservation name
 * *lines*: the lines to be reserved. Can be
     * a line number
