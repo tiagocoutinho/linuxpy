@@ -30,7 +30,7 @@ from linuxpy.device import (
 )
 from linuxpy.io import IO
 from linuxpy.ioctl import ioctl
-from linuxpy.types import AsyncIterator, Buffer, Callable, Iterable, Iterator, Optional, PathLike, Self
+from linuxpy.types import AsyncIterator, Buffer, Callable, Iterable, Iterator, Optional, PathLike, Self, Union
 from linuxpy.util import astream, bit_indexes, make_find
 
 from . import raw
@@ -475,7 +475,7 @@ def get_raw_format(fd, buffer_type) -> raw.v4l2_format:
     return fmt
 
 
-def get_format(fd, buffer_type) -> Format:
+def get_format(fd, buffer_type) -> Union[Format, MetaFmt]:
     f = get_raw_format(fd, buffer_type)
     if buffer_type in {BufferType.META_CAPTURE, BufferType.META_OUTPUT}:
         return MetaFmt(
@@ -1654,6 +1654,17 @@ class Frame:
             f"format={self.pixel_format.name}, frame_nb={self.frame_nb}, timestamp={self.timestamp}>"
         )
 
+    def __format__(self, spec):
+        if spec in {"", "s"}:
+            return str(self)
+        elif spec == "r":
+            return repr(self)
+        elif spec == "f":
+            return f"{self.width}x{self.height} {self.pixel_format.name}"
+        elif spec == "l":
+            return f"#{self.frame_nb} {self.timestamp} {self:f}"
+        return str(getattr(self, spec))
+
     @property
     def width(self):
         return self.format.width
@@ -1847,8 +1858,10 @@ class MemorySource(ReentrantOpen):
 
     def release_buffers(self):
         self.device.log.info("Freeing buffers...")
-        self.buffer_manager.free_buffers(self.source)
+        for buf in self.buffers:
+            buf.close()
         self.buffers = None
+        self.buffer_manager.free_buffers(self.source)
         self.format = None
         self.device.log.info("Buffers freed")
 

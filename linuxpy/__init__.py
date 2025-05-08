@@ -4,4 +4,4 @@
 # Copyright (c) 2023 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
-__version__ = "0.20.0"
+__version__ = "0.21.0"
