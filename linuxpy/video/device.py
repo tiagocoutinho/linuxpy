@@ -1654,6 +1654,17 @@ class Frame:
             f"format={self.pixel_format.name}, frame_nb={self.frame_nb}, timestamp={self.timestamp}>"
         )
 
+    def __format__(self, spec):
+        if spec in {"", "s"}:
+            return str(self)
+        elif spec == "r":
+            return repr(self)
+        elif spec == "f":
+            return f"{self.width}x{self.height} {self.pixel_format.name}"
+        elif spec == "l":
+            return f"#{self.frame_nb} {self.timestamp} {self:f}"
+        return str(getattr(self, spec))
+
     @property
     def width(self):
         return self.format.width
