@@ -16,7 +16,7 @@ input and MIDI.
 There is experimental, undocumented, incomplete and unstable access to USB.
 
 Requirements:
-* python >= 3.9
+* python >= 3.11
 * Fairly recent linux kernel
 * Installed kernel modules you want to access
 

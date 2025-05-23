@@ -2,7 +2,7 @@
 
 ## Requirements
 
-A linux OS and python >= 3.9.
+A linux OS and python >= 3.11.
 
 From within your favorite python environment:
 

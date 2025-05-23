@@ -28,7 +28,7 @@ Linuxpy has your back.
 
 Requirements:
 
-* python >= 3.9
+* python >= 3.11
 * Fairly recent linux kernel
 * Installed kernel modules you want to access (ex: *uinput* if you need user space
 created input devices)
