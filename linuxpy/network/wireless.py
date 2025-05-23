@@ -10,6 +10,7 @@ import socket
 from linuxpy.ctypes import cast, create_string_buffer, cvoidp, pointer, sizeof
 from linuxpy.device import ReentrantOpen
 from linuxpy.ioctl import ioctl
+from linuxpy.util import log
 
 from . import raw
 
@@ -17,7 +18,6 @@ from . import raw
 def get_range(fd, ifname) -> raw.iw_range:
     req = raw.iwreq()
     req.ifr_ifrn.ifrn_name = ifname.encode()
-
     result = raw.iw_range()
     req.u.data.pointer = cast(pointer(result), cvoidp)
     req.u.data.length = sizeof(result)
@@ -29,11 +29,7 @@ def start_scan(fd, ifname) -> raw.iwreq:
     req = raw.iwreq()
     req.ifr_ifrn.ifrn_name = ifname.encode()
     req.u.data.flags = raw.ScanFlag.ALL_ESSID
-    try:
-        ioctl(fd, raw.IOC.SIWSCAN, req)
-    except OSError as error:
-        if error.errno != errno.EPERM:
-            raise
+    ioctl(fd, raw.IOC.SIWSCAN, req)
     return req
 
 
@@ -45,6 +41,10 @@ def decode_quality(value, flags):
     elif raw.StatsFlag.RCPI in flags:
         return {"value": value / 2 - 110, "unit": "dBm"}
     return {"value": value}
+
+
+def buffer_text(buff, sep=" "):
+    return sep.join(map(hex, buff))
 
 
 def decode_event(data, offset):
@@ -81,11 +81,14 @@ def decode_event(data, offset):
     elif cmd == raw.EventType.CUSTOM:
         result["extra"] = {"value": data[offset + 16 : offset + event.len].decode()}
     elif cmd == raw.IOC.GIWENCODE:
-        print(cmd.name)
+        # TODO
+        pass
     elif cmd == raw.EventType.GENIE:
-        print(cmd.name)
+        # TODO
+        pass
     else:
-        print(cmd.name)
+        # TODO
+        pass
     return event, result
 
 
@@ -123,16 +126,45 @@ def frequency(freq: raw.iw_freq) -> float:
 
 
 def get_scan(fd, ifname):
-    result = {}
+    access_points = []
+    access_point = {}
     for event in iter_get_scan(fd, ifname):
-        result.update(event)
-    return result
+        if "address" in event:
+            access_point = {}
+            access_points.append(access_point)
+        access_point.update(event)
+    return access_points
+
+
+def get_stats(fd, ifname):
+    req = raw.iwreq()
+    req.ifr_ifrn.ifrn_name = ifname.encode()
+    stats = raw.iw_statistics()
+    req.u.data.pointer = cast(pointer(stats), cvoidp)
+    req.u.data.length = sizeof(stats)
+    ioctl(fd, raw.IOC.GIWSTATS, req)
+    return stats
+
+
+class Interface:
+    def __init__(self, wireless, name):
+        self.wireless = wireless
+        self.name = name
+
+    def scan(self):
+        return self.wireless.scan(self.name)
+
+    def stats(self):
+        return self.wireless.stats(self.name)
 
 
 class Wireless(ReentrantOpen):
     def __init__(self):
         super().__init__()
         self._fobj = None
+
+    def __getitem__(self, key):
+        return Interface(self, key)
 
     def open(self):
         self._fobj = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_IP)
@@ -148,5 +180,14 @@ class Wireless(ReentrantOpen):
         return -1 if self._fobj is None else self._fobj.fileno()
 
     def scan(self, ifname):
-        start_scan(self, ifname)
+        try:
+            start_scan(self, ifname)
+        except OSError as error:
+            if error.errno == errno.EPERM:
+                log.info("could not trigger scan: %r", error)
+            else:
+                raise
         return get_scan(self, ifname)
+
+    def stats(self, ifname):
+        return get_stats(self, ifname)

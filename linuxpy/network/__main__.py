@@ -1,6 +1,6 @@
 from linuxpy.proc import wireless
 
-from . import Wireless
+from .wireless import Wireless
 
 
 def human_size(n: int, unit="b", div=1000, decimals=3) -> str:
@@ -38,11 +38,13 @@ def main():
     with Wireless() as scanner:
         for iw in wireless():
             iwname = iw["interface"]
-            result = scanner.scan(iwname)
+            access_points = scanner.scan(iwname)
             print(f"{iwname}  Scan completed :")
-            for key, item in result.items():
-                text = human_item(key, item)
-                print(f"    {text}")
+            for idx, access_point in enumerate(access_points, start=1):
+                print(f"  Cell {idx:02d}")
+                for key, item in access_point.items():
+                    text = human_item(key, item)
+                    print(f"    {text}")
 
 
 if __name__ == "__main__":

@@ -47,8 +47,6 @@ string_at = ctypes.string_at
 
 calcsize = struct.calcsize
 
-Union = ctypes.Union
-
 pointer = ctypes.pointer
 POINTER = ctypes.POINTER
 
@@ -80,6 +78,10 @@ class Struct(ctypes.Structure):
                 value = value.asdict()
             r[name] = value
         return r
+
+
+class Union(ctypes.Union):
+    pass
 
 
 class timeval(Struct):

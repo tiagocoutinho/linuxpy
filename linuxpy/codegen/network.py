@@ -9,6 +9,10 @@ import pathlib
 from linuxpy.codegen.base import CEnum, run
 
 HEADERS = [
+    #    "/usr/include/linux/if.h",
+    #    "/usr/include/linux/hdlc/ioctl.h",
+    "/usr/include/linux/netlink.h",
+    "/usr/include/linux/sockios.h",
     "/usr/include/linux/wireless.h",
 ]
 
@@ -29,16 +33,12 @@ TEMPLATE = """\
 import enum
 
 from linuxpy.ioctl import IOR as _IOR, IOW as _IOW, IOWR as _IOWR
-from linuxpy.ctypes import i16, u8, u16, cuint, cint, cchar
+from linuxpy.ctypes import i16, u8, u16, cuint, culong, cint, cchar
 from linuxpy.ctypes import Struct, Union, POINTER
+from linuxpy.sock import sockaddr
+
 
 {enums_body}
-
-class sockaddr(Struct):
-    _fields_ = [
-        ("sa_family", u16),
-        ("sa_data", u8 * 14),
-    ]
 
 
 {structs_body}
@@ -49,8 +49,17 @@ class sockaddr(Struct):
 
 this_dir = pathlib.Path(__file__).parent
 
+
+class IOC(CEnum):
+    def __init__(self):
+        def filter(name, value):
+            return name not in {"SIOCINQ", "SIOCOUTQ"} and "GSTAMP" not in name
+
+        super().__init__("IOC", "SIOC", filter=filter)
+
+
 MACRO_ENUMS = [
-    CEnum("IOC", "SIOC"),
+    IOC(),
     CEnum("EventType", "IWEV"),
     CEnum("OperationMode", "IW_MODE_"),
     CEnum("Auth", "IW_AUTH_"),
@@ -70,7 +79,7 @@ MACRO_ENUMS = [
 ]
 
 
-def main(output=this_dir.parent / "wireless" / "raw.py"):
+def main(output=this_dir.parent / "network" / "raw.py"):
     run(__name__, HEADERS, TEMPLATE, MACRO_ENUMS, output=output)
 
 

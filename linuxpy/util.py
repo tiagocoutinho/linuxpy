@@ -9,6 +9,7 @@
 import asyncio
 import contextlib
 import functools
+import logging
 import operator
 import random
 import selectors
@@ -29,6 +30,10 @@ from .types import (
 
 #: used to distinguish passing or not a kwargs
 sentinel = object()
+
+
+#: base log object
+log = logging.getLogger("linuxpy")
 
 
 def iter_chunks(lst: Sequence, size: int) -> Iterable:
