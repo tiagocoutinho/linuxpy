@@ -9,7 +9,7 @@ import os
 import socket
 import threading
 import time
-from contextlib import ExitStack, contextmanager
+from contextlib import ExitStack, aclosing, contextmanager
 from inspect import isgenerator
 from itertools import count
 from math import ceil, isclose
@@ -39,7 +39,7 @@ from linuxpy.gpio.device import (
     iter_gpio_files,
 )
 from linuxpy.gpio.sim import find_gpio_sim_file
-from linuxpy.util import aclosing, bit_indexes
+from linuxpy.util import bit_indexes
 
 
 def FD():

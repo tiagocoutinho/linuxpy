@@ -37,7 +37,6 @@ from linuxpy.device import BaseDevice, ReentrantOpen, iter_device_files
 from linuxpy.ioctl import ioctl
 from linuxpy.types import AsyncIterator, Collection, FDLike, Iterable, Optional, PathLike, Sequence, Union
 from linuxpy.util import (
-    aclosing,
     async_event_stream as async_events,
     bit_indexes,
     chunks,
@@ -580,7 +579,7 @@ class Device(BaseDevice):
             AsyncIterator[LineInfoEvent]: the asynchronous stream of line info events
         """
         with self.watching(lines):
-            async with aclosing(self.__aiter__()) as stream:
+            async with contextlib.aclosing(self.__aiter__()) as stream:
                 async for event in stream:
                     yield event
 
