@@ -234,7 +234,11 @@ def get_structs(header_filename, xml_filename, decode_name):
             member_ids = []
         fields = (etree.find(f"*[@id='{member_id}']") for member_id in member_ids)
         fields = [field for field in fields if field.tag not in {"Union", "Struct", "Unimplemented"}]
-        pack = int(node.get("align")) == 8
+        align = node.get("align")
+        if align is None:
+            pack = False
+        else:
+            pack = int(align) == 8
         name = node.get("name")
         if name:
             name = decode_name(name)
