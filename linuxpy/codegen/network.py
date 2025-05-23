@@ -5,12 +5,12 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 import pathlib
+import tempfile
 
 from linuxpy.codegen.base import CEnum, run
 
 HEADERS = [
-    #    "/usr/include/linux/if.h",
-    #    "/usr/include/linux/hdlc/ioctl.h",
+    "/usr/include/linux/if.h",
     "/usr/include/linux/netlink.h",
     "/usr/include/linux/sockios.h",
     "/usr/include/linux/wireless.h",
@@ -80,7 +80,13 @@ MACRO_ENUMS = [
 
 
 def main(output=this_dir.parent / "network" / "raw.py"):
-    run(__name__, HEADERS, TEMPLATE, MACRO_ENUMS, output=output)
+    with tempfile.NamedTemporaryFile(suffix=".h") as fobj:
+        fobj.write(b"#define IFNAMSIZ	16\n")
+        with open("/usr/include/linux/hdlc/ioctl.h", "rb") as src:
+            fobj.write(src.read())
+        fobj.flush()
+        headers = [fobj.name, *HEADERS]
+        run(__name__, headers, TEMPLATE, MACRO_ENUMS, output=output)
 
 
 if __name__ == "__main__":
