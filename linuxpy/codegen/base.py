@@ -194,7 +194,7 @@ def find_xml_base_type(etree, context, type_id):
         if node is None:
             return
         if node.tag == "Struct":
-            return node.get("name"), node.get("id")
+            return get_node_name(etree, node), node.get("id")
         elif node.tag == "FundamentalType":
             return CTYPES_MAP[node.get("name")], node.get("id")
         elif node.tag == "PointerType":
@@ -214,6 +214,21 @@ def find_xml_base_type(etree, context, type_id):
                 return f"POINTER({name})", base_id
 
         type_id = node.get("type")
+
+
+def get_node_name(etree, node):
+    name = node.get("name")
+    if name:
+        return name
+    node_id = node.get("id")
+    etype = etree.find(f"ElaboratedType[@type='{node_id}']")
+    if etype is None:
+        return None
+    etype_id = etype.get("id")
+    typedef = etree.find(f"Typedef[@type='{etype_id}']")
+    if typedef is None:
+        return None
+    return typedef.get("name")
 
 
 def get_structs(header_filename, xml_filename, decode_name):
@@ -239,7 +254,7 @@ def get_structs(header_filename, xml_filename, decode_name):
             pack = False
         else:
             pack = int(align) == 8
-        name = node.get("name")
+        name = get_node_name(etree, node)
         if name:
             name = decode_name(name)
         struct = CStruct(node, name, fields, pack)
