@@ -140,6 +140,7 @@ def decode_macro_value(value, context, name_map):
     value = value.replace("*/", "")
     value = value.replace("/*", "#")
     value = value.replace("struct ", "")
+    value = value.replace("union ", "")
     value = value.replace("(1U", "(1")
     value = value.strip()
     for dtype in "ui":
