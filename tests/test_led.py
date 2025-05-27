@@ -7,7 +7,7 @@
 import pathlib
 import time
 
-from ward import fixture, skip, test
+import pytest
 
 from linuxpy.led import LED, LED_PATH, ULED, find, iter_device_paths, iter_devices
 from linuxpy.util import random_name
@@ -15,7 +15,7 @@ from linuxpy.util import random_name
 ULED_PREPARED = pathlib.Path(ULED.PATH).exists()
 
 
-@fixture
+@pytest.fixture
 def uled():
     with ULED(f"test::{random_name()}", max_brightness=5) as uled:
         # wait for /etc/udev/rules.d to take effect
@@ -23,7 +23,7 @@ def uled():
         yield uled
 
 
-@fixture
+@pytest.fixture
 def uled_colored():
     with ULED(f"test:red:{random_name()}", max_brightness=5) as uled:
         # wait for /etc/udev/rules.d to take effect
@@ -31,7 +31,7 @@ def uled_colored():
         yield uled
 
 
-@fixture
+@pytest.fixture
 def uled_simple():
     with ULED(random_name(), max_brightness=5) as uled:
         # wait for /etc/udev/rules.d to take effect
@@ -39,7 +39,7 @@ def uled_simple():
         yield uled
 
 
-@fixture
+@pytest.fixture
 def uled_single_colon():
     with ULED(f"red:{random_name()}", max_brightness=5) as uled:
         # wait for /etc/udev/rules.d to take effect
@@ -47,9 +47,8 @@ def uled_single_colon():
         yield uled
 
 
-@skip("uled not prepared", when=not ULED_PREPARED)
-@test("led name")
-def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single_colon=uled_single_colon):
+@pytest.mark.skipif(not ULED_PREPARED, reason="uled not prepared")
+def test_led_name(uled, uled_colored, uled_simple, uled_single_colon):
     devicename, color, function = uled.name.split(":")
     led = LED.from_name(uled.name)
     assert led.devicename == devicename
@@ -87,9 +86,8 @@ def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single
     assert repr(led) == f"LED({led.name})"
 
 
-@skip("uled not prepared", when=not ULED_PREPARED)
-@test("led brightness")
-def _(uled=uled):
+@pytest.mark.skipif(not ULED_PREPARED, reason="uled not prepared")
+def test_led_brightness(uled):
     led = LED.from_name(uled.name)
     assert led.brightness == 0
     led.brightness = 1
@@ -97,9 +95,8 @@ def _(uled=uled):
     assert uled.brightness == 1
 
 
-@skip("uled not prepared", when=not ULED_PREPARED)
-@test("led trigger")
-def _(uled=uled):
+@pytest.mark.skipif(not ULED_PREPARED, reason="uled not prepared")
+def test_led_trigger(uled):
     led = LED.from_name(uled.name)
     assert led.trigger == "none"
     assert not led.trigger_enabled
@@ -109,9 +106,8 @@ def _(uled=uled):
     assert led.trigger_enabled
 
 
-@skip("uled not prepared", when=not ULED_PREPARED)
-@test("led path list")
-def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single_colon=uled_single_colon):
+@pytest.mark.skipif(not ULED_PREPARED, reason="uled not prepared")
+def test_led_path_list(uled, uled_colored, uled_simple, uled_single_colon):
     paths = list(iter_device_paths())
 
     assert len(paths) >= 4
@@ -121,9 +117,8 @@ def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single
     assert LED_PATH / uled_single_colon.name in paths
 
 
-@skip("uled not prepared", when=not ULED_PREPARED)
-@test("led list")
-def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single_colon=uled_single_colon):
+@pytest.mark.skipif(not ULED_PREPARED, reason="uled not prepared")
+def test_led_list(uled, uled_colored, uled_simple, uled_single_colon):
     devs = list(iter_devices())
     paths = [dev.syspath.stem for dev in devs]
     assert uled.name in paths
@@ -132,9 +127,8 @@ def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single
     assert uled_single_colon.name in paths
 
 
-@skip("uled not prepared", when=not ULED_PREPARED)
-@test("find led")
-def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single_colon=uled_single_colon):
+@pytest.mark.skipif(not ULED_PREPARED, reason="uled not prepared")
+def test_find_led(uled, uled_colored, uled_simple, uled_single_colon):
     devicename, color, function = uled.name.split(":")
     led = find(function=uled.name.split(":")[-1])
     assert led.devicename == devicename
@@ -148,16 +142,14 @@ def _(uled=uled, uled_colored=uled_colored, uled_simple=uled_simple, uled_single
     assert len(leds) >= 4
 
 
-@skip("uled not prepared", when=not ULED_PREPARED)
-@test("led brightness events")
-def _(uled=uled):
+@pytest.mark.skipif(not ULED_PREPARED, reason="uled not prepared")
+def test_led_brightness_events(uled):
     led = LED.from_name(uled.name)
     assert not led.brightness_events_path.exists()
 
 
-@skip("uled not prepared", when=not ULED_PREPARED)
-@test("uled stream")
-def _(uled=uled):
+@pytest.mark.skipif(not ULED_PREPARED, reason="uled not prepared")
+def test_uled_stream(uled):
     led = LED.from_name(uled.name)
     assert led.brightness == 0
     led.brightness = 1

@@ -1,8 +1,6 @@
 from pathlib import Path
 from unittest import mock
 
-from ward import test
-
 from linuxpy import mounts
 
 MOUNTS_SIMPLE = """\
@@ -42,8 +40,7 @@ overlay /var/lib/docker/overlay2/bb81f129721b5ae1782280d7c8c9289c5395e359e797270
 overlay /var/lib/docker/overlay2/3818865cdc424d3012743347f2e96845cf2f75fefa12016706b96c82268962a5/merged overlay rw,relatime,lowerdir=/var/lib/docker/overlay2/l/TMK7WQLIIFBPIMRN7UCR74FA5U:/var/lib/docker/overlay2/l/3NVLTB7VJPMDJ4VYC7PCN5Y2NA:/var/lib/docker/overlay2/l/ZY4LH2DDIACBPCG3V6F52AUGK5:/var/lib/docker/overlay2/l/N7TXIVTEQPTLLOSJSLSZ2MS5DS:/var/lib/docker/overlay2/l/B35V7LZZ27L4M7YSTL2ZDKVRCZ:/var/lib/docker/overlay2/l/BZI5LWWPGZURFS3SZPFZM7E7GE:/var/lib/docker/overlay2/l/7F2E56JCOQ6I5OLQ67QKAKYKLV:/var/lib/docker/overlay2/l/K5OS5FDLN72UQ2CUCWOVDCLATI:/var/lib/docker/overlay2/l/QYCBSSBJ7CTC5KVIESYD76AQIH,upperdir=/var/lib/docker/overlay2/3818865cdc424d3012743347f2e96845cf2f75fefa12016706b96c82268962a5/diff,workdir=/var/lib/docker/overlay2/3818865cdc424d3012743347f2e96845cf2f75fefa12016706b96c82268962a5/work,nouserxattr 0 0"""
 
 
-@test("gen_read")
-def _():
+def test_gen_read():
     with mock.patch("linuxpy.mounts.Path.read_text", return_value=MOUNTS_SIMPLE):
         result = list(mounts.gen_read())
         assert len(result) == 3
@@ -54,8 +51,7 @@ def _():
         assert len(result) == MOUNTS_TEMPLATE.count("\n") + 1
 
 
-@test("read_from_cache")
-def _():
+def test_read_from_cache():
     mounts.cache.cache_clear()
 
     with mock.patch("linuxpy.mounts.Path.read_text", return_value=MOUNTS_SIMPLE):
@@ -67,8 +63,7 @@ def _():
         assert len(result) == 3
 
 
-@test("get_mount_point")
-def _() -> None:
+def test_get_mount_point():
     mounts.cache.cache_clear()
     mounts.get_mount_point.cache_clear()
 
@@ -78,8 +73,7 @@ def _() -> None:
         assert mounts.get_mount_point("tmpfs", "sysfs") is None
 
 
-@test("sysfs")
-def _():
+def test_sysfs():
     mounts.cache.cache_clear()
     mounts.get_mount_point.cache_clear()
 
@@ -87,8 +81,7 @@ def _():
         assert mounts.sysfs() == Path("/sys")
 
 
-@test("configfs")
-def _():
+def test_configfs():
     mounts.cache.cache_clear()
     mounts.get_mount_point.cache_clear()
 
