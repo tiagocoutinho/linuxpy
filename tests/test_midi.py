@@ -8,7 +8,7 @@ import os
 import uuid
 from functools import cache
 
-from ward import raises, skip, test
+import pytest
 
 from linuxpy.midi.device import (
     INPUT_OUTPUT,
@@ -30,20 +30,16 @@ def assert_address(addr, client, port):
     assert addr.port == port
 
 
-for addr in ((4, 6), snd_seq_addr(4, 6)):
-
-    @test("to_address")
-    def _(addr=addr):
-        address = to_address(addr)
-        assert address.client == 4
-        assert address.port == 6
+@pytest.mark.parametrize("addr", [(4, 6), snd_seq_addr(4, 6)])
+def test_to_address(addr):
+    address = to_address(addr)
+    assert address.client == 4
+    assert address.port == 6
 
 
-for noteon in ("noteon", "note_on", "note on", EventType.NOTEON, 6):
-
-    @test("to_event_type")
-    def _(noteon=noteon):
-        assert to_event_type(noteon) == EventType.NOTEON
+@pytest.mark.parametrize("noteon", ["noteon", "note_on", "note on", EventType.NOTEON, 6])
+def test_to_event_type(noteon):
+    assert to_event_type(noteon) == EventType.NOTEON
 
 
 @cache
@@ -51,9 +47,8 @@ def is_sequencer_available():
     return os.access(SEQUENCER_PATH, os.O_RDWR)
 
 
-@skip(when=not is_sequencer_available(), reason="MIDI sequencer is not prepared")
-@test("read_clients")
-def _():
+@pytest.mark.skipif(not is_sequencer_available(), reason="MIDI sequencer is not prepared")
+def test_read_clients():
     with SEQUENCER_PATH.open("rb") as seq:
         clients = list(iter_read_clients(seq))
         assert clients
@@ -65,9 +60,8 @@ def _():
         assert name in {client.name.decode() for client in clients}
 
 
-@skip(when=not is_sequencer_available(), reason="MIDI sequencer is not prepared")
-@test("test open/close sequencer")
-def _():
+@pytest.mark.skipif(not is_sequencer_available(), reason="MIDI sequencer is not prepared")
+def test_open_close_sequencer():
     dev = Sequencer()
     assert dev.filename == SEQUENCER_PATH
     assert dev.closed
@@ -102,9 +96,8 @@ def _():
     assert dev.closed
 
 
-@skip(when=not is_sequencer_available(), reason="MIDI sequencer is not prepared")
-@test("system info")
-def _():
+@pytest.mark.skipif(not is_sequencer_available(), reason="MIDI sequencer is not prepared")
+def test_system_info():
     with Sequencer() as seq:
         system_info = seq.system_info
         assert system_info.queues > 0
@@ -115,34 +108,30 @@ def _():
         assert system_info.cur_queues >= 0
 
 
-@skip(when=not is_sequencer_available(), reason="MIDI sequencer is not prepared")
-@test("running mode")
-def _():
+@pytest.mark.skipif(not is_sequencer_available(), reason="MIDI sequencer is not prepared")
+def test_running_mode():
     with Sequencer() as seq:
         running_mode = seq.running_mode
         assert running_mode.client == ClientNumber.SYSTEM
 
 
-@skip(when=not is_sequencer_available(), reason="MIDI sequencer is not prepared")
-@test("client info")
-def _():
+@pytest.mark.skipif(not is_sequencer_available(), reason="MIDI sequencer is not prepared")
+def test_client_info():
     with Sequencer() as seq:
         client_info = seq.client_info
         assert client_info.client == seq.client_id
 
 
-@skip(when=not is_sequencer_available(), reason="MIDI sequencer is not prepared")
-@test("port info")
-def _():
+@pytest.mark.skipif(not is_sequencer_available(), reason="MIDI sequencer is not prepared")
+def test_port_info():
     with Sequencer() as seq:
         port = seq.create_port()
         port_info = read_port_info(seq, seq.client_id, int(port))
         assert_address(port_info.addr, port.client_id, port.port_id)
 
 
-@skip(when=not is_sequencer_available(), reason="MIDI sequencer is not prepared")
-@test("create port")
-def _():
+@pytest.mark.skipif(not is_sequencer_available(), reason="MIDI sequencer is not prepared")
+def test_create_port():
     with Sequencer() as remote, Sequencer() as local:
         ports_before = local.ports
         port = remote.create_port()
@@ -197,9 +186,8 @@ def assert_sysex_event(event, source_port, target_port):
     assert "<Event type=SYSEX>" == repr(event)
 
 
-@skip(when=not is_sequencer_available(), reason="MIDI sequencer is not prepared")
-@test("delete port")
-def _():
+@pytest.mark.skipif(not is_sequencer_available(), reason="MIDI sequencer is not prepared")
+def test_delete_port():
     with Sequencer() as seq:
 
         def port_uids():
@@ -225,13 +213,12 @@ def _():
 
         with Sequencer() as remote:
             port = remote.create_port()
-            with raises(MidiError):
+            with pytest.raises(MidiError):
                 seq.delete_port(port)
 
 
-@skip(when=not is_sequencer_available(), reason="MIDI sequencer is not prepared")
-@test("(dis)connect_from/to")
-def _():
+@pytest.mark.skipif(not is_sequencer_available(), reason="MIDI sequencer is not prepared")
+def test_dis_connect_from_to():
     with Sequencer() as remote, Sequencer() as local:
         remote_port = remote.create_port()
         local_port = local.create_port()
@@ -249,9 +236,8 @@ def _():
         assert uid not in local.subscriptions
 
 
-@skip(when=not is_sequencer_available(), reason="MIDI sequencer is not prepared")
-@test("(dis)connect_from/to and delete error on non local")
-def _():
+@pytest.mark.skipif(not is_sequencer_available(), reason="MIDI sequencer is not prepared")
+def test_dis_connect_from_to_and_delete_error_on_non_local():
     with Sequencer() as remote, Sequencer() as local:
         remote_port = remote.create_port()
 
@@ -259,30 +245,29 @@ def _():
             if port.client_id == remote_port.client_id and port.port_id == remote_port.port_id:
                 break
 
-        with raises(MidiError) as error:
+        with pytest.raises(MidiError) as error:
             port.connect_from((0, 1))
-        assert "Can only connect local port" == error.raised.args[0]
+        assert "Can only connect local port" == error.value.args[0]
 
-        with raises(MidiError) as error:
+        with pytest.raises(MidiError) as error:
             port.connect_to((0, 1))
-        assert "Can only connect local port" == error.raised.args[0]
+        assert "Can only connect local port" == error.value.args[0]
 
-        with raises(MidiError) as error:
+        with pytest.raises(MidiError) as error:
             port.disconnect_from((0, 1))
-        assert "Can only disconnect local port" == error.raised.args[0]
+        assert "Can only disconnect local port" == error.value.args[0]
 
-        with raises(MidiError) as error:
+        with pytest.raises(MidiError) as error:
             port.disconnect_to((0, 1))
-        assert "Can only disconnect local port" == error.raised.args[0]
+        assert "Can only disconnect local port" == error.value.args[0]
 
-        with raises(MidiError) as error:
+        with pytest.raises(MidiError) as error:
             port.delete()
-        assert "Can only delete local port" == error.raised.args[0]
+        assert "Can only delete local port" == error.value.args[0]
 
 
-@skip(when=not is_sequencer_available(), reason="MIDI sequencer is not prepared")
-@test("connect_from events")
-def _():
+@pytest.mark.skipif(not is_sequencer_available(), reason="MIDI sequencer is not prepared")
+def test_connect_from_events():
     with Sequencer() as remote, Sequencer() as local:
         remote_port = remote.create_port()
         local_port = local.create_port()
@@ -306,9 +291,9 @@ def _():
             break
 
 
-@skip(when=not is_sequencer_available(), reason="MIDI sequencer is not prepared")
-@test("async connect_from events")
-async def _():
+@pytest.mark.asyncio
+@pytest.mark.skipif(not is_sequencer_available(), reason="MIDI sequencer is not prepared")
+async def test_async_connect_from_events():
     with Sequencer() as remote, Sequencer() as local:
         remote_port = remote.create_port()
         local_port = local.create_port()

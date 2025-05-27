@@ -11,7 +11,7 @@ license = {text = "GPL-3.0-or-later"}
 authors = [
     { name = "Jose Tiago Macara Coutinho", email = "coutinhotiago@gmail.com" }
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -19,11 +19,10 @@ classifiers = [
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Multimedia :: Video",
     "Topic :: Multimedia :: Video :: Capture",
 ]
@@ -42,8 +41,9 @@ dev = [
     "build>=0.10.0",
     "gevent>=21",
     "twine>=4.0.2",
-    "ward>=0.68.0b0",
-    "ward-coverage>=0.3.0",
+    "pytest>=8.1",
+    "pytest-asyncio>=1.0.0",
+    "pytest-cov>=6",
     "ruff>=0.3.0",
     "numpy>=1.1",
 ]
@@ -79,20 +79,19 @@ readme = {file = ["README.md"], content-type = "text/markdown"}
 [tool.setuptools.packages.find]
 include = ["linuxpy*"]
 
-[tool.ward]
-order = "standard"
-fail-limit=10
-path = ["tests"]
-progress-style = ["inline"]
-test_output_style = "test-per-line"
-hook_module = ["ward_coverage"]
-show-slowest = 10
-
-[tool.ward.plugins.coverage]
-branch = true
-omit = ["*test*"]
-report_type = ["html", "json", "xml"]
-#report = {skip_empty = true, show_missing = true}
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = [
+    "--cov=linuxpy",
+    "--cov-report=html",
+    "--cov-report=json",
+    "--cov-report=xml",
+    "--durations=10",
+    "--verbose",
+]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 
 
 [tool.ruff]
