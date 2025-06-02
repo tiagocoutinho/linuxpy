@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2afb09e1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -1195,15 +1195,15 @@
 
 <h2 id="device-creation">Device creation<a class="headerlink" href="#device-creation" title="Permanent link">&para;</a></h2>
 <p>Create a device object from an ID:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">linuxpy.video.device</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span>
 <span class="n">camera</span> <span class="o">=</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 </code></pre></div>
 <p>from a filename:
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">linuxpy.video.device</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span>
 <span class="n">camera</span> <span class="o">=</span> <span class="n">Device</span><span class="p">(</span><span class="s2">&quot;/dev/video10&quot;</span><span class="p">)</span>
 </code></pre></div></p>
 <p>or from an existing file object:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">linuxpy.video.device</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/dev/video10&quot;</span><span class="p">,</span> <span class="s2">&quot;rb+&quot;</span><span class="p">,</span> <span class="n">buffering</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
     <span class="n">camera</span> <span class="o">=</span> <span class="n">Device</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
 </code></pre></div>
@@ -1237,7 +1237,7 @@ using the same context manager.</p>
 <h2 id="capture">Capture<a class="headerlink" href="#capture" title="Permanent link">&para;</a></h2>
 <p>Simple capture without any configuration is possible using the Device object
 as an infinite iterator:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">linuxpy.video.device</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">VideoCapture</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">VideoCapture</span>
 
 <span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">camera</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">camera</span><span class="p">:</span>
@@ -1246,7 +1246,7 @@ as an infinite iterator:</p>
 <p>The resulting <code>Frame</code> objects can safely and efficiently be converted to bytes.</p>
 <p>To be able to configure the acquisition, you will need to use the
 <code>VideoCapture</code> helper. Here is an example with image size and format configuration:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">linuxpy.video.device</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">VideoCapture</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">VideoCapture</span>
 
 <span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">camera</span><span class="p">:</span>
     <span class="n">capture</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">camera</span><span class="p">)</span>
@@ -1260,7 +1260,7 @@ as an infinite iterator:</p>
 <p>By default, VideoCapture will use memory map if the device has STREAMING
 capability and falls back to standard read if not. It is also possible to
 force a specific reader:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">linuxpy.video.device</span><span class="w"> </span><span class="kn">import</span> <span class="n">Capability</span><span class="p">,</span> <span class="n">Device</span><span class="p">,</span> <span class="n">VideoCapture</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Capability</span><span class="p">,</span> <span class="n">Device</span><span class="p">,</span> <span class="n">VideoCapture</span>
 
 <span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">cam</span><span class="p">:</span>
     <span class="k">with</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">cam</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">Capability</span><span class="o">.</span><span class="n">READWRITE</span><span class="p">):</span>
@@ -1269,7 +1269,7 @@ force a specific reader:</p>
 </code></pre></div>
 <h2 id="information">Information<a class="headerlink" href="#information" title="Permanent link">&para;</a></h2>
 <p>Getting information about the device:</p>
-<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">linuxpy.video.device</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">BufferType</span>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">BufferType</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="n">cam</span> <span class="o">=</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">cam</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
@@ -1335,8 +1335,8 @@ force a specific reader:</p>
 <p>(check <a href="examples/video/basic_async.py">basic async</a> and <a href="examples/video/web/async.py">web async</a> examples)</p>
 <h2 id="gevent">gevent<a class="headerlink" href="#gevent" title="Permanent link">&para;</a></h2>
 <p>linuxpy.video is also gevent friendly:</p>
-<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">linuxpy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeventIO</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">linuxpy.video.device</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">linuxpy.io</span> <span class="kn">import</span> <span class="n">GeventIO</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">io</span><span class="o">=</span><span class="n">GeventIO</span><span class="p">)</span> <span class="k">as</span> <span class="n">camera</span><span class="p">:</span>
 <span class="o">...</span>     <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">camera</span><span class="p">:</span>
 <span class="o">...</span>         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;frame </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1351,7 +1351,7 @@ force a specific reader:</p>
 <p>It is possible to write to a video output capable device (ex: v4l2loopback).
 The following example shows how to grab frames from device 0 and write them
 to device 10:</p>
-<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">linuxpy.video.device</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">VideoOutput</span><span class="p">,</span> <span class="n">BufferType</span>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">linuxpy.video.device</span> <span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">VideoOutput</span><span class="p">,</span> <span class="n">BufferType</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">dev_source</span> <span class="o">=</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">dev_sink</span> <span class="o">=</span> <span class="n">Device</span><span class="o">.</span><span class="n">from_id</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">dev_source</span><span class="p">,</span> <span class="n">dev_target</span><span class="p">:</span>
@@ -1435,10 +1435,10 @@ force a specific writer with <code>VideoOutput(cam, sink=Capability.READWRITE)</
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.indexes", "content.tooltips", "navigation.path", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.indexes", "content.tooltips", "navigation.path", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
+      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
       
         <script src="../../js/termynal.js"></script>
       

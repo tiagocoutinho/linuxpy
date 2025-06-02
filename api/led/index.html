@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2afb09e1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -1365,23 +1365,23 @@
     <div class="doc doc-contents first">
 
         <p>Human friendly interface to linux LED subsystem.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">linuxpy.led</span><span class="w"> </span><span class="kn">import</span> <span class="n">find</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.led</span> <span class="kn">import</span> <span class="n">find</span>
 
 <span class="n">caps_lock</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="s2">&quot;capslock&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">caps_lock</span><span class="o">.</span><span class="n">brightness</span><span class="p">)</span>
 <span class="n">caps_lock</span><span class="o">.</span><span class="n">brightness</span> <span class="o">=</span> <span class="n">caps_lock</span><span class="o">.</span><span class="n">max_brightness</span>
 </code></pre></div>
 <h5 id="linuxpy.led--uled">ULED<a class="headerlink" href="#linuxpy.led--uled" title="Permanent link">&para;</a></h5>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">linuxpy.led</span><span class="w"> </span><span class="kn">import</span> <span class="n">LED</span><span class="p">,</span> <span class="n">ULED</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">linuxpy.led</span> <span class="kn">import</span> <span class="n">LED</span><span class="p">,</span> <span class="n">ULED</span>
 
 <span class="k">with</span> <span class="n">ULED</span><span class="p">(</span><span class="s2">&quot;uled::simulation&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">uled</span><span class="p">:</span>
     <span class="n">led</span> <span class="o">=</span> <span class="n">LED</span><span class="o">.</span><span class="n">from_name</span><span class="p">(</span><span class="s2">&quot;uled::simulation&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">()</span>
 </code></pre></div>
 <p>Streaming example:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">monotonic</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">monotonic</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">linuxpy.led</span><span class="w"> </span><span class="kn">import</span> <span class="n">ULED</span>
+<span class="kn">from</span> <span class="nn">linuxpy.led</span> <span class="kn">import</span> <span class="n">ULED</span>
 
 <span class="k">with</span> <span class="n">ULED</span><span class="p">(</span><span class="s2">&quot;uled::simulation&quot;</span><span class="p">,</span> <span class="n">max_brightness</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span> <span class="k">as</span> <span class="n">uled</span><span class="p">:</span>
     <span class="c1"># Open another terminal and type:</span>
@@ -1810,10 +1810,10 @@ Default is to return an iterator over all LEDs found on the system.</p>
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.indexes", "content.tooltips", "navigation.path", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.indexes", "content.tooltips", "navigation.path", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
+      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
       
         <script src="../../js/termynal.js"></script>
       
