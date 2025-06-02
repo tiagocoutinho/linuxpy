@@ -157,3 +157,11 @@ frame #10: 40662 bytes
 
 Check the [V4L2 user guide](https://tiagocoutinho.github.io/linuxpy/user_guide/video/) and
 [V4L2 reference](https://tiagocoutinho.github.io/linuxpy/api/video/) for more information.
+
+[pypi-python-versions]: https://img.shields.io/pypi/pyversions/linuxpy.svg
+[pypi-version]: https://img.shields.io/pypi/v/linuxpy.svg
+[pypi-status]: https://img.shields.io/pypi/status/linuxpy.svg
+[license]: https://img.shields.io/pypi/l/linuxpy.svg
+[CI]: https://github.com/tiagocoutinho/linuxpy/actions/workflows/ci.yml/badge.svg
+[documentation]: https://img.shields.io/badge/Documentation-blue?color=grey&logo=mdBook
+[source]: https://img.shields.io/badge/Source-grey?logo=git
