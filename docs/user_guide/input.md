@@ -46,4 +46,3 @@ with pad:
 
 * [Input (Latest)](https://www.kernel.org/doc/html/latest/input/)
 * [Input 6.2](https://www.kernel.org/doc/html/v6.2/input/)
-# 🐧
