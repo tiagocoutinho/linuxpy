@@ -32,6 +32,10 @@ def _iter_read_kv(path: Path):
 
 
 def iter_cpu_info():
+    """
+    Iterate over CPU info. Each item represents the information about one of
+    the processors in the system.
+    """
     data = CPU_INFO_PATH.read_text()
     for cpu in data.split("\n\n"):
         info = {}
@@ -46,10 +50,17 @@ def iter_cpu_info():
 
 
 def cpu_info():
+    """
+    CPU info as a sequence of dictionaries, each with information about one of
+    the system processors.
+    """
     return tuple(iter_cpu_info())
 
 
 def iter_mem_info():
+    """
+    Iterate over the system memory information. Each item is a pair of field name and field value.
+    """
     data = MEM_INFO_PATH.read_text()
     for line in data.splitlines():
         key, value = map(str.strip, line.split(":", 1))
@@ -61,10 +72,17 @@ def iter_mem_info():
 
 
 def mem_info():
+    """
+    System memory information.
+    """
     return dict(iter_mem_info())
 
 
 def iter_modules():
+    """
+    Iterate over system modules. Each item represents the information about one of
+    the modules in the system.
+    """
     data = MODULES_PATH.read_text()
     for line in data.splitlines():
         fields = line.split()
@@ -81,10 +99,17 @@ def iter_modules():
 
 
 def modules():
+    """
+    Modules info as a sequence of dictionaries, each with information about one of
+    the system modules.
+    """
     return tuple(iter_modules())
 
 
 def iter_stat():
+    """
+    Iterate over the system stats information. Each item is a pair of field name and field value.
+    """
     CPU = "user", "nice", "system", "idle", "iowait", "irq", "softirq", "steal", "guest", "guest_nice"
     data = STAT_PATH.read_text()
     for line in data.splitlines():
@@ -103,10 +128,17 @@ def iter_stat():
 
 
 def stat():
+    """
+    System stats information.
+    """
     return dict(iter_stat())
 
 
 def iter_dev():
+    """
+    Iterate over network devices. Each item represents the information about one of
+    the network devices in the system.
+    """
     with DEV_PATH.open() as fobj:
         lines = fobj.readlines()
     # Skip the header lines (usually first 2 lines)
@@ -140,10 +172,18 @@ def iter_dev():
 
 
 def dev():
+    """
+    Network devices info as a sequence of dictionaries, each with information about one of
+    the system network devices.
+    """
     return tuple(iter_dev())
 
 
 def iter_wireless():
+    """
+    Iterate over wireless network devices. Each item represents the information about one of
+    the wireless network devices in the system.
+    """
     with WIRELESS_PATH.open() as fobj:
         lines = fobj.readlines()
     # Skip the header lines (usually first 2 lines)
@@ -168,20 +208,36 @@ def iter_wireless():
 
 
 def wireless():
+    """
+    Wireless netowrk devices info as a sequence of dictionaries, each with information about one of
+    the system wireless network devices.
+    """
     return tuple(iter_wireless())
 
 
 def iter_netstat():
+    """
+    Iterate over network statistics.
+    """
     return _iter_read_kv(NETSTAT_PATH)
 
 
 def netstat():
+    """
+    Network statistics.
+    """
     return dict(iter_netstat())
 
 
 def iter_snmp():
+    """
+    Iterate over SNMP statistics.
+    """
     return _iter_read_kv(SNMP_PATH)
 
 
 def snmp():
+    """
+    SNMP statistics.
+    """
     return dict(iter_snmp())
