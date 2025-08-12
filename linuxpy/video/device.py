@@ -31,7 +31,7 @@ from linuxpy.device import (
 from linuxpy.io import IO
 from linuxpy.ioctl import ioctl
 from linuxpy.types import AsyncIterator, Buffer, Callable, Iterable, Iterator, Optional, PathLike, Self, Union
-from linuxpy.util import astream, bit_indexes, make_find
+from linuxpy.util import astream, bit_indexes, make_find, to_fd
 
 from . import raw
 
@@ -135,7 +135,7 @@ IMAGE_FORMAT_BUFFER_TYPES = {
 
 def mem_map(fd, length, offset):
     log_mmap.debug("%s, length=%d, offset=%d", fd, length, offset)
-    return mmap.mmap(fd, length, offset=offset)
+    return mmap.mmap(to_fd(fd), length, offset=offset)
 
 
 def flag_items(flag):
@@ -901,25 +901,25 @@ class Device(BaseDevice):
         self.controls = Controls.from_device(self)
 
     def query_buffer(self, buffer_type, memory, index):
-        return query_buffer(self.fileno(), buffer_type, memory, index)
+        return query_buffer(self, buffer_type, memory, index)
 
     def enqueue_buffer(self, buffer_type: BufferType, memory: Memory, size: int, index: int) -> raw.v4l2_buffer:
-        return enqueue_buffer(self.fileno(), buffer_type, memory, size, index)
+        return enqueue_buffer(self, buffer_type, memory, size, index)
 
     def dequeue_buffer(self, buffer_type: BufferType, memory: Memory) -> raw.v4l2_buffer:
-        return dequeue_buffer(self.fileno(), buffer_type, memory)
+        return dequeue_buffer(self, buffer_type, memory)
 
     def request_buffers(self, buffer_type, memory, size):
-        return request_buffers(self.fileno(), buffer_type, memory, size)
+        return request_buffers(self, buffer_type, memory, size)
 
     def create_buffers(self, buffer_type: BufferType, memory: Memory, count: int) -> list[raw.v4l2_buffer]:
-        return request_and_query_buffers(self.fileno(), buffer_type, memory, count)
+        return request_and_query_buffers(self, buffer_type, memory, count)
 
     def free_buffers(self, buffer_type, memory):
-        return free_buffers(self.fileno(), buffer_type, memory)
+        return free_buffers(self, buffer_type, memory)
 
     def enqueue_buffers(self, buffer_type: BufferType, memory: Memory, count: int) -> list[raw.v4l2_buffer]:
-        return enqueue_buffers(self.fileno(), buffer_type, memory, count)
+        return enqueue_buffers(self, buffer_type, memory, count)
 
     def set_format(
         self,
@@ -928,37 +928,37 @@ class Device(BaseDevice):
         height: int,
         pixel_format: str = "MJPG",
     ):
-        return set_format(self.fileno(), buffer_type, width, height, pixel_format=pixel_format)
+        return set_format(self, buffer_type, width, height, pixel_format=pixel_format)
 
     def get_format(self, buffer_type) -> Format:
-        return get_format(self.fileno(), buffer_type)
+        return get_format(self, buffer_type)
 
     def set_fps(self, buffer_type, fps):
-        return set_fps(self.fileno(), buffer_type, fps)
+        return set_fps(self, buffer_type, fps)
 
     def get_fps(self, buffer_type):
-        return get_fps(self.fileno(), buffer_type)
+        return get_fps(self, buffer_type)
 
     def set_selection(self, buffer_type, target, rectangle):
-        return set_selection(self.fileno(), buffer_type, target, rectangle)
+        return set_selection(self, buffer_type, target, rectangle)
 
     def get_selection(self, buffer_type, target):
-        return get_selection(self.fileno(), buffer_type, target)
+        return get_selection(self, buffer_type, target)
 
     def get_priority(self) -> Priority:
-        return get_priority(self.fileno())
+        return get_priority(self)
 
     def set_priority(self, priority: Priority):
-        set_priority(self.fileno(), priority)
+        set_priority(self, priority)
 
     def stream_on(self, buffer_type):
         self.log.info("Starting %r stream...", buffer_type.name)
-        stream_on(self.fileno(), buffer_type)
+        stream_on(self, buffer_type)
         self.log.info("%r stream ON", buffer_type.name)
 
     def stream_off(self, buffer_type):
         self.log.info("Stoping %r stream...", buffer_type.name)
-        stream_off(self.fileno(), buffer_type)
+        stream_off(self, buffer_type)
         self.log.info("%r stream OFF", buffer_type.name)
 
     def write(self, data: bytes) -> None:
@@ -970,43 +970,43 @@ class Device(BaseDevice):
         id: int = 0,
         flags: EventSubscriptionFlag = 0,
     ):
-        return subscribe_event(self.fileno(), event_type, id, flags)
+        return subscribe_event(self, event_type, id, flags)
 
     def unsubscribe_event(self, event_type: EventType = EventType.ALL, id: int = 0):
-        return unsubscribe_event(self.fileno(), event_type, id)
+        return unsubscribe_event(self, event_type, id)
 
     def deque_event(self):
-        return deque_event(self.fileno())
+        return deque_event(self)
 
     def set_edid(self, edid):
-        set_edid(self.fileno(), edid)
+        set_edid(self, edid)
 
     def clear_edid(self):
-        clear_edid(self.fileno())
+        clear_edid(self)
 
     def get_edid(self):
-        return get_edid(self.fileno())
+        return get_edid(self)
 
     def get_input(self):
-        return get_input(self.fileno())
+        return get_input(self)
 
     def set_input(self, index: int):
-        return set_input(self.fileno(), index)
+        return set_input(self, index)
 
     def get_output(self):
-        return get_output(self.fileno())
+        return get_output(self)
 
     def set_output(self, index: int):
-        return set_output(self.fileno(), index)
+        return set_output(self, index)
 
     def get_std(self) -> StandardID:
-        return get_std(self.fileno())
+        return get_std(self)
 
     def set_std(self, std):
-        return set_std(self.fileno(), std)
+        return set_std(self, std)
 
     def query_std(self) -> StandardID:
-        return query_std(self.fileno())
+        return query_std(self)
 
 
 class SubDevice(BaseDevice):
@@ -1804,7 +1804,7 @@ class ReadSource(ReentrantOpen):
         return self.buffer_manager.device
 
     def raw_grab(self) -> tuple[bytes, raw.v4l2_buffer]:
-        data = os.read(self.device.fileno(), 2**31 - 1)
+        data = os.read(self.device, 2**31 - 1)
         ns = time.time_ns()
         buff = raw.v4l2_buffer()
         buff.bytesused = len(data)
@@ -1847,7 +1847,7 @@ class MemorySource(ReentrantOpen):
             yield from self.frame_reader
 
     def __aiter__(self) -> AsyncIterator[Frame]:
-        return astream(self.device.fileno(), self.raw_read)
+        return astream(self.device, self.raw_read)
 
     @property
     def device(self) -> Device:
@@ -1956,7 +1956,7 @@ class MemoryMap(MemorySource):
     def prepare_buffers(self):
         self.device.log.info("Reserving buffers...")
         buffers = self.buffer_manager.create_buffers(self.source)
-        fd = self.device.fileno()
+        fd = self.device
         self.buffers = [mmap_from_buffer(fd, buff) for buff in buffers]
         self.buffer_manager.enqueue_buffers(Memory.MMAP)
         self.format = self.buffer_manager.get_format()
@@ -1977,13 +1977,13 @@ class EventReader:
         self._buffer = asyncio.Queue(maxsize=self._max_queue_size)
         self._selector = select.epoll()
         self._loop = asyncio.get_event_loop()
-        self._loop.add_reader(self._selector.fileno(), self._on_event)
-        self._selector.register(self.device.fileno(), select.EPOLLPRI)
+        self._loop.add_reader(self._selector, self._on_event)
+        self._selector.register(self.device, select.EPOLLPRI)
         return self
 
     async def __aexit__(self, exc_type, exc_value, traceback):
-        self._selector.unregister(self.device.fileno())
-        self._loop.remove_reader(self._selector.fileno())
+        self._selector.unregister(self.device)
+        self._loop.remove_reader(self._selector)
         self._selector.close()
         self._selector = None
         self._loop = None
@@ -2044,11 +2044,11 @@ class FrameReader:
     async def __aenter__(self) -> Self:
         if self.device.is_blocking:
             raise V4L2Error("Cannot use async frame reader on blocking device")
-        self._device_fd = self.device.fileno()
+        self._device_fd = self.device
         self._buffer = asyncio.Queue(maxsize=self._max_queue_size)
         self._selector = select.epoll()
         self._loop = asyncio.get_event_loop()
-        self._loop.add_reader(self._selector.fileno(), self._on_event)
+        self._loop.add_reader(self._selector, self._on_event)
         self._selector.register(self._device_fd, select.POLLIN)
         return self
 
@@ -2056,7 +2056,7 @@ class FrameReader:
         with contextlib.suppress(OSError):
             # device may have been closed by now
             self._selector.unregister(self._device_fd)
-        self._loop.remove_reader(self._selector.fileno())
+        self._loop.remove_reader(self._selector)
         self._selector.close()
         self._selector = None
         self._loop = None
@@ -2107,7 +2107,7 @@ class BufferQueue:
         self.raw_buffer = None
 
     def enqueue(self, buff: raw.v4l2_buffer):
-        enqueue_buffer_raw(self.buffer_manager.device.fileno(), buff)
+        enqueue_buffer_raw(self.buffer_manager.device, buff)
 
     def dequeue(self):
         return self.buffer_manager.dequeue_buffer(self.memory)
@@ -2230,7 +2230,7 @@ def iter_video_capture_files(path: PathLike = "/dev") -> Iterable[Path]:
 
     def filt(filename):
         with IO.open(filename) as fobj:
-            caps = read_capabilities(fobj.fileno())
+            caps = read_capabilities(fobj)
             return Capability.VIDEO_CAPTURE in Capability(caps.device_caps)
 
     return filter(filt, iter_video_files(path))
@@ -2250,7 +2250,7 @@ def iter_video_output_files(path: PathLike = "/dev") -> Iterable[Path]:
 
     def filt(filename):
         with IO.open(filename) as fobj:
-            caps = read_capabilities(fobj.fileno())
+            caps = read_capabilities(fobj)
             return Capability.VIDEO_OUTPUT in Capability(caps.device_caps)
 
     return filter(filt, iter_video_files(path))
