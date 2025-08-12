@@ -8,16 +8,18 @@
 name = "linuxpy"
 description = "Human friendly interface to linux subsystems using python"
 license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
 authors = [
     { name = "Jose Tiago Macara Coutinho", email = "coutinhotiago@gmail.com" }
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -29,11 +31,12 @@ dependencies = [
     "typing_extensions>=4.6,<5 ; python_version < '3.12'"
 ]
 dynamic = ["version", "readme"]
+keywords = ["linux", "video", "system", "midi", "gpio", "led", "input", "gamepad", "joystick", "keyboard", "mouse", "thermal", "asyncio"]
 
 [project.urls]
 Documentation = "https://tiagocoutinho.github.io/linuxpy/"
 Homepage = "https://github.com/tiagocoutinho/linuxpy"
-Source = "https://github.com/tiagocoutinho/linuxpy"
+Repository = "https://github.com/tiagocoutinho/linuxpy"
 
 [project.optional-dependencies]
 dev = [
@@ -68,7 +71,7 @@ docs = [
 ]
 
 [build-system]
-requires = ["setuptools >= 40.9.0"]
+requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
