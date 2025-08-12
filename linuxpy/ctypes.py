@@ -91,7 +91,7 @@ class timeval(Struct):
     def set_ns(self, value=None):
         if value is None:
             value = time.time_ns()
-        microsecs = time.time_ns() // NANOSEC_PER_MICROSEC
+        microsecs = value // NANOSEC_PER_MICROSEC
         self.secs = microsecs // MICROSEC_PER_SEC
         self.usecs = microsecs % MICROSEC_PER_SEC
 
