@@ -1,3 +1,9 @@
+#
+# This file is part of the linuxpy project
+#
+# Copyright (c) 2025 Tiago Coutinho
+# Distributed under the GPLv3 license. See LICENSE for more info.
+
 import os
 from contextlib import ExitStack, contextmanager
 from inspect import isgenerator
