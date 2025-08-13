@@ -291,7 +291,7 @@ def test_build_config_line():
         keys.append(key)
         values.append(value)
         assert CLine(55, **{key: value}) == {key: value, "line": 55}
-        assert CLine(56, *values) == dict(zip(keys, values), line=56)
+        assert CLine(56, *values) == dict(zip(keys, values, strict=True), line=56)
 
 
 def test_parse_config():

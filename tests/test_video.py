@@ -660,7 +660,7 @@ def test_controls_with_vivid():
         assert boolean.value is True
         trues = ["true", "1", "yes", "on", "enable", True, 1, [1], {1: 2}, (1,)]
         falses = ["false", "0", "no", "off", "disable", False, 0, [], {}, (), None]
-        interleaved = (value for pair in zip(trues, falses) for value in pair)
+        interleaved = (value for pair in zip(trues, falses, strict=False) for value in pair)
         for i, value in enumerate(interleaved):
             expected = not bool(i % 2)
             boolean.value = value

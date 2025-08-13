@@ -671,9 +671,9 @@ def get_controls_values(fd, controls: list[raw.v4l2_query_ext_ctrl], which=raw.C
     ctrls.count = n
     ctrls.request_fd = request_fd
     ctrls.controls = (n * raw.v4l2_ext_control)()
-    values = [_prepare_read_control_value(*args) for args in zip(controls, ctrls.controls)]
+    values = [_prepare_read_control_value(*args) for args in zip(controls, ctrls.controls, strict=False)]
     ioctl(fd, IOC.G_EXT_CTRLS, ctrls)
-    return [_get_control_value(*args) for args in zip(controls, ctrls.controls, values)]
+    return [_get_control_value(*args) for args in zip(controls, ctrls.controls, values, strict=False)]
 
 
 def set_control(fd, id, value):
@@ -714,7 +714,7 @@ def set_controls_values(
     ctrls.count = n
     ctrls.request_fd = request_fd
     ctrls.controls = (n * raw.v4l2_ext_control)()
-    for (control, value), raw_control in zip(controls_values, ctrls.controls):
+    for (control, value), raw_control in zip(controls_values, ctrls.controls, strict=False):
         _prepare_write_controls_values(control, value, raw_control)
     ioctl(fd, IOC.S_EXT_CTRLS, ctrls)
 

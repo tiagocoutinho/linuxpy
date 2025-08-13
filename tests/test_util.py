@@ -82,9 +82,11 @@ def test_make_find():
     assert find(custom_match=lambda device: device.i > 0) is devices[1]
     assert find(custom_match=lambda device: device.i > 2) is None
     assert len(tuple(find(find_all=True))) == 3
-    assert all(a is b for a, b in zip(devices, find(find_all=True)))
-    assert all(a is b for a, b in zip(devices[1:2], find(find_all=True, i=1)))
-    assert all(a is b for a, b in zip(devices[1:3], find(find_all=True, custom_match=lambda device: device.i > 0)))
+    assert all(a is b for a, b in zip(devices, find(find_all=True), strict=True))
+    assert all(a is b for a, b in zip(devices[1:2], find(find_all=True, i=1), strict=True))
+    assert all(
+        a is b for a, b in zip(devices[1:3], find(find_all=True, custom_match=lambda device: device.i > 0), strict=True)
+    )
 
 
 def test_to_fd():

@@ -24,11 +24,11 @@ SNMP_PATH = NET_PATH / "snmp"
 def _iter_read_kv(path: Path):
     with path.open() as fobj:
         lines = fobj.readlines()
-    for keys, values in zip(lines[::2], lines[1::2]):
+    for keys, values in zip(lines[::2], lines[1::2], strict=True):
         key, *keys = keys.split()
         value, *values = values.split()
         assert key == value
-        yield key.rstrip(":"), dict(zip(keys, [int(value) for value in values]))
+        yield key.rstrip(":"), dict(zip(keys, [int(value) for value in values], strict=True))
 
 
 def iter_cpu_info():
@@ -115,7 +115,7 @@ def iter_stat():
     for line in data.splitlines():
         name, *fields = line.split()
         if name.startswith("cpu"):
-            payload = dict(zip(CPU, map(int, fields)))
+            payload = dict(zip(CPU, map(int, fields), strict=True))
         elif name in {"intr", "softirq"}:
             total, *fields = (int(field) for field in fields)
             payload = dict(enumerate(fields, start=1))

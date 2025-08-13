@@ -408,7 +408,7 @@ class Request(ReentrantOpen):
             lines = expand_from_list(key, self.min_line, self.max_line + 1)
             if isinstance(value, int):
                 value = len(lines) * (value,)
-            values = dict(zip(lines, value))
+            values = dict(zip(lines, value, strict=True))
         self.set_values(values)
 
     def __iter__(self) -> Iterable[LineEvent]:
