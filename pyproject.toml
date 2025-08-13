@@ -70,6 +70,9 @@ docs = [
     "mkdocs-coverage",
 ]
 
+[project.scripts]
+linuxpy-codegen = "linuxpy.codegen.cli:main"
+
 [build-system]
 requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
@@ -119,5 +122,7 @@ target-version = "py310"
 [tool.ruff.lint.isort]
 combine-as-imports = true
 
-[project.scripts]
-linuxpy-codegen = "linuxpy.codegen.cli:main"
+[tool.coverage.run]
+omit = [
+    "linuxpy/codegen/*"
+]
