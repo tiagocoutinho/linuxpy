@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Coverage for linuxpy/input/cli.py: 0%</title>
     <link rel="icon" sizes="32x32" href="favicon_32_cb_58284776.png">
-    <link rel="stylesheet" href="style_cb_8e611ae1.css" type="text/css">
+    <link rel="stylesheet" href="style_cb_6b508a39.css" type="text/css">
     <script src="coverage_html_cb_6fb7b396.js" defer></script>
 </head>
 <body class="pyfile">
@@ -64,8 +64,8 @@
             <a id="indexLink" class="nav" href="covindex.html">&Hat; index</a> &nbsp; &nbsp;
             <a id="nextFileLink" class="nav" href="z_756d96e38b1c5b79_device_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.6.8">coverage.py v7.6.8</a>,
-            created at 2025-05-27 13:54 +0200
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.10.3">coverage.py v7.10.3</a>,
+            created at 2025-08-13 08:09 +0200
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -140,8 +140,8 @@
     <p class="mis show_mis"><span class="n"><a id="t58" href="#t58">58</a></span><span class="t"><span class="key">def</span> <span class="nam">cli</span><span class="op">(</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t59" href="#t59">59</a></span><span class="t">    <span class="nam">parser</span> <span class="op">=</span> <span class="nam">argparse</span><span class="op">.</span><span class="nam">ArgumentParser</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t60" href="#t60">60</a></span><span class="t">    <span class="nam">sub_parsers</span> <span class="op">=</span> <span class="nam">parser</span><span class="op">.</span><span class="nam">add_subparsers</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t61" href="#t61">61</a></span><span class="t">        <span class="nam">title</span><span class="op">=</span><span class="str">"sub-commands"</span><span class="op">,</span> <span class="nam">description</span><span class="op">=</span><span class="str">"valid sub-commands"</span><span class="op">,</span> <span class="nam">help</span><span class="op">=</span><span class="str">"select one command"</span><span class="op">,</span> <span class="nam">required</span><span class="op">=</span><span class="key">True</span><span class="op">,</span> <span class="nam">dest</span><span class="op">=</span><span class="str">"command"</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t62" href="#t62">62</a></span><span class="t">    <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis mis2 show_mis"><span class="n"><a id="t61" href="#t61">61</a></span><span class="t">        <span class="nam">title</span><span class="op">=</span><span class="str">"sub-commands"</span><span class="op">,</span> <span class="nam">description</span><span class="op">=</span><span class="str">"valid sub-commands"</span><span class="op">,</span> <span class="nam">help</span><span class="op">=</span><span class="str">"select one command"</span><span class="op">,</span> <span class="nam">required</span><span class="op">=</span><span class="key">True</span><span class="op">,</span> <span class="nam">dest</span><span class="op">=</span><span class="str">"command"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis mis2 show_mis"><span class="n"><a id="t62" href="#t62">62</a></span><span class="t">    <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t63" href="#t63">63</a></span><span class="t">    <span class="nam">listen</span> <span class="op">=</span> <span class="nam">sub_parsers</span><span class="op">.</span><span class="nam">add_parser</span><span class="op">(</span><span class="str">"listen"</span><span class="op">,</span> <span class="nam">aliases</span><span class="op">=</span><span class="op">[</span><span class="str">"dump"</span><span class="op">]</span><span class="op">,</span> <span class="nam">help</span><span class="op">=</span><span class="str">"listen for events on selected input"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t64" href="#t64">64</a></span><span class="t">    <span class="nam">listen</span><span class="op">.</span><span class="nam">add_argument</span><span class="op">(</span><span class="str">"addr"</span><span class="op">,</span> <span class="nam">help</span><span class="op">=</span><span class="str">"address"</span><span class="op">,</span> <span class="nam">type</span><span class="op">=</span><span class="nam">int</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t65" href="#t65">65</a></span><span class="t">    <span class="nam">alisten</span> <span class="op">=</span> <span class="nam">sub_parsers</span><span class="op">.</span><span class="nam">add_parser</span><span class="op">(</span><span class="str">"alisten"</span><span class="op">,</span> <span class="nam">aliases</span><span class="op">=</span><span class="op">[</span><span class="str">"adump"</span><span class="op">]</span><span class="op">,</span> <span class="nam">help</span><span class="op">=</span><span class="str">"listen for events on selected input(s)"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -178,8 +178,8 @@
             <a class="nav" href="covindex.html">&Hat; index</a> &nbsp; &nbsp;
             <a class="nav" href="z_756d96e38b1c5b79_device_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.6.8">coverage.py v7.6.8</a>,
-            created at 2025-05-27 13:54 +0200
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.10.3">coverage.py v7.10.3</a>,
+            created at 2025-08-13 08:09 +0200
         </p>
     </div>
 </footer>
