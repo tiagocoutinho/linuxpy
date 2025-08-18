@@ -11,6 +11,8 @@ from inspect import isgenerator
 from math import isclose
 from pathlib import Path
 from random import randint
+from threading import Event
+from time import sleep
 from unittest import mock
 
 import pytest
@@ -843,9 +845,16 @@ def test_selection_with_vivid():
 
 
 def check_frame(frame, width, height, pixel_format, source):
-    size = width * height * 3
-    assert len(frame.data) == size
-    assert frame.nbytes == size
+    bits_per_pixel = 4 if pixel_format in {PixelFormat.RGB32, PixelFormat.ARGB32} else 3
+    size = width * height * bits_per_pixel
+    compact = pixel_format in {PixelFormat.MJPEG, PixelFormat.YUYV}
+    if compact:
+        assert len(frame.data) < size
+        assert frame.nbytes < size
+    else:
+        assert len(frame.data) == size
+        assert frame.nbytes == size
+    assert len(frame.data) == frame.nbytes
     assert frame.memory == Memory.MMAP
     assert frame.pixel_format == pixel_format
     assert frame.type == BufferType.VIDEO_CAPTURE
@@ -854,7 +863,10 @@ def check_frame(frame, width, height, pixel_format, source):
     assert frame.pixel_format == pixel_format
     if numpy:
         data = frame.array
-        assert data.shape == (size,)
+        if compact:
+            assert data.shape < (size,)
+        else:
+            assert data.shape == (size,)
         assert data.dtype == numpy.ubyte
     if source in {None, Capability.STREAMING}:
         assert BufferFlag.MAPPED in frame.flags
@@ -1041,3 +1053,58 @@ async def test_async_vivid_events():
                 assert event.type == EventType.CTRL
                 assert event.u.ctrl.changes == EventControlChange.VALUE
                 break
+
+
+def _app(klass):
+    if app := klass.instance():
+        return app, False
+    return klass([]), True
+
+
+@pytest.fixture
+def qt_core_app():
+    """Fixture to create and manage a Qt application for tests."""
+    from qtpy.QtCore import QCoreApplication
+
+    app, quit = _app(QCoreApplication)
+    yield app
+    if quit:
+        app.quit()
+
+
+@pytest.fixture
+def qt_app():
+    """Fixture to create and manage a Qt application for tests."""
+    from qtpy.QtWidgets import QApplication
+
+    app, quit = _app(QApplication)
+    yield app
+    if quit:
+        app.quit()
+
+
+class QStatus:
+    def __init__(self, qcamera):
+        self.qcamera = qcamera
+        self.state = None
+        self.frame = None
+        self.frame_event = Event()
+        qcamera.stateChanged.connect(self.on_state)
+        qcamera.frameChanged.connect(self.on_frame)
+
+    def on_frame(self, frame):
+        self.frame = frame
+        self.frame_event.set()
+
+    def on_state(self, state):
+        self.state = state
+
+    def wait_for_frame(self, qapp):
+        self.frame_event.clear()
+        for _ in range(10):
+            if self.frame_event.is_set():
+                return
+            sleep(0.01)
+            qapp.processEvents()
+        assert self.frame_event.is_set(), "frame did not arrive"
+        self.frame_event.clear()

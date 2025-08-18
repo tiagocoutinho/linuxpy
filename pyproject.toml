@@ -48,6 +48,9 @@ dev = [
     "pytest-cov>=6",
     "ruff>=0.3.0",
     "numpy>=1.1",
+    "qtpy",
+    "pyqt6",
+    "opencv-python",
 ]
 examples = [
     "flask>=2,<4",
@@ -97,6 +100,7 @@ addopts = [
 testpaths = ["tests"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
+qt_api = "pyqt6"
 
 
 [tool.ruff]

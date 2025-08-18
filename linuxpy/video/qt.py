@@ -43,7 +43,7 @@ class QCamera(QtCore.QObject):
 
     def start(self):
         if self._state != "stopped":
-            return
+            raise RuntimeError(f"Cannot start when camera is {self._state}")
         self.setState("running")
         self.device.open()
         self.capture.open()
@@ -53,17 +53,18 @@ class QCamera(QtCore.QObject):
 
     def pause(self):
         if self._state != "running":
-            return
-        self._notifier.setEnabled(False)
+            raise RuntimeError(f"Cannot pause when camera is {self._state}")
         self.setState("paused")
 
     def resume(self):
         if self._state != "paused":
-            return
+            raise RuntimeError(f"Cannot resume when camera is {self._state}")
         self._notifier.setEnabled(True)
         self.setState("running")
 
     def stop(self):
+        if self._state == "stopped":
+            raise RuntimeError(f"Cannot stop when camera is {self._state}")
         if self._notifier is not None:
             self._notifier.setEnabled(False)
             self._notifier = None
@@ -83,8 +84,9 @@ def to_qpixelformat(pixel_format: PixelFormat) -> QtGui.QPixelFormat | None:
 
 def frame_to_qimage(frame: Frame) -> QtGui.QImage:
     """Translates a Frame to a QImage"""
+    data = frame.data
     if frame.pixel_format == PixelFormat.MJPEG:
-        return QtGui.QImage.fromData(frame.data, b"JPG")
+        return QtGui.QImage.fromData(data, b"JPG")
     fmt = QtGui.QImage.Format.Format_BGR888
     if frame.pixel_format == PixelFormat.RGB24:
         fmt = QtGui.QImage.Format.Format_RGB888
@@ -98,7 +100,7 @@ def frame_to_qimage(frame: Frame) -> QtGui.QImage:
         data = frame.array
         data.shape = frame.height, frame.width, -1
         data = cv2.cvtColor(data, cv2.COLOR_YUV2BGR_YUYV)
-    return QtGui.QImage(frame.data, frame.width, frame.height, fmt)
+    return QtGui.QImage(data, frame.width, frame.height, fmt)
 
 
 def frame_to_qpixmap(frame: Frame) -> QtGui.QPixmap:
@@ -141,16 +143,6 @@ def draw_no_image(paint_device, width=None, height=None, line_width=4):
     )
     half_line_width = line_width // 2
     painter.drawRect(half_line_width, half_line_width, width - line_width, height - line_width)
-
-
-class QVideoInfo(QtWidgets.QWidget):
-    def __init__(self):
-        super().__init__()
-        self._init()
-
-    def _init(self):
-        layout = QtWidgets.QFormLayout()
-        self.setLayout(layout)
 
 
 class BaseCameraControl:
@@ -287,7 +279,7 @@ class QVideoControls(QtWidgets.QWidget):
 
 class QVideo(QtWidgets.QWidget):
     frame = None
-    image = None
+    pixmap = None
 
     def __init__(self, camera: QCamera | None = None):
         super().__init__()
@@ -324,6 +316,7 @@ class QVideo(QtWidgets.QWidget):
                 y = int((height - pix_height) / 2)
             painter = QtGui.QPainter(self)
             painter.drawPixmap(QtCore.QPoint(x, y), scaled_pixmap)
+            self.scaled_pixmap = scaled_pixmap
 
     def minimumSizeHint(self):
         return QtCore.QSize(160, 120)
