@@ -55,7 +55,7 @@ jobs:
     - name: Install dependencies
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        pip install --disable-pip-version-check -e .[dev]
+        pip install --disable-pip-version-check -e . --group=dev
     - name: Linting
       run: |
         ruff check --diff --output-format=github linuxpy tests examples
