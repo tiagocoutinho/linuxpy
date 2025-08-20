@@ -1,11 +1,17 @@
 import pytest
 from test_video import VIVID_CAPTURE_DEVICE, check_frame, vivid_only
 
-from linuxpy.video import qt
+try:
+    from linuxpy.video import qt
+except Exception:
+    qt = None
+
 from linuxpy.video.device import Capability, Device, PixelFormat, VideoCapture
 
+qt_only = pytest.mark.skipif(qt is None, reason="qt not properly installed")
+pytestmark = [qt_only, vivid_only]
 
-@vivid_only
+
 def test_qcamera_with_vivid(qtbot, qapp):
     def check_cannot(action, state):
         with pytest.raises(RuntimeError) as error:
