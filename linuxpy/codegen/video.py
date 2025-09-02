@@ -120,7 +120,7 @@ MACRO_ENUMS = [
     CEnum("TimeCodeType", "V4L2_TC_TYPE_"),
     CEnum("TimeCodeFlag", "V4L2_TC_FLAG_", "IntFlag"),
     CEnum("EventSubscriptionFlag", "V4L2_EVENT_SUB_FL_", "IntFlag"),
-    CEnum("EventControlChange", "V4L2_EVENT_CTRL_CH_"),
+    CEnum("EventControlChange", "V4L2_EVENT_CTRL_CH_", "IntFlag"),
     CEnum("EventType", "V4L2_EVENT_"),
     CEnum("MbusFrameFormatFlag", "V4L2_MBUS_FRAMEFMT_", "IntFlag"),
     # It is very dificult to match just only these two values using prefix, so put whole name there
