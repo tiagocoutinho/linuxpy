@@ -5,6 +5,7 @@
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
 import functools
+import importlib
 import os
 import select
 
@@ -33,7 +34,25 @@ def fopen(path, rw=False, binary=True, blocking=False, close_on_exec=True):
 
 class IO:
     open = functools.partial(fopen, blocking=False)
-    select = select.select
+    os = os
+    select = select
+
+
+class GeventModule:
+    def __init__(self, name):
+        self.name = name
+        self._module = None
+
+    @property
+    def module(self):
+        if self._module is None:
+            self._module = importlib.import_module(f"gevent.{self.name}")
+        return self._module
+
+    def __getattr__(self, name):
+        attr = getattr(self.module, name)
+        setattr(self, name, attr)
+        return attr
 
 
 class GeventIO:
@@ -44,8 +63,5 @@ class GeventIO:
 
         return gevent.fileobject.FileObject(path, mode, buffering=0)
 
-    @staticmethod
-    def select(*args, **kwargs):
-        import gevent.select
-
-        return gevent.select.select(*args, **kwargs)
+    os = GeventModule("os")
+    select = GeventModule("select")

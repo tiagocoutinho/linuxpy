@@ -277,7 +277,14 @@ class Hardware:
         assert self.fd == fd
         return MemoryMap(self)
 
-    def select(self, readers, writers, other, timeout=None):
+    @property
+    def select(self):
+        class select:
+            select = self._select
+
+        return select
+
+    def _select(self, readers, writers, other, timeout=None):
         assert readers[0].fileno() == self.fd
         return readers, writers, other
 

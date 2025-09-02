@@ -882,10 +882,10 @@ def enqueue_buffers(fd, buffer_type: BufferType, memory: Memory, count: int) -> 
 class Device(BaseDevice):
     PREFIX = "/dev/video"
 
-    def __init__(self, name_or_file, read_write=True, io=IO):
+    def __init__(self, name_or_file, read_write=True, io=IO, blocking=False):
         self.info = None
         self.controls = None
-        super().__init__(name_or_file, read_write=read_write, io=io)
+        super().__init__(name_or_file, read_write=read_write, io=io, blocking=blocking)
 
     def __iter__(self):
         with VideoCapture(self) as stream:
@@ -1007,6 +1007,12 @@ class Device(BaseDevice):
 
     def query_std(self) -> StandardID:
         return query_std(self)
+
+    def clone(self) -> Self:
+        fd = os.dup(self.fileno())
+        fobj = self.io.os.fdopen(fd, "rb+", buffering=0)
+        fobj.name = self._fobj.name
+        return type(self)(fobj)
 
 
 class SubDevice(BaseDevice):
@@ -1438,6 +1444,13 @@ class CompoundControl(BaseControl):
     def value(self, value):
         set_controls_values(self.device, ((self._info, value),))
 
+    def decode_event(self, event: raw.v4l2_event):
+        assert self.id == event.id
+        assert event.type == EventType.CTRL
+        if EventControlChange.VALUE & event.u.ctrl.changes:
+            data = event.u.data if self.is_flagged_has_payload else None
+            return _get_control_value(self._info, event.u.ctrl.m1, data)
+
 
 class DeviceHelper:
     def __init__(self, device: Device):
@@ -1818,7 +1831,7 @@ class ReadSource(ReentrantOpen):
     def wait_read(self) -> Frame:
         device = self.device
         if device.io.select is not None:
-            device.io.select((device,), (), ())
+            device.io.select.select((device,), (), ())
         return self.raw_read()
 
     def read(self) -> Frame:
@@ -1913,7 +1926,7 @@ class MemorySource(ReentrantOpen):
     def wait_write(self, data: Buffer) -> raw.v4l2_buffer:
         device = self.device
         if device.io.select is not None:
-            _, r, _ = device.io.select((), (device,), ())
+            _, r, _ = device.io.select.select((), (device,), ())
         return self.raw_write(data)
 
     def write(self, data: Buffer) -> raw.v4l2_buffer:
@@ -1963,8 +1976,9 @@ class MemoryMap(MemorySource):
         self.device.log.info("Buffers reserved")
 
 
-class EventReader:
+class EventReader(ReentrantOpen):
     def __init__(self, device: Device, max_queue_size=100):
+        super().__init__()
         self.device = device
         self._loop = None
         self._selector = None
@@ -1994,14 +2008,15 @@ class EventReader:
             yield await self.aread()
 
     def __iter__(self):
-        while True:
-            yield self.read()
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, tb):
-        pass
+        device = self.device
+        with self:
+            if device.is_blocking:
+                while True:
+                    yield device.deque_event()
+            else:
+                while True:
+                    for _ in self._selector.poll():
+                        yield device.deque_event()
 
     def _on_event(self):
         task = self._loop.create_future()
@@ -2018,12 +2033,27 @@ class EventReader:
             buffer.popleft()
         buffer.put_nowait(task)
 
-    def read(self, timeout=None):
+    def open(self):
         if not self.device.is_blocking:
-            _, _, exc = self.device.io.select((), (), (self.device,), timeout)
+            self._selector = select.epoll()
+            self._selector.register(self.device, select.EPOLLPRI)
+
+    def close(self):
+        if self._selector:
+            self._selector.close()
+            self._selector = None
+
+    def fileno(self) -> int:
+        """Return the underlying file descriptor (an integer) of the stream if it exists"""
+        return self._selector.fileno()
+
+    def read(self, timeout=None):
+        device = self.device
+        if not device.is_blocking:
+            _, _, exc = device.io.select.select((), (), (self.device,), timeout)
             if not exc:
                 return
-        return self.device.deque_event()
+        return device.deque_event()
 
     async def aread(self):
         """Wait for next event or return last event in queue"""
@@ -2089,7 +2119,7 @@ class FrameReader:
 
     def read(self, timeout: Optional[float] = None) -> Frame:
         if not self.device.is_blocking:
-            read, _, _ = self.device.io.select((self.device,), (), (), timeout)
+            read, _, _ = self.device.io.select.select((self.device,), (), (), timeout)
             if not read:
                 return
         return self.raw_read()
