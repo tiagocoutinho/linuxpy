@@ -1098,6 +1098,10 @@ class Controls(dict):
                 return v
         raise KeyError(key)
 
+    def items(self):
+        self._init_if_needed()
+        return super().items()
+
     def values(self):
         self._init_if_needed()
         return super().values()
