@@ -1036,7 +1036,7 @@ class Controls(dict):
 
     def _init_if_needed(self):
         if not self._initialized:
-            self._load()
+            self.refresh()
             self.__dict__["_initialized"] = True
 
     def __getitem__(self, name):
@@ -1047,7 +1047,7 @@ class Controls(dict):
         self._init_if_needed()
         return super().__len__()
 
-    def _load(self):
+    def refresh(self):
         ctrl_type_map = {
             ControlType.BOOLEAN: BooleanControl,
             ControlType.INTEGER: IntegerControl,
@@ -1138,7 +1138,7 @@ class Controls(dict):
 
 
 class BaseControl:
-    def __init__(self, device, info, control_class):
+    def __init__(self, device, info, control_class, klass=None):
         self.device = device
         self._info = info
         self.id = self._info.id
@@ -1147,6 +1147,9 @@ class BaseControl:
         self.control_class = control_class
         self.type = ControlType(self._info.type)
         self.flags = ControlFlag(self._info.flags)
+        self.minimum = self._info.minimum
+        self.maximum = self._info.maximum
+        self.step = self._info.step
 
         try:
             self.standard = ControlID(self.id)
@@ -1303,9 +1306,6 @@ class BaseNumericControl(BaseMonoControl):
 
     def __init__(self, device, info, control_class, clipping=True):
         super().__init__(device, info, control_class)
-        self.minimum = self._info.minimum
-        self.maximum = self._info.maximum
-        self.step = self._info.step
         self.clipping = clipping
 
         if self.minimum < self.lower_bound:
@@ -1448,12 +1448,8 @@ class CompoundControl(BaseControl):
     def value(self, value):
         set_controls_values(self.device, ((self._info, value),))
 
-    def decode_event(self, event: raw.v4l2_event):
-        assert self.id == event.id
-        assert event.type == EventType.CTRL
-        if EventControlChange.VALUE & event.u.ctrl.changes:
-            data = event.u.data if self.is_flagged_has_payload else None
-            return _get_control_value(self._info, event.u.ctrl.m1, data)
+    def set_to_default(self):
+        self.value = self.default
 
 
 class DeviceHelper:
