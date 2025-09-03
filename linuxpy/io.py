@@ -57,7 +57,7 @@ class GeventModule:
 
 class GeventIO:
     @staticmethod
-    def open(path, rw=False):
+    def open(path, rw=False, blocking=False):
         mode = "rb+" if rw else "rb"
         import gevent.fileobject
 
