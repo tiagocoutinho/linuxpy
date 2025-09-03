@@ -334,25 +334,10 @@ class QControl(QtCore.QObject):
 
 
 class QControlPanel(QtWidgets.QTabWidget):
-    def __init__(self, camera: QCamera, nb_cols=2):
+    def __init__(self, camera: QCamera):
         super().__init__()
-        self.tabs = {}
         self.camera = camera
-        self.nb_cols = nb_cols
         self.fill()
-
-    def get_tab(self, ctrl):
-        if (klass := ctrl.control_class) is None:
-            tab_name = "Generic"
-        else:
-            tab_name = klass.name.decode()
-        if (tab := self.tabs.get(tab_name)) is None:
-            tab = QtWidgets.QWidget()
-
-            tab.setLayout(QtWidgets.QFormLayout())
-            self.addTab(tab, tab_name)
-            self.tabs[tab_name] = tab
-        return tab
 
     def fill(self):
         camera = self.camera
@@ -375,8 +360,13 @@ class QControlPanel(QtWidgets.QTabWidget):
             layout = QtWidgets.QGridLayout()
             tab.setLayout(layout)
             self.addTab(tab, name)
-            self.tabs[name] = tab
-            nb_rows = (len(widgets) + self.nb_cols - 1) // self.nb_cols
+            nb_cols = 1
+            nb_controls = len(widgets)
+            if nb_controls > 50:
+                nb_cols = 3
+            elif nb_controls > 10:
+                nb_cols = 2
+            nb_rows = (len(widgets) + nb_cols - 1) // nb_cols
             for idx, (qctrl, widget) in enumerate(widgets):
                 row, col = idx % nb_rows, idx // nb_rows
                 if qctrl.ctrl.type == ControlType.BUTTON:
