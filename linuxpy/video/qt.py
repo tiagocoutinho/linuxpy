@@ -10,11 +10,95 @@ Qt helpers for V4L2 (Video 4 Linux 2) subsystem.
 You'll need to install linuxpy qt optional dependencies (ex: `$pip install linuxpy[qt]`)
 """
 
+import collections
+import contextlib
 import logging
+import select
 
 from qtpy import QtCore, QtGui, QtWidgets
 
-from linuxpy.video.device import Device, Frame, PixelFormat, VideoCapture
+from linuxpy.video.device import (
+    BaseControl,
+    ControlType,
+    Device,
+    EventControlChange,
+    EventType,
+    Frame,
+    PixelFormat,
+    VideoCapture,
+)
+
+log = logging.getLogger(__name__)
+
+
+def stream(epoll):
+    while True:
+        yield from epoll.poll()
+
+
+@contextlib.contextmanager
+def signals_blocked(widget: QtWidgets.QWidget):
+    if widget.signalsBlocked():
+        yield
+    else:
+        widget.blockSignals(True)
+        try:
+            yield
+        finally:
+            widget.blockSignals(False)
+
+
+class Dispatcher:
+    def __init__(self):
+        self.epoll = select.epoll()
+        self.cameras = {}
+        self._task = None
+
+    def ensure_task(self):
+        if self._task is None:
+            self._task = QtCore.QThread()
+            self._task.run = self.loop
+            self._task.start()
+            self._task.finished.connect(self.on_quit)
+        return self._task
+
+    def on_quit(self):
+        for fd in self.cameras:
+            self.epoll.unregister(fd)
+        self.cameras = {}
+
+    def register(self, camera, type):
+        self.ensure_task()
+        fd = camera.device.fileno()
+        event_mask = select.EPOLLHUP
+        if type == "all" or type == "frame":
+            event_mask |= select.EPOLLIN
+        if type == "all" or type == "control":
+            event_mask |= select.EPOLLPRI
+        if fd in self.cameras:
+            self.epoll.modify(fd, event_mask)
+        else:
+            self.epoll.register(fd, event_mask)
+        self.cameras[fd] = camera
+
+    def loop(self):
+        errno = 0
+        for fd, event_type in stream(self.epoll):
+            camera = self.cameras[fd]
+            if event_type & select.EPOLLHUP:
+                print("Unregister!", fd)
+                self.epoll.unregister(fd)
+            else:
+                if event_type & select.EPOLLPRI:
+                    camera.handle_event()
+                if event_type & select.EPOLLIN:
+                    camera.handle_frame()
+                if event_type & select.EPOLLERR:
+                    errno += 1
+                    print("ERROR", errno)
+
+
+dispatcher = Dispatcher()
 
 
 class QCamera(QtCore.QObject):
@@ -27,12 +111,26 @@ class QCamera(QtCore.QObject):
         self.capture = VideoCapture(device)
         self._stop = False
         self._stream = None
-        self._notifier = None
         self._state = "stopped"
+        dispatcher.register(self, "control")
+        self.controls = {}
 
-    def on_frame(self):
+    def handle_frame(self):
         frame = next(self._stream)
         self.frameChanged.emit(frame)
+
+    def handle_event(self):
+        event = self.device.deque_event()
+        if event.type == EventType.CTRL:
+            evt = event.u.ctrl
+            if not EventControlChange.VALUE & evt.changes:
+                # Skip non value changes (flags, ranges, dimensions)
+                log.info("Skip event %s", event)
+                return
+            ctrl, controls = self.controls[event.id]
+            value = None if evt.type == ControlType.BUTTON else ctrl.value
+            for control in controls:
+                control.valueChanged.emit(value)
 
     def setState(self, state):
         self._state = state
@@ -45,36 +143,248 @@ class QCamera(QtCore.QObject):
         if self._state != "stopped":
             raise RuntimeError(f"Cannot start when camera is {self._state}")
         self.setState("running")
-        self.device.open()
         self.capture.open()
+        dispatcher.register(self, "all")
         self._stream = iter(self.capture)
-        self._notifier = QtCore.QSocketNotifier(self.device.fileno(), QtCore.QSocketNotifier.Type.Read)
-        self._notifier.activated.connect(self.on_frame)
 
     def pause(self):
         if self._state != "running":
             raise RuntimeError(f"Cannot pause when camera is {self._state}")
+        dispatcher.register(self, "control")
         self.setState("paused")
 
     def resume(self):
         if self._state != "paused":
             raise RuntimeError(f"Cannot resume when camera is {self._state}")
-        self._notifier.setEnabled(True)
+        dispatcher.register(self, "all")
         self.setState("running")
 
     def stop(self):
         if self._state == "stopped":
             raise RuntimeError(f"Cannot stop when camera is {self._state}")
-        if self._notifier is not None:
-            self._notifier.setEnabled(False)
-            self._notifier = None
+        dispatcher.register(self, "control")
         if self._stream is not None:
             self._stream.close()
             self._stream = None
         self.capture.close()
-        self.device.close()
-        self._notifier = None
         self.setState("stopped")
+
+    def qcontrol(self, name_or_id: str | int):
+        ctrl = self.device.controls[name_or_id]
+        qctrl = QControl(ctrl)
+        if (info := self.controls.get(ctrl.id)) is None:
+            info = ctrl, []
+            self.controls[ctrl.id] = info
+        info[1].append(qctrl)
+        self.device.subscribe_event(EventType.CTRL, ctrl.id)
+        return qctrl
+
+
+class QStrValidator(QtGui.QValidator):
+    def __init__(self, ctrl):
+        super().__init__()
+        self.ctrl = ctrl
+
+    def validate(self, text, pos):
+        size = len(text)
+        if size < self.ctrl.minimum:
+            return QtGui.QValidator.State.Intermediate, text, pos
+        if size > self.ctrl.maximum:
+            return QtGui.QValidator.State.Invalid, text, pos
+        return QtGui.QValidator.State.Acceptable, text, pos
+
+
+def hbox(*widgets):
+    panel = QtWidgets.QWidget()
+    layout = QtWidgets.QHBoxLayout(panel)
+    layout.setContentsMargins(0, 0, 0, 0)
+    for widget in widgets:
+        layout.addWidget(widget)
+    return panel
+
+
+def _reset_control(control):
+    reset_button = QtWidgets.QToolButton()
+    reset_button.setIcon(QtGui.QIcon.fromTheme(QtGui.QIcon.ThemeIcon.EditClear))
+    reset_button.clicked.connect(control.ctrl.set_to_default)
+    return reset_button
+
+
+def menu_control(control):
+    ctrl = control.ctrl
+    combo = QtWidgets.QComboBox()
+    idx_map = {}
+    key_map = {}
+    for idx, (key, name) in enumerate(ctrl.data.items()):
+        combo.addItem(str(name), key)
+        idx_map[idx] = key
+        key_map[key] = idx
+    combo.setCurrentIndex(key_map[ctrl.value])
+    control.valueChanged.connect(lambda key: combo.setCurrentIndex(key_map[key]))
+    combo.textActivated.connect(lambda txt: control.setValue(idx_map[combo.currentIndex()]))
+    reset_button = _reset_control(control)
+    reset_button.clicked.connect(lambda: combo.setCurrentIndex(key_map[ctrl.default]))
+    return hbox(combo, reset_button)
+
+
+def text_control(control):
+    ctrl = control.ctrl
+    line_edit = QtWidgets.QLineEdit()
+    validator = QStrValidator(ctrl)
+    line_edit.setValidator(validator)
+    line_edit.setText(ctrl.value)
+    control.valueChanged.connect(line_edit.setText)
+    line_edit.editingFinished.connect(lambda: control.setValue(line_edit.text()))
+    reset_button = _reset_control(control)
+    reset_button.clicked.connect(lambda: line_edit.setText(ctrl.default))
+    return hbox(line_edit, reset_button)
+
+
+def bool_control(control):
+    ctrl = control.ctrl
+    widget = QtWidgets.QCheckBox()
+    widget.setChecked(ctrl.value)
+    control.valueChanged.connect(widget.setChecked)
+    widget.clicked.connect(control.setValue)
+    reset_button = _reset_control(control)
+    reset_button.clicked.connect(lambda: widget.setChecked(ctrl.default))
+    return hbox(widget, reset_button)
+
+
+def button_control(control):
+    ctrl = control.ctrl
+    widget = QtWidgets.QPushButton(ctrl.name)
+    widget.clicked.connect(ctrl.push)
+    control.valueChanged.connect(lambda _: log.info(f"Someone clicked {ctrl.name}"))
+    return widget
+
+
+def integer_control(control):
+    ctrl = control.ctrl
+    value = ctrl.value
+    slider = QtWidgets.QSlider()
+    slider.setOrientation(QtCore.Qt.Orientation.Horizontal)
+    slider.setRange(ctrl.minimum, ctrl.maximum)
+    slider.setValue(value)
+    spin = QtWidgets.QSpinBox()
+    spin.setRange(ctrl.minimum, ctrl.maximum)
+    spin.setValue(value)
+
+    def on_slider_value(v):
+        control.setValue(v)
+        with signals_blocked(spin):
+            spin.setValue(v)
+
+    def on_spin_value(v):
+        control.setValue(v)
+        with signals_blocked(slider):
+            slider.setValue(v)
+
+    def on_ctrl_value(v):
+        with signals_blocked(spin):
+            spin.setValue(v)
+        with signals_blocked(slider):
+            slider.setValue(v)
+
+    control.valueChanged.connect(on_ctrl_value)
+    slider.valueChanged.connect(on_slider_value)
+    spin.valueChanged.connect(on_spin_value)
+    reset_button = _reset_control(control)
+
+    def reset():
+        on_ctrl_value(ctrl.default)
+        ctrl.set_to_default()
+
+    reset_button.clicked.connect(reset)
+    return hbox(slider, spin, reset_button)
+
+
+class QControl(QtCore.QObject):
+    valueChanged = QtCore.Signal(object)
+
+    def __init__(self, ctrl: BaseControl):
+        super().__init__()
+        self.ctrl = ctrl
+
+    def setValue(self, value):
+        log.info("set value %r to %s", self.ctrl.name, value)
+        self.ctrl.value = value
+
+    def create_widget(self):
+        ctrl = self.ctrl
+        widget = None
+        if ctrl.is_flagged_has_payload and ctrl.type != ControlType.STRING:
+            return
+        if ctrl.type in {ControlType.INTEGER, ControlType.U8, ControlType.U16, ControlType.U32}:
+            widget = integer_control(self)
+        elif ctrl.type == ControlType.INTEGER64:
+            pass  # TODO
+        elif ctrl.type == ControlType.BOOLEAN:
+            widget = bool_control(self)
+        elif ctrl.type == ControlType.STRING:
+            widget = text_control(self)
+        elif ctrl.type in {ControlType.MENU, ControlType.INTEGER_MENU}:
+            widget = menu_control(self)
+        elif ctrl.type == ControlType.BUTTON:
+            widget = button_control(self)
+        if widget is not None:
+            widget.setToolTip(ctrl.name)
+            widget.setEnabled(ctrl.is_writeable)
+        return widget
+
+
+class QControlPanel(QtWidgets.QTabWidget):
+    def __init__(self, camera: QCamera, nb_cols=2):
+        super().__init__()
+        self.tabs = {}
+        self.camera = camera
+        self.nb_cols = nb_cols
+        self.fill()
+
+    def get_tab(self, ctrl):
+        if (klass := ctrl.control_class) is None:
+            tab_name = "Generic"
+        else:
+            tab_name = klass.name.decode()
+        if (tab := self.tabs.get(tab_name)) is None:
+            tab = QtWidgets.QWidget()
+
+            tab.setLayout(QtWidgets.QFormLayout())
+            self.addTab(tab, tab_name)
+            self.tabs[tab_name] = tab
+        return tab
+
+    def fill(self):
+        camera = self.camera
+
+        group_widgets = collections.defaultdict(list)
+        for ctrl_id, ctrl in camera.device.controls.items():
+            if ctrl.is_flagged_has_payload and ctrl.type != ControlType.STRING:
+                continue
+            qctrl = camera.qcontrol(ctrl_id)
+            if (widget := qctrl.create_widget()) is None:
+                continue
+            if (klass := ctrl.control_class) is None:
+                name = "Generic"
+            else:
+                name = klass.name.decode()
+            group_widgets[name].append((qctrl, widget))
+
+        for name, widgets in group_widgets.items():
+            tab = QtWidgets.QWidget()
+            layout = QtWidgets.QGridLayout()
+            tab.setLayout(layout)
+            self.addTab(tab, name)
+            self.tabs[name] = tab
+            nb_rows = (len(widgets) + self.nb_cols - 1) // self.nb_cols
+            for idx, (qctrl, widget) in enumerate(widgets):
+                row, col = idx % nb_rows, idx // nb_rows
+                if qctrl.ctrl.type == ControlType.BUTTON:
+                    layout.addWidget(widget, row, col * 2, 1, 2)
+                else:
+                    layout.addWidget(QtWidgets.QLabel(f"{qctrl.ctrl.name}:"), row, col * 2)
+                    layout.addWidget(widget, row, col * 2 + 1)
+            layout.setRowStretch(row + 1, 1)
 
 
 def to_qpixelformat(pixel_format: PixelFormat) -> QtGui.QPixelFormat | None:
@@ -340,6 +650,10 @@ class QVideoWidget(QtWidgets.QWidget):
 def main():
     import argparse
 
+    def stop():
+        if camera.state() != "stopped":
+            camera.stop()
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--log-level", choices=["debug", "info", "warning", "error"], default="info")
     parser.add_argument("device", type=int)
@@ -347,12 +661,14 @@ def main():
     fmt = "%(threadName)-10s %(asctime)-15s %(levelname)-5s %(name)s: %(message)s"
     logging.basicConfig(level=args.log_level.upper(), format=fmt)
     app = QtWidgets.QApplication([])
-    device = Device.from_id(args.device)
-    camera = QCamera(device)
-    widget = QVideoWidget(camera)
-    app.aboutToQuit.connect(camera.stop)
-    widget.show()
-    app.exec()
+    with Device.from_id(args.device, blocking=False) as device:
+        camera = QCamera(device)
+        widget = QVideoWidget(camera)
+        panel = QControlPanel(camera)
+        app.aboutToQuit.connect(stop)
+        widget.show()
+        panel.show()
+        app.exec()
 
 
 if __name__ == "__main__":
