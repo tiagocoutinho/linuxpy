@@ -6,6 +6,7 @@
 
 """ioctl helper functions"""
 
+import enum
 import fcntl
 import logging
 
@@ -34,7 +35,7 @@ def IOC(direction, magic, number, size):
         magic = ord(magic)
     if isinstance(size, str):
         size = calcsize(size)
-    elif size == int:
+    elif size is int:
         size = 4
     elif not isinstance(size, int):
         size = sizeof(size)
@@ -63,6 +64,7 @@ def IOWR(magic, number, size):
 
 
 def ioctl(fd, request, *args):
-    log.debug("%s, request=%s, arg=%s", fd, request, args)
+    req = request.name if isinstance(request, enum.Enum) else request
+    log.debug("request=%s, arg=%s", req, args)
     fcntl.ioctl(fd, request, *args)
     return args and args[0] or None
