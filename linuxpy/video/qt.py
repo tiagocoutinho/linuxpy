@@ -337,6 +337,7 @@ class QControlPanel(QtWidgets.QTabWidget):
     def __init__(self, camera: QCamera):
         super().__init__()
         self.camera = camera
+        self.setWindowTitle(f"{camera.device.info.card} @ {camera.device.filename}")
         self.fill()
 
     def fill(self):
@@ -375,6 +376,56 @@ class QControlPanel(QtWidgets.QTabWidget):
                     layout.addWidget(QtWidgets.QLabel(f"{qctrl.ctrl.name}:"), row, col * 2)
                     layout.addWidget(widget, row, col * 2 + 1)
             layout.setRowStretch(row + 1, 1)
+
+
+def fill_info_panel(camera: QCamera, widget):
+    device = camera.device
+    info = device.info
+    layout = QtWidgets.QFormLayout(widget)
+    layout.addRow("Device:", QtWidgets.QLabel(str(device.filename)))
+    layout.addRow("Card:", QtWidgets.QLabel(info.card))
+    layout.addRow("Driver:", QtWidgets.QLabel(info.driver))
+    layout.addRow("Bus:", QtWidgets.QLabel(info.bus_info))
+    layout.addRow("Version:", QtWidgets.QLabel(info.version))
+
+
+def frame_sizes(camera: QCamera):
+    result = set()
+    for frame_size in camera.device.info.frame_types:
+        result.add((frame_size.width, frame_size.height))
+    return sorted(result)
+
+
+def fill_inputs_panel(camera: QCamera, widget):
+    device = camera.device
+    info = device.info
+    layout = QtWidgets.QFormLayout(widget)
+    inputs_combo = QtWidgets.QComboBox()
+    for inp in info.inputs:
+        inputs_combo.addItem(inp.name, inp.index)
+    inputs_combo.currentIndexChanged.connect(lambda: device.set_input(inputs_combo.currentData()))
+    layout.addRow("Input:", inputs_combo)
+    frame_size_combo = QtWidgets.QComboBox()
+    for width, height in frame_sizes(camera):
+        frame_size_combo.addItem(f"{width}x{height}")
+    layout.addRow("Frame Size:", frame_size_combo)
+
+
+class QSettingsPanel(QtWidgets.QWidget):
+    def __init__(self, camera: QCamera):
+        super().__init__()
+        self.camera = camera
+        self.fill()
+
+    def fill(self):
+        layout = QtWidgets.QVBoxLayout(self)
+        info = QtWidgets.QGroupBox("General Information")
+        fill_info_panel(self.camera, info)
+        layout.addWidget(info)
+        if self.camera.device.info.inputs:
+            inputs = QtWidgets.QGroupBox("Input Settings")
+            fill_inputs_panel(self.camera, inputs)
+            layout.addWidget(inputs)
 
 
 def to_qpixelformat(pixel_format: PixelFormat) -> QtGui.QPixelFormat | None:
@@ -653,11 +704,17 @@ def main():
     app = QtWidgets.QApplication([])
     with Device.from_id(args.device, blocking=False) as device:
         camera = QCamera(device)
+        window = QtWidgets.QWidget()
+        layout = QtWidgets.QHBoxLayout(window)
         widget = QVideoWidget(camera)
+        widget.setMinimumSize(640, 480)
         panel = QControlPanel(camera)
+        settings = QSettingsPanel(camera)
+        layout.addWidget(settings)
+        layout.addWidget(widget)
+        layout.addWidget(panel)
+        window.show()
         app.aboutToQuit.connect(stop)
-        widget.show()
-        panel.show()
         app.exec()
 
 
