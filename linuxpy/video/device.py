@@ -68,7 +68,6 @@ BufferFlag = raw.BufferFlag
 InputType = raw.InputType
 PixelFormat = raw.PixelFormat
 MetaFormat = raw.MetaFormat
-FrameSizeType = raw.Frmsizetypes
 Memory = raw.Memory
 InputStatus = raw.InputStatus
 OutputType = raw.OutputType
@@ -112,6 +111,8 @@ Input = collections.namedtuple("InputType", "index name type audioset tuner std 
 Output = collections.namedtuple("OutputType", "index name type audioset modulator std capabilities")
 
 Standard = collections.namedtuple("Standard", "index id name frameperiod framelines")
+
+FrameSize = collections.namedtuple("FrameSize", "index pixel_format type info")
 
 
 CROP_BUFFER_TYPES = {
@@ -251,20 +252,23 @@ def iter_read_frame_intervals(fd, fmt, w, h):
         )
 
 
-def iter_read_discrete_frame_sizes(fd, pixel_format):
+def iter_read_frame_sizes(fd, pixel_format):
     size = raw.v4l2_frmsizeenum()
     size.index = 0
     size.pixel_format = pixel_format
     for val in iter_read(fd, IOC.ENUM_FRAMESIZES, size):
-        if size.type != FrameSizeType.DISCRETE:
-            break
-        yield val
+        type = FrameSizeType(val.type)
+        if type == FrameSizeType.DISCRETE:
+            info = val.m1.discrete
+        else:
+            info = val.m1.stepwise
+        yield FrameSize(val.index, PixelFormat(val.pixel_format), FrameSizeType(val.type), info)
 
 
 def iter_read_pixel_formats_frame_intervals(fd, pixel_formats):
     for pixel_format in pixel_formats:
-        for size in iter_read_discrete_frame_sizes(fd, pixel_format):
-            yield from iter_read_frame_intervals(fd, pixel_format, size.discrete.width, size.discrete.height)
+        for size in iter_read_frame_sizes(fd, pixel_format):
+            yield from iter_read_frame_intervals(fd, pixel_format, size.info.width, size.info.height)
 
 
 def read_capabilities(fd):
@@ -1546,8 +1550,17 @@ buffers = {buffers}
             for image_format in iter_read_formats(self.device, buffer_type)
         ]
 
-    @property
+    def format_frame_sizes(self, pixel_format):
+        return [copy.copy(val) for val in iter_read_frame_sizes(self.device, pixel_format)]
+
     def frame_sizes(self):
+        results = []
+        for fmt in self.formats:
+            results.extend(self.format_frame_sizes(fmt.pixel_format))
+        return results
+
+    @property
+    def frame_types(self):
         pixel_formats = {fmt.pixel_format for fmt in self.formats}
         return list(iter_read_pixel_formats_frame_intervals(self.device, pixel_formats))
 

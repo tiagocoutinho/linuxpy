@@ -753,7 +753,7 @@ def test_info_with_vivid():
 
         capture_dev.set_input(0)
 
-        assert len(capture_dev.info.frame_sizes) > 10
+        assert len(capture_dev.info.frame_types) > 10
         assert len(capture_dev.info.formats) > 10
 
         inputs = capture_dev.info.inputs
@@ -786,7 +786,7 @@ def test_info_with_vivid():
         text = repr(output_dev.info)
         assert "driver = " in text
 
-        assert len(output_dev.info.frame_sizes) == 0
+        assert len(output_dev.info.frame_types) == 0
         assert len(output_dev.info.formats) > 10
 
         inputs = output_dev.info.inputs
@@ -809,7 +809,7 @@ def test_info_with_vivid():
 
         meta_capture_dev.set_input(0)
 
-        assert len(meta_capture_dev.info.frame_sizes) == 0
+        assert len(meta_capture_dev.info.frame_types) == 0
         assert len(meta_capture_dev.info.formats) > 0
 
         meta_fmt = meta_capture_dev.get_format(BufferType.META_CAPTURE)
