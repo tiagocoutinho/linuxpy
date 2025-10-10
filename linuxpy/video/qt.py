@@ -438,7 +438,7 @@ def frame_to_qimage(frame: Frame) -> QtGui.QImage:
     """Translates a Frame to a QImage"""
     data = frame.data
     if frame.pixel_format == PixelFormat.MJPEG:
-        return QtGui.QImage.fromData(data, b"JPG")
+        return QtGui.QImage.fromData(data, "JPG")
     fmt = QtGui.QImage.Format.Format_BGR888
     if frame.pixel_format == PixelFormat.RGB24:
         fmt = QtGui.QImage.Format.Format_RGB888
