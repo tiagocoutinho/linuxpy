@@ -484,24 +484,28 @@ def draw_frame(paint_device, width, height, line_width=4, color="red"):
     painter.drawRect(half_line_width, half_line_width, width - line_width, height - line_width)
 
 
-def draw_no_image(paint_device, width=None, height=None, line_width=4):
-    if width is None:
-        width = paint_device.width()
-    if height is None:
-        height = paint_device.height()
+def draw_no_image_rect(painter, rect, line_width=4):
     color = QtGui.QColor(255, 0, 0, 100)
     pen = QtGui.QPen(color, line_width)
-    painter = QtGui.QPainter(paint_device)
     painter.setPen(pen)
     painter.setBrush(QtCore.Qt.NoBrush)
     painter.drawLines(
         (
-            QtCore.QLine(0, height, width, 0),
-            QtCore.QLine(0, 0, width, height),
+            QtCore.QLineF(rect.topLeft(), rect.bottomRight()),
+            QtCore.QLineF(rect.bottomLeft(), rect.topRight()),
         )
     )
     half_line_width = line_width // 2
-    painter.drawRect(half_line_width, half_line_width, width - line_width, height - line_width)
+    rect.setLeft(rect.left() + half_line_width)
+    rect.setRight(rect.right() - half_line_width)
+    rect.setTop(rect.top() + half_line_width)
+    rect.setBottom(rect.bottom() - half_line_width)
+    painter.drawRect(rect)
+
+
+def draw_no_image(painter, width, height, line_width=4):
+    rect = QtCore.QRectF(0, 0, width, height)
+    return draw_no_image_rect(painter, rect, line_width)
 
 
 class BaseCameraControl:
@@ -638,7 +642,7 @@ class QVideoControls(QtWidgets.QWidget):
 
 class QVideo(QtWidgets.QWidget):
     frame = None
-    pixmap = None
+    qimage = None
 
     def __init__(self, camera: QCamera | None = None):
         super().__init__()
@@ -654,28 +658,27 @@ class QVideo(QtWidgets.QWidget):
 
     def on_frame_changed(self, frame):
         self.frame = frame
-        self.pixmap = None
+        self.qimage = None
         self.update()
 
     def paintEvent(self, _):
         frame = self.frame
+        painter = QtGui.QPainter(self)
         if frame is None:
-            draw_no_image(self)
+            draw_no_image(painter, self.width(), self.height())
             return
-        if self.pixmap is None:
-            self.pixmap = frame_to_qpixmap(frame)
-        if self.pixmap is not None:
+        if self.qimage is None:
+            self.qimage = frame_to_qimage(frame)
+        if self.qimage is not None:
             width, height = self.width(), self.height()
-            scaled_pixmap = self.pixmap.scaled(width, height, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
-            pix_width, pix_height = scaled_pixmap.width(), scaled_pixmap.height()
+            scaled_image = self.qimage.scaled(width, height, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+            pix_width, pix_height = scaled_image.width(), scaled_image.height()
             x, y = 0, 0
             if width > pix_width:
                 x = int((width - pix_width) / 2)
             if height > pix_height:
                 y = int((height - pix_height) / 2)
-            painter = QtGui.QPainter(self)
-            painter.drawPixmap(QtCore.QPoint(x, y), scaled_pixmap)
-            self.scaled_pixmap = scaled_pixmap
+            painter.drawImage(QtCore.QPoint(x, y), scaled_image)
 
     def minimumSizeHint(self):
         return QtCore.QSize(160, 120)
