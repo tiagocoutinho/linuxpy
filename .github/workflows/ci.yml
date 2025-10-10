@@ -22,6 +22,7 @@ jobs:
     - name: Install necessary packages
       run: |
         sudo apt-get install -y linux-image-$(uname -r) linux-modules-extra-$(uname -r)
+        sudo apt-get install -y libegl1
     - name: Setup user groups
       run: |
         sudo python scripts/test_setup.py
