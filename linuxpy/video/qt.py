@@ -684,6 +684,55 @@ class QVideo(QtWidgets.QWidget):
         return QtCore.QSize(160, 120)
 
 
+class QVideoItem(QtWidgets.QGraphicsObject):
+    frame = None
+    qimage = None
+    imageChanged = QtCore.Signal(object)
+
+    def __init__(self, camera: QCamera | None = None):
+        super().__init__()
+        self.camera = None
+        self.set_camera(camera)
+
+    def set_camera(self, camera: QCamera | None = None):
+        if self.camera:
+            self.camera.frameChanged.disconnect(self.on_frame_changed)
+        self.camera = camera
+        if self.camera:
+            self.camera.frameChanged.connect(self.on_frame_changed)
+
+    def on_frame_changed(self, frame):
+        self.frame = frame
+        self.qimage = None
+        self.update()
+
+    def boundingRect(self):
+        if self.frame:
+            width = self.frame.width
+            height = self.frame.height
+        elif self.camera:
+            fmt = self.camera.capture.get_format()
+            width = fmt.width
+            height = fmt.height
+        else:
+            width = 640
+            height = 480
+        return QtCore.QRectF(0.0, 0.0, width, height)
+
+    def paint(self, painter, style, *args):
+        frame = self.frame
+        rect = self.boundingRect()
+        if frame is None:
+            draw_no_image_rect(painter, rect)
+            return
+        changed = self.qimage is None
+        if changed:
+            self.qimage = frame_to_qimage(frame)
+        painter.drawImage(rect, self.qimage)
+        if changed:
+            self.imageChanged.emit(self.qimage)
+
+
 class QVideoWidget(QtWidgets.QWidget):
     def __init__(self, camera=None):
         super().__init__()
