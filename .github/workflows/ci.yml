@@ -22,7 +22,7 @@ jobs:
     - name: Install necessary packages
       run: |
         sudo apt-get install -y linux-image-$(uname -r) linux-modules-extra-$(uname -r)
-        sudo apt-get install -y libegl1
+        sudo apt-get install -y libegl1 xvfb
     - name: Setup user groups
       run: |
         sudo python scripts/test_setup.py
@@ -57,7 +57,7 @@ jobs:
     - name: Tests
       id: tests
       run: |
-        pytest
+        xvfb-run pytest
 
     - name: Upload coverage data
       uses: actions/upload-artifact@v4
