@@ -22,7 +22,6 @@ jobs:
     - name: Install necessary packages
       run: |
         sudo apt-get install -y linux-image-$(uname -r) linux-modules-extra-$(uname -r)
-        sudo apt-get install -y libegl1 xvfb
     - name: Setup user groups
       run: |
         sudo python scripts/test_setup.py
@@ -45,7 +44,7 @@ jobs:
     - name: Install dependencies
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        pip install --disable-pip-version-check -e . --group=dev
+        pip install --disable-pip-version-check -e . --group=dev_no_qt
     - name: Linting
       run: |
         ruff check --diff --output-format=github linuxpy tests examples
@@ -57,7 +56,7 @@ jobs:
     - name: Tests
       id: tests
       run: |
-        xvfb-run pytest
+        pytest -k "not qt"
 
     - name: Upload coverage data
       uses: actions/upload-artifact@v4

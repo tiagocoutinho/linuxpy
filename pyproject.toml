@@ -85,6 +85,11 @@ dev = [
     {include-group = "build-deploy"},
     {include-group = "docs"},
 ]
+dev_no_qt = [
+    {include-group = "test"},
+    {include-group = "build-deploy"},
+    {include-group = "docs"},
+]
 
 [project.scripts]
 linuxpy-codegen = "linuxpy.codegen.cli:main"
