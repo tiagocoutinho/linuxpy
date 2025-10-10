@@ -39,26 +39,37 @@ Homepage = "https://github.com/tiagocoutinho/linuxpy"
 Repository = "https://github.com/tiagocoutinho/linuxpy"
 
 [dependency-groups]
-dev = [
-    "build>=0.10.0",
+test = [
     "gevent>=21",
-    "twine>=4.0.2",
     "pytest>=8.1",
     "pytest-asyncio>=1.0.0",
     "pytest-cov>=6",
-    "ruff>=0.3.0",
     "numpy>=1.1",
 ]
-examples = [
-    "flask>=2,<4",
-    "fastapi<1",
-    "opencv-python",
+qt = [
     "qtpy",
     "pyqt6",
+    "opencv-python",
+]
+test-qt = [
+    {include-group = "test"},
+    {include-group = "qt"},
+    "pytest-qt>=4.5.0,<5",
+]
+build-deploy = [
+    "build>=0.10.0",
+    "ruff>=0.3.0",
+    "twine>=4.0.2",
+]
+examples = [
+    {include-group = "qt"},
+    "numpy>=1.1",
+    "flask>=2,<4",
+    "fastapi<1",
     "gunicorn",
     "gevent",
     "uvicorn",
-    "numpy",
+    "opencv-python",
     "Pillow",
 ]
 docs = [
@@ -68,6 +79,16 @@ docs = [
     "pygments",
     "pymdown-extensions",
     "mkdocs-coverage",
+]
+dev = [
+    {include-group = "test-qt"},
+    {include-group = "build-deploy"},
+    {include-group = "docs"},
+]
+dev_no_qt = [
+    {include-group = "test"},
+    {include-group = "build-deploy"},
+    {include-group = "docs"},
 ]
 
 [project.scripts]

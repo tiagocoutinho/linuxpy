@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
     steps:
     - name: Checkout
@@ -44,7 +44,7 @@ jobs:
     - name: Install dependencies
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        pip install --disable-pip-version-check -e . --group=dev
+        pip install --disable-pip-version-check -e . --group=dev_no_qt
     - name: Linting
       run: |
         ruff check --diff --output-format=github linuxpy tests examples
@@ -56,7 +56,7 @@ jobs:
     - name: Tests
       id: tests
       run: |
-        pytest
+        pytest -k "not qt"
 
     - name: Upload coverage data
       uses: actions/upload-artifact@v4

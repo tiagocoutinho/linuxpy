@@ -529,7 +529,7 @@ class Sequencer(BaseDevice):
         non-blocking variants transperently
         """
         if self.io.select is not None:
-            self.io.select((self,), (), ())
+            self.io.select.select((self,), (), ())
         return self.raw_read()
 
     def read(self) -> Sequence["Event"]:

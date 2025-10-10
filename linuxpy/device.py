@@ -81,10 +81,11 @@ class BaseDevice(ReentrantOpen):
 
     PREFIX = None
 
-    def __init__(self, name_or_file, read_write=True, io=IO):
+    def __init__(self, name_or_file, read_write=True, io=IO, blocking=False):
         super().__init__()
         self.io = io
-        if isinstance(name_or_file, (str, pathlib.Path)):
+        self.blocking = blocking
+        if isinstance(name_or_file, str | pathlib.Path):
             filename = pathlib.Path(name_or_file)
             self._read_write = read_write
             self._fobj = None
@@ -121,12 +122,12 @@ class BaseDevice(ReentrantOpen):
         """Open the device if not already open. Triggers _on_open after the underlying OS open has succeeded"""
         if not self._fobj:
             self.log.info("opening %s", self.filename)
-            self._fobj = self.io.open(self.filename, self._read_write)
+            self._fobj = self.io.open(self.filename, self._read_write, blocking=self.blocking)
             self._on_open()
             self.log.info("opened %s", self.filename)
 
     def close(self):
-        """Closes the device if not already closed. Triggers _on_close before the underlying OS open has succeeded"""
+        """Closes the device if not already closed. Triggers _on_close before the underlying OS close has succeeded"""
         if not self.closed:
             self._on_close()
             self.log.info("closing %s", self.filename)
@@ -149,4 +150,12 @@ class BaseDevice(ReentrantOpen):
         True if the underlying OS is opened in blocking mode.
         Raises error if device is not opened.
         """
-        return os.get_blocking(self.fileno())
+        return self.io.os.get_blocking(self.fileno())
+
+    def set_blocking(self, yes_no: bool) -> None:
+        """
+        Turns on/off blocking mode.
+        Raises error if device is not opened.
+        """
+        self.io.os.set_blocking(self.fileno(), yes_no)
+        self.blocking = yes_no
