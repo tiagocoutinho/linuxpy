@@ -680,7 +680,7 @@ class QVideo(QtWidgets.QWidget):
                 x = int((width - pix_width) / 2)
             if height > pix_height:
                 y = int((height - pix_height) / 2)
-            painter.drawImage(QtCore.QPoint(x, y), scaled_image)
+            painter.drawImage(x, y, scaled_image)
 
     def minimumSizeHint(self):
         return QtCore.QSize(160, 120)
