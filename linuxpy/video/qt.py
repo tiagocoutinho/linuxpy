@@ -445,6 +445,8 @@ def frame_to_qimage(frame: Frame) -> QtGui.QImage:
         fmt = QtGui.QImage.Format.Format_RGB32
     elif frame.pixel_format == PixelFormat.ARGB32:
         fmt = QtGui.QImage.Format.Format_ARGB32
+    elif frame.pixel_format == PixelFormat.GREY:
+        fmt = QtGui.QImage.Format.Format_Grayscale8
     elif frame.pixel_format == PixelFormat.YUYV:
         import cv2
 
