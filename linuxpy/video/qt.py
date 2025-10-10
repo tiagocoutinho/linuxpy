@@ -116,6 +116,8 @@ class QCamera(QtCore.QObject):
         self.controls = {}
 
     def handle_frame(self):
+        if self._stream is None:
+            return
         frame = next(self._stream)
         self.frameChanged.emit(frame)
 
