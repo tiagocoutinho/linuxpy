@@ -358,6 +358,7 @@ class QControlPanel(QtWidgets.QTabWidget):
 
         for name, widgets in group_widgets.items():
             tab = QtWidgets.QWidget()
+            tab.setWindowTitle(name)
             layout = QtWidgets.QGridLayout()
             tab.setLayout(layout)
             self.addTab(tab, name)
