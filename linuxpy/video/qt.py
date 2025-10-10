@@ -467,7 +467,7 @@ def frame_to_qimage(frame: Frame) -> QtGui.QImage:
 def frame_to_qpixmap(frame: Frame) -> QtGui.QPixmap:
     if frame.pixel_format == PixelFormat.MJPEG:
         pixmap = QtGui.QPixmap(frame.width, frame.height)
-        pixmap.loadFromData(frame.data, b"JPG")
+        pixmap.loadFromData(frame.data, "JPG")
         return pixmap
     qimage = frame_to_qimage(frame)
     return QtGui.QPixmap.fromImage(qimage)
