@@ -268,7 +268,8 @@ def iter_read_frame_sizes(fd, pixel_format):
 def iter_read_pixel_formats_frame_intervals(fd, pixel_formats):
     for pixel_format in pixel_formats:
         for size in iter_read_frame_sizes(fd, pixel_format):
-            yield from iter_read_frame_intervals(fd, pixel_format, size.info.width, size.info.height)
+            if size.type == FrameSizeType.DISCRETE:
+                yield from iter_read_frame_intervals(fd, pixel_format, size.info.width, size.info.height)
 
 
 def read_capabilities(fd):
