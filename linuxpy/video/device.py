@@ -262,7 +262,7 @@ def iter_read_frame_sizes(fd, pixel_format):
             info = val.m1.discrete
         else:
             info = val.m1.stepwise
-        yield FrameSize(val.index, PixelFormat(val.pixel_format), FrameSizeType(val.type), info)
+        yield FrameSize(val.index, PixelFormat(val.pixel_format), FrameSizeType(val.type), copy.copy(info))
 
 
 def iter_read_pixel_formats_frame_intervals(fd, pixel_formats):
@@ -1551,8 +1551,8 @@ buffers = {buffers}
             for image_format in iter_read_formats(self.device, buffer_type)
         ]
 
-    def format_frame_sizes(self, pixel_format):
-        return [copy.copy(val) for val in iter_read_frame_sizes(self.device, pixel_format)]
+    def format_frame_sizes(self, pixel_format) -> list[FrameSize]:
+        return list(iter_read_frame_sizes(self.device, pixel_format))
 
     def frame_sizes(self):
         results = []
