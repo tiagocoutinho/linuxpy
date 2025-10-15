@@ -103,22 +103,6 @@ class Dispatcher:
 dispatcher = Dispatcher()
 
 
-class QImageGrabber(QtCore.QObject):
-    imageChanged = QtCore.Signal(QtGui.QImage)
-
-    def __init__(self, camera: "QCamera"):
-        self.camera = camera
-        self.frame = None
-        self.image = None
-        camera.frameChanged.connect(self.on_frame)
-        super().__init__()
-
-    def on_frame(self, frame):
-        self.frame = frame
-        self.image = frame_to_qimage(frame)
-        self.imageChanged.emit(self.image)
-
-
 class QCamera(QtCore.QObject):
     frameChanged = QtCore.Signal(object)
     stateChanged = QtCore.Signal(str)
@@ -198,6 +182,28 @@ class QCamera(QtCore.QObject):
         info[1].append(qctrl)
         self.device.subscribe_event(EventType.CTRL, ctrl.id)
         return qctrl
+
+
+class QVideoStream(QtCore.QObject):
+    qimage = None
+    imageChanged = QtCore.Signal(QtGui.QImage)
+
+    def __init__(self, camera: QCamera | None = None):
+        super().__init__()
+        self.camera = None
+        self.set_camera(camera)
+
+    def on_frame(self, frame):
+        self.frame = frame
+        self.qimage = frame_to_qimage(frame)
+        self.imageChanged.emit(self.qimage)
+
+    def set_camera(self, camera: QCamera | None = None):
+        if self.camera:
+            self.camera.frameChanged.disconnect(self.on_frame)
+        self.camera = camera
+        if self.camera:
+            self.camera.frameChanged.connect(self.on_frame)
 
 
 class QStrValidator(QtGui.QValidator):
@@ -750,39 +756,6 @@ class QVideoControls(QtWidgets.QWidget):
         self.camera = camera
 
 
-class QVideo(QtWidgets.QWidget):
-    frame = None
-    qimage = None
-
-    def __init__(self, camera: QCamera | None = None):
-        super().__init__()
-        self.camera = None
-        self.image_grabber = None
-        self.set_camera(camera)
-
-    def set_camera(self, camera: QCamera | None = None):
-        if self.image_grabber:
-            self.image_grabber.imageChanged.disconnect(self.on_image_changed)
-        self.camera = camera
-        if self.camera:
-            self.image_grabber = QImageGrabber(camera)
-            self.image_grabber.imageChanged.connect(self.on_image_changed)
-
-    def on_image_changed(self, qimage):
-        self.qimage = qimage
-        self.qimage_scaled = None
-        self.update()
-
-    def paintEvent(self, _):
-        painter = QtGui.QPainter(self)
-        qimage = self.qimage
-        width, height = self.width(), self.height()
-        return paint_image(painter, width, height, qimage)
-
-    def minimumSizeHint(self):
-        return QtCore.QSize(160, 120)
-
-
 def paint_image(painter, width, height, qimage=None):
     if qimage is None:
         draw_no_image(painter, width, height)
@@ -798,56 +771,53 @@ def paint_image(painter, width, height, qimage=None):
     painter.drawImage(rect, qimage)
 
 
-class QVideoItem(QtWidgets.QGraphicsObject):
-    def __init__(self, camera: QCamera | None = None):
-        super().__init__()
-        self.camera = None
-        self.qimage = None
-        self.image_grabber = None
-        self.set_camera(camera)
+class VideoMixin:
+    qimage = None
 
-    def set_camera(self, camera: QCamera | None = None):
-        if self.image_grabber:
-            self.image_grabber.imageChanged.disconnect(self.on_image_changed)
-        self.camera = camera
-        if self.camera:
-            self.image_grabber = QImageGrabber(camera)
-            self.image_grabber.imageChanged.connect(self.on_image_changed)
+    def imageRect(self):
+        return self.rect()
 
-    def on_image_changed(self, image):
-        self.qimage = image
+    def paint(self, painter, _, *args):
+        rect = self.imageRect()
+        paint_image(painter, rect.width(), rect.height(), self.qimage)
+
+    def on_image_changed(self, qimage):
+        self.qimage = qimage
         self.update()
 
-    def boundingRect(self):
-        if self.qimage:
-            width = self.qimage.width()
-            height = self.qimage.height()
-        elif self.camera:
-            fmt = self.camera.capture.get_format()
-            width = fmt.width
-            height = fmt.height
-        else:
-            width = 640
-            height = 480
-        return QtCore.QRectF(0.0, 0.0, width, height)
 
-    def paint(self, painter, style, *args):
-        rect = self.boundingRect()
-        paint_image(painter, rect.width(), rect.height(), self.qimage)
+class QVideo(VideoMixin, QtWidgets.QWidget):
+    def paintEvent(self, _):
+        self.paint(QtGui.QPainter(self), None)
+
+    def minimumSizeHint(self):
+        return QtCore.QSize(160, 120)
+
+
+class QVideoItem(VideoMixin, QtWidgets.QGraphicsItem):
+    def boundingRect(self):
+        width, height = 640, 480
+        if self.qimage:
+            width, height = self.qimage.width(), self.qimage.height()
+        return QtCore.QRectF(0, 0, width, height)
+
+    imageRect = boundingRect
 
 
 class QVideoWidget(QtWidgets.QWidget):
     def __init__(self, camera=None):
         super().__init__()
         layout = QtWidgets.QVBoxLayout(self)
-        self.video = QVideo(camera)
+        self.video = QVideo()
+        self.stream = QVideoStream(camera)
+        self.stream.imageChanged.connect(self.video.on_image_changed)
         self.controls = QVideoControls(camera)
         layout.addWidget(self.video)
         layout.addWidget(self.controls)
         layout.setStretchFactor(self.video, 1)
 
     def set_camera(self, camera: QCamera | None = None):
-        self.video.set_camera(camera)
+        self.stream.set_camera(camera)
         self.controls.set_camera(camera)
 
 
@@ -870,7 +840,6 @@ def main():
         window = QtWidgets.QWidget()
         layout = QtWidgets.QHBoxLayout(window)
         video = QVideoWidget(camera)
-        video.setMinimumSize(640, 480)
         panel = QControlPanel(camera)
         settings = QSettingsPanel(camera)
         layout.addWidget(settings)
