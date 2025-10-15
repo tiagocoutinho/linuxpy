@@ -832,13 +832,8 @@ class QVideoItem(QtWidgets.QGraphicsObject):
         return QtCore.QRectF(0.0, 0.0, width, height)
 
     def paint(self, painter, style, *args):
-        qimage = self.qimage
         rect = self.boundingRect()
-
-        if qimage is None:
-            draw_no_image_rect(painter, rect)
-            return
-        painter.drawImage(rect, qimage)
+        paint_image(painter, rect.width(), rect.height(), self.qimage)
 
 
 class QVideoWidget(QtWidgets.QWidget):
