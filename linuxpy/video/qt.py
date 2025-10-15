@@ -186,7 +186,7 @@ class QCamera(QtCore.QObject):
 
 class QVideoStream(QtCore.QObject):
     qimage = None
-    imageChanged = QtCore.Signal(QtGui.QImage)
+    imageChanged = QtCore.Signal(object)
 
     def __init__(self, camera: QCamera | None = None):
         super().__init__()
@@ -466,7 +466,7 @@ def fill_inputs_panel(camera: QCamera, widget):
         curr_fmt = capture.get_format()
         formats = info.buffer_formats(BufferType.VIDEO_CAPTURE)
         pixfmt_combo.clear()
-        for fmt in formats:
+        for fmt in sorted(formats, key=lambda fmt: fmt.pixel_format.name):
             pixfmt_combo.addItem(fmt.pixel_format.name, fmt.pixel_format)
         pixfmt_combo.setCurrentText(curr_fmt.pixel_format.name)
 
@@ -560,20 +560,21 @@ def to_qpixelformat(pixel_format: PixelFormat) -> QtGui.QPixelFormat | None:
         return QtGui.qPixelFormatYuv(QtGui.QPixelFormat.YUVLayout.YUYV)
 
 
-def frame_to_qimage(frame: Frame) -> QtGui.QImage:
+FORMAT_MAP = {
+    PixelFormat.RGB24: QtGui.QImage.Format.Format_RGB888,
+    PixelFormat.RGB32: QtGui.QImage.Format.Format_RGB32,
+    PixelFormat.RGBA32: QtGui.QImage.Format.Format_RGBA8888,
+    PixelFormat.ARGB32: QtGui.QImage.Format.Format_ARGB32,
+    PixelFormat.XRGB32: QtGui.QImage.Format.Format_ARGB32,
+    PixelFormat.GREY: QtGui.QImage.Format.Format_Grayscale8,
+}
+
+
+def frame_to_qimage(frame: Frame) -> QtGui.QImage | None:
     """Translates a Frame to a QImage"""
     data = frame.data
     if frame.pixel_format == PixelFormat.MJPEG:
         return QtGui.QImage.fromData(data, "JPG")
-    fmt = QtGui.QImage.Format.Format_BGR888
-    if frame.pixel_format == PixelFormat.RGB24:
-        fmt = QtGui.QImage.Format.Format_RGB888
-    elif frame.pixel_format == PixelFormat.RGB32:
-        fmt = QtGui.QImage.Format.Format_RGB32
-    elif frame.pixel_format == PixelFormat.ARGB32:
-        fmt = QtGui.QImage.Format.Format_ARGB32
-    elif frame.pixel_format == PixelFormat.GREY:
-        fmt = QtGui.QImage.Format.Format_Grayscale8
     elif frame.pixel_format == PixelFormat.YUYV:
         import cv2
 
@@ -581,11 +582,9 @@ def frame_to_qimage(frame: Frame) -> QtGui.QImage:
         data.shape = frame.height, frame.width, -1
         data = cv2.cvtColor(data, cv2.COLOR_YUV2BGR_YUYV)
     else:
-        return None
-    qimage = QtGui.QImage(data, frame.width, frame.height, fmt)
-    if fmt not in {QtGui.QImage.Format.Format_RGB32}:
-        qimage.convertTo(QtGui.QImage.Format.Format_RGB32)
-    return qimage
+        if (fmt := FORMAT_MAP.get(frame.pixel_format)) is None:
+            return None
+        return QtGui.QImage(data, frame.width, frame.height, fmt)
 
 
 def frame_to_qpixmap(frame: Frame) -> QtGui.QPixmap:
