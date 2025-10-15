@@ -1780,25 +1780,28 @@ class VideoCapture(BufferManager):
         async for frame in self.buffer:
             yield frame
 
+    def arm(self):
+        self.device.log.info("Preparing for video capture...")
+        capabilities = self.device.info.device_capabilities
+        if Capability.VIDEO_CAPTURE not in capabilities:
+            raise V4L2Error("device lacks VIDEO_CAPTURE capability")
+        source = capabilities if self.source is None else self.source
+        if Capability.STREAMING in source:
+            self.device.log.info("Video capture using memory map")
+            self.buffer = MemoryMap(self)
+            # self.buffer = UserPtr(self)
+        elif Capability.READWRITE in source:
+            self.device.log.info("Video capture using read")
+            self.buffer = ReadSource(self)
+        else:
+            raise OSError("Device needs to support STREAMING or READWRITE capability")
+        self.buffer.open()
+
     def open(self):
         if self.buffer is None:
-            self.device.log.info("Preparing for video capture...")
-            capabilities = self.device.info.device_capabilities
-            if Capability.VIDEO_CAPTURE not in capabilities:
-                raise V4L2Error("device lacks VIDEO_CAPTURE capability")
-            source = capabilities if self.source is None else self.source
-            if Capability.STREAMING in source:
-                self.device.log.info("Video capture using memory map")
-                self.buffer = MemoryMap(self)
-                # self.buffer = UserPtr(self)
-            elif Capability.READWRITE in source:
-                self.device.log.info("Video capture using read")
-                self.buffer = ReadSource(self)
-            else:
-                raise OSError("Device needs to support STREAMING or READWRITE capability")
-            self.buffer.open()
-            self.stream_on()
-            self.device.log.info("Video capture started!")
+            self.arm()
+        self.stream_on()
+        self.device.log.info("Video capture started!")
 
     def close(self):
         if self.buffer:
@@ -1908,8 +1911,8 @@ class MemorySource(ReentrantOpen):
             self.release_buffers()
 
     def grab_from_buffer(self, buff: raw.v4l2_buffer):
-        # return memoryview(self.buffers[buff.index])[: buff.bytesused], buff
-        return self.buffers[buff.index][: buff.bytesused], buff
+        view = self.buffers[buff.index]
+        return view[: buff.bytesused], buff
 
     def raw_grab(self) -> tuple[Buffer, raw.v4l2_buffer]:
         with self.queue as buff:
