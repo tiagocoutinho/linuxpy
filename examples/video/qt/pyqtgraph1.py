@@ -32,7 +32,7 @@ def main():
     logging.basicConfig(level=args.log_level.upper(), format=fmt)
     app = QtWidgets.QApplication([])
     with contextlib.ExitStack() as stack:
-        devices = [stack.enter_context(Device.from_id(i)) for i in range(10, 14)]
+        devices = [stack.enter_context(Device.from_id(i)) for i in range(10, 24)]
         for device in devices:
             device.set_format(BufferType.VIDEO_CAPTURE, 640, 480, PixelFormat.RGB24)
             device.set_fps(BufferType.VIDEO_CAPTURE, 15)
@@ -64,9 +64,6 @@ def main():
         for i, camera in enumerate(cameras, start=1):
             controls = QVideoControls(camera)
             controls_layout.addWidget(controls)
-
-            # view_layout.addLabel(f"Camera {camera.device.index}")
-            # view_layout.nextRow()
             view_box = view_layout.addViewBox(name=f"Camera {camera.device.index}", lockAspect=True, invertY=True)
             image_item = ImageItem()
             view_box.addItem(image_item)

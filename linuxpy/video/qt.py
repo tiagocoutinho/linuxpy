@@ -19,11 +19,13 @@ from qtpy import QtCore, QtGui, QtWidgets
 
 from linuxpy.video.device import (
     BaseControl,
+    BufferType,
     ControlType,
     Device,
     EventControlChange,
     EventType,
     Frame,
+    FrameSizeType,
     PixelFormat,
     VideoCapture,
 )
@@ -101,6 +103,22 @@ class Dispatcher:
 dispatcher = Dispatcher()
 
 
+class QImageGrabber(QtCore.QObject):
+    imageChanged = QtCore.Signal(QtGui.QImage)
+
+    def __init__(self, camera: "QCamera"):
+        self.camera = camera
+        self.frame = None
+        self.image = None
+        camera.frameChanged.connect(self.on_frame)
+        super().__init__()
+
+    def on_frame(self, frame):
+        self.frame = frame
+        self.image = frame_to_qimage(frame)
+        self.imageChanged.emit(self.image)
+
+
 class QCamera(QtCore.QObject):
     frameChanged = QtCore.Signal(object)
     stateChanged = QtCore.Signal(str)
@@ -146,8 +164,8 @@ class QCamera(QtCore.QObject):
             raise RuntimeError(f"Cannot start when camera is {self._state}")
         self.setState("running")
         self.capture.open()
-        dispatcher.register(self, "all")
         self._stream = iter(self.capture)
+        dispatcher.register(self, "all")
 
     def pause(self):
         if self._state != "running":
@@ -335,6 +353,33 @@ class QControl(QtCore.QObject):
         return widget
 
 
+def control_group_widget(widgets):
+    group = QtWidgets.QWidget()
+    layout = QtWidgets.QFormLayout(group)
+    for qctrl, widget in widgets:
+        if qctrl.ctrl.type == ControlType.BUTTON:
+            layout.addWidget(widget)
+        else:
+            layout.addRow(f"{qctrl.ctrl.name}:", widget)
+    return group
+
+
+def control_widgets(camera):
+    widgets = collections.defaultdict(list)
+    for ctrl_id, ctrl in camera.device.controls.items():
+        if ctrl.is_flagged_has_payload and ctrl.type != ControlType.STRING:
+            continue
+        qctrl = camera.qcontrol(ctrl_id)
+        if (widget := qctrl.create_widget()) is None:
+            continue
+        if (klass := ctrl.control_class) is None:
+            name = "Generic"
+        else:
+            name = klass.name.decode()
+        widgets[name].append((qctrl, widget))
+    return widgets
+
+
 class QControlPanel(QtWidgets.QTabWidget):
     def __init__(self, camera: QCamera):
         super().__init__()
@@ -343,42 +388,12 @@ class QControlPanel(QtWidgets.QTabWidget):
         self.fill()
 
     def fill(self):
-        camera = self.camera
-
-        group_widgets = collections.defaultdict(list)
-        for ctrl_id, ctrl in camera.device.controls.items():
-            if ctrl.is_flagged_has_payload and ctrl.type != ControlType.STRING:
-                continue
-            qctrl = camera.qcontrol(ctrl_id)
-            if (widget := qctrl.create_widget()) is None:
-                continue
-            if (klass := ctrl.control_class) is None:
-                name = "Generic"
-            else:
-                name = klass.name.decode()
-            group_widgets[name].append((qctrl, widget))
-
+        group_widgets = control_widgets(self.camera)
         for name, widgets in group_widgets.items():
-            tab = QtWidgets.QWidget()
-            tab.setWindowTitle(name)
-            layout = QtWidgets.QGridLayout()
-            tab.setLayout(layout)
-            self.addTab(tab, name)
-            nb_cols = 1
-            nb_controls = len(widgets)
-            if nb_controls > 50:
-                nb_cols = 3
-            elif nb_controls > 10:
-                nb_cols = 2
-            nb_rows = (len(widgets) + nb_cols - 1) // nb_cols
-            for idx, (qctrl, widget) in enumerate(widgets):
-                row, col = idx % nb_rows, idx // nb_rows
-                if qctrl.ctrl.type == ControlType.BUTTON:
-                    layout.addWidget(widget, row, col * 2, 1, 2)
-                else:
-                    layout.addWidget(QtWidgets.QLabel(f"{qctrl.ctrl.name}:"), row, col * 2)
-                    layout.addWidget(widget, row, col * 2 + 1)
-            layout.setRowStretch(row + 1, 1)
+            area = QtWidgets.QScrollArea()
+            tab = control_group_widget(widgets)
+            area.setWidget(tab)
+            self.addTab(area, name)
 
 
 def fill_info_panel(camera: QCamera, widget):
@@ -392,26 +407,129 @@ def fill_info_panel(camera: QCamera, widget):
     layout.addRow("Version:", QtWidgets.QLabel(info.version))
 
 
-def frame_sizes(camera: QCamera):
-    result = set()
-    for frame_size in camera.device.info.frame_types:
-        result.add((frame_size.width, frame_size.height))
-    return sorted(result)
-
-
 def fill_inputs_panel(camera: QCamera, widget):
+    def on_camera_state(state):
+        stopped = state == "stopped"
+        inputs_combo.setEnabled(stopped)
+        sizes_combo.setEnabled(stopped)
+        width_spin.setEnabled(stopped)
+        height_spin.setEnabled(stopped)
+        fps_combo.setEnabled(stopped)
+        pixfmt_combo.setEnabled(stopped)
+
+    def on_input(index):
+        if index < 0:
+            return
+        device.set_input(inputs_combo.currentData())
+        update_sizes()
+        update_fps()
+        update_formats()
+
+    def on_frame_size(_):
+        fmt = device.get_format(BufferType.VIDEO_CAPTURE)
+        if sizes_combo.isEnabled():
+            if sizes_combo.currentIndex() < 0:
+                return
+            width, height = sizes_combo.currentData()
+        else:
+            width, height = width_spin.value(), height_spin.value()
+        device.set_format(BufferType.VIDEO_CAPTURE, width, height, fmt.pixel_format)
+        update_fps()
+
+    def on_fps(index):
+        if index < 0:
+            return
+        device.set_fps(BufferType.VIDEO_CAPTURE, fps_combo.currentData())
+
+    def on_format(index):
+        if index < 0:
+            return
+        curr_fmt = device.get_format(BufferType.VIDEO_CAPTURE)
+        pixel_format = pixfmt_combo.currentData()
+        device.set_format(BufferType.VIDEO_CAPTURE, curr_fmt.width, curr_fmt.height, pixel_format)
+        update_fps()
+
+    def update_input():
+        curr_input = device.get_input()
+        inputs_combo.clear()
+        for inp in info.inputs:
+            inputs_combo.addItem(inp.name, inp.index)
+        inputs_combo.setCurrentIndex(curr_input)
+
+    def update_formats():
+        curr_fmt = capture.get_format()
+        formats = info.buffer_formats(BufferType.VIDEO_CAPTURE)
+        pixfmt_combo.clear()
+        for fmt in formats:
+            pixfmt_combo.addItem(fmt.pixel_format.name, fmt.pixel_format)
+        pixfmt_combo.setCurrentText(curr_fmt.pixel_format.name)
+
+    def update_sizes():
+        curr_fmt = capture.get_format()
+        sizes = info.format_frame_sizes(curr_fmt.pixel_format)
+        continuous = len(sizes) == 1 and sizes[0].type != FrameSizeType.DISCRETE
+        if continuous:
+            size = sizes[0]
+            width_spin.setRange(size.info.min_width, size.info.max_width)
+            width_spin.setSingleStep(size.info.step_width)
+            width_spin.setValue(curr_fmt.width)
+            height_spin.setRange(size.info.min_height, size.info.max_height)
+            height_spin.setSingleStep(size.info.step_height)
+            height_spin.setValue(curr_fmt.height)
+        else:
+            sizes_combo.clear()
+            sizes = {(size.info.width, size.info.height) for size in sizes}
+            for size in sorted(sizes):
+                width, height = size
+                sizes_combo.addItem(f"{width}x{height}", (width, height))
+            sizes_combo.setCurrentText(f"{curr_fmt.width}x{curr_fmt.height}")
+        layout.setRowVisible(width_spin, continuous)
+        layout.setRowVisible(height_spin, continuous)
+        layout.setRowVisible(sizes_combo, not continuous)
+
+    def update_fps():
+        curr_fmt = capture.get_format()
+        opts = info.fps_intervals(curr_fmt.pixel_format, curr_fmt.width, curr_fmt.height)
+        opts = (opt.min_fps for opt in opts if opt.min_fps == opt.max_fps)
+        curr_fps = capture.get_fps()
+        fps_combo.clear()
+        for fps in sorted(opts):
+            fps_combo.addItem(str(fps), fps)
+        fps_combo.setCurrentText(str(curr_fps))
+
+    camera.stateChanged.connect(on_camera_state)
+
     device = camera.device
+    capture = camera.capture
     info = device.info
+
     layout = QtWidgets.QFormLayout(widget)
     inputs_combo = QtWidgets.QComboBox()
-    for inp in info.inputs:
-        inputs_combo.addItem(inp.name, inp.index)
-    inputs_combo.currentIndexChanged.connect(lambda: device.set_input(inputs_combo.currentData()))
     layout.addRow("Input:", inputs_combo)
-    frame_size_combo = QtWidgets.QComboBox()
-    for width, height in frame_sizes(camera):
-        frame_size_combo.addItem(f"{width}x{height}")
-    layout.addRow("Frame Size:", frame_size_combo)
+    inputs_combo.currentIndexChanged.connect(on_input)
+
+    sizes_combo = QtWidgets.QComboBox()
+    sizes_combo.currentTextChanged.connect(on_frame_size)
+    layout.addRow("Size:", sizes_combo)
+    width_spin = QtWidgets.QSpinBox()
+    height_spin = QtWidgets.QSpinBox()
+    layout.addRow("Width:", width_spin)
+    layout.addRow("Height:", height_spin)
+    width_spin.valueChanged.connect(on_frame_size)
+    height_spin.valueChanged.connect(on_frame_size)
+
+    fps_combo = QtWidgets.QComboBox()
+    fps_combo.currentIndexChanged.connect(on_fps)
+    layout.addRow("FPS:", fps_combo)
+
+    pixfmt_combo = QtWidgets.QComboBox()
+    layout.addRow("Format:", pixfmt_combo)
+    pixfmt_combo.currentIndexChanged.connect(on_format)
+
+    update_input()
+    update_sizes()
+    update_fps()
+    update_formats()
 
 
 class QSettingsPanel(QtWidgets.QWidget):
@@ -473,19 +591,6 @@ def frame_to_qpixmap(frame: Frame) -> QtGui.QPixmap:
     return QtGui.QPixmap.fromImage(qimage)
 
 
-def draw_frame(paint_device, width, height, line_width=4, color="red"):
-    if width is None:
-        width = paint_device.width()
-    if height is None:
-        height = paint_device.height()
-    half_line_width = line_width // 2
-    pen = QtGui.QPen(QtGui.QColor(color), line_width)
-    painter = QtGui.QPainter(paint_device)
-    painter.setPen(pen)
-    painter.setBrush(QtCore.Qt.NoBrush)
-    painter.drawRect(half_line_width, half_line_width, width - line_width, height - line_width)
-
-
 def draw_no_image_rect(painter, rect, line_width=4):
     color = QtGui.QColor(255, 0, 0, 100)
     pen = QtGui.QPen(color, line_width)
@@ -508,6 +613,9 @@ def draw_no_image_rect(painter, rect, line_width=4):
 def draw_no_image(painter, width, height, line_width=4):
     rect = QtCore.QRectF(0, 0, width, height)
     return draw_no_image_rect(painter, rect, line_width)
+
+
+def draw_frame(widget, frame): ...
 
 
 class BaseCameraControl:
@@ -649,69 +757,71 @@ class QVideo(QtWidgets.QWidget):
     def __init__(self, camera: QCamera | None = None):
         super().__init__()
         self.camera = None
+        self.image_grabber = None
         self.set_camera(camera)
 
     def set_camera(self, camera: QCamera | None = None):
-        if self.camera:
-            self.camera.frameChanged.disconnect(self.on_frame_changed)
+        if self.image_grabber:
+            self.image_grabber.imageChanged.disconnect(self.on_image_changed)
         self.camera = camera
         if self.camera:
-            self.camera.frameChanged.connect(self.on_frame_changed)
+            self.image_grabber = QImageGrabber(camera)
+            self.image_grabber.imageChanged.connect(self.on_image_changed)
 
-    def on_frame_changed(self, frame):
-        self.frame = frame
-        self.qimage = None
+    def on_image_changed(self, qimage):
+        self.qimage = qimage
+        self.qimage_scaled = None
         self.update()
 
     def paintEvent(self, _):
-        frame = self.frame
         painter = QtGui.QPainter(self)
-        if frame is None:
-            draw_no_image(painter, self.width(), self.height())
-            return
-        if self.qimage is None:
-            self.qimage = frame_to_qimage(frame)
-        if self.qimage is not None:
-            width, height = self.width(), self.height()
-            scaled_image = self.qimage.scaled(width, height, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
-            pix_width, pix_height = scaled_image.width(), scaled_image.height()
-            x, y = 0, 0
-            if width > pix_width:
-                x = int((width - pix_width) / 2)
-            if height > pix_height:
-                y = int((height - pix_height) / 2)
-            painter.drawImage(x, y, scaled_image)
+        qimage = self.qimage
+        width, height = self.width(), self.height()
+        return paint_image(painter, width, height, qimage)
 
     def minimumSizeHint(self):
         return QtCore.QSize(160, 120)
 
 
-class QVideoItem(QtWidgets.QGraphicsObject):
-    frame = None
-    qimage = None
-    imageChanged = QtCore.Signal(object)
+def paint_image(painter, width, height, qimage=None):
+    if qimage is None:
+        draw_no_image(painter, width, height)
+        return
+    image_width = qimage.width()
+    image_height = qimage.height()
+    scale = min(width / image_width, height / image_height)
+    rect_width = int(image_width * scale)
+    rect_height = int(image_height * scale)
+    x = int((width - rect_width) / 2)
+    y = int((height - rect_height) / 2)
+    rect = QtCore.QRect(x, y, rect_width, rect_height)
+    painter.drawImage(rect, qimage)
 
+
+class QVideoItem(QtWidgets.QGraphicsObject):
     def __init__(self, camera: QCamera | None = None):
         super().__init__()
         self.camera = None
+        self.qimage = None
+        self.image_grabber = None
         self.set_camera(camera)
 
     def set_camera(self, camera: QCamera | None = None):
-        if self.camera:
-            self.camera.frameChanged.disconnect(self.on_frame_changed)
+        if self.image_grabber:
+            self.image_grabber.imageChanged.disconnect(self.on_image_changed)
         self.camera = camera
         if self.camera:
-            self.camera.frameChanged.connect(self.on_frame_changed)
+            self.image_grabber = QImageGrabber(camera)
+            self.image_grabber.imageChanged.connect(self.on_image_changed)
 
-    def on_frame_changed(self, frame):
-        self.frame = frame
-        self.qimage = None
+    def on_image_changed(self, image):
+        self.qimage = image
         self.update()
 
     def boundingRect(self):
-        if self.frame:
-            width = self.frame.width
-            height = self.frame.height
+        if self.qimage:
+            width = self.qimage.width()
+            height = self.qimage.height()
         elif self.camera:
             fmt = self.camera.capture.get_format()
             width = fmt.width
@@ -722,17 +832,13 @@ class QVideoItem(QtWidgets.QGraphicsObject):
         return QtCore.QRectF(0.0, 0.0, width, height)
 
     def paint(self, painter, style, *args):
-        frame = self.frame
+        qimage = self.qimage
         rect = self.boundingRect()
-        if frame is None:
+
+        if qimage is None:
             draw_no_image_rect(painter, rect)
             return
-        changed = self.qimage is None
-        if changed:
-            self.qimage = frame_to_qimage(frame)
-        painter.drawImage(rect, self.qimage)
-        if changed:
-            self.imageChanged.emit(self.qimage)
+        painter.drawImage(rect, qimage)
 
 
 class QVideoWidget(QtWidgets.QWidget):
@@ -768,13 +874,14 @@ def main():
         camera = QCamera(device)
         window = QtWidgets.QWidget()
         layout = QtWidgets.QHBoxLayout(window)
-        widget = QVideoWidget(camera)
-        widget.setMinimumSize(640, 480)
+        video = QVideoWidget(camera)
+        video.setMinimumSize(640, 480)
         panel = QControlPanel(camera)
         settings = QSettingsPanel(camera)
         layout.addWidget(settings)
-        layout.addWidget(widget)
+        layout.addWidget(video)
         layout.addWidget(panel)
+        layout.setStretchFactor(video, 1)
         window.show()
         app.aboutToQuit.connect(stop)
         app.exec()
