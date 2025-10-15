@@ -1551,6 +1551,9 @@ buffers = {buffers}
             for image_format in iter_read_formats(self.device, buffer_type)
         ]
 
+    def buffer_formats(self, buffer_type) -> list[ImageFormat]:
+        return list(iter_read_formats(self.device, buffer_type))
+
     def format_frame_sizes(self, pixel_format) -> list[FrameSize]:
         return list(iter_read_frame_sizes(self.device, pixel_format))
 
@@ -1559,6 +1562,9 @@ buffers = {buffers}
         for fmt in self.formats:
             results.extend(self.format_frame_sizes(fmt.pixel_format))
         return results
+
+    def fps_intervals(self, pixel_format, width, height) -> list[FrameType]:
+        return list(iter_read_frame_intervals(self.device, pixel_format, width, height))
 
     @property
     def frame_types(self):
