@@ -957,14 +957,10 @@ class Device(BaseDevice):
         set_priority(self, priority)
 
     def stream_on(self, buffer_type):
-        self.log.info("Starting %r stream...", buffer_type.name)
         stream_on(self, buffer_type)
-        self.log.info("%r stream ON", buffer_type.name)
 
     def stream_off(self, buffer_type):
-        self.log.info("Stoping %r stream...", buffer_type.name)
         stream_off(self, buffer_type)
-        self.log.info("%r stream OFF", buffer_type.name)
 
     def write(self, data: bytes) -> None:
         self._fobj.write(data)
@@ -1797,6 +1793,10 @@ class VideoCapture(BufferManager):
             raise OSError("Device needs to support STREAMING or READWRITE capability")
         self.buffer.open()
 
+    def disarm(self):
+        self.buffer.close()
+        self.buffer = None
+
     def open(self):
         if self.buffer is None:
             self.arm()
@@ -1807,8 +1807,7 @@ class VideoCapture(BufferManager):
         if self.buffer:
             self.device.log.info("Closing video capture...")
             self.stream_off()
-            self.buffer.close()
-            self.buffer = None
+            self.disarm()
             self.device.log.info("Video capture closed")
 
 
