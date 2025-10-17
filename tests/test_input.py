@@ -26,6 +26,8 @@ from linuxpy.input.device import (
     is_uinput_available,
 )
 
+pytest.mark.skipif(not is_uinput_available(), reason="uinput is not available", allow_module_level=True)
+
 
 @contextmanager
 def wait_for_new_device():
@@ -67,7 +69,6 @@ async def mouse():
 
 
 @pytest.mark.asyncio
-@pytest.mark.skipif(not is_uinput_available(), reason="uinput is not available")
 async def test_find_gamepad():
     name = uuid.uuid4().hex
     with wait_for_new_device() as device_finder:
@@ -93,7 +94,6 @@ async def test_find_mouse():
             assert caps == simulator.CAPABILITIES
 
 
-@pytest.mark.skipif(not is_uinput_available(), reason="uinput is not available")
 def test_open_close(gamepad):
     dev, _ = gamepad
     assert dev.closed
@@ -126,7 +126,6 @@ def test_open_close(gamepad):
     assert dev.closed
 
 
-@pytest.mark.skipif(not is_uinput_available(), reason="uinput is not available")
 def test_properties(gamepad):
     device, simulator = gamepad
     with device:
@@ -142,7 +141,6 @@ def test_properties(gamepad):
         assert not device.active_keys
 
 
-@pytest.mark.skipif(not is_uinput_available(), reason="uinput is not available")
 def test_grab(gamepad):
     device, simulator = gamepad
     with device:
@@ -158,7 +156,6 @@ def test_grab(gamepad):
                 device.grab()
 
 
-@pytest.mark.skipif(not is_uinput_available(), reason="uinput is not available")
 def test_button_event(gamepad):
     dev, simulator = gamepad
     with dev:
@@ -171,7 +168,6 @@ def test_button_event(gamepad):
             assert event.type == EventType.SYN
 
 
-@pytest.mark.skipif(not is_uinput_available(), reason="uinput is not available")
 def test_device_with_no_capability(mouse):
     dev, simulator = mouse
     with dev:
@@ -181,7 +177,6 @@ def test_device_with_no_capability(mouse):
 
 
 @pytest.mark.asyncio
-@pytest.mark.skipif(not is_uinput_available(), reason="uinput is not available")
 async def test_async_button_event(gamepad):
     dev, simulator = gamepad
     with dev:
@@ -195,7 +190,6 @@ async def test_async_button_event(gamepad):
 
 
 @pytest.mark.asyncio
-@pytest.mark.skipif(not is_uinput_available(), reason="uinput is not available")
 async def test_async_event_batch_stream(gamepad):
     dev, simulator = gamepad
     with dev:
