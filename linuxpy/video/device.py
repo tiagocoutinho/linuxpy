@@ -1779,8 +1779,10 @@ class VideoCapture(BufferManager):
 
     @property
     def buffer_type(self):
+        capabilities = self.device.info.device_capabilities
+        if Capability.VIDEO_CAPTURE not in capabilities:
+            raise V4L2Error("Device doesn't have VIDEO_CAPTURE capability")
         if self._buffer_type is None:
-            capabilities = self.device.info.device_capabilities
             if Capability.STREAMING in capabilities:
                 return MemoryMap
             elif Capability.READWRITE in capabilities:
@@ -2243,7 +2245,7 @@ class VideoOutput(BufferManager):
         if self.buffer is not None:
             return
         self.device.log.info("Preparing for video output...")
-        capabilities = self.device.info.capabilities
+        capabilities = self.device.info.device_capabilities
         # Don't check for output capability. Some drivers (ex: v4l2loopback) don't
         # report being output capable so that apps like zoom recognize them
         # if Capability.VIDEO_OUTPUT not in capabilities:
