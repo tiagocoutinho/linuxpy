@@ -1909,16 +1909,20 @@ class MemorySource(ReentrantOpen):
         if self.buffers:
             self.release_buffers()
 
-    def grab_from_buffer(self, buff: raw.v4l2_buffer):
+    def grab_from_buffer(self, buff: raw.v4l2_buffer, into=None):
         view = self.buffers[buff.index]
-        return view[: buff.bytesused], buff
+        size = buff.bytesused
+        if into is None:
+            return view[:size], buff
+        into[:size] = memoryview(view)[:size]
+        return memoryview(into)[:size], buff
 
-    def raw_grab(self) -> tuple[Buffer, raw.v4l2_buffer]:
+    def raw_grab(self, into=None) -> tuple[Buffer, raw.v4l2_buffer]:
         with self.queue as buff:
-            return self.grab_from_buffer(buff)
+            return self.grab_from_buffer(buff, into)
 
-    def raw_read(self) -> Frame:
-        data, buff = self.raw_grab()
+    def raw_read(self, into=None) -> Frame:
+        data, buff = self.raw_grab(into)
         return Frame(data, buff, self.format)
 
     def wait_read(self) -> Frame:
