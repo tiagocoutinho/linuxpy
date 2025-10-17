@@ -107,16 +107,23 @@ dispatcher = Dispatcher()
 class MemMap(MemoryMap):
     def open(self):
         super().open()
+        self.opencv = False
         format = self.format
         if pixel_format := FORMAT_MAP.get(format.pixel_format):
             self.data = bytearray(format.size)
             self.qimage = QtGui.QImage(self.data, format.width, format.height, pixel_format)
+        elif format in OPENCV_FORMATS:
+            self.data = bytearray(format.width * format.height * 3)
+            self.qimage = QtGui.QImage(self.data, format.width, format.height, QtGui.QImage.Format.Format_RGB888)
+            self.opencv = True
         else:
             self.data = None
             self.qimage = None
 
     def raw_read(self, into=None):
         frame = super().raw_read(self.data)
+        if self.data and frame.pixel_format in OPENCV_FORMATS:
+            frame_to_rgb24(frame, self.data)
         frame.user_data = self.qimage
         return frame
 
@@ -578,13 +585,49 @@ def to_qpixelformat(pixel_format: PixelFormat) -> QtGui.QPixelFormat | None:
 
 
 FORMAT_MAP = {
-    PixelFormat.RGB24: QtGui.QImage.Format.Format_RGB888,
-    PixelFormat.RGB32: QtGui.QImage.Format.Format_RGB32,
-    PixelFormat.RGBA32: QtGui.QImage.Format.Format_RGBA8888,
-    PixelFormat.ARGB32: QtGui.QImage.Format.Format_ARGB32,
-    PixelFormat.XRGB32: QtGui.QImage.Format.Format_ARGB32,
-    PixelFormat.GREY: QtGui.QImage.Format.Format_Grayscale8,
+    PixelFormat.RGB24: QtGui.QImage.Format.Format_RGB888,  # ok
+    PixelFormat.BGR24: QtGui.QImage.Format.Format_BGR888,  # ok
+    PixelFormat.RGB565: QtGui.QImage.Format.Format_RGB16,  # ok
+    PixelFormat.RGBX555: QtGui.QImage.Format.Format_RGB555,  # ok ? Transparency
+    PixelFormat.XRGB444: QtGui.QImage.Format.Format_RGB444,  # ok
+    PixelFormat.RGB32: QtGui.QImage.Format.Format_ARGB32,  # wrong
+    PixelFormat.RGBA32: QtGui.QImage.Format.Format_RGBA8888,  # wrong no image!
+    PixelFormat.ARGB32: QtGui.QImage.Format.Format_ARGB32,  # wrong
+    PixelFormat.XRGB32: QtGui.QImage.Format.Format_RGB32,  # wrong (same problem as RGB32)
+    PixelFormat.GREY: QtGui.QImage.Format.Format_Grayscale8,  # ok
+    PixelFormat.Y16: QtGui.QImage.Format.Format_Grayscale16,  # ok
+    PixelFormat.RGBX32: QtGui.QImage.Format.Format_RGBX8888,  # ok
+    PixelFormat.RGBX1010102: QtGui.QImage.Format.Format_RGB30,
 }
+
+OPENCV_FORMATS = {
+    PixelFormat.YUYV,
+    PixelFormat.YVYU,
+    PixelFormat.UYVY,
+    PixelFormat.YUV420,
+    PixelFormat.NV12,
+    PixelFormat.NV21,
+}
+
+
+def frame_to_rgb24(frame, into=None):
+    import cv2
+
+    YUV_MAP = {
+        PixelFormat.YUYV: cv2.COLOR_YUV2RGB_YUYV,
+        PixelFormat.YVYU: cv2.COLOR_YUV2RGB_YVYU,
+        PixelFormat.UYVY: cv2.COLOR_YUV2RGB_UYVY,
+        PixelFormat.YUV420: cv2.COLOR_YUV2RGB_I420,
+        PixelFormat.NV12: cv2.COLOR_YUV2RGB_NV12,
+        PixelFormat.NV21: cv2.COLOR_YUV2RGB_NV21,
+    }
+    data = frame.array
+    fmt = frame.pixel_format
+    if fmt in {PixelFormat.NV12, PixelFormat.YUV420}:
+        data.shape = frame.height * 3 // 2, frame.width, -1
+    else:
+        data.shape = frame.height, frame.width, -1
+    return cv2.cvtColor(data, YUV_MAP[fmt], dst=into)
 
 
 def frame_to_qimage(frame: Frame) -> QtGui.QImage | None:
@@ -592,12 +635,9 @@ def frame_to_qimage(frame: Frame) -> QtGui.QImage | None:
     data = frame.data
     if frame.pixel_format == PixelFormat.MJPEG:
         return QtGui.QImage.fromData(data, "JPG")
-    elif frame.pixel_format == PixelFormat.YUYV:
-        import cv2
 
-        data = frame.array
-        data.shape = frame.height, frame.width, -1
-        data = cv2.cvtColor(data, cv2.COLOR_YUV2BGR_YUYV)
+    if frame.pixel_format in OPENCV_FORMATS:
+        data = frame_to_rgb24(frame)
         fmt = QtGui.QImage.Format.Format_RGB888
     else:
         if (fmt := FORMAT_MAP.get(frame.pixel_format)) is None:
@@ -857,6 +897,7 @@ def main():
         window = QtWidgets.QWidget()
         layout = QtWidgets.QHBoxLayout(window)
         video = QVideoWidget(camera)
+        video.setMinimumSize(640, 480)
         panel = QControlPanel(camera)
         settings = QSettingsPanel(camera)
         layout.addWidget(settings)
