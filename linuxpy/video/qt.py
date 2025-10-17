@@ -26,6 +26,7 @@ from linuxpy.video.device import (
     EventType,
     Frame,
     FrameSizeType,
+    MemoryMap,
     PixelFormat,
     VideoCapture,
 )
@@ -103,6 +104,23 @@ class Dispatcher:
 dispatcher = Dispatcher()
 
 
+class MemMap(MemoryMap):
+    def open(self):
+        super().open()
+        format = self.format
+        if pixel_format := FORMAT_MAP.get(format.pixel_format):
+            self.data = bytearray(format.size)
+            self.qimage = QtGui.QImage(self.data, format.width, format.height, pixel_format)
+        else:
+            self.data = None
+            self.qimage = None
+
+    def raw_read(self, into=None):
+        frame = super().raw_read(self.data)
+        frame.user_data = self.qimage
+        return frame
+
+
 class QCamera(QtCore.QObject):
     frameChanged = QtCore.Signal(object)
     stateChanged = QtCore.Signal(str)
@@ -110,7 +128,7 @@ class QCamera(QtCore.QObject):
     def __init__(self, device: Device):
         super().__init__()
         self.device = device
-        self.capture = VideoCapture(device)
+        self.capture = VideoCapture(device, buffer_type=MemMap)
         self._stop = False
         self._stream = None
         self._state = "stopped"
@@ -194,8 +212,7 @@ class QVideoStream(QtCore.QObject):
         self.set_camera(camera)
 
     def on_frame(self, frame):
-        self.frame = frame
-        self.qimage = frame_to_qimage(frame)
+        self.qimage = frame.user_data or frame_to_qimage(frame)
         self.imageChanged.emit(self.qimage)
 
     def set_camera(self, camera: QCamera | None = None):
