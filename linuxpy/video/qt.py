@@ -581,10 +581,11 @@ def frame_to_qimage(frame: Frame) -> QtGui.QImage | None:
         data = frame.array
         data.shape = frame.height, frame.width, -1
         data = cv2.cvtColor(data, cv2.COLOR_YUV2BGR_YUYV)
+        fmt = QtGui.QImage.Format.Format_RGB888
     else:
         if (fmt := FORMAT_MAP.get(frame.pixel_format)) is None:
             return None
-        return QtGui.QImage(data, frame.width, frame.height, fmt)
+    return QtGui.QImage(data, frame.width, frame.height, fmt)
 
 
 def frame_to_qpixmap(frame: Frame) -> QtGui.QPixmap:
