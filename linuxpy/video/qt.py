@@ -623,7 +623,7 @@ def frame_to_rgb24(frame, into=None):
     }
     data = frame.array
     fmt = frame.pixel_format
-    if fmt in {PixelFormat.NV12, PixelFormat.YUV420}:
+    if fmt in {PixelFormat.NV12, PixelFormat.NV21, PixelFormat.YUV420}:
         data.shape = frame.height * 3 // 2, frame.width, -1
     else:
         data.shape = frame.height, frame.width, -1
