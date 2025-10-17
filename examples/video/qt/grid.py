@@ -50,12 +50,15 @@ def main():
                 break
             dev_id += 10
             device = Device.from_id(dev_id)
+            device.open()
             qcamera = QCamera(device)
             widget = QVideoWidget(qcamera)
             layout.addWidget(widget, row, column)
             qcameras.add(qcamera)
 
-    qcamera = QCamera(Device.from_id(0))
+    d0 = Device.from_id(0)
+    d0.open()
+    qcamera = QCamera(d0)
     qcameras.add(qcamera)
     widget = QVideoWidget(qcamera)
     layout.addWidget(widget)

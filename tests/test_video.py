@@ -38,6 +38,7 @@ from linuxpy.video.device import (
     EventType,
     InputCapabilities,
     Memory,
+    MemoryMap,
     MetaFormat,
     PixelFormat,
     Priority,
@@ -67,7 +68,7 @@ def video_files(paths=("/dev/video99")):
                 yield paths
 
 
-class MemoryMap:
+class DummyMemoryMap:
     def __init__(self, hardware):
         self.hardware = hardware
 
@@ -275,7 +276,7 @@ class Hardware:
 
     def mmap(self, fd, length, offset):
         assert self.fd == fd
-        return MemoryMap(self)
+        return DummyMemoryMap(self)
 
     @property
     def select(self):
@@ -851,7 +852,7 @@ def test_selection_with_vivid():
         capture_dev.set_selection(BufferType.VIDEO_CAPTURE, SelectionTarget.CROP, dft_sel)
 
 
-def check_frame(frame, width, height, pixel_format, source):
+def check_frame(frame, width, height, pixel_format, buffer_type):
     bits_per_pixel = 4 if pixel_format in {PixelFormat.RGB32, PixelFormat.ARGB32} else 3
     size = width * height * bits_per_pixel
     compact = pixel_format in {PixelFormat.MJPEG, PixelFormat.YUYV}
@@ -875,17 +876,17 @@ def check_frame(frame, width, height, pixel_format, source):
         else:
             assert data.shape == (size,)
         assert data.dtype == numpy.ubyte
-    if source in {None, Capability.STREAMING}:
+    if buffer_type in {None, MemoryMap}:
         assert BufferFlag.MAPPED in frame.flags
 
 
 @vivid_only
-@pytest.mark.parametrize("source", [None, Capability.STREAMING])
-def test_vivid_capture(source):
+@pytest.mark.parametrize("buffer_type", [None, MemoryMap])
+def test_vivid_capture(buffer_type):
     with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
         capture_dev.set_input(0)
         width, height, pixel_format = 640, 480, PixelFormat.RGB24
-        capture = VideoCapture(capture_dev, source=source)
+        capture = VideoCapture(capture_dev, buffer_type=buffer_type)
         capture.set_format(width, height, pixel_format)
         fmt = capture.get_format()
         assert fmt.width == width
@@ -898,18 +899,18 @@ def test_vivid_capture(source):
         with capture:
             stream = iter(capture)
             frame1 = next(stream)
-            check_frame(frame1, width, height, pixel_format, source)
+            check_frame(frame1, width, height, pixel_format, buffer_type)
             frame2 = next(stream)
-            check_frame(frame2, width, height, pixel_format, source)
+            check_frame(frame2, width, height, pixel_format, buffer_type)
 
 
 @vivid_only
-@pytest.mark.parametrize("source", [None, Capability.STREAMING])
-def test_vivid_gevent_capture(source):
+@pytest.mark.parametrize("buffer_type", [None, MemoryMap])
+def test_vivid_gevent_capture(buffer_type):
     with Device(VIVID_CAPTURE_DEVICE, io=GeventIO) as capture_dev:
         capture_dev.set_input(0)
         width, height, pixel_format = 640, 480, PixelFormat.RGB24
-        capture = VideoCapture(capture_dev, source=source)
+        capture = VideoCapture(capture_dev, buffer_type=buffer_type)
         capture.set_format(width, height, pixel_format)
         fmt = capture.get_format()
         assert fmt.width == width
@@ -922,19 +923,19 @@ def test_vivid_gevent_capture(source):
         with capture:
             stream = iter(capture)
             frame1 = next(stream)
-            check_frame(frame1, width, height, pixel_format, source)
+            check_frame(frame1, width, height, pixel_format, buffer_type)
             frame2 = next(stream)
-            check_frame(frame2, width, height, pixel_format, source)
+            check_frame(frame2, width, height, pixel_format, buffer_type)
 
 
 @vivid_only
-@pytest.mark.parametrize("source", [None, Capability.STREAMING])
-def test_vivid_sync_capture(source):
+@pytest.mark.parametrize("buffer_type", [None, MemoryMap])
+def test_vivid_sync_capture(buffer_type):
     with fopen(VIVID_CAPTURE_DEVICE, rw=True, blocking=True) as fobj:
         capture_dev = Device(fobj)
         capture_dev.set_input(0)
         width, height, pixel_format = 640, 480, PixelFormat.RGB24
-        capture = VideoCapture(capture_dev, source=source)
+        capture = VideoCapture(capture_dev, buffer_type=buffer_type)
         capture.set_format(width, height, pixel_format)
         fmt = capture.get_format()
         assert fmt.width == width
@@ -947,19 +948,19 @@ def test_vivid_sync_capture(source):
         with capture:
             stream = iter(capture)
             frame1 = next(stream)
-            check_frame(frame1, width, height, pixel_format, source)
+            check_frame(frame1, width, height, pixel_format, buffer_type)
             frame2 = next(stream)
-            check_frame(frame2, width, height, pixel_format, source)
+            check_frame(frame2, width, height, pixel_format, buffer_type)
 
 
 @vivid_only
 @pytest.mark.asyncio
-@pytest.mark.parametrize("source", [None, Capability.STREAMING])
-async def test_vivid_async_capture(source):
+@pytest.mark.parametrize("buffer_type", [None, MemoryMap])
+async def test_vivid_async_capture(buffer_type):
     with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
         capture_dev.set_input(0)
         width, height, pixel_format = 640, 480, PixelFormat.RGB24
-        capture = VideoCapture(capture_dev, source=source)
+        capture = VideoCapture(capture_dev, buffer_type=buffer_type)
         capture.set_format(width, height, pixel_format)
 
         fmt = capture.get_format()
@@ -972,7 +973,7 @@ async def test_vivid_async_capture(source):
         with capture:
             i = 0
             async for frame in capture:
-                check_frame(frame, width, height, pixel_format, source)
+                check_frame(frame, width, height, pixel_format, buffer_type)
                 i += 1
                 if i > 2:
                     break

@@ -262,7 +262,7 @@ def iter_read_frame_sizes(fd, pixel_format):
             info = val.m1.discrete
         else:
             info = val.m1.stepwise
-        yield FrameSize(val.index, PixelFormat(val.pixel_format), FrameSizeType(val.type), info)
+        yield FrameSize(val.index, PixelFormat(val.pixel_format), FrameSizeType(val.type), copy.copy(info))
 
 
 def iter_read_pixel_formats_frame_intervals(fd, pixel_formats):
@@ -957,14 +957,10 @@ class Device(BaseDevice):
         set_priority(self, priority)
 
     def stream_on(self, buffer_type):
-        self.log.info("Starting %r stream...", buffer_type.name)
         stream_on(self, buffer_type)
-        self.log.info("%r stream ON", buffer_type.name)
 
     def stream_off(self, buffer_type):
-        self.log.info("Stoping %r stream...", buffer_type.name)
         stream_off(self, buffer_type)
-        self.log.info("%r stream OFF", buffer_type.name)
 
     def write(self, data: bytes) -> None:
         self._fobj.write(data)
@@ -1551,14 +1547,20 @@ buffers = {buffers}
             for image_format in iter_read_formats(self.device, buffer_type)
         ]
 
-    def format_frame_sizes(self, pixel_format):
-        return [copy.copy(val) for val in iter_read_frame_sizes(self.device, pixel_format)]
+    def buffer_formats(self, buffer_type) -> list[ImageFormat]:
+        return list(iter_read_formats(self.device, buffer_type))
+
+    def format_frame_sizes(self, pixel_format) -> list[FrameSize]:
+        return list(iter_read_frame_sizes(self.device, pixel_format))
 
     def frame_sizes(self):
         results = []
         for fmt in self.formats:
             results.extend(self.format_frame_sizes(fmt.pixel_format))
         return results
+
+    def fps_intervals(self, pixel_format, width, height) -> list[FrameType]:
+        return list(iter_read_frame_intervals(self.device, pixel_format, width, height))
 
     @property
     def frame_types(self):
@@ -1659,12 +1661,13 @@ class BufferManager(DeviceHelper):
 class Frame:
     """The resulting object from an acquisition."""
 
-    __slots__ = ["format", "buff", "data"]
+    __slots__ = ["format", "buff", "data", "user_data"]
 
     def __init__(self, data: bytes, buff: raw.v4l2_buffer, format: Format):
         self.format = format
         self.buff = buff
         self.data = data
+        self.user_data = None
 
     def __bytes__(self):
         return self.data
@@ -1755,10 +1758,10 @@ class Frame:
 
 
 class VideoCapture(BufferManager):
-    def __init__(self, device: Device, size: int = 2, source: Capability = None):
+    def __init__(self, device: Device, size: int = 2, buffer_type=None):
         super().__init__(device, BufferType.VIDEO_CAPTURE, size)
         self.buffer = None
-        self.source = source
+        self._buffer_type = buffer_type
 
     def __enter__(self):
         self.open()
@@ -1774,32 +1777,45 @@ class VideoCapture(BufferManager):
         async for frame in self.buffer:
             yield frame
 
+    @property
+    def buffer_type(self):
+        capabilities = self.device.info.device_capabilities
+        if Capability.VIDEO_CAPTURE not in capabilities:
+            raise V4L2Error("Device doesn't have VIDEO_CAPTURE capability")
+        if self._buffer_type is None:
+            if Capability.STREAMING in capabilities:
+                return MemoryMap
+            elif Capability.READWRITE in capabilities:
+                return ReadSource
+            return None
+        return self._buffer_type
+
+    def create_buffer(self):
+        buffer_type = self.buffer_type
+        if buffer_type is None:
+            raise OSError("Device needs to support STREAMING or READWRITE capability")
+        return buffer_type(self)
+
+    def arm(self):
+        self.device.log.info("Preparing for video capture...")
+        self.buffer = self.create_buffer()
+        self.buffer.open()
+
+    def disarm(self):
+        self.buffer.close()
+        self.buffer = None
+
     def open(self):
         if self.buffer is None:
-            self.device.log.info("Preparing for video capture...")
-            capabilities = self.device.info.device_capabilities
-            if Capability.VIDEO_CAPTURE not in capabilities:
-                raise V4L2Error("device lacks VIDEO_CAPTURE capability")
-            source = capabilities if self.source is None else self.source
-            if Capability.STREAMING in source:
-                self.device.log.info("Video capture using memory map")
-                self.buffer = MemoryMap(self)
-                # self.buffer = UserPtr(self)
-            elif Capability.READWRITE in source:
-                self.device.log.info("Video capture using read")
-                self.buffer = ReadSource(self)
-            else:
-                raise OSError("Device needs to support STREAMING or READWRITE capability")
-            self.buffer.open()
-            self.stream_on()
-            self.device.log.info("Video capture started!")
+            self.arm()
+        self.stream_on()
+        self.device.log.info("Video capture started!")
 
     def close(self):
         if self.buffer:
             self.device.log.info("Closing video capture...")
             self.stream_off()
-            self.buffer.close()
-            self.buffer = None
+            self.disarm()
             self.device.log.info("Video capture closed")
 
 
@@ -1901,16 +1917,20 @@ class MemorySource(ReentrantOpen):
         if self.buffers:
             self.release_buffers()
 
-    def grab_from_buffer(self, buff: raw.v4l2_buffer):
-        # return memoryview(self.buffers[buff.index])[: buff.bytesused], buff
-        return self.buffers[buff.index][: buff.bytesused], buff
+    def grab_from_buffer(self, buff: raw.v4l2_buffer, into=None):
+        view = self.buffers[buff.index]
+        size = buff.bytesused
+        if into is None:
+            return view[:size], buff
+        into[:size] = memoryview(view)[:size]
+        return memoryview(into)[:size], buff
 
-    def raw_grab(self) -> tuple[Buffer, raw.v4l2_buffer]:
+    def raw_grab(self, into=None) -> tuple[Buffer, raw.v4l2_buffer]:
         with self.queue as buff:
-            return self.grab_from_buffer(buff)
+            return self.grab_from_buffer(buff, into)
 
-    def raw_read(self) -> Frame:
-        data, buff = self.raw_grab()
+    def raw_read(self, into=None) -> Frame:
+        data, buff = self.raw_grab(into)
         return Frame(data, buff, self.format)
 
     def wait_read(self) -> Frame:
@@ -1957,9 +1977,10 @@ class MemorySource(ReentrantOpen):
 class UserPtr(MemorySource):
     def __init__(self, buffer_manager: BufferManager):
         super().__init__(buffer_manager, Memory.USERPTR)
+        self.log = self.device.log.getChild("MemoryMap")
 
     def prepare_buffers(self):
-        self.device.log.info("Reserving buffers...")
+        self.log.info("Reserving buffers...")
         self.buffer_manager.create_buffers(self.source)
         size = self.format.size
         self.buffers = []
@@ -1973,21 +1994,22 @@ class UserPtr(MemorySource):
             buff.m.userptr = ctypes.addressof(data)
             buff.length = size
             self.queue.enqueue(buff)
-        self.device.log.info("Buffers reserved")
+        self.log.info("Buffers reserved")
 
 
 class MemoryMap(MemorySource):
     def __init__(self, buffer_manager: BufferManager):
         super().__init__(buffer_manager, Memory.MMAP)
+        self.log = self.device.log.getChild("MemoryMap")
 
     def prepare_buffers(self):
-        self.device.log.info("Reserving buffers...")
+        self.log.info("Reserving buffers...")
         buffers = self.buffer_manager.create_buffers(self.source)
         fd = self.device
         self.buffers = [mmap_from_buffer(fd, buff) for buff in buffers]
         self.buffer_manager.enqueue_buffers(Memory.MMAP)
         self.format = self.buffer_manager.get_format()
-        self.device.log.info("Buffers reserved")
+        self.log.info("Buffers reserved")
 
 
 class EventReader(ReentrantOpen):
@@ -2223,7 +2245,7 @@ class VideoOutput(BufferManager):
         if self.buffer is not None:
             return
         self.device.log.info("Preparing for video output...")
-        capabilities = self.device.info.capabilities
+        capabilities = self.device.info.device_capabilities
         # Don't check for output capability. Some drivers (ex: v4l2loopback) don't
         # report being output capable so that apps like zoom recognize them
         # if Capability.VIDEO_OUTPUT not in capabilities:
