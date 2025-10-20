@@ -96,7 +96,7 @@ ImageFormat = collections.namedtuple("ImageFormat", "type description flags pixe
 
 MetaFmt = collections.namedtuple("MetaFmt", "format max_buffer_size width height bytes_per_line")
 
-Format = collections.namedtuple("Format", "width height pixel_format size")
+Format = collections.namedtuple("Format", "width height pixel_format size bytes_per_line")
 
 CropCapability = collections.namedtuple("CropCapability", "type bounds defrect pixel_aspect")
 
@@ -495,6 +495,7 @@ def get_format(fd, buffer_type) -> Union[Format, MetaFmt]:
         height=f.fmt.pix.height,
         pixel_format=PixelFormat(f.fmt.pix.pixelformat),
         size=f.fmt.pix.sizeimage,
+        bytes_per_line=f.fmt.pix.bytesperline,
     )
 
 
