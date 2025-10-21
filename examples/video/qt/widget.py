@@ -16,12 +16,12 @@ import logging
 import cv2
 from qtpy import QtCore, QtGui, QtWidgets
 
-from linuxpy.video.device import Capability, Device, PixelFormat, VideoCapture
+from linuxpy.video.device import Device, MemoryMap, PixelFormat, ReadSource, VideoCapture
 
 MODES = {
     "auto": None,
-    "mmap": Capability.STREAMING,
-    "read": Capability.READWRITE,
+    "mmap": MemoryMap,
+    "read": ReadSource,
 }
 
 
@@ -153,7 +153,7 @@ def main():
     timer.timeout.connect(update)
 
     with device:
-        capture = VideoCapture(device, source=MODES[args.mode], size=args.nb_buffers)
+        capture = VideoCapture(device, buffer_type=MODES[args.mode], size=args.nb_buffers)
         capture.set_fps(args.frame_rate)
         capture.set_format(width, height, args.frame_format)
         with capture:

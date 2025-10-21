@@ -78,11 +78,18 @@ class Dispatcher:
             event_mask |= select.EPOLLIN
         if type == "all" or type == "control":
             event_mask |= select.EPOLLPRI
-        if fd in self.cameras:
+        registered = fd in self.cameras
+        self.cameras[fd] = camera
+        if registered:
             self.epoll.modify(fd, event_mask)
         else:
             self.epoll.register(fd, event_mask)
-        self.cameras[fd] = camera
+
+    def unregister(self, camera):
+        fd = camera.device.fileno()
+        camera = self.cameras.pop(fd, None)
+        if camera:
+            self.epoll.unregister(fd)
 
     def loop(self):
         errno = 0
@@ -139,8 +146,26 @@ class QCamera(QtCore.QObject):
         self._stop = False
         self._stream = None
         self._state = "stopped"
-        dispatcher.register(self, "control")
         self.controls = {}
+
+    def __enter__(self):
+        self.device.open()
+        dispatcher.register(self, "control")
+        return self
+
+    def __exit__(self, *exc):
+        dispatcher.unregister(self)
+        self.device.close()
+
+    @classmethod
+    def from_id(cls, did: int, **kwargs):
+        device = Device.from_id(did, **kwargs)
+        return cls(device)
+
+    @classmethod
+    def from_path(cls, path, **kwargs):
+        device = Device(path, **kwargs)
+        return cls(device)
 
     def handle_frame(self):
         if self._stream is None:
@@ -636,7 +661,6 @@ def opencv_frame_to_rgb24(frame, into=None):
     else:
         data.shape = frame.height, frame.width, -1
     result = cv2.cvtColor(data, YUV_MAP[fmt], dst=into)
-    print(result.shape, result.dtype, into.shape, into.dtype)
     return result
 
 
@@ -899,8 +923,7 @@ def main():
     fmt = "%(threadName)-10s %(asctime)-15s %(levelname)-5s %(name)s: %(message)s"
     logging.basicConfig(level=args.log_level.upper(), format=fmt)
     app = QtWidgets.QApplication([])
-    with Device.from_id(args.device, blocking=False) as device:
-        camera = QCamera(device)
+    with QCamera.from_id(args.device, blocking=False) as camera:
         window = QtWidgets.QWidget()
         layout = QtWidgets.QHBoxLayout(window)
         video = QVideoWidget(camera)
