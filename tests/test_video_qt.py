@@ -95,7 +95,7 @@ def test_qvideo_widget(qtbot, pixel_format):
         check_frame(frames.args[0], width, height, pixel_format, Capability.STREAMING)
         assert play_button.toolTip() == "Camera is running. Press to stop it"
 
-        qtbot.waitUntil(lambda: widget.video.qpixmap is not None)
+        qtbot.waitUntil(lambda: widget.video.qimage is not None)
 
         with qtbot.waitSignal(qcamera.stateChanged, timeout=10) as status:
             pause_button.click()
