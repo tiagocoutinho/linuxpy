@@ -114,24 +114,29 @@ dispatcher = Dispatcher()
 class QimageMemory(MemoryMap):
     def open(self):
         super().open()
+        self.data = None
         self.opencv = None
         format = self.format
-        if pixel_format := FORMAT_MAP.get(format.pixel_format):
+        if format.pixel_format in FORMAT_MAP:
             self.data = bytearray(format.size)
-            self.qimage = QtGui.QImage(self.data, format.width, format.height, format.bytes_per_line, pixel_format)
         elif format.pixel_format in OPENCV_FORMATS:
             self.data = bytearray(format.size)
             self.opencv = create_opencv_buffer(format)
-            self.qimage = QtGui.QImage(self.opencv, format.width, format.height, QtGui.QImage.Format.Format_RGB888)
-        else:
-            self.data = None
-            self.qimage = None
 
     def raw_read(self, into=None):
         frame = super().raw_read(self.data)
-        if self.opencv is not None:
-            opencv_frame_to_rgb24(frame, self.opencv)
-        frame.user_data = self.qimage
+        qimage = None
+        format = self.format
+        if self.data is not None:
+            if self.opencv is None:
+                data = self.data
+                qformat = FORMAT_MAP.get(format.pixel_format)
+            else:
+                data = self.opencv
+                opencv_frame_to_rgb24(frame, data)
+                qformat = QtGui.QImage.Format.Format_RGB888
+            qimage = QtGui.QImage(data, format.width, format.height, qformat)
+        frame.user_data = qimage
         return frame
 
 
@@ -235,8 +240,8 @@ class QCamera(QtCore.QObject):
 
 
 class QVideoStream(QtCore.QObject):
-    qimage = None
-    imageChanged = QtCore.Signal(object)
+    qpixmap = None
+    pixmapChanged = QtCore.Signal(object)
 
     def __init__(self, camera: QCamera | None = None):
         super().__init__()
@@ -244,8 +249,11 @@ class QVideoStream(QtCore.QObject):
         self.set_camera(camera)
 
     def on_frame(self, frame):
-        self.qimage = frame.user_data or frame_to_qimage(frame)
-        self.imageChanged.emit(self.qimage)
+        qimage = frame.user_data or frame_to_qimage(frame)
+        if self.qpixmap is None:
+            self.qpixmap = QtGui.QPixmap()
+        self.qpixmap.convertFromImage(qimage)
+        self.pixmapChanged.emit(self.qpixmap)
 
     def set_camera(self, camera: QCamera | None = None):
         if self.camera:
@@ -844,33 +852,33 @@ class QVideoControls(QtWidgets.QWidget):
         self.camera = camera
 
 
-def paint_image(painter, width, height, qimage=None):
-    if qimage is None:
+def paint_pixmap(painter, width, height, qpixmap=None):
+    if qpixmap is None:
         draw_no_image(painter, width, height)
         return
-    image_width = qimage.width()
-    image_height = qimage.height()
+    image_width = qpixmap.width()
+    image_height = qpixmap.height()
     scale = min(width / image_width, height / image_height)
     rect_width = int(image_width * scale)
     rect_height = int(image_height * scale)
     x = int((width - rect_width) / 2)
     y = int((height - rect_height) / 2)
     rect = QtCore.QRect(x, y, rect_width, rect_height)
-    painter.drawImage(rect, qimage)
+    painter.drawPixmap(rect, qpixmap)
 
 
 class VideoMixin:
-    qimage = None
+    qpixmap = None
 
     def imageRect(self):
         return self.rect()
 
     def paint(self, painter, _, *args):
         rect = self.imageRect()
-        paint_image(painter, rect.width(), rect.height(), self.qimage)
+        paint_pixmap(painter, rect.width(), rect.height(), self.qpixmap)
 
-    def on_image_changed(self, qimage):
-        self.qimage = qimage
+    def on_pixmap_changed(self, qpixmap):
+        self.qpixmap = qpixmap
         self.update()
 
 
@@ -885,8 +893,8 @@ class QVideo(VideoMixin, QtWidgets.QWidget):
 class QVideoItem(VideoMixin, QtWidgets.QGraphicsItem):
     def boundingRect(self):
         width, height = 640, 480
-        if self.qimage:
-            width, height = self.qimage.width(), self.qimage.height()
+        if self.qpixmap:
+            width, height = self.qpixmap.width(), self.qpixmap.height()
         return QtCore.QRectF(0, 0, width, height)
 
     imageRect = boundingRect
@@ -898,7 +906,7 @@ class QVideoWidget(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout(self)
         self.video = QVideo()
         self.stream = QVideoStream(camera)
-        self.stream.imageChanged.connect(self.video.on_image_changed)
+        self.stream.pixmapChanged.connect(self.video.on_pixmap_changed)
         self.controls = QVideoControls(camera)
         layout.addWidget(self.video)
         layout.addWidget(self.controls)
