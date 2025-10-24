@@ -1,4 +1,4 @@
-from common import RGFWWindow, main, maybe_frames
+from common import RGFWCaptureWindow, RGFWWindow, main
 from OpenGL import GL
 
 TEXTURE_2D = GL.GL_TEXTURE_2D
@@ -56,9 +56,9 @@ def update_texture(texture_id, frame):
         0,
         frame.width,
         frame.height,
-        RGB,
+        GL.GL_BGR,
         UBYTE,
-        frame.data,
+        frame.user_data,
     )
 
 
@@ -69,15 +69,10 @@ def run(capture):
     with RGFWWindow("Video RGFW GL", 0, 0, width, height) as win:
         GL.glEnable(TEXTURE_2D)
         texture_id = create_texture(fmt.width, fmt.height)
-        with capture:
-            stream = maybe_frames(capture)
-            while True:
-                if not win.handle_events():
-                    break
-                if frame := next(stream):
-                    update_texture(texture_id, frame)
-                draw_canvas()
-                win.swapBuffers()
+        for frame in RGFWCaptureWindow(capture, win):
+            if frame:
+                update_texture(texture_id, frame)
+            draw_canvas()
         destroy_texture(texture_id)
 
 

@@ -1,8 +1,7 @@
 import struct
 
 import moderngl as mgl
-import RGFW
-from common import main, maybe_frames
+from common import RGFWCaptureWindow, RGFWWindow, main
 
 VS = """
 #version 330 core
@@ -27,35 +26,12 @@ void main() {
 }
 """
 
-
-def handle_events(win):
-    while win.checkEvent():
-        if win.event.type == RGFW.quit or RGFW.isPressed(win, RGFW.Escape):
-            win.close()
-            return False
-    return True
+# point:2f uv:2f
+VERTICES = (-1, -1, 0, 1, 1, -1, 1, 1, 1, 1, 1, 0, -1, 1, 0, 0)
 
 
 def create_vertex_array(prog):
-    vertices = struct.pack(
-        "16f",
-        -1,
-        -1,
-        0,
-        1,
-        1,
-        -1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        0,
-        -1,
-        1,
-        0,
-        0,
-    )
+    vertices = struct.pack("16f", *VERTICES)
     vbo = prog.ctx.buffer(vertices)
     return prog.ctx.vertex_array(prog, [(vbo, "2f 2f", "pos", "tex")])
 
@@ -65,23 +41,18 @@ def run(capture):
     aspect = fmt.height / fmt.width
     width = 1980
     height = int(width * aspect)
-    stream = iter(capture)
-    win = RGFW.createWindow("name", RGFW.rect(0, 0, width, height), RGFW.CENTER)
-    ctx = mgl.create_context()
-    ctx.enable(mgl.DEPTH_TEST)
-    ctx.viewport = (0, 0, width, height)
-    texture = ctx.texture((fmt.width, fmt.height), 3)
-    prog = ctx.program(vertex_shader=VS, fragment_shader=FS)
-    vao = create_vertex_array(prog)
-
-    with capture:
-        stream = maybe_frames(capture)
-        while True:
+    with RGFWWindow(f"RGFW ModernGL capture on {capture.device.filename}", 0, 0, width, height) as win:
+        ctx = mgl.create_context()
+        ctx.enable(mgl.DEPTH_TEST)
+        ctx.viewport = (0, 0, width, height)
+        texture = ctx.texture((fmt.width, fmt.height), 3)
+        prog = ctx.program(vertex_shader=VS, fragment_shader=FS)
+        vao = create_vertex_array(prog)
+        for frame in RGFWCaptureWindow(capture, win):
             ctx.clear(0, 0, 1, 1)
-            if not handle_events(win):
-                return
-            if frame := next(stream):
-                texture.write(frame.data)
+            if frame:
+                texture.write(frame.user_data)
+                texture.swizzle = "bgr1"
                 texture.use()
             vao.render(mgl.TRIANGLE_FAN)
             win.swapBuffers()

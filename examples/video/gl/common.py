@@ -38,6 +38,32 @@ class RGFWWindow:
         self.win = None
 
 
+class RGFWCaptureWindow:
+    def __init__(self, capture, window):
+        self.capture = capture
+        self.window = window
+
+    def __iter__(self):
+        with self.capture:
+            stream = maybe_frames(self.capture)
+            while True:
+                if not self.window.handle_events():
+                    break
+                if frame := next(stream):
+                    frame.user_data = decode_frame(frame)
+                yield frame
+                self.window.swapBuffers()
+
+
+def decode_frame(frame):
+    if frame.pixel_format == PixelFormat.BGR24:
+        return frame.data
+    import cv2
+
+    bgr = cv2.imdecode(frame.array, cv2.IMREAD_COLOR)
+    return bgr  # cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
+
+
 def maybe_frames(capture):
     device = capture.device
     selector = selectors.DefaultSelector()
@@ -75,7 +101,7 @@ def cli():
     parser.add_argument("--nb-buffers", type=int, default=2)
     parser.add_argument("--frame-rate", type=float, default=10)
     parser.add_argument("--frame-size", type=frame_size, default="640x480")
-    parser.add_argument("--frame-format", type=frame_format, default="RGB24")
+    parser.add_argument("--frame-format", type=frame_format, default="BGR24")
     parser.add_argument("device", type=device_text)
     return parser
 
