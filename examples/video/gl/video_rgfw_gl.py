@@ -23,7 +23,7 @@ def create_texture(width, height):
         0,
         RGB,
         UBYTE,
-        width * height * b"\xff\x00\x00",
+        None,
     )
     return texture_id
 
