@@ -1041,6 +1041,10 @@ class Controls(dict):
             self.refresh()
             self.__dict__["_initialized"] = True
 
+    def __repr__(self):
+        self._init_if_needed()
+        return super().__repr__()
+
     def __getitem__(self, name):
         self._init_if_needed()
         return super().__getitem__(name)
