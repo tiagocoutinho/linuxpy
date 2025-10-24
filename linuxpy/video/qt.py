@@ -78,11 +78,18 @@ class Dispatcher:
             event_mask |= select.EPOLLIN
         if type == "all" or type == "control":
             event_mask |= select.EPOLLPRI
-        if fd in self.cameras:
+        registered = fd in self.cameras
+        self.cameras[fd] = camera
+        if registered:
             self.epoll.modify(fd, event_mask)
         else:
             self.epoll.register(fd, event_mask)
-        self.cameras[fd] = camera
+
+    def unregister(self, camera):
+        fd = camera.device.fileno()
+        camera = self.cameras.pop(fd, None)
+        if camera:
+            self.epoll.unregister(fd)
 
     def loop(self):
         errno = 0
@@ -104,27 +111,32 @@ class Dispatcher:
 dispatcher = Dispatcher()
 
 
-class MemMap(MemoryMap):
+class QimageMemory(MemoryMap):
     def open(self):
         super().open()
-        self.opencv = False
+        self.data = None
+        self.opencv = None
         format = self.format
-        if pixel_format := FORMAT_MAP.get(format.pixel_format):
+        if format.pixel_format in FORMAT_MAP:
             self.data = bytearray(format.size)
-            self.qimage = QtGui.QImage(self.data, format.width, format.height, pixel_format)
-        elif format in OPENCV_FORMATS:
-            self.data = bytearray(format.width * format.height * 3)
-            self.qimage = QtGui.QImage(self.data, format.width, format.height, QtGui.QImage.Format.Format_RGB888)
-            self.opencv = True
-        else:
-            self.data = None
-            self.qimage = None
+        elif format.pixel_format in OPENCV_FORMATS:
+            self.data = bytearray(format.size)
+            self.opencv = create_opencv_buffer(format)
 
     def raw_read(self, into=None):
         frame = super().raw_read(self.data)
-        if self.data and frame.pixel_format in OPENCV_FORMATS:
-            frame_to_rgb24(frame, self.data)
-        frame.user_data = self.qimage
+        qimage = None
+        format = self.format
+        if self.data is not None:
+            if self.opencv is None:
+                data = self.data
+                qformat = FORMAT_MAP.get(format.pixel_format)
+            else:
+                data = self.opencv
+                opencv_frame_to_rgb24(frame, data)
+                qformat = QtGui.QImage.Format.Format_RGB888
+            qimage = QtGui.QImage(data, format.width, format.height, qformat)
+        frame.user_data = qimage
         return frame
 
 
@@ -135,12 +147,30 @@ class QCamera(QtCore.QObject):
     def __init__(self, device: Device):
         super().__init__()
         self.device = device
-        self.capture = VideoCapture(device, buffer_type=MemMap)
+        self.capture = VideoCapture(device, buffer_type=QimageMemory)
         self._stop = False
         self._stream = None
         self._state = "stopped"
-        dispatcher.register(self, "control")
         self.controls = {}
+
+    def __enter__(self):
+        self.device.open()
+        dispatcher.register(self, "control")
+        return self
+
+    def __exit__(self, *exc):
+        dispatcher.unregister(self)
+        self.device.close()
+
+    @classmethod
+    def from_id(cls, did: int, **kwargs):
+        device = Device.from_id(did, **kwargs)
+        return cls(device)
+
+    @classmethod
+    def from_path(cls, path, **kwargs):
+        device = Device(path, **kwargs)
+        return cls(device)
 
     def handle_frame(self):
         if self._stream is None:
@@ -210,7 +240,6 @@ class QCamera(QtCore.QObject):
 
 
 class QVideoStream(QtCore.QObject):
-    qimage = None
     imageChanged = QtCore.Signal(object)
 
     def __init__(self, camera: QCamera | None = None):
@@ -219,8 +248,8 @@ class QVideoStream(QtCore.QObject):
         self.set_camera(camera)
 
     def on_frame(self, frame):
-        self.qimage = frame.user_data or frame_to_qimage(frame)
-        self.imageChanged.emit(self.qimage)
+        qimage = frame.user_data or frame_to_qimage(frame)
+        self.imageChanged.emit(qimage)
 
     def set_camera(self, camera: QCamera | None = None):
         if self.camera:
@@ -610,7 +639,15 @@ OPENCV_FORMATS = {
 }
 
 
-def frame_to_rgb24(frame, into=None):
+def create_opencv_buffer(format):
+    import numpy
+
+    depth = 3
+    dtype = numpy.ubyte
+    return numpy.empty((format.height, format.width, depth), dtype=dtype)
+
+
+def opencv_frame_to_rgb24(frame, into=None):
     import cv2
 
     YUV_MAP = {
@@ -623,11 +660,12 @@ def frame_to_rgb24(frame, into=None):
     }
     data = frame.array
     fmt = frame.pixel_format
-    if fmt in {PixelFormat.NV12, PixelFormat.YUV420}:
+    if fmt in {PixelFormat.NV12, PixelFormat.NV21, PixelFormat.YUV420}:
         data.shape = frame.height * 3 // 2, frame.width, -1
     else:
         data.shape = frame.height, frame.width, -1
-    return cv2.cvtColor(data, YUV_MAP[fmt], dst=into)
+    result = cv2.cvtColor(data, YUV_MAP[fmt], dst=into)
+    return result
 
 
 def frame_to_qimage(frame: Frame) -> QtGui.QImage | None:
@@ -637,7 +675,7 @@ def frame_to_qimage(frame: Frame) -> QtGui.QImage | None:
         return QtGui.QImage.fromData(data, "JPG")
 
     if frame.pixel_format in OPENCV_FORMATS:
-        data = frame_to_rgb24(frame)
+        data = opencv_frame_to_rgb24(frame)
         fmt = QtGui.QImage.Format.Format_RGB888
     else:
         if (fmt := FORMAT_MAP.get(frame.pixel_format)) is None:
@@ -676,9 +714,6 @@ def draw_no_image_rect(painter, rect, line_width=4):
 def draw_no_image(painter, width, height, line_width=4):
     rect = QtCore.QRectF(0, 0, width, height)
     return draw_no_image_rect(painter, rect, line_width)
-
-
-def draw_frame(widget, frame): ...
 
 
 class BaseCameraControl:
@@ -892,8 +927,7 @@ def main():
     fmt = "%(threadName)-10s %(asctime)-15s %(levelname)-5s %(name)s: %(message)s"
     logging.basicConfig(level=args.log_level.upper(), format=fmt)
     app = QtWidgets.QApplication([])
-    with Device.from_id(args.device, blocking=False) as device:
-        camera = QCamera(device)
+    with QCamera.from_id(args.device, blocking=False) as camera:
         window = QtWidgets.QWidget()
         layout = QtWidgets.QHBoxLayout(window)
         video = QVideoWidget(camera)

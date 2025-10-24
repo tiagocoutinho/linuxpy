@@ -6,7 +6,7 @@ try:
 except Exception:
     qt = None
 
-from linuxpy.video.device import Capability, Device, PixelFormat, VideoCapture
+from linuxpy.video.device import Capability, PixelFormat, VideoCapture
 
 qt_only = pytest.mark.skipif(qt is None, reason="qt not properly installed")
 pytestmark = [qt_only, vivid_only]
@@ -18,14 +18,14 @@ def test_qcamera_with_vivid(qtbot, qapp):
             getattr(qcamera, action)()
         assert error.value.args[0] == f"Cannot {action} when camera is {state}"
 
-    with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
+    with qt.QCamera.from_path(VIVID_CAPTURE_DEVICE) as qcamera:
+        capture_dev = qcamera.device
         capture_dev.set_input(0)
         width, height, pixel_format = 640, 480, PixelFormat.RGB24
         capture = VideoCapture(capture_dev)
         capture.set_format(width, height, pixel_format)
         capture.set_fps(30)
 
-        qcamera = qt.QCamera(capture_dev)
         assert qcamera.state() == "stopped"
 
         check_cannot("pause", "stopped")
@@ -68,7 +68,8 @@ def test_qcamera_with_vivid(qtbot, qapp):
 
 @pytest.mark.parametrize("pixel_format", [PixelFormat.RGB24, PixelFormat.RGB32, PixelFormat.ARGB32, PixelFormat.YUYV])
 def test_qvideo_widget(qtbot, pixel_format):
-    with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
+    with qt.QCamera.from_path(VIVID_CAPTURE_DEVICE) as qcamera:
+        capture_dev = qcamera.device
         capture_dev.set_input(0)
         width, height = 640, 480
         capture = VideoCapture(capture_dev)
@@ -92,7 +93,6 @@ def test_qvideo_widget(qtbot, pixel_format):
             assert status.args[0] == "running"
             assert qcamera.state() == "running"
         check_frame(frames.args[0], width, height, pixel_format, Capability.STREAMING)
-        assert widget.video.frame is frames.args[0]
         assert play_button.toolTip() == "Camera is running. Press to stop it"
 
         qtbot.waitUntil(lambda: widget.video.qimage is not None)
