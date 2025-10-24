@@ -1,10 +1,10 @@
 from common import main
 from common_gl import View
-from common_rgfw import RGFWWindow, frames
+from common_glfw import GLFWWindow, frames
 
 
 def run(capture, fmt, width, height):
-    with RGFWWindow("Video RGFW GL", width, height) as win:
+    with GLFWWindow("Video GLFW GL", width, height) as win:
         with View() as view:
             for frame in frames(win, capture):
                 view.render(frame)
