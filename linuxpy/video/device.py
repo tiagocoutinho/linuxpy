@@ -30,8 +30,8 @@ from linuxpy.device import (
 )
 from linuxpy.io import IO
 from linuxpy.ioctl import ioctl
-from linuxpy.types import AsyncIterator, Buffer, Callable, Iterable, Iterator, Optional, PathLike, Self
-from linuxpy.util import astream, bit_indexes, make_find
+from linuxpy.types import AsyncIterator, Buffer, Callable, Iterable, Iterator, Optional, PathLike, Self, Union
+from linuxpy.util import astream, bit_indexes, make_find, to_fd
 
 from . import raw
 
@@ -68,7 +68,6 @@ BufferFlag = raw.BufferFlag
 InputType = raw.InputType
 PixelFormat = raw.PixelFormat
 MetaFormat = raw.MetaFormat
-FrameSizeType = raw.Frmsizetypes
 Memory = raw.Memory
 InputStatus = raw.InputStatus
 OutputType = raw.OutputType
@@ -97,7 +96,7 @@ ImageFormat = collections.namedtuple("ImageFormat", "type description flags pixe
 
 MetaFmt = collections.namedtuple("MetaFmt", "format max_buffer_size width height bytes_per_line")
 
-Format = collections.namedtuple("Format", "width height pixel_format size")
+Format = collections.namedtuple("Format", "width height pixel_format size bytes_per_line")
 
 CropCapability = collections.namedtuple("CropCapability", "type bounds defrect pixel_aspect")
 
@@ -112,6 +111,8 @@ Input = collections.namedtuple("InputType", "index name type audioset tuner std 
 Output = collections.namedtuple("OutputType", "index name type audioset modulator std capabilities")
 
 Standard = collections.namedtuple("Standard", "index id name frameperiod framelines")
+
+FrameSize = collections.namedtuple("FrameSize", "index pixel_format type info")
 
 
 CROP_BUFFER_TYPES = {
@@ -135,7 +136,7 @@ IMAGE_FORMAT_BUFFER_TYPES = {
 
 def mem_map(fd, length, offset):
     log_mmap.debug("%s, length=%d, offset=%d", fd, length, offset)
-    return mmap.mmap(fd, length, offset=offset)
+    return mmap.mmap(to_fd(fd), length, offset=offset)
 
 
 def flag_items(flag):
@@ -251,20 +252,24 @@ def iter_read_frame_intervals(fd, fmt, w, h):
         )
 
 
-def iter_read_discrete_frame_sizes(fd, pixel_format):
+def iter_read_frame_sizes(fd, pixel_format):
     size = raw.v4l2_frmsizeenum()
     size.index = 0
     size.pixel_format = pixel_format
     for val in iter_read(fd, IOC.ENUM_FRAMESIZES, size):
-        if size.type != FrameSizeType.DISCRETE:
-            break
-        yield val
+        type = FrameSizeType(val.type)
+        if type == FrameSizeType.DISCRETE:
+            info = val.m1.discrete
+        else:
+            info = val.m1.stepwise
+        yield FrameSize(val.index, PixelFormat(val.pixel_format), FrameSizeType(val.type), copy.copy(info))
 
 
 def iter_read_pixel_formats_frame_intervals(fd, pixel_formats):
     for pixel_format in pixel_formats:
-        for size in iter_read_discrete_frame_sizes(fd, pixel_format):
-            yield from iter_read_frame_intervals(fd, pixel_format, size.discrete.width, size.discrete.height)
+        for size in iter_read_frame_sizes(fd, pixel_format):
+            if size.type == FrameSizeType.DISCRETE:
+                yield from iter_read_frame_intervals(fd, pixel_format, size.info.width, size.info.height)
 
 
 def read_capabilities(fd):
@@ -475,7 +480,7 @@ def get_raw_format(fd, buffer_type) -> raw.v4l2_format:
     return fmt
 
 
-def get_format(fd, buffer_type) -> Format:
+def get_format(fd, buffer_type) -> Union[Format, MetaFmt]:
     f = get_raw_format(fd, buffer_type)
     if buffer_type in {BufferType.META_CAPTURE, BufferType.META_OUTPUT}:
         return MetaFmt(
@@ -490,6 +495,7 @@ def get_format(fd, buffer_type) -> Format:
         height=f.fmt.pix.height,
         pixel_format=PixelFormat(f.fmt.pix.pixelformat),
         size=f.fmt.pix.sizeimage,
+        bytes_per_line=f.fmt.pix.bytesperline,
     )
 
 
@@ -671,9 +677,9 @@ def get_controls_values(fd, controls: list[raw.v4l2_query_ext_ctrl], which=raw.C
     ctrls.count = n
     ctrls.request_fd = request_fd
     ctrls.controls = (n * raw.v4l2_ext_control)()
-    values = [_prepare_read_control_value(*args) for args in zip(controls, ctrls.controls)]
+    values = [_prepare_read_control_value(*args) for args in zip(controls, ctrls.controls, strict=False)]
     ioctl(fd, IOC.G_EXT_CTRLS, ctrls)
-    return [_get_control_value(*args) for args in zip(controls, ctrls.controls, values)]
+    return [_get_control_value(*args) for args in zip(controls, ctrls.controls, values, strict=False)]
 
 
 def set_control(fd, id, value):
@@ -714,7 +720,7 @@ def set_controls_values(
     ctrls.count = n
     ctrls.request_fd = request_fd
     ctrls.controls = (n * raw.v4l2_ext_control)()
-    for (control, value), raw_control in zip(controls_values, ctrls.controls):
+    for (control, value), raw_control in zip(controls_values, ctrls.controls, strict=False):
         _prepare_write_controls_values(control, value, raw_control)
     ioctl(fd, IOC.S_EXT_CTRLS, ctrls)
 
@@ -882,10 +888,10 @@ def enqueue_buffers(fd, buffer_type: BufferType, memory: Memory, count: int) -> 
 class Device(BaseDevice):
     PREFIX = "/dev/video"
 
-    def __init__(self, name_or_file, read_write=True, io=IO):
+    def __init__(self, name_or_file, read_write=True, io=IO, blocking=False):
         self.info = None
         self.controls = None
-        super().__init__(name_or_file, read_write=read_write, io=io)
+        super().__init__(name_or_file, read_write=read_write, io=io, blocking=blocking)
 
     def __iter__(self):
         with VideoCapture(self) as stream:
@@ -901,25 +907,25 @@ class Device(BaseDevice):
         self.controls = Controls.from_device(self)
 
     def query_buffer(self, buffer_type, memory, index):
-        return query_buffer(self.fileno(), buffer_type, memory, index)
+        return query_buffer(self, buffer_type, memory, index)
 
     def enqueue_buffer(self, buffer_type: BufferType, memory: Memory, size: int, index: int) -> raw.v4l2_buffer:
-        return enqueue_buffer(self.fileno(), buffer_type, memory, size, index)
+        return enqueue_buffer(self, buffer_type, memory, size, index)
 
     def dequeue_buffer(self, buffer_type: BufferType, memory: Memory) -> raw.v4l2_buffer:
-        return dequeue_buffer(self.fileno(), buffer_type, memory)
+        return dequeue_buffer(self, buffer_type, memory)
 
     def request_buffers(self, buffer_type, memory, size):
-        return request_buffers(self.fileno(), buffer_type, memory, size)
+        return request_buffers(self, buffer_type, memory, size)
 
     def create_buffers(self, buffer_type: BufferType, memory: Memory, count: int) -> list[raw.v4l2_buffer]:
-        return request_and_query_buffers(self.fileno(), buffer_type, memory, count)
+        return request_and_query_buffers(self, buffer_type, memory, count)
 
     def free_buffers(self, buffer_type, memory):
-        return free_buffers(self.fileno(), buffer_type, memory)
+        return free_buffers(self, buffer_type, memory)
 
     def enqueue_buffers(self, buffer_type: BufferType, memory: Memory, count: int) -> list[raw.v4l2_buffer]:
-        return enqueue_buffers(self.fileno(), buffer_type, memory, count)
+        return enqueue_buffers(self, buffer_type, memory, count)
 
     def set_format(
         self,
@@ -928,38 +934,34 @@ class Device(BaseDevice):
         height: int,
         pixel_format: str = "MJPG",
     ):
-        return set_format(self.fileno(), buffer_type, width, height, pixel_format=pixel_format)
+        return set_format(self, buffer_type, width, height, pixel_format=pixel_format)
 
     def get_format(self, buffer_type) -> Format:
-        return get_format(self.fileno(), buffer_type)
+        return get_format(self, buffer_type)
 
     def set_fps(self, buffer_type, fps):
-        return set_fps(self.fileno(), buffer_type, fps)
+        return set_fps(self, buffer_type, fps)
 
     def get_fps(self, buffer_type):
-        return get_fps(self.fileno(), buffer_type)
+        return get_fps(self, buffer_type)
 
     def set_selection(self, buffer_type, target, rectangle):
-        return set_selection(self.fileno(), buffer_type, target, rectangle)
+        return set_selection(self, buffer_type, target, rectangle)
 
     def get_selection(self, buffer_type, target):
-        return get_selection(self.fileno(), buffer_type, target)
+        return get_selection(self, buffer_type, target)
 
     def get_priority(self) -> Priority:
-        return get_priority(self.fileno())
+        return get_priority(self)
 
     def set_priority(self, priority: Priority):
-        set_priority(self.fileno(), priority)
+        set_priority(self, priority)
 
     def stream_on(self, buffer_type):
-        self.log.info("Starting %r stream...", buffer_type.name)
-        stream_on(self.fileno(), buffer_type)
-        self.log.info("%r stream ON", buffer_type.name)
+        stream_on(self, buffer_type)
 
     def stream_off(self, buffer_type):
-        self.log.info("Stoping %r stream...", buffer_type.name)
-        stream_off(self.fileno(), buffer_type)
-        self.log.info("%r stream OFF", buffer_type.name)
+        stream_off(self, buffer_type)
 
     def write(self, data: bytes) -> None:
         self._fobj.write(data)
@@ -970,43 +972,49 @@ class Device(BaseDevice):
         id: int = 0,
         flags: EventSubscriptionFlag = 0,
     ):
-        return subscribe_event(self.fileno(), event_type, id, flags)
+        return subscribe_event(self, event_type, id, flags)
 
     def unsubscribe_event(self, event_type: EventType = EventType.ALL, id: int = 0):
-        return unsubscribe_event(self.fileno(), event_type, id)
+        return unsubscribe_event(self, event_type, id)
 
     def deque_event(self):
-        return deque_event(self.fileno())
+        return deque_event(self)
 
     def set_edid(self, edid):
-        set_edid(self.fileno(), edid)
+        set_edid(self, edid)
 
     def clear_edid(self):
-        clear_edid(self.fileno())
+        clear_edid(self)
 
     def get_edid(self):
-        return get_edid(self.fileno())
+        return get_edid(self)
 
     def get_input(self):
-        return get_input(self.fileno())
+        return get_input(self)
 
     def set_input(self, index: int):
-        return set_input(self.fileno(), index)
+        return set_input(self, index)
 
     def get_output(self):
-        return get_output(self.fileno())
+        return get_output(self)
 
     def set_output(self, index: int):
-        return set_output(self.fileno(), index)
+        return set_output(self, index)
 
     def get_std(self) -> StandardID:
-        return get_std(self.fileno())
+        return get_std(self)
 
     def set_std(self, std):
-        return set_std(self.fileno(), std)
+        return set_std(self, std)
 
     def query_std(self) -> StandardID:
-        return query_std(self.fileno())
+        return query_std(self)
+
+    def clone(self) -> Self:
+        fd = os.dup(self.fileno())
+        fobj = self.io.os.fdopen(fd, "rb+", buffering=0)
+        fobj.name = self._fobj.name
+        return type(self)(fobj)
 
 
 class SubDevice(BaseDevice):
@@ -1030,8 +1038,12 @@ class Controls(dict):
 
     def _init_if_needed(self):
         if not self._initialized:
-            self._load()
+            self.refresh()
             self.__dict__["_initialized"] = True
+
+    def __repr__(self):
+        self._init_if_needed()
+        return super().__repr__()
 
     def __getitem__(self, name):
         self._init_if_needed()
@@ -1041,7 +1053,7 @@ class Controls(dict):
         self._init_if_needed()
         return super().__len__()
 
-    def _load(self):
+    def refresh(self):
         ctrl_type_map = {
             ControlType.BOOLEAN: BooleanControl,
             ControlType.INTEGER: IntegerControl,
@@ -1092,6 +1104,10 @@ class Controls(dict):
                 return v
         raise KeyError(key)
 
+    def items(self):
+        self._init_if_needed()
+        return super().items()
+
     def values(self):
         self._init_if_needed()
         return super().values()
@@ -1128,7 +1144,7 @@ class Controls(dict):
 
 
 class BaseControl:
-    def __init__(self, device, info, control_class):
+    def __init__(self, device, info, control_class, klass=None):
         self.device = device
         self._info = info
         self.id = self._info.id
@@ -1137,6 +1153,9 @@ class BaseControl:
         self.control_class = control_class
         self.type = ControlType(self._info.type)
         self.flags = ControlFlag(self._info.flags)
+        self.minimum = self._info.minimum
+        self.maximum = self._info.maximum
+        self.step = self._info.step
 
         try:
             self.standard = ControlID(self.id)
@@ -1293,9 +1312,6 @@ class BaseNumericControl(BaseMonoControl):
 
     def __init__(self, device, info, control_class, clipping=True):
         super().__init__(device, info, control_class)
-        self.minimum = self._info.minimum
-        self.maximum = self._info.maximum
-        self.step = self._info.step
         self.clipping = clipping
 
         if self.minimum < self.lower_bound:
@@ -1438,6 +1454,9 @@ class CompoundControl(BaseControl):
     def value(self, value):
         set_controls_values(self.device, ((self._info, value),))
 
+    def set_to_default(self):
+        self.value = self.default
+
 
 class DeviceHelper:
     def __init__(self, device: Device):
@@ -1533,8 +1552,23 @@ buffers = {buffers}
             for image_format in iter_read_formats(self.device, buffer_type)
         ]
 
-    @property
+    def buffer_formats(self, buffer_type) -> list[ImageFormat]:
+        return list(iter_read_formats(self.device, buffer_type))
+
+    def format_frame_sizes(self, pixel_format) -> list[FrameSize]:
+        return list(iter_read_frame_sizes(self.device, pixel_format))
+
     def frame_sizes(self):
+        results = []
+        for fmt in self.formats:
+            results.extend(self.format_frame_sizes(fmt.pixel_format))
+        return results
+
+    def fps_intervals(self, pixel_format, width, height) -> list[FrameType]:
+        return list(iter_read_frame_intervals(self.device, pixel_format, width, height))
+
+    @property
+    def frame_types(self):
         pixel_formats = {fmt.pixel_format for fmt in self.formats}
         return list(iter_read_pixel_formats_frame_intervals(self.device, pixel_formats))
 
@@ -1632,12 +1666,13 @@ class BufferManager(DeviceHelper):
 class Frame:
     """The resulting object from an acquisition."""
 
-    __slots__ = ["format", "buff", "data"]
+    __slots__ = ["format", "buff", "data", "user_data"]
 
     def __init__(self, data: bytes, buff: raw.v4l2_buffer, format: Format):
         self.format = format
         self.buff = buff
         self.data = data
+        self.user_data = None
 
     def __bytes__(self):
         return self.data
@@ -1653,6 +1688,17 @@ class Frame:
             f"<{type(self).__name__} width={self.width}, height={self.height}, "
             f"format={self.pixel_format.name}, frame_nb={self.frame_nb}, timestamp={self.timestamp}>"
         )
+
+    def __format__(self, spec):
+        if spec in {"", "s"}:
+            return str(self)
+        elif spec == "r":
+            return repr(self)
+        elif spec == "f":
+            return f"{self.width}x{self.height} {self.pixel_format.name}"
+        elif spec == "l":
+            return f"#{self.frame_nb} {self.timestamp} {self:f}"
+        return str(getattr(self, spec))
 
     @property
     def width(self):
@@ -1717,10 +1763,10 @@ class Frame:
 
 
 class VideoCapture(BufferManager):
-    def __init__(self, device: Device, size: int = 2, source: Capability = None):
+    def __init__(self, device: Device, size: int = 2, buffer_type=None):
         super().__init__(device, BufferType.VIDEO_CAPTURE, size)
         self.buffer = None
-        self.source = source
+        self._buffer_type = buffer_type
 
     def __enter__(self):
         self.open()
@@ -1736,32 +1782,45 @@ class VideoCapture(BufferManager):
         async for frame in self.buffer:
             yield frame
 
+    @property
+    def buffer_type(self):
+        capabilities = self.device.info.device_capabilities
+        if Capability.VIDEO_CAPTURE not in capabilities:
+            raise V4L2Error("Device doesn't have VIDEO_CAPTURE capability")
+        if self._buffer_type is None:
+            if Capability.STREAMING in capabilities:
+                return MemoryMap
+            elif Capability.READWRITE in capabilities:
+                return ReadSource
+            return None
+        return self._buffer_type
+
+    def create_buffer(self):
+        buffer_type = self.buffer_type
+        if buffer_type is None:
+            raise OSError("Device needs to support STREAMING or READWRITE capability")
+        return buffer_type(self)
+
+    def arm(self):
+        self.device.log.info("Preparing for video capture...")
+        self.buffer = self.create_buffer()
+        self.buffer.open()
+
+    def disarm(self):
+        self.buffer.close()
+        self.buffer = None
+
     def open(self):
         if self.buffer is None:
-            self.device.log.info("Preparing for video capture...")
-            capabilities = self.device.info.device_capabilities
-            if Capability.VIDEO_CAPTURE not in capabilities:
-                raise V4L2Error("device lacks VIDEO_CAPTURE capability")
-            source = capabilities if self.source is None else self.source
-            if Capability.STREAMING in source:
-                self.device.log.info("Video capture using memory map")
-                self.buffer = MemoryMap(self)
-                # self.buffer = UserPtr(self)
-            elif Capability.READWRITE in source:
-                self.device.log.info("Video capture using read")
-                self.buffer = ReadSource(self)
-            else:
-                raise OSError("Device needs to support STREAMING or READWRITE capability")
-            self.buffer.open()
-            self.stream_on()
-            self.device.log.info("Video capture started!")
+            self.arm()
+        self.stream_on()
+        self.device.log.info("Video capture started!")
 
     def close(self):
         if self.buffer:
             self.device.log.info("Closing video capture...")
             self.stream_off()
-            self.buffer.close()
-            self.buffer = None
+            self.disarm()
             self.device.log.info("Video capture closed")
 
 
@@ -1793,7 +1852,7 @@ class ReadSource(ReentrantOpen):
         return self.buffer_manager.device
 
     def raw_grab(self) -> tuple[bytes, raw.v4l2_buffer]:
-        data = os.read(self.device.fileno(), 2**31 - 1)
+        data = os.read(self.device, 2**31 - 1)
         ns = time.time_ns()
         buff = raw.v4l2_buffer()
         buff.bytesused = len(data)
@@ -1807,7 +1866,7 @@ class ReadSource(ReentrantOpen):
     def wait_read(self) -> Frame:
         device = self.device
         if device.io.select is not None:
-            device.io.select((device,), (), ())
+            device.io.select.select((device,), (), ())
         return self.raw_read()
 
     def read(self) -> Frame:
@@ -1836,7 +1895,7 @@ class MemorySource(ReentrantOpen):
             yield from self.frame_reader
 
     def __aiter__(self) -> AsyncIterator[Frame]:
-        return astream(self.device.fileno(), self.raw_read)
+        return astream(self.device, self.raw_read)
 
     @property
     def device(self) -> Device:
@@ -1847,8 +1906,10 @@ class MemorySource(ReentrantOpen):
 
     def release_buffers(self):
         self.device.log.info("Freeing buffers...")
-        self.buffer_manager.free_buffers(self.source)
+        for buf in self.buffers:
+            buf.close()
         self.buffers = None
+        self.buffer_manager.free_buffers(self.source)
         self.format = None
         self.device.log.info("Buffers freed")
 
@@ -1861,16 +1922,20 @@ class MemorySource(ReentrantOpen):
         if self.buffers:
             self.release_buffers()
 
-    def grab_from_buffer(self, buff: raw.v4l2_buffer):
-        # return memoryview(self.buffers[buff.index])[: buff.bytesused], buff
-        return self.buffers[buff.index][: buff.bytesused], buff
+    def grab_from_buffer(self, buff: raw.v4l2_buffer, into=None):
+        view = self.buffers[buff.index]
+        size = buff.bytesused
+        if into is None:
+            return view[:size], buff
+        into[:size] = memoryview(view)[:size]
+        return memoryview(into)[:size], buff
 
-    def raw_grab(self) -> tuple[Buffer, raw.v4l2_buffer]:
+    def raw_grab(self, into=None) -> tuple[Buffer, raw.v4l2_buffer]:
         with self.queue as buff:
-            return self.grab_from_buffer(buff)
+            return self.grab_from_buffer(buff, into)
 
-    def raw_read(self) -> Frame:
-        data, buff = self.raw_grab()
+    def raw_read(self, into=None) -> Frame:
+        data, buff = self.raw_grab(into)
         return Frame(data, buff, self.format)
 
     def wait_read(self) -> Frame:
@@ -1900,7 +1965,7 @@ class MemorySource(ReentrantOpen):
     def wait_write(self, data: Buffer) -> raw.v4l2_buffer:
         device = self.device
         if device.io.select is not None:
-            _, r, _ = device.io.select((), (device,), ())
+            _, r, _ = device.io.select.select((), (device,), ())
         return self.raw_write(data)
 
     def write(self, data: Buffer) -> raw.v4l2_buffer:
@@ -1917,9 +1982,10 @@ class MemorySource(ReentrantOpen):
 class UserPtr(MemorySource):
     def __init__(self, buffer_manager: BufferManager):
         super().__init__(buffer_manager, Memory.USERPTR)
+        self.log = self.device.log.getChild("MemoryMap")
 
     def prepare_buffers(self):
-        self.device.log.info("Reserving buffers...")
+        self.log.info("Reserving buffers...")
         self.buffer_manager.create_buffers(self.source)
         size = self.format.size
         self.buffers = []
@@ -1933,25 +1999,27 @@ class UserPtr(MemorySource):
             buff.m.userptr = ctypes.addressof(data)
             buff.length = size
             self.queue.enqueue(buff)
-        self.device.log.info("Buffers reserved")
+        self.log.info("Buffers reserved")
 
 
 class MemoryMap(MemorySource):
     def __init__(self, buffer_manager: BufferManager):
         super().__init__(buffer_manager, Memory.MMAP)
+        self.log = self.device.log.getChild("MemoryMap")
 
     def prepare_buffers(self):
-        self.device.log.info("Reserving buffers...")
+        self.log.info("Reserving buffers...")
         buffers = self.buffer_manager.create_buffers(self.source)
-        fd = self.device.fileno()
+        fd = self.device
         self.buffers = [mmap_from_buffer(fd, buff) for buff in buffers]
         self.buffer_manager.enqueue_buffers(Memory.MMAP)
         self.format = self.buffer_manager.get_format()
-        self.device.log.info("Buffers reserved")
+        self.log.info("Buffers reserved")
 
 
-class EventReader:
+class EventReader(ReentrantOpen):
     def __init__(self, device: Device, max_queue_size=100):
+        super().__init__()
         self.device = device
         self._loop = None
         self._selector = None
@@ -1964,13 +2032,13 @@ class EventReader:
         self._buffer = asyncio.Queue(maxsize=self._max_queue_size)
         self._selector = select.epoll()
         self._loop = asyncio.get_event_loop()
-        self._loop.add_reader(self._selector.fileno(), self._on_event)
-        self._selector.register(self.device.fileno(), select.EPOLLPRI)
+        self._loop.add_reader(self._selector, self._on_event)
+        self._selector.register(self.device, select.EPOLLPRI)
         return self
 
     async def __aexit__(self, exc_type, exc_value, traceback):
-        self._selector.unregister(self.device.fileno())
-        self._loop.remove_reader(self._selector.fileno())
+        self._selector.unregister(self.device)
+        self._loop.remove_reader(self._selector)
         self._selector.close()
         self._selector = None
         self._loop = None
@@ -1981,14 +2049,15 @@ class EventReader:
             yield await self.aread()
 
     def __iter__(self):
-        while True:
-            yield self.read()
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, tb):
-        pass
+        device = self.device
+        with self:
+            if device.is_blocking:
+                while True:
+                    yield device.deque_event()
+            else:
+                while True:
+                    for _ in self._selector.poll():
+                        yield device.deque_event()
 
     def _on_event(self):
         task = self._loop.create_future()
@@ -2005,12 +2074,27 @@ class EventReader:
             buffer.popleft()
         buffer.put_nowait(task)
 
-    def read(self, timeout=None):
+    def open(self):
         if not self.device.is_blocking:
-            _, _, exc = self.device.io.select((), (), (self.device,), timeout)
+            self._selector = select.epoll()
+            self._selector.register(self.device, select.EPOLLPRI)
+
+    def close(self):
+        if self._selector:
+            self._selector.close()
+            self._selector = None
+
+    def fileno(self) -> int:
+        """Return the underlying file descriptor (an integer) of the stream if it exists"""
+        return self._selector.fileno()
+
+    def read(self, timeout=None):
+        device = self.device
+        if not device.is_blocking:
+            _, _, exc = device.io.select.select((), (), (self.device,), timeout)
             if not exc:
                 return
-        return self.device.deque_event()
+        return device.deque_event()
 
     async def aread(self):
         """Wait for next event or return last event in queue"""
@@ -2031,11 +2115,11 @@ class FrameReader:
     async def __aenter__(self) -> Self:
         if self.device.is_blocking:
             raise V4L2Error("Cannot use async frame reader on blocking device")
-        self._device_fd = self.device.fileno()
+        self._device_fd = self.device
         self._buffer = asyncio.Queue(maxsize=self._max_queue_size)
         self._selector = select.epoll()
         self._loop = asyncio.get_event_loop()
-        self._loop.add_reader(self._selector.fileno(), self._on_event)
+        self._loop.add_reader(self._selector, self._on_event)
         self._selector.register(self._device_fd, select.POLLIN)
         return self
 
@@ -2043,7 +2127,7 @@ class FrameReader:
         with contextlib.suppress(OSError):
             # device may have been closed by now
             self._selector.unregister(self._device_fd)
-        self._loop.remove_reader(self._selector.fileno())
+        self._loop.remove_reader(self._selector)
         self._selector.close()
         self._selector = None
         self._loop = None
@@ -2076,7 +2160,7 @@ class FrameReader:
 
     def read(self, timeout: Optional[float] = None) -> Frame:
         if not self.device.is_blocking:
-            read, _, _ = self.device.io.select((self.device,), (), (), timeout)
+            read, _, _ = self.device.io.select.select((self.device,), (), (), timeout)
             if not read:
                 return
         return self.raw_read()
@@ -2094,7 +2178,7 @@ class BufferQueue:
         self.raw_buffer = None
 
     def enqueue(self, buff: raw.v4l2_buffer):
-        enqueue_buffer_raw(self.buffer_manager.device.fileno(), buff)
+        enqueue_buffer_raw(self.buffer_manager.device, buff)
 
     def dequeue(self):
         return self.buffer_manager.dequeue_buffer(self.memory)
@@ -2166,7 +2250,7 @@ class VideoOutput(BufferManager):
         if self.buffer is not None:
             return
         self.device.log.info("Preparing for video output...")
-        capabilities = self.device.info.capabilities
+        capabilities = self.device.info.device_capabilities
         # Don't check for output capability. Some drivers (ex: v4l2loopback) don't
         # report being output capable so that apps like zoom recognize them
         # if Capability.VIDEO_OUTPUT not in capabilities:
@@ -2217,7 +2301,7 @@ def iter_video_capture_files(path: PathLike = "/dev") -> Iterable[Path]:
 
     def filt(filename):
         with IO.open(filename) as fobj:
-            caps = read_capabilities(fobj.fileno())
+            caps = read_capabilities(fobj)
             return Capability.VIDEO_CAPTURE in Capability(caps.device_caps)
 
     return filter(filt, iter_video_files(path))
@@ -2237,7 +2321,7 @@ def iter_video_output_files(path: PathLike = "/dev") -> Iterable[Path]:
 
     def filt(filename):
         with IO.open(filename) as fobj:
-            caps = read_capabilities(fobj.fileno())
+            caps = read_capabilities(fobj)
             return Capability.VIDEO_OUTPUT in Capability(caps.device_caps)
 
     return filter(filt, iter_video_files(path))

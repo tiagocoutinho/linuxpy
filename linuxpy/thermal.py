@@ -20,7 +20,6 @@ with find(type="x86_pkg_temp") as tz:
 """
 
 import pathlib
-import time
 
 from linuxpy.device import device_number
 from linuxpy.sysfs import THERMAL_PATH, Attr, Device, Int, Mode, Str
@@ -155,18 +154,3 @@ def find(
     Default is to return an iterator over all input devices found on the system.
     """
     return _find(find_all, custom_match, **kwargs)
-
-
-def main():
-    def acq():
-        for dev in sorted(iter_thermal_zone_devices(), key=lambda dev: dev.type):
-            yield dev, dev.temperature
-
-    while True:
-        read = acq()
-        print(" | ".join(f"{dev.type} = {temp / 1000:6.2f}" for dev, temp in read), end="\r")
-        time.sleep(0.1)
-
-
-if __name__ == "__main__":
-    main()

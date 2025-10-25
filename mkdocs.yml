@@ -93,6 +93,7 @@ nav:
     - api/input.md
     - api/led.md
     - api/midi.md
+    - api/proc.md
     - api/thermal.md
     - api/video.md
     - Internal:

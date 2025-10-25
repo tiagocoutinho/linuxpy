@@ -2,8 +2,6 @@ import inspect
 import math
 from unittest import mock
 
-from ward import test
-
 from linuxpy import proc
 
 CPU_TEMPLATE = """\
@@ -334,8 +332,7 @@ crypto_simd 16384 1 aesni_intel, Live 0x0000000000000000
 cryptd 24576 28218 ghash_clmulni_intel,crypto_simd, Live 0x0000000000000000"""
 
 
-@test("iter_cpu_info")
-def _():
+def test_iter_cpu_info():
     assert inspect.isgeneratorfunction(proc.iter_cpu_info)
     assert inspect.isgenerator(proc.iter_cpu_info())
 
@@ -349,8 +346,7 @@ def _():
         assert len(result[0]["bugs"]) == 11
 
 
-@test("iter_mem_info")
-def _():
+def test_iter_mem_info():
     assert inspect.isgeneratorfunction(proc.iter_mem_info)
     assert inspect.isgenerator(proc.iter_mem_info())
 
@@ -360,8 +356,7 @@ def _():
         assert result["HugePages_Rsvd"] == 0
 
 
-@test("iter_modules")
-def _():
+def test_iter_modules():
     assert inspect.isgeneratorfunction(proc.iter_modules)
     assert inspect.isgenerator(proc.iter_modules())
 

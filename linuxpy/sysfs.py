@@ -87,10 +87,7 @@ class Device:
 
     @classmethod
     def from_syspath(cls, syspath):
-        syspath = pathlib.Path(syspath)
-        if not syspath.exists():
-            raise ValueError("Unknown syspath")
-        syspath = syspath.resolve()
+        syspath = pathlib.Path(syspath).resolve()
         return cls(syspath)
 
     @property

@@ -102,6 +102,7 @@ Reserves line 5 with default configuration and line 6 as output.
 ### dictionary
 
 With keys:
+
 * *name*: the reservation name
 * *lines*: the lines to be reserved. Can be
     * a line number
@@ -167,8 +168,8 @@ Here are the line configuration options with their restrictions and defaults:
     * possible values: `input`, `output`
     * default: **input**
 * *active*:
-    * possible values: `active`, `low`
-    * default: **active**
+    * possible values: `high`, `low`
+    * default: **high**
 * *bias*:
     * possbile values: `pull-up`, `pull-down`, `none`
     * default: **none**
@@ -294,6 +295,8 @@ event = next(iter(lines))
 
 ```
 
+### asyncio
+
 Async API is also supported:
 
 ```python
@@ -305,6 +308,65 @@ async def main():
         with device.request([1, 4]) as lines:
             async for event in lines:
                 print(f"{event.type.name} #{event.sequence} detected for line {event.line}")
+
+
+asyncio.run(main())
+```
+
+## Configuration events
+
+Linuxpy GPIO API supports watching for line configuration events:
+
+```python
+
+with find() as gpio:
+    for event in gpio.info_stream([5, 10]):
+        print(event)
+
+```
+
+The example above will listen for configuration change, line request and line
+released events on lines 5 and 10.
+
+If you need fine control you can manually register for line watch and then
+listen for events. So the above example can also be written as:
+
+```python
+
+with find() as gpio:
+    with gpio.watching([5, 10]):
+        for event in gpio:
+            print(event)
+```
+
+Or even:
+
+```python
+
+with find() as gpio:
+    gpio.watch_lines([5, 10])
+    try:
+        for event in gpio:
+            print(event)
+    finally:
+        gpio.unwatch_lines([5, 10])
+
+```
+
+### asyncio
+
+Async API is also supported on configuration events:
+
+```python
+import asyncio
+import contextlib
+
+
+async def main():
+    with find() as gpio:
+        async with contextlib.aclosing(gpio.async_info_stream([5, 10])) as stream:
+            async for event in stream:
+                print(event)
 
 
 asyncio.run(main())

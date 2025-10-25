@@ -9,14 +9,14 @@ import os
 import socket
 import threading
 import time
-from contextlib import ExitStack, contextmanager
+from contextlib import ExitStack, aclosing, contextmanager
 from inspect import isgenerator
 from itertools import count
 from math import ceil, isclose
 from pathlib import Path
 from unittest import mock
 
-from ward import each, fixture, raises, test
+import pytest
 
 from linuxpy.device import device_number
 from linuxpy.gpio import device, raw
@@ -39,7 +39,7 @@ from linuxpy.gpio.device import (
     iter_gpio_files,
 )
 from linuxpy.gpio.sim import find_gpio_sim_file
-from linuxpy.util import aclosing, bit_indexes
+from linuxpy.util import bit_indexes
 
 
 def FD():
@@ -175,14 +175,13 @@ def gpio_files(paths=("/dev/gpiochip99")):
                 yield paths
 
 
-@fixture
-def emulate_gpiochip():
+@pytest.fixture
+def chip():
     with Hardware() as hardware:
         yield hardware
 
 
-@test("encode line config")
-def _():
+def test_encode_line_config():
     line, flags, debounce = encode_line_config({"line": 5})
     assert line == 5
     assert flags == LineFlag.INPUT
@@ -198,32 +197,30 @@ def _():
     assert debounce is None
 
 
-@test("check encode line config errors")
-def _():
-    with raises(KeyError):
+def test_check_encode_line_config_errors():
+    with pytest.raises(KeyError):
         check_line_config({})
 
-    with raises(ValueError):
+    with pytest.raises(ValueError):
         check_line_config({"line": "hello"})
 
-    with raises(ValueError):
+    with pytest.raises(ValueError):
         check_line_config({"line": -5})
 
-    with raises(ValueError):
+    with pytest.raises(ValueError):
         check_line_config({"line": 1, "direction": "output", "edge": "rising"})
 
-    with raises(ValueError):
+    with pytest.raises(ValueError):
         check_line_config({"line": 1, "direction": "input", "drive": "drain"})
 
-    with raises(ValueError):
+    with pytest.raises(ValueError):
         check_line_config({"line": 1, "direction": "input", "drive": "drain"})
 
-    with raises(ValueError):
+    with pytest.raises(ValueError):
         check_line_config({"line": 1, "direction": "input", "debounce": 0.001})
 
 
-@test("encode config")
-def _():
+def test_encode_config():
     result = encode_config([CLineIn(5)])
     assert result.num_attrs == 0
     assert LineFlag(result.flags) == LineFlag.INPUT
@@ -273,16 +270,14 @@ def _():
     assert LineFlag(result.attrs[3].attr.debounce_period_us) == 10_000
 
 
-@test("parse config lines")
-def _():
+def test_parse_config_lines():
     assert parse_config_lines(12) == [{"line": 12}]
     assert parse_config_lines((10, 4)) == [{"line": 10}, {"line": 4}]
     assert parse_config_lines([{"line": 10}, {"line": 4}]) == [{"line": 10}, {"line": 4}]
     assert parse_config_lines({10: {}, 4: {}}) == [{"line": 10}, {"line": 4}]
 
 
-@test("build config line")
-def _():
+def test_build_config_line():
     fields = (
         ("direction", "output"),
         ("bias", "pull-up"),
@@ -296,11 +291,10 @@ def _():
         keys.append(key)
         values.append(value)
         assert CLine(55, **{key: value}) == {key: value, "line": 55}
-        assert CLine(56, *values) == dict(zip(keys, values), line=56)
+        assert CLine(56, *values) == dict(zip(keys, values, strict=True), line=56)
 
 
-@test("parse config")
-def _():
+def test_parse_config():
     assert parse_config(None, 16) == {"name": "linuxpy", "lines": [{"line": i} for i in range(16)]}
     assert parse_config(34, 16) == {"name": "linuxpy", "lines": [{"line": 34}]}
     assert parse_config([13, 4], 16) == {"name": "linuxpy", "lines": [{"line": 13}, {"line": 4}]}
@@ -311,30 +305,24 @@ def _():
     }
 
 
-@test("expand list")
-def _():
+def test_expand_list():
     assert [5] == expand_from_list(5, None, None)
     assert [5, 10] == expand_from_list((5, 10), None, None)
     assert list(range(100)) == expand_from_list(slice(100), 0, 100)
     assert list(range(10)) == expand_from_list(slice(10), 0, 100)
 
 
-@test("device number")
-def _(
-    filename=each("/dev/gpiochip0", "/dev/gpiochip1", "/dev/gpiochip99"),
-    expected=each(0, 1, 99),
-):
+@pytest.mark.parametrize("filename, expected", [("/dev/gpiochip0", 0), ("/dev/gpiochip1", 1), ("/dev/gpiochip99", 99)])
+def test_device_number(filename, expected):
     assert device_number(filename) == expected
 
 
-@test("gpio files")
-def _():
+def test_gpio_files():
     with gpio_files(["/dev/gpiochip33", "/dev/gpiochip55"]) as expected_files:
         assert list(iter_gpio_files()) == expected_files
 
 
-@test("device list")
-def _():
+def test_device_list():
     assert isgenerator(iter_devices())
 
     with gpio_files(["/dev/gpiochip33", "/dev/gpiochip55"]) as expected_files:
@@ -345,8 +333,7 @@ def _():
         assert {dev.filename for dev in devices} == {Path(filename) for filename in expected_files}
 
 
-@test("device creation")
-def _():
+def test_device_creation():
     # This should not raise an error until open() is called
     device = Device("/unknown")
     assert str(device.filename) == "/unknown"
@@ -354,12 +341,11 @@ def _():
     assert device.closed
 
     for name in (1, 1.1, True, [], {}, (), set()):
-        with raises(TypeError):
+        with pytest.raises(TypeError):
             Device(name)
 
 
-@test("device creation from id")
-def _():
+def test_device_creation_from_id():
     # This should not raise an error until open() is called
     device = Device.from_id(33)
     assert str(device.filename) == "/dev/gpiochip33"
@@ -367,8 +353,7 @@ def _():
     assert device.closed
 
 
-@test("device open")
-def _(chip=emulate_gpiochip):
+def test_device_open(chip):
     device = Device(chip.filename)
     assert chip.fobj is None
     assert device.closed
@@ -377,11 +362,10 @@ def _(chip=emulate_gpiochip):
     assert device.fileno() == chip.fd
 
 
-@test("get info")
-def _(chip=emulate_gpiochip):
+def test_get_info(chip):
     device = Device(chip.filename)
 
-    with raises(AttributeError):
+    with pytest.raises(AttributeError):
         device.get_info()
 
     with device:
@@ -397,8 +381,7 @@ def _(chip=emulate_gpiochip):
     assert isclose(l1.attributes.debounce_period, 99.123456)
 
 
-@test("make request")
-def _(chip=emulate_gpiochip):
+def test_make_request(chip):
     nb_lines = chip.nb_lines
     with Device(chip.filename) as device:
         for blocking in (True, False):
@@ -430,8 +413,7 @@ def _(chip=emulate_gpiochip):
                 request.close()
 
 
-@test("get value")
-def _(chip=emulate_gpiochip):
+def test_get_value(chip):
     def assert_request(request):
         for values in (request[:], request.get_values()):
             assert len(values) == 9
@@ -452,13 +434,13 @@ def _(chip=emulate_gpiochip):
         assert request[1, 2] == expected
         assert request[1:3] == expected
 
-        with raises(KeyError):
+        with pytest.raises(KeyError):
             request[0]
 
-        with raises(KeyError):
+        with pytest.raises(KeyError):
             request[20]
 
-        with raises(KeyError):
+        with pytest.raises(KeyError):
             request[-1]
 
     with Device(chip.filename) as device:
@@ -470,8 +452,7 @@ def _(chip=emulate_gpiochip):
                 assert_request(request)
 
 
-@test("set value")
-def _(chip=emulate_gpiochip):
+def test_set_value(chip):
     with Device(chip.filename) as device:
         with device[1:10] as request:
             assert request[1, 2] == {2: 0, 1: 1}
@@ -495,20 +476,19 @@ def _(chip=emulate_gpiochip):
             assert request[1, 2] == {2: 1, 1: 0}
 
             request[:] = 9 * [1]
-            assert request[:] == {i: 1 for i in range(1, 10)}
+            assert request[:] == dict.fromkeys(range(1, 10), 1)
 
             request[:] = 0
-            assert request[:] == {i: 0 for i in range(1, 10)}
+            assert request[:] == dict.fromkeys(range(1, 10), 0)
 
             request[3, 4, 7:10] = 1, 0, 1, 0, 1
             assert request[3, 4, 7:10] == {3: 1, 4: 0, 7: 1, 8: 0, 9: 1}
 
-            with raises(ValueError):
+            with pytest.raises(ValueError):
                 request[1] = [0, 1]
 
 
-@test("event stream")
-def _(chip=emulate_gpiochip):
+def test_event_stream(chip):
     with Device(chip.filename) as device:
         line = 11
         with device[line] as request:
@@ -531,8 +511,8 @@ def _(chip=emulate_gpiochip):
                     break
 
 
-@test("async event stream")
-async def _(chip=emulate_gpiochip):
+@pytest.mark.asyncio
+async def test_async_event_stream(chip):
     with Device(chip.filename) as device:
         line = 11
         with device[line] as request:
@@ -561,16 +541,16 @@ async def _(chip=emulate_gpiochip):
 sim_file = find_gpio_sim_file()
 
 
-@test("sim read chip info")
-def _():
+@pytest.mark.skipif(sim_file is None, reason="gpio-sim not prepared")
+def test_sim_read_chip_info():
     with sim_file.open() as chip:
         info = device.get_chip_info(chip)
         assert "gpio-sim" in info.label
         assert info.lines == 16
 
 
-@test("sim device open")
-def _():
+@pytest.mark.skipif(sim_file is None, reason="gpio-sim not prepared")
+def test_sim_device_open():
     device = Device(sim_file)
     assert device.closed
     device.open()
@@ -578,11 +558,11 @@ def _():
     assert device.fileno() > 0
 
 
-@test("sim get info")
-def _():
+@pytest.mark.skipif(sim_file is None, reason="gpio-sim not prepared")
+def test_sim_get_info():
     device = Device(sim_file)
 
-    with raises(AttributeError):
+    with pytest.raises(AttributeError):
         device.get_info()
 
     with device:
@@ -627,8 +607,8 @@ def _():
     assert l4.attributes.flags == 0
 
 
-@test("sim make request")
-def _():
+@pytest.mark.skipif(sim_file is None, reason="gpio-sim not prepared")
+def test_sim_make_request():
     nb_lines = 16
     with Device(sim_file) as device:
         for blocking in (True, False):
@@ -684,8 +664,8 @@ def _():
                 assert l6.attributes.flags == 0
 
 
-@test("sim get value")
-def _():
+@pytest.mark.skipif(sim_file is None, reason="gpio-sim not prepared")
+def test_sim_get_value():
     def assert_request(request):
         for values in (request[:], request.get_values()):
             assert len(values) == 10
@@ -705,13 +685,13 @@ def _():
         assert request[6, 9] == {6: 0, 9: 0}
         assert request[9:14:2] == {9: 0, 11: 0, 13: 0}
 
-        with raises(KeyError):
+        with pytest.raises(KeyError):
             request[0]
 
-        with raises(KeyError):
+        with pytest.raises(KeyError):
             request[20]
 
-        with raises(KeyError):
+        with pytest.raises(KeyError):
             request[-1]
 
     with Device(sim_file) as device:
@@ -722,8 +702,8 @@ def _():
             assert_request(request)
 
 
-@test("sim set value")
-def _():
+@pytest.mark.skipif(sim_file is None, reason="gpio-sim not prepared")
+def test_sim_set_value():
     with Device(sim_file) as device:
         with device.request([CLine(i, "output") for i in range(5, 14)]) as request:
             request.set_values({10: 1})
@@ -742,17 +722,17 @@ def _():
             assert request[9:12] == {9: 0, 10: 0, 11: 0}
 
             request[:] = 9 * [1]
-            assert request[:] == {i: 1 for i in range(5, 14)}
+            assert request[:] == dict.fromkeys(range(5, 14), 1)
 
             request[:] = 0
-            assert request[:] == {i: 0 for i in range(5, 14)}
+            assert request[:] == dict.fromkeys(range(5, 14), 0)
 
             request[7, 8, 11:14] = 1, 0, 1, 0, 1
             assert request[7, 8, 11:14] == {7: 1, 8: 0, 11: 1, 12: 0, 13: 1}
 
 
-@test("sim line config event")
-def _():
+@pytest.mark.skipif(sim_file is None, reason="gpio-sim not prepared")
+def test_sim_line_config_event():
     def run():
         time.sleep(0.001)
         with Device(sim_file) as dev:
@@ -823,8 +803,9 @@ def _():
                 assert event.attributes.debounce_period is None
 
 
-@test("async sim line config event")
-async def _():
+@pytest.mark.asyncio
+@pytest.mark.skipif(sim_file is None, reason="gpio-sim not prepared")
+async def test_async_sim_line_config_event():
     async def run():
         await asyncio.sleep(0.001)
         with Device(sim_file) as dev:

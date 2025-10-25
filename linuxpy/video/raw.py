@@ -974,7 +974,7 @@ class EventSubscriptionFlag(enum.IntFlag):
     ALLOW_FEEDBACK = 1 << 1
 
 
-class EventControlChange(enum.IntEnum):
+class EventControlChange(enum.IntFlag):
     VALUE = 1 << 0
     FLAGS = 1 << 1
     RANGE = 1 << 2

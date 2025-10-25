@@ -7,23 +7,23 @@
 [project]
 name = "linuxpy"
 description = "Human friendly interface to linux subsystems using python"
-license = {text = "GPL-3.0-or-later"}
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
 authors = [
     { name = "Jose Tiago Macara Coutinho", email = "coutinhotiago@gmail.com" }
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Multimedia :: Video",
     "Topic :: Multimedia :: Video :: Capture",
 ]
@@ -31,32 +31,45 @@ dependencies = [
     "typing_extensions>=4.6,<5 ; python_version < '3.12'"
 ]
 dynamic = ["version", "readme"]
+keywords = ["linux", "video", "system", "midi", "gpio", "led", "input", "gamepad", "joystick", "keyboard", "mouse", "thermal", "asyncio"]
 
 [project.urls]
 Documentation = "https://tiagocoutinho.github.io/linuxpy/"
 Homepage = "https://github.com/tiagocoutinho/linuxpy"
-Source = "https://github.com/tiagocoutinho/linuxpy"
+Repository = "https://github.com/tiagocoutinho/linuxpy"
 
-[project.optional-dependencies]
-dev = [
-    "build>=0.10.0",
+[dependency-groups]
+test = [
     "gevent>=21",
-    "twine>=4.0.2",
-    "ward>=0.68.0b0",
-    "ward-coverage>=0.3.0",
-    "ruff>=0.3.0",
+    "pytest>=8.1",
+    "pytest-asyncio>=1.0.0",
+    "pytest-cov>=6",
     "numpy>=1.1",
 ]
-examples = [
-    "flask>=2,<4",
-    "fastapi<1",
-    "opencv-python",
+qt = [
     "qtpy",
     "pyqt6",
+    "opencv-python",
+]
+test-qt = [
+    {include-group = "test"},
+    {include-group = "qt"},
+    "pytest-qt>=4.5.0,<5",
+]
+build-deploy = [
+    "build>=0.10.0",
+    "ruff>=0.3.0",
+    "twine>=4.0.2",
+]
+examples = [
+    {include-group = "qt"},
+    "numpy>=1.1",
+    "flask>=2,<4",
+    "fastapi<1",
     "gunicorn",
     "gevent",
     "uvicorn",
-    "numpy",
+    "opencv-python",
     "Pillow",
 ]
 docs = [
@@ -67,9 +80,22 @@ docs = [
     "pymdown-extensions",
     "mkdocs-coverage",
 ]
+dev = [
+    {include-group = "test-qt"},
+    {include-group = "build-deploy"},
+    {include-group = "docs"},
+]
+dev_no_qt = [
+    {include-group = "test"},
+    {include-group = "build-deploy"},
+    {include-group = "docs"},
+]
+
+[project.scripts]
+linuxpy-codegen = "linuxpy.codegen.cli:main"
 
 [build-system]
-requires = ["setuptools >= 40.9.0"]
+requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
@@ -79,20 +105,20 @@ readme = {file = ["README.md"], content-type = "text/markdown"}
 [tool.setuptools.packages.find]
 include = ["linuxpy*"]
 
-[tool.ward]
-order = "standard"
-fail-limit=10
-path = ["tests"]
-progress-style = ["inline"]
-test_output_style = "test-per-line"
-hook_module = ["ward_coverage"]
-show-slowest = 10
-
-[tool.ward.plugins.coverage]
-branch = true
-omit = ["*test*"]
-report_type = ["html", "json", "xml"]
-#report = {skip_empty = true, show_missing = true}
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = [
+    "--cov=linuxpy",
+    "--cov-report=html",
+    "--cov-report=json",
+    "--cov-report=xml",
+    "--durations=10",
+    "--verbose",
+]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+qt_api = "pyqt6"
 
 
 [tool.ruff]
@@ -113,10 +139,12 @@ lint.ignore = [
 ]
 line-length = 120
 indent-width = 4
-target-version = "py39"
+target-version = "py310"
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
 
-[project.scripts]
-linuxpy-codegen = "linuxpy.codegen.cli:main"
+[tool.coverage.run]
+omit = [
+    "linuxpy/codegen/*"
+]

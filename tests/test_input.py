@@ -10,7 +10,8 @@ import pathlib
 import uuid
 from contextlib import contextmanager
 
-from ward import fixture, raises, skip, test
+import pytest
+import pytest_asyncio
 
 from linuxpy.input.device import (
     Device,
@@ -24,6 +25,8 @@ from linuxpy.input.device import (
     find_mouse,
     is_uinput_available,
 )
+
+pytest.mark.skipif(not is_uinput_available(), reason="uinput is not available", allow_module_level=True)
 
 
 @contextmanager
@@ -45,7 +48,7 @@ def wait_for_new_device():
     yield wait
 
 
-@fixture
+@pytest_asyncio.fixture
 async def gamepad():
     name = uuid.uuid4().hex
     with wait_for_new_device() as device_finder:
@@ -55,7 +58,7 @@ async def gamepad():
             yield device, simulator
 
 
-@fixture()
+@pytest_asyncio.fixture
 async def mouse():
     name = uuid.uuid4().hex
     with wait_for_new_device() as device_finder:
@@ -65,9 +68,8 @@ async def mouse():
             yield device, simulator
 
 
-@skip(when=not is_uinput_available(), reason="uinput is not available")
-@test("find gamepad")
-async def _():
+@pytest.mark.asyncio
+async def test_find_gamepad():
     name = uuid.uuid4().hex
     with wait_for_new_device() as device_finder:
         with UGamepad(name=name) as simulator:
@@ -79,8 +81,8 @@ async def _():
             assert caps == simulator.CAPABILITIES
 
 
-@test("find mouse")
-async def _():
+@pytest.mark.asyncio
+async def test_find_mouse():
     name = uuid.uuid4().hex
     with wait_for_new_device() as device_finder:
         with UMouse(name=name) as simulator:
@@ -92,10 +94,8 @@ async def _():
             assert caps == simulator.CAPABILITIES
 
 
-@skip(when=not is_uinput_available(), reason="uinput is not available")
-@test("open/close")
-def _(pair_dev_simulator=gamepad):
-    dev, _ = pair_dev_simulator
+def test_open_close(gamepad):
+    dev, _ = gamepad
     assert dev.closed
     # closing closed has no effect
     dev.close()
@@ -126,10 +126,8 @@ def _(pair_dev_simulator=gamepad):
     assert dev.closed
 
 
-@skip(when=not is_uinput_available(), reason="uinput is not available")
-@test("properties")
-def _(pair_dev_simulator=gamepad):
-    device, simulator = pair_dev_simulator
+def test_properties(gamepad):
+    device, simulator = gamepad
     with device:
         assert device.device_id.bustype == simulator.bustype
         assert device.device_id.vendor == simulator.vendor_id
@@ -143,10 +141,8 @@ def _(pair_dev_simulator=gamepad):
         assert not device.active_keys
 
 
-@skip(when=not is_uinput_available(), reason="uinput is not available")
-@test("grab")
-def _(pair_dev_simulator=gamepad):
-    device, simulator = pair_dev_simulator
+def test_grab(gamepad):
+    device, simulator = gamepad
     with device:
         with Grab(device):
             assert device.device_id.bustype == simulator.bustype
@@ -156,14 +152,12 @@ def _(pair_dev_simulator=gamepad):
         device.ungrab()
 
         with Grab(device):
-            with raises(OSError):
+            with pytest.raises(OSError):
                 device.grab()
 
 
-@skip(when=not is_uinput_available(), reason="uinput is not available")
-@test("button event")
-def _(pair_dev_simulator=gamepad):
-    dev, simulator = pair_dev_simulator
+def test_button_event(gamepad):
+    dev, simulator = gamepad
     with dev:
         stream = iter(dev)
         for btn in simulator.CAPABILITIES[EventType.KEY]:
@@ -174,20 +168,17 @@ def _(pair_dev_simulator=gamepad):
             assert event.type == EventType.SYN
 
 
-@skip(when=not is_uinput_available(), reason="uinput is not available")
-@test("device with no capability")
-def _(pair_dev_simulator=mouse):
-    dev, simulator = pair_dev_simulator
+def test_device_with_no_capability(mouse):
+    dev, simulator = mouse
     with dev:
-        with raises(ValueError) as error:
+        with pytest.raises(ValueError) as error:
             _ = dev.absolute.x
-        assert "device has no 'absolute' capability" in str(error.raised)
+        assert "device has no 'absolute' capability" in str(error.value)
 
 
-@skip(when=not is_uinput_available(), reason="uinput is not available")
-@test("async button event")
-async def _(pair_dev_simulator=gamepad):
-    dev, simulator = pair_dev_simulator
+@pytest.mark.asyncio
+async def test_async_button_event(gamepad):
+    dev, simulator = gamepad
     with dev:
         stream = dev.__aiter__()
         for btn in simulator.CAPABILITIES[EventType.KEY]:
@@ -198,10 +189,9 @@ async def _(pair_dev_simulator=gamepad):
             assert event.type == EventType.SYN
 
 
-@skip(when=not is_uinput_available(), reason="uinput is not available")
-@test("async event batch stream")
-async def _(pair_dev_simulator=gamepad):
-    dev, simulator = pair_dev_simulator
+@pytest.mark.asyncio
+async def test_async_event_batch_stream(gamepad):
+    dev, simulator = gamepad
     with dev:
         stream = async_event_batch_stream(dev.fileno())
         simulator.emit(EventType.KEY, Key.BTN_GAMEPAD, 1)

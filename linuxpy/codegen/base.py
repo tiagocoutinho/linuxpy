@@ -194,7 +194,7 @@ def find_xml_base_type(etree, context, type_id):
         if node is None:
             return
         if node.tag == "Struct":
-            return node.get("name"), node.get("id")
+            return get_node_name(etree, node), node.get("id")
         elif node.tag == "FundamentalType":
             return CTYPES_MAP[node.get("name")], node.get("id")
         elif node.tag == "PointerType":
@@ -216,15 +216,30 @@ def find_xml_base_type(etree, context, type_id):
         type_id = node.get("type")
 
 
+def get_node_name(etree, node):
+    name = node.get("name")
+    if name:
+        return name
+    node_id = node.get("id")
+    etype = etree.find(f"ElaboratedType[@type='{node_id}']")
+    if etype is None:
+        return None
+    etype_id = etype.get("id")
+    typedef = etree.find(f"Typedef[@type='{etype_id}']")
+    if typedef is None:
+        return None
+    return typedef.get("name")
+
+
 def get_structs(header_filename, xml_filename, decode_name):
     etree = xml.etree.ElementTree.parse(xml_filename)
     header_tag = etree.find(f"File[@name='{header_filename}']")
-    structs = {}
+    struct_map = {}
+    structs = []
     if header_tag is None:
         return structs
     header_id = header_tag.get("id")
-    nodes = etree.findall(f"Struct[@file='{header_id}']")
-    nodes += etree.findall(f"Union[@file='{header_id}']")
+    nodes = [node for node in etree.findall(f"*[@file='{header_id}']") if node.tag in {"Union", "Struct"}]
     for node in nodes:
         members = node.get("members")
         if members is not None:
@@ -234,15 +249,20 @@ def get_structs(header_filename, xml_filename, decode_name):
             member_ids = []
         fields = (etree.find(f"*[@id='{member_id}']") for member_id in member_ids)
         fields = [field for field in fields if field.tag not in {"Union", "Struct", "Unimplemented"}]
-        pack = int(node.get("align")) == 8
-        name = node.get("name")
+        align = node.get("align")
+        if align is None:
+            pack = False
+        else:
+            pack = int(align) == 8
+        name = get_node_name(etree, node)
         if name:
             name = decode_name(name)
         struct = CStruct(node, name, fields, pack)
-        structs[struct.id] = struct
-    for struct in structs.values():
+        struct_map[struct.id] = struct
+        structs.append(struct)
+    for struct in structs:
         if struct.context_id != "_1":
-            parent = structs.get(struct.context_id)
+            parent = struct_map.get(struct.context_id)
             if parent:
                 parent.children[struct.id] = struct
                 struct.parent = parent
@@ -250,7 +270,7 @@ def get_structs(header_filename, xml_filename, decode_name):
                 logging.error("Could not find parent")
         if not struct.name and struct.parent:
             struct.name = f"M{len(struct.parent.children)}"
-    for struct in structs.values():
+    for struct in structs:
         for node in struct.node_members:
             name = node.get("name")
             base = find_xml_base_type(etree, struct, node.get("type"))
@@ -351,8 +371,7 @@ def run(name, headers, template, macro_enums, output=None, decode_struct_name=nu
         xml_filename = os.path.join(temp_dir, base_header + ".xml")
         cmd = f"castxml --castxml-output=1.0.0 -o {xml_filename} {header}"
         assert os.system(cmd) == 0
-        new_structs = get_structs(header, xml_filename, decode_name=decode_struct_name)
-        structs += list(new_structs.values())
+        structs += get_structs(header, xml_filename, decode_name=decode_struct_name)
 
         get_enums(header, xml_filename, macro_enums, decode_name=decode_enum_name)
 

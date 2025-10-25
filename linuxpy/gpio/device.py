@@ -37,7 +37,6 @@ from linuxpy.device import BaseDevice, ReentrantOpen, iter_device_files
 from linuxpy.ioctl import ioctl
 from linuxpy.types import AsyncIterator, Collection, FDLike, Iterable, Optional, PathLike, Sequence, Union
 from linuxpy.util import (
-    aclosing,
     async_event_stream as async_events,
     bit_indexes,
     chunks,
@@ -409,7 +408,7 @@ class Request(ReentrantOpen):
             lines = expand_from_list(key, self.min_line, self.max_line + 1)
             if isinstance(value, int):
                 value = len(lines) * (value,)
-            values = dict(zip(lines, value))
+            values = dict(zip(lines, value, strict=True))
         self.set_values(values)
 
     def __iter__(self) -> Iterable[LineEvent]:
@@ -541,10 +540,10 @@ class Device(BaseDevice):
         return self.request(lines)
 
     def __iter__(self) -> Iterable[LineInfoEvent]:
-        """Infinite stream of line info events
+        """Infinite stream of line config events
 
         Returns:
-            Iterable[LineInfoEvent]: the stream of line info events
+            Iterable[LineInfoEvent]: the stream of line config events
         """
         return event_info_stream((self,))
 
@@ -557,12 +556,30 @@ class Device(BaseDevice):
         return async_event_info_stream((self,))
 
     def info_stream(self, lines: Collection[int]) -> Iterable[LineInfoEvent]:
+        """Register for watching line config events on the given lines
+        and stream them
+
+        Args:
+            lines (Collection[int]): line numbers to watch for config events
+
+        Returns:
+            Iterable[LineInfoEvent]: the stream of line config events
+        """
         with self.watching(lines):
             yield from iter(self)
 
     async def async_info_stream(self, lines: Collection[int]) -> AsyncIterator[LineInfoEvent]:
+        """Register for watching line config events on the given lines
+        and async stream them
+
+        Args:
+            lines (Collection[int]): line numbers to watch for config events
+
+        Returns:
+            AsyncIterator[LineInfoEvent]: the asynchronous stream of line info events
+        """
         with self.watching(lines):
-            async with aclosing(self.__aiter__()) as stream:
+            async with contextlib.aclosing(self.__aiter__()) as stream:
                 async for event in stream:
                     yield event
 
@@ -577,21 +594,47 @@ class Device(BaseDevice):
         return get_info(self)
 
     def watch_line(self, line: int):
+        """Register the given line for config events
+
+        Args:
+            line (int): the line number to register
+        """
         watch_line_info(self, line)
 
     def unwatch_line(self, line: int):
+        """Unregister the given line from config events
+
+        Args:
+            line (int): the line number to unregister
+        """
         unwatch_line_info(self, line)
 
     def watch_lines(self, lines: Collection[int]):
+        """Register the given lines for config events
+
+        Args:
+            lines (Collection[int]): the line numbers to register
+        """
         for line in lines:
             self.watch_line(line)
 
     def unwatch_lines(self, lines: Collection[int]):
+        """Unregister the given lines from config events
+
+        Args:
+            lines (Collection[int]): the lines number to unregister
+        """
         for line in lines:
             self.unwatch_line(line)
 
     @contextlib.contextmanager
     def watching(self, lines):
+        """A context manager during which the given lines are registered
+        for line config events
+
+        Args:
+            lines (_type_): the line numbers to listen for config events
+        """
         self.watch_lines(lines)
         try:
             yield

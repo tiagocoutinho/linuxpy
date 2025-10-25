@@ -64,7 +64,7 @@ def run(device_config):
                     n = frame_n - last_n
                     rate = n / elapsed
                     print(
-                        f"Frame: {i:>8} | Elapsed: {now-start:>8.1f} s | Rate: {rate:>8.1f} fps | Skipped: {skipped:>8}"
+                        f"Frame: {i:>8} | Elapsed: {now - start:>8.1f} s | Rate: {rate:>8.1f} fps | Skipped: {skipped:>8}"
                     )
                     last = now
                     last_n = frame_n

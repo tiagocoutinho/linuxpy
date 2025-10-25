@@ -11,9 +11,11 @@ from inspect import isgenerator
 from math import isclose
 from pathlib import Path
 from random import randint
+from threading import Event
+from time import sleep
 from unittest import mock
 
-from ward import each, fixture, raises, skip, test
+import pytest
 
 try:
     import numpy
@@ -36,6 +38,7 @@ from linuxpy.video.device import (
     EventType,
     InputCapabilities,
     Memory,
+    MemoryMap,
     MetaFormat,
     PixelFormat,
     Priority,
@@ -65,7 +68,7 @@ def video_files(paths=("/dev/video99")):
                 yield paths
 
 
-class MemoryMap:
+class DummyMemoryMap:
     def __init__(self, hardware):
         self.hardware = hardware
 
@@ -273,14 +276,21 @@ class Hardware:
 
     def mmap(self, fd, length, offset):
         assert self.fd == fd
-        return MemoryMap(self)
+        return DummyMemoryMap(self)
 
-    def select(self, readers, writers, other, timeout=None):
+    @property
+    def select(self):
+        class select:
+            select = self._select
+
+        return select
+
+    def _select(self, readers, writers, other, timeout=None):
         assert readers[0].fileno() == self.fd
         return readers, writers, other
 
 
-@fixture
+@pytest.fixture
 def hardware():
     with Hardware() as hardware:
         yield hardware
@@ -303,22 +313,17 @@ def assert_frame(frame, camera):
         assert numpy.all(frame.array == numpy.frombuffer(camera.frame, dtype="u1"))
 
 
-@test("device number")
-def _(
-    filename=each("/dev/video0", "/dev/video1", "/dev/video999"),
-    expected=each(0, 1, 999),
-):
+@pytest.mark.parametrize("filename, expected", [("/dev/video0", 0), ("/dev/video1", 1), ("/dev/video999", 999)])
+def test_device_number(filename, expected):
     assert device_number(filename) == expected
 
 
-@test("video files")
-def _():
+def test_video_files():
     with video_files(["/dev/video33", "/dev/video55"]) as expected_files:
         assert list(iter_video_files()) == expected_files
 
 
-@test("device list")
-def _():
+def test_device_list():
     assert isgenerator(iter_devices())
 
     with video_files(["/dev/video33", "/dev/video55"]) as expected_files:
@@ -329,8 +334,7 @@ def _():
         assert {device.filename for device in devices} == {Path(filename) for filename in expected_files}
 
 
-@test("device creation")
-def _():
+def test_device_creation():
     # This should not raise an error until open() is called
     device = Device("/unknown")
     assert str(device.filename) == "/unknown"
@@ -338,12 +342,11 @@ def _():
     assert device.closed
 
     for name in (1, 1.1, True, [], {}, (), set()):
-        with raises(TypeError):
+        with pytest.raises(TypeError):
             Device(name)
 
 
-@test("device creation from id")
-def _():
+def test_device_creation_from_id():
     # This should not raise an error until open() is called
     device = Device.from_id(33)
     assert str(device.filename) == "/dev/video33"
@@ -351,58 +354,53 @@ def _():
     assert device.closed
 
 
-@test("device open")
-def _(camera=hardware):
-    device = Device(camera.filename)
-    assert camera.fobj is None
+def test_device_open(hardware):
+    device = Device(hardware.filename)
+    assert hardware.fobj is None
     assert device.closed
     assert device.info is None
     device.open()
     assert not device.closed
     assert device.info is not None
-    assert device.fileno() == camera.fd
+    assert device.fileno() == hardware.fd
 
 
-@test("device close")
-def _(camera=hardware):
-    device = Device(camera.filename)
-    assert camera.fobj is None
+def test_device_close(hardware):
+    device = Device(hardware.filename)
+    assert hardware.fobj is None
     assert device.closed
     assert device.info is None
     device.open()
     assert not device.closed
     assert device.info is not None
-    assert device.fileno() == camera.fd
+    assert device.fileno() == hardware.fd
     device.close()
     assert device.closed
 
 
-@test("device info")
-def _(camera=hardware):
-    device = Device(camera.filename)
-    device.opener = camera.open
+def test_device_info(hardware):
+    device = Device(hardware.filename)
+    device.opener = hardware.open
     assert device.info is None
     device.open()
-    assert device.info.driver == camera.driver.decode()
-    assert device.info.bus_info == camera.bus_info.decode()
-    assert device.info.bus_info == camera.bus_info.decode()
-    assert device.info.version == camera.version_str
+    assert device.info.driver == hardware.driver.decode()
+    assert device.info.bus_info == hardware.bus_info.decode()
+    assert device.info.bus_info == hardware.bus_info.decode()
+    assert device.info.version == hardware.version_str
 
 
-@test("set format")
-def _(camera=hardware):
-    device = Device(camera.filename)
+def test_set_format(hardware):
+    device = Device(hardware.filename)
     with device:
         device.set_format(BufferType.VIDEO_CAPTURE, 7, 5, "pRCC")
-    assert camera.ioctl_ioc == raw.IOC.S_FMT
-    assert camera.ioctl_arg.fmt.pix.height == 5
-    assert camera.ioctl_arg.fmt.pix.width == 7
-    assert camera.ioctl_arg.fmt.pix.pixelformat == PixelFormat.SRGGB12P
+    assert hardware.ioctl_ioc == raw.IOC.S_FMT
+    assert hardware.ioctl_arg.fmt.pix.height == 5
+    assert hardware.ioctl_arg.fmt.pix.width == 7
+    assert hardware.ioctl_arg.fmt.pix.pixelformat == PixelFormat.SRGGB12P
 
 
-@test("controls")
-def _(camera=hardware):
-    with Device(camera.filename) as device:
+def test_controls(hardware):
+    with Device(hardware.filename) as device:
         controls = device.controls
         assert len(controls) == 3
         brightness = controls["brightness"]
@@ -410,26 +408,26 @@ def _(camera=hardware):
         contrast = controls["contrast"]
         white_balance_automatic = controls["white_balance_automatic"]
 
-        assert brightness.value == camera.brightness
+        assert brightness.value == hardware.brightness
         assert brightness.minimum == 10
         assert brightness.maximum == 127
         assert brightness.step == 1
 
         brightness.value = 123
         assert brightness.value == 123
-        assert camera.brightness == 123
+        assert hardware.brightness == 123
 
         brightness.increase(2)
         assert brightness.value == 125
-        assert camera.brightness == 125
+        assert hardware.brightness == 125
 
         brightness.decrease(20)
         assert brightness.value == 105
-        assert camera.brightness == 105
+        assert hardware.brightness == 105
 
         brightness.set_to_default()
         assert brightness.value == brightness.default
-        assert camera.brightness == brightness.default
+        assert hardware.brightness == brightness.default
 
         brightness.set_to_minimum()
         assert brightness.value == brightness.minimum
@@ -443,9 +441,9 @@ def _(camera=hardware):
         assert brightness.value == brightness.minimum
 
         brightness.clipping = False
-        with raises(ValueError):
+        with pytest.raises(ValueError):
             brightness.value = 128
-        with raises(ValueError):
+        with pytest.raises(ValueError):
             brightness.value = 0
         brightness.clipping = True
         brightness.value = 128
@@ -462,42 +460,40 @@ def _(camera=hardware):
 
         brightness.value = "122"
         assert brightness.value == 122
-        assert camera.brightness == 122
+        assert hardware.brightness == 122
 
         brightness.value = True
         assert brightness.value == brightness.minimum
-        assert camera.brightness == brightness.minimum
+        assert hardware.brightness == brightness.minimum
 
         for value in (device, {}, [], "bla"):
-            with raises(ValueError):
+            with pytest.raises(ValueError):
                 brightness.value = value
 
-        assert contrast.value == camera.contrast
-        with raises(AttributeError):
+        assert contrast.value == hardware.contrast
+        with pytest.raises(AttributeError):
             contrast.value = 12
 
         white_balance_automatic = controls["white_balance_automatic"]
         assert white_balance_automatic.value is False
-        with raises(AttributeError):
+        with pytest.raises(AttributeError):
             white_balance_automatic.value = True
 
 
-@test("get fps")
-def _(camera=hardware):
-    with Device(camera.filename) as device:
+def test_get_fps(hardware):
+    with Device(hardware.filename) as device:
         fps = device.get_fps(BufferType.VIDEO_CAPTURE)
         assert isclose(fps, 10)
 
         fps = device.get_fps(BufferType.VIDEO_OUTPUT)
         assert isclose(fps, 20)
 
-        with raises(ValueError):
+        with pytest.raises(ValueError):
             device.get_fps(BufferType.VBI_CAPTURE)
 
 
-@test("set fps")
-def _(camera=hardware):
-    with Device(camera.filename) as device:
+def test_set_fps(hardware):
+    with Device(hardware.filename) as device:
         device.set_fps(BufferType.VIDEO_CAPTURE, 35)
         fps = device.get_fps(BufferType.VIDEO_CAPTURE)
         assert isclose(fps, 35)
@@ -506,61 +502,54 @@ def _(camera=hardware):
         fps = device.get_fps(BufferType.VIDEO_OUTPUT)
         assert isclose(fps, 5)
 
-        with raises(ValueError):
+        with pytest.raises(ValueError):
             device.set_fps(BufferType.VBI_CAPTURE, 10)
 
 
-@test("device repr")
-def _(camera=hardware):
-    device = Device(camera.filename)
-    assert repr(device) == f"<Device name={camera.filename}, closed=True>"
+def test_device_repr(hardware):
+    device = Device(hardware.filename)
+    assert repr(device) == f"<Device name={hardware.filename}, closed=True>"
     device.open()
-    assert repr(device) == f"<Device name={camera.filename}, closed=False>"
+    assert repr(device) == f"<Device name={hardware.filename}, closed=False>"
 
 
-@test("create video capture")
-def _(camera=hardware):
-    device = Device(camera.filename)
+def test_create_video_capture(hardware):
+    device = Device(hardware.filename)
     video_capture = VideoCapture(device)
     assert video_capture.device is device
 
 
-@test("synch device acquisition")
-def _(camera=hardware):
-    with Device(camera.filename) as device:
+def test_synch_device_acquisition(hardware):
+    with Device(hardware.filename) as device:
         stream = iter(device)
         frame = next(stream)
-        assert_frame(frame, camera)
+        assert_frame(frame, hardware)
 
 
-@test("synch video capture acquisition")
-def _(camera=hardware):
-    with Device(camera.filename) as device:
+def test_synch_video_capture_acquisition(hardware):
+    with Device(hardware.filename) as device:
         with VideoCapture(device) as video_capture:
             for frame in video_capture:
-                assert_frame(frame, camera)
+                assert_frame(frame, hardware)
                 break
 
 
-@test("get edid")
-def _(display=hardware):
-    with Device(display.filename) as device:
+def test_get_edid(hardware):
+    with Device(hardware.filename) as device:
         edid = device.get_edid()
         assert len(edid) == 256
         assert edid == bytes(range(0, 256))
 
 
-@test("clear edid")
-def _(display=hardware):
-    with Device(display.filename) as device:
+def test_clear_edid(hardware):
+    with Device(hardware.filename) as device:
         device.clear_edid()
         edid = device.get_edid()
         assert len(edid) == 0
 
 
-@test("set edid")
-def _(display=hardware):
-    with Device(display.filename) as device:
+def test_set_edid(hardware):
+    with Device(hardware.filename) as device:
         # Generate some random edid with 3 blocks
         expected_edid = bytes(range(255, -1, -1)) + bytes(range(255, -1, -2))
         device.set_edid(expected_edid)
@@ -568,7 +557,7 @@ def _(display=hardware):
         assert len(edid) == 128 * 3
         assert edid == expected_edid
 
-        with raises(ValueError):
+        with pytest.raises(ValueError):
             # Fail if edid length is not multiple of 128
             device.set_edid(bytes(range(0, 100)))
 
@@ -581,20 +570,18 @@ def is_vivid_prepared():
     return all(path.exists() for path in VIVID_TEST_DEVICES)
 
 
-vivid_only = skip(when=not is_vivid_prepared(), reason="vivid is not prepared")
+vivid_only = pytest.mark.skipif(not is_vivid_prepared(), reason="vivid is not prepared")
 
 
 @vivid_only
-@test("list vivid files")
-def _():
+def test_list_vivid_files():
     video_files = list(iter_video_files())
     for video_file in VIVID_TEST_DEVICES:
         assert video_file in video_files
 
 
 @vivid_only
-@test("list vivid capture files")
-def _():
+def test_list_vivid_capture_files():
     video_files = list(iter_video_capture_files())
     assert VIVID_CAPTURE_DEVICE in video_files
     for video_file in VIVID_TEST_DEVICES[1:]:
@@ -602,8 +589,7 @@ def _():
 
 
 @vivid_only
-@test("list vivid output files")
-def _():
+def test_list_vivid_output_files():
     video_files = list(iter_video_output_files())
     assert VIVID_OUTPUT_DEVICE in video_files
     assert VIVID_CAPTURE_DEVICE not in video_files
@@ -612,8 +598,7 @@ def _():
 
 
 @vivid_only
-@test("list vivid devices")
-def _():
+def test_list_vivid_devices():
     devices = list(iter_devices())
     device_names = [dev.filename for dev in devices]
     for video_file in VIVID_TEST_DEVICES:
@@ -621,8 +606,7 @@ def _():
 
 
 @vivid_only
-@test("list vivid capture devices")
-def _():
+def test_list_vivid_capture_devices():
     devices = list(iter_video_capture_devices())
     device_names = [dev.filename for dev in devices]
     assert VIVID_CAPTURE_DEVICE in device_names
@@ -631,8 +615,7 @@ def _():
 
 
 @vivid_only
-@test("list vivid output devices")
-def _():
+def test_list_vivid_output_devices():
     devices = list(iter_video_output_devices())
     device_names = [dev.filename for dev in devices]
     assert VIVID_OUTPUT_DEVICE in device_names
@@ -642,8 +625,7 @@ def _():
 
 
 @vivid_only
-@test("controls with vivid")
-def _():
+def test_controls_with_vivid():
     with Device(VIVID_CAPTURE_DEVICE) as device:
         device.set_input(0)
 
@@ -660,7 +642,7 @@ def _():
         finally:
             brightness.value = current_value
 
-        with raises(AttributeError):
+        with pytest.raises(AttributeError):
             _ = controls.unknown_field
 
         assert ControlClass.USER in {ctrl.id - 1 for ctrl in controls.used_classes()}
@@ -688,7 +670,7 @@ def _():
         assert boolean.value is True
         trues = ["true", "1", "yes", "on", "enable", True, 1, [1], {1: 2}, (1,)]
         falses = ["false", "0", "no", "off", "disable", False, 0, [], {}, (), None]
-        interleaved = (value for pair in zip(trues, falses) for value in pair)
+        interleaved = (value for pair in zip(trues, falses, strict=False) for value in pair)
         for i, value in enumerate(interleaved):
             expected = not bool(i % 2)
             boolean.value = value
@@ -703,7 +685,7 @@ def _():
         menu.value = 1
         assert menu.value == 1
 
-        with raises(OSError):
+        with pytest.raises(OSError):
             menu.value = 0
 
         # string
@@ -750,16 +732,15 @@ def _():
         controls.button.push()
 
         # Unknown
-        with raises(KeyError):
+        with pytest.raises(KeyError):
             _ = list(controls.with_class("unknown class"))
 
-        with raises(ValueError):
+        with pytest.raises(ValueError):
             _ = list(controls.with_class(55))
 
 
 @vivid_only
-@test("info with vivid")
-def _():
+def test_info_with_vivid():
     with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
         dev_caps = capture_dev.info.device_capabilities
         assert Capability.VIDEO_CAPTURE in dev_caps
@@ -773,7 +754,7 @@ def _():
 
         capture_dev.set_input(0)
 
-        assert len(capture_dev.info.frame_sizes) > 10
+        assert len(capture_dev.info.frame_types) > 10
         assert len(capture_dev.info.formats) > 10
 
         inputs = capture_dev.info.inputs
@@ -806,7 +787,7 @@ def _():
         text = repr(output_dev.info)
         assert "driver = " in text
 
-        assert len(output_dev.info.frame_sizes) == 0
+        assert len(output_dev.info.frame_types) == 0
         assert len(output_dev.info.formats) > 10
 
         inputs = output_dev.info.inputs
@@ -829,7 +810,7 @@ def _():
 
         meta_capture_dev.set_input(0)
 
-        assert len(meta_capture_dev.info.frame_sizes) == 0
+        assert len(meta_capture_dev.info.frame_types) == 0
         assert len(meta_capture_dev.info.formats) > 0
 
         meta_fmt = meta_capture_dev.get_format(BufferType.META_CAPTURE)
@@ -839,8 +820,7 @@ def _():
 
 
 @vivid_only
-@test("vivid inputs")
-def _():
+def test_vivid_inputs():
     with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
         inputs = capture_dev.info.inputs
         assert len(inputs) > 0
@@ -854,8 +834,7 @@ def _():
 
 
 @vivid_only
-@test("selection with vivid")
-def _():
+def test_selection_with_vivid():
     with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
         capture_dev.set_input(1)
         dft_sel = capture_dev.get_selection(BufferType.VIDEO_CAPTURE, SelectionTarget.CROP_DEFAULT)
@@ -873,10 +852,17 @@ def _():
         capture_dev.set_selection(BufferType.VIDEO_CAPTURE, SelectionTarget.CROP, dft_sel)
 
 
-def test_frame(frame, width, height, pixel_format, source):
-    size = width * height * 3
-    assert len(frame.data) == size
-    assert frame.nbytes == size
+def check_frame(frame, width, height, pixel_format, buffer_type):
+    bits_per_pixel = 4 if pixel_format in {PixelFormat.RGB32, PixelFormat.ARGB32} else 3
+    size = width * height * bits_per_pixel
+    compact = pixel_format in {PixelFormat.MJPEG, PixelFormat.YUYV}
+    if compact:
+        assert len(frame.data) < size
+        assert frame.nbytes < size
+    else:
+        assert len(frame.data) == size
+        assert frame.nbytes == size
+    assert len(frame.data) == frame.nbytes
     assert frame.memory == Memory.MMAP
     assert frame.pixel_format == pixel_format
     assert frame.type == BufferType.VIDEO_CAPTURE
@@ -885,122 +871,124 @@ def test_frame(frame, width, height, pixel_format, source):
     assert frame.pixel_format == pixel_format
     if numpy:
         data = frame.array
-        assert data.shape == (size,)
+        if compact:
+            assert data.shape < (size,)
+        else:
+            assert data.shape == (size,)
         assert data.dtype == numpy.ubyte
-    if source in {None, Capability.STREAMING}:
+    if buffer_type in {None, MemoryMap}:
         assert BufferFlag.MAPPED in frame.flags
 
 
-for input_type in (None, Capability.STREAMING):
-    iname = "auto" if input_type is None else input_type.name
+@vivid_only
+@pytest.mark.parametrize("buffer_type", [None, MemoryMap])
+def test_vivid_capture(buffer_type):
+    with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
+        capture_dev.set_input(0)
+        width, height, pixel_format = 640, 480, PixelFormat.RGB24
+        capture = VideoCapture(capture_dev, buffer_type=buffer_type)
+        capture.set_format(width, height, pixel_format)
+        fmt = capture.get_format()
+        assert fmt.width == width
+        assert fmt.height == height
+        assert fmt.pixel_format == pixel_format
 
-    @vivid_only
-    @test(f"vivid capture ({iname})")
-    def _(source=input_type):
-        with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
-            capture_dev.set_input(0)
-            width, height, pixel_format = 640, 480, PixelFormat.RGB24
-            capture = VideoCapture(capture_dev, source=source)
-            capture.set_format(width, height, pixel_format)
-            fmt = capture.get_format()
-            assert fmt.width == width
-            assert fmt.height == height
-            assert fmt.pixel_format == pixel_format
+        capture.set_fps(120)
+        assert capture.get_fps() >= 60
 
-            capture.set_fps(120)
-            assert capture.get_fps() >= 60
-
-            with capture:
-                stream = iter(capture)
-                frame1 = next(stream)
-                test_frame(frame1, width, height, pixel_format, source)
-                frame2 = next(stream)
-                test_frame(frame2, width, height, pixel_format, source)
-
-    @vivid_only
-    @test(f"vivid gevent capture ({iname})")
-    def _(source=input_type):
-        with Device(VIVID_CAPTURE_DEVICE, io=GeventIO) as capture_dev:
-            capture_dev.set_input(0)
-            width, height, pixel_format = 640, 480, PixelFormat.RGB24
-            capture = VideoCapture(capture_dev, source=source)
-            capture.set_format(width, height, pixel_format)
-            fmt = capture.get_format()
-            assert fmt.width == width
-            assert fmt.height == height
-            assert fmt.pixel_format == pixel_format
-
-            capture.set_fps(120)
-            assert capture.get_fps() >= 60
-
-            with capture:
-                stream = iter(capture)
-                frame1 = next(stream)
-                test_frame(frame1, width, height, pixel_format, source)
-                frame2 = next(stream)
-                test_frame(frame2, width, height, pixel_format, source)
-
-    @vivid_only
-    @test(f"vivid sync capture ({iname})")
-    def _(source=input_type):
-        with fopen(VIVID_CAPTURE_DEVICE, rw=True, blocking=True) as fobj:
-            capture_dev = Device(fobj)
-            capture_dev.set_input(0)
-            width, height, pixel_format = 640, 480, PixelFormat.RGB24
-            capture = VideoCapture(capture_dev, source=source)
-            capture.set_format(width, height, pixel_format)
-            fmt = capture.get_format()
-            assert fmt.width == width
-            assert fmt.height == height
-            assert fmt.pixel_format == pixel_format
-
-            capture.set_fps(120)
-            assert capture.get_fps() >= 60
-
-            with capture:
-                stream = iter(capture)
-                frame1 = next(stream)
-                test_frame(frame1, width, height, pixel_format, source)
-                frame2 = next(stream)
-                test_frame(frame2, width, height, pixel_format, source)
-
-    @vivid_only
-    @test(f"vivid async capture ({iname})")
-    async def _(source=input_type):
-        with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
-            capture_dev.set_input(0)
-            width, height, pixel_format = 640, 480, PixelFormat.RGB24
-            capture = VideoCapture(capture_dev, source=source)
-            capture.set_format(width, height, pixel_format)
-
-            fmt = capture.get_format()
-            assert fmt.width == width
-            assert fmt.height == height
-            assert fmt.pixel_format == pixel_format
-
-            capture.set_fps(120)
-            assert capture.get_fps() >= 60
-            with capture:
-                i = 0
-                async for frame in capture:
-                    test_frame(frame, width, height, pixel_format, source)
-                    i += 1
-                    if i > 2:
-                        break
+        with capture:
+            stream = iter(capture)
+            frame1 = next(stream)
+            check_frame(frame1, width, height, pixel_format, buffer_type)
+            frame2 = next(stream)
+            check_frame(frame2, width, height, pixel_format, buffer_type)
 
 
 @vivid_only
-@test("vivid capture no capability")
-def _():
+@pytest.mark.parametrize("buffer_type", [None, MemoryMap])
+def test_vivid_gevent_capture(buffer_type):
+    with Device(VIVID_CAPTURE_DEVICE, io=GeventIO) as capture_dev:
+        capture_dev.set_input(0)
+        width, height, pixel_format = 640, 480, PixelFormat.RGB24
+        capture = VideoCapture(capture_dev, buffer_type=buffer_type)
+        capture.set_format(width, height, pixel_format)
+        fmt = capture.get_format()
+        assert fmt.width == width
+        assert fmt.height == height
+        assert fmt.pixel_format == pixel_format
+
+        capture.set_fps(120)
+        assert capture.get_fps() >= 60
+
+        with capture:
+            stream = iter(capture)
+            frame1 = next(stream)
+            check_frame(frame1, width, height, pixel_format, buffer_type)
+            frame2 = next(stream)
+            check_frame(frame2, width, height, pixel_format, buffer_type)
+
+
+@vivid_only
+@pytest.mark.parametrize("buffer_type", [None, MemoryMap])
+def test_vivid_sync_capture(buffer_type):
+    with fopen(VIVID_CAPTURE_DEVICE, rw=True, blocking=True) as fobj:
+        capture_dev = Device(fobj)
+        capture_dev.set_input(0)
+        width, height, pixel_format = 640, 480, PixelFormat.RGB24
+        capture = VideoCapture(capture_dev, buffer_type=buffer_type)
+        capture.set_format(width, height, pixel_format)
+        fmt = capture.get_format()
+        assert fmt.width == width
+        assert fmt.height == height
+        assert fmt.pixel_format == pixel_format
+
+        capture.set_fps(120)
+        assert capture.get_fps() >= 60
+
+        with capture:
+            stream = iter(capture)
+            frame1 = next(stream)
+            check_frame(frame1, width, height, pixel_format, buffer_type)
+            frame2 = next(stream)
+            check_frame(frame2, width, height, pixel_format, buffer_type)
+
+
+@vivid_only
+@pytest.mark.asyncio
+@pytest.mark.parametrize("buffer_type", [None, MemoryMap])
+async def test_vivid_async_capture(buffer_type):
+    with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
+        capture_dev.set_input(0)
+        width, height, pixel_format = 640, 480, PixelFormat.RGB24
+        capture = VideoCapture(capture_dev, buffer_type=buffer_type)
+        capture.set_format(width, height, pixel_format)
+
+        fmt = capture.get_format()
+        assert fmt.width == width
+        assert fmt.height == height
+        assert fmt.pixel_format == pixel_format
+
+        capture.set_fps(120)
+        assert capture.get_fps() >= 60
+        with capture:
+            i = 0
+            async for frame in capture:
+                check_frame(frame, width, height, pixel_format, buffer_type)
+                i += 1
+                if i > 2:
+                    break
+
+
+@vivid_only
+def test_vivid_capture_no_capability():
     with Device(VIVID_OUTPUT_DEVICE) as output_dev:
         stream = iter(output_dev)
-        with raises(V4L2Error):
+        with pytest.raises(V4L2Error):
             next(stream)
 
 
 @vivid_only
-@test("vivid output")
-def _():
+def test_vivid_output():
     with Device(VIVID_OUTPUT_DEVICE) as output_dev:
         output_dev.set_output(0)
         assert output_dev.get_output() == 0
@@ -1019,8 +1007,7 @@ def _():
 
 
 @vivid_only
-@test("vivid priority")
-def _():
+def test_vivid_priority():
     with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
         assert isinstance(capture_dev.get_priority(), Priority)
 
@@ -1030,8 +1017,7 @@ def _():
 
 
 @vivid_only
-@test("vivid std")
-def _():
+def test_vivid_std():
     with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
         capture_dev.set_input(1)
         assert StandardID.PAL_B in capture_dev.get_std()
@@ -1040,8 +1026,7 @@ def _():
 
 
 @vivid_only
-@test("vivid events")
-def _():
+def test_vivid_events():
     with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
         capture_dev.set_input(0)
         brightness = capture_dev.controls.brightness
@@ -1063,8 +1048,8 @@ def _():
 
 
 @vivid_only
-@test("async vivid events")
-async def _():
+@pytest.mark.asyncio
+async def test_async_vivid_events():
     with Device(VIVID_CAPTURE_DEVICE) as capture_dev:
         capture_dev.set_input(0)
         brightness = capture_dev.controls.brightness
@@ -1076,3 +1061,58 @@ async def _():
                 assert event.type == EventType.CTRL
                 assert event.u.ctrl.changes == EventControlChange.VALUE
                 break
+
+
+def _app(klass):
+    if app := klass.instance():
+        return app, False
+    return klass([]), True
+
+
+@pytest.fixture
+def qt_core_app():
+    """Fixture to create and manage a Qt application for tests."""
+    from qtpy.QtCore import QCoreApplication
+
+    app, quit = _app(QCoreApplication)
+    yield app
+    if quit:
+        app.quit()
+
+
+@pytest.fixture
+def qt_app():
+    """Fixture to create and manage a Qt application for tests."""
+    from qtpy.QtWidgets import QApplication
+
+    app, quit = _app(QApplication)
+    yield app
+    if quit:
+        app.quit()
+
+
+class QStatus:
+    def __init__(self, qcamera):
+        self.qcamera = qcamera
+        self.state = None
+        self.frame = None
+        self.frame_event = Event()
+        qcamera.stateChanged.connect(self.on_state)
+        qcamera.frameChanged.connect(self.on_frame)
+
+    def on_frame(self, frame):
+        self.frame = frame
+        self.frame_event.set()
+
+    def on_state(self, state):
+        self.state = state
+
+    def wait_for_frame(self, qapp):
+        self.frame_event.clear()
+        for _ in range(10):
+            if self.frame_event.is_set():
+                return
+            sleep(0.01)
+            qapp.processEvents()
+        assert self.frame_event.is_set(), "frame did not arrive"
+        self.frame_event.clear()
