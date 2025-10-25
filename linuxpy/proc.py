@@ -241,3 +241,11 @@ def snmp():
     SNMP statistics.
     """
     return dict(iter_snmp())
+
+
+def iter_pids():
+    return (int(item.name) for item in PROC_PATH.iterdir() if item.name.isdigit())
+
+
+def pids():
+    return tuple(iter_pids())
