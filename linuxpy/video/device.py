@@ -1495,24 +1495,32 @@ buffers = {buffers}
 
     @property
     def raw_capabilities(self) -> raw.v4l2_capability:
+        """
+        Capabilities as read from the device.
+        It caches the capabilities so it only reads from the device once
+        """
         if self._raw_capabilities_cache is None:
             self._raw_capabilities_cache = read_capabilities(self.device)
         return self._raw_capabilities_cache
 
     @property
     def driver(self) -> str:
+        """The device driver name"""
         return self.raw_capabilities.driver.decode()
 
     @property
     def card(self) -> str:
+        """The device card name"""
         return self.raw_capabilities.card.decode()
 
     @property
     def bus_info(self) -> str:
+        """The device bus info"""
         return self.raw_capabilities.bus_info.decode()
 
     @property
     def version_tuple(self) -> tuple:
+        """The driver version tuple in format (a, b, c)"""
         caps = self.raw_capabilities
         return (
             (caps.version & 0xFF0000) >> 16,
@@ -1522,18 +1530,22 @@ buffers = {buffers}
 
     @property
     def version(self) -> str:
+        """The driver version string in format a.b.c"""
         return ".".join(map(str, self.version_tuple))
 
     @property
     def capabilities(self) -> Capability:
+        """The capabilities"""
         return Capability(self.raw_capabilities.capabilities)
 
     @property
     def device_capabilities(self) -> Capability:
+        """The device capabilities"""
         return Capability(self.raw_capabilities.device_caps)
 
     @property
     def buffers(self):
+        """Available buffer types according to the device capabilities"""
         dev_caps = self.device_capabilities
         return [typ for typ in BufferType if Capability[typ.name] in dev_caps]
 
@@ -1542,6 +1554,7 @@ buffers = {buffers}
 
     @property
     def crop_capabilities(self) -> dict[BufferType, CropCapability]:
+        """Crop capabilities grouped by buffer type for the current active input"""
         buffer_types = CROP_BUFFER_TYPES & set(self.buffers)
         result = {}
         for buffer_type in buffer_types:
@@ -1553,6 +1566,7 @@ buffers = {buffers}
 
     @property
     def formats(self):
+        """List of supported formats for the current active input"""
         img_fmt_buffer_types = IMAGE_FORMAT_BUFFER_TYPES & set(self.buffers)
         return [
             image_format
@@ -1561,35 +1575,43 @@ buffers = {buffers}
         ]
 
     def buffer_formats(self, buffer_type) -> list[ImageFormat]:
+        """List of supported formats for the given buffer type for the current active input"""
         return list(iter_read_formats(self.device, buffer_type))
 
     def format_frame_sizes(self, pixel_format) -> list[FrameSize]:
+        """List of frame sizes for the given pixel format for the current active input"""
         return list(iter_read_frame_sizes(self.device, pixel_format))
 
     def frame_sizes(self):
+        """List of frame sizes for the current active input"""
         results = []
         for fmt in self.formats:
             results.extend(self.format_frame_sizes(fmt.pixel_format))
         return results
 
     def fps_intervals(self, pixel_format, width, height) -> list[FrameType]:
+        """List of available FPS for the given pixel format, width and height for the current active input"""
         return list(iter_read_frame_intervals(self.device, pixel_format, width, height))
 
     @property
-    def frame_types(self):
+    def frame_types(self) -> list[FrameType]:
+        """List of all available discrete frame types for the current active input"""
         pixel_formats = {fmt.pixel_format for fmt in self.formats}
         return list(iter_read_pixel_formats_frame_intervals(self.device, pixel_formats))
 
     @property
     def inputs(self) -> list[Input]:
+        """List of available inputs"""
         return list(iter_read_inputs(self.device))
 
     @property
-    def outputs(self):
+    def outputs(self) -> list[Output]:
+        """List of available outputs"""
         return list(iter_read_outputs(self.device))
 
     @property
     def controls(self):
+        """List of available controls"""
         return list(iter_read_controls(self.device))
 
     @property

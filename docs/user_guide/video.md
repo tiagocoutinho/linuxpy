@@ -87,6 +87,57 @@ finally:
     camera.close()
 ```
 
+## Finding devices
+
+Get a random video device:
+
+```python
+>>> from linuxpy.video.device import find
+
+>>> dev = find()
+<Device name=/dev/video10, closed=True>
+```
+
+All video devices:
+
+```python
+>>>
+>>> devs = list(find(find_all=True))
+[<Device name=/dev/video10, closed=True>,
+ <Device name=/dev/video3, closed=True>,
+ <Device name=/dev/video2, closed=True>,
+ <Device name=/dev/video1, closed=True>,
+ <Device name=/dev/video0, closed=True>]
+```
+
+List of all capture devices:
+
+```python
+>>> from linuxpy.video.device import iter_video_capture_devices
+>>> list(iter_video_capture_devices())
+[<Device name=/dev/video10, closed=True>,
+ <Device name=/dev/video2, closed=True>,
+ <Device name=/dev/video0, closed=True>]
+```
+
+Custom filter: find a uvc device:
+
+```python
+>>> find(custom_match=lambda d: "uvc" in d.info.driver)
+<Device name=/dev/video3, closed=True>
+```
+
+Custom filter: find all uvc devices:
+
+```python
+>>> list(find(find_all=True, custom_match=lambda d: "uvc" in d.info.driver))
+[<Device name=/dev/video3, closed=True>,
+ <Device name=/dev/video2, closed=True>,
+ <Device name=/dev/video1, closed=True>,
+ <Device name=/dev/video0, closed=True>]
+```
+
+
 ## Capture
 
 Simple capture without any configuration is possible using the Device object
@@ -186,7 +237,6 @@ True
 array([255, 216, 255, ...,   0,   0,   0], shape=(61424,), dtype=uint8)
 ```
 
-
 ## Information
 
 Getting information about the device:
@@ -226,14 +276,7 @@ Show list of available controls:
 <IntegerControl contrast min=0 max=255 step=1 default=32 value=32>
 <IntegerControl saturation min=0 max=100 step=1 default=64 value=64>
 <IntegerControl hue min=-180 max=180 step=1 default=0 value=0>
-<BooleanControl white_balance_automatic default=True value=True>
-<IntegerControl gamma min=90 max=150 step=1 default=120 value=120>
-<MenuControl power_line_frequency default=1 value=1>
-<IntegerControl white_balance_temperature min=2800 max=6500 step=1 default=4000 value=4000 flags=inactive>
-<IntegerControl sharpness min=0 max=7 step=1 default=2 value=2>
-<IntegerControl backlight_compensation min=0 max=2 step=1 default=1 value=1>
-<MenuControl auto_exposure default=3 value=3>
-<IntegerControl exposure_time_absolute min=4 max=1250 step=1 default=156 value=156 flags=inactive>
+...
 <BooleanControl exposure_dynamic_framerate default=False value=False>
 ```
 
