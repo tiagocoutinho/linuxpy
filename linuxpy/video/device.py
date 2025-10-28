@@ -438,9 +438,10 @@ def free_buffers(fd, buffer_type: BufferType, memory: Memory) -> raw.v4l2_reques
     return req
 
 
-def export_buffer(fd, buffer_type: BufferType, index: int) -> int:
+def export_buffer(fd, buffer_type: BufferType, index: int) -> raw.v4l2_exportbuffer:
     req = raw.v4l2_exportbuffer(type=buffer_type, index=index)
-    return ioctl(fd, IOC.EXPBUF, req).fd
+    ioctl(fd, IOC.EXPBUF, req)
+    return req
 
 
 def create_buffers(fd, format: raw.v4l2_format, memory: Memory, count: int) -> raw.v4l2_create_buffers:
@@ -501,6 +502,7 @@ def get_format(fd, buffer_type) -> Union[Format, MetaFmt]:
 
 def try_raw_format(fd, fmt: raw.v4l2_format):
     ioctl(fd, IOC.TRY_FMT, fmt)
+    return fmt
 
 
 def try_format(fd, buffer_type: BufferType, width: int, height: int, pixel_format: str = "MJPG"):
