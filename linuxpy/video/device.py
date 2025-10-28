@@ -106,9 +106,9 @@ Size = collections.namedtuple("Size", "width height")
 
 FrameType = collections.namedtuple("FrameType", "type pixel_format width height min_fps max_fps step_fps")
 
-Input = collections.namedtuple("InputType", "index name type audioset tuner std status capabilities")
+Input = collections.namedtuple("Input", "index name type audioset tuner std status capabilities")
 
-Output = collections.namedtuple("OutputType", "index name type audioset modulator std capabilities")
+Output = collections.namedtuple("Output", "index name type audioset modulator std capabilities")
 
 Standard = collections.namedtuple("Standard", "index id name frameperiod framelines")
 
@@ -460,10 +460,13 @@ def set_raw_format(fd, fmt: raw.v4l2_format):
     return ioctl(fd, IOC.S_FMT, fmt)
 
 
-def set_format(fd, buffer_type: BufferType, width: int, height: int, pixel_format: str = "MJPG"):
+def set_format(fd, buffer_type: BufferType, width: int, height: int, pixel_format: str | int | PixelFormat = "MJPG"):
     fmt = raw.v4l2_format()
     if isinstance(pixel_format, str):
-        pixel_format = raw.v4l2_fourcc(*pixel_format)
+        try:
+            pixel_format = PixelFormat[pixel_format]
+        except KeyError:
+            pixel_format = raw.v4l2_fourcc(*pixel_format)
     fmt.type = buffer_type
     fmt.fmt.pix.pixelformat = pixel_format
     fmt.fmt.pix.field = Field.ANY
@@ -505,10 +508,13 @@ def try_raw_format(fd, fmt: raw.v4l2_format):
     return fmt
 
 
-def try_format(fd, buffer_type: BufferType, width: int, height: int, pixel_format: str = "MJPG"):
+def try_format(fd, buffer_type: BufferType, width: int, height: int, pixel_format: str | int | PixelFormat = "MJPG"):
     fmt = raw.v4l2_format()
     if isinstance(pixel_format, str):
-        pixel_format = raw.v4l2_fourcc(*pixel_format)
+        try:
+            pixel_format = PixelFormat[pixel_format]
+        except KeyError:
+            pixel_format = raw.v4l2_fourcc(*pixel_format)
     fmt.type = buffer_type
     fmt.fmt.pix.pixelformat = pixel_format
     fmt.fmt.pix.field = Field.ANY
