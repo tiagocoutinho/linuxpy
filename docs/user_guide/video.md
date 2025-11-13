@@ -2,8 +2,6 @@
 
 Human friendly interface to the Video for Linux 2 (V4L2) subsystem.
 
-![V4L2 demo](video.svg)
-
 Without further ado:
 
 <div class="termy" data-ty-macos>
@@ -89,6 +87,57 @@ finally:
     camera.close()
 ```
 
+## Finding devices
+
+Get a random video device:
+
+```python
+>>> from linuxpy.video.device import find
+
+>>> dev = find()
+<Device name=/dev/video10, closed=True>
+```
+
+All video devices:
+
+```python
+>>>
+>>> devs = list(find(find_all=True))
+[<Device name=/dev/video10, closed=True>,
+ <Device name=/dev/video3, closed=True>,
+ <Device name=/dev/video2, closed=True>,
+ <Device name=/dev/video1, closed=True>,
+ <Device name=/dev/video0, closed=True>]
+```
+
+List of all capture devices:
+
+```python
+>>> from linuxpy.video.device import iter_video_capture_devices
+>>> list(iter_video_capture_devices())
+[<Device name=/dev/video10, closed=True>,
+ <Device name=/dev/video2, closed=True>,
+ <Device name=/dev/video0, closed=True>]
+```
+
+Custom filter: find a uvc device:
+
+```python
+>>> find(custom_match=lambda d: "uvc" in d.info.driver)
+<Device name=/dev/video3, closed=True>
+```
+
+Custom filter: find all uvc devices:
+
+```python
+>>> list(find(find_all=True, custom_match=lambda d: "uvc" in d.info.driver))
+[<Device name=/dev/video3, closed=True>,
+ <Device name=/dev/video2, closed=True>,
+ <Device name=/dev/video1, closed=True>,
+ <Device name=/dev/video0, closed=True>]
+```
+
+
 ## Capture
 
 Simple capture without any configuration is possible using the Device object
@@ -113,25 +162,79 @@ from linuxpy.video.device import Device, VideoCapture
 with Device.from_id(0) as camera:
     capture = VideoCapture(camera)
     capture.set_format(640, 480, "MJPG")
+    capture.set_fps(10)
     with capture:
         for frame in capture:
             ...
 ```
 
-Note that `VideoCapture` configuration must be done **before** the capture is started
-(ie, the `with capture:` statement.)
+which is roughly equivalent to:
+
+```python
+with Device.from_id(0) as camera:
+    capture = VideoCapture(camera)
+    capture.set_format(640, 480, "MJPG")
+    capture.set_fps(10)
+    capture.arm()
+    try:
+        capture.start()
+        try:
+            for frame in capture:
+                print(frame)
+        finally:
+            capture.stop()
+    finally:
+        capture.disarm()
+```
+
+Note that `VideoCapture` configuration must be done **before** the camera is armed
+(ie, before them arm() call or entering the `with capture:` statement.)
 
 By default, VideoCapture will use memory map if the device has STREAMING
 capability and falls back to standard read if not. It is also possible to
 force a specific reader:
 
 ```python
-from linuxpy.video.device import Capability, Device, VideoCapture
+from linuxpy.video.device import Capability, Device, VideoCapture, ReadSource
 
 with Device.from_id(0) as cam:
-    with VideoCapture(cam, source=Capability.READWRITE):
+    with VideoCapture(cam, buffer_type=ReadSource):
         for frame in capture:
             ...
+```
+
+The previous example will grab frame data using the linux read system call.
+
+### Frame
+
+The frame object contains metadata concerning the current (width, height, pixel format,
+size, timestamp, frame_nb) as well as the frame data.
+Unless the VideoCapture uses a custom buffer type for the acquisition, the `frame.data`
+represents the immutable data for the specific frame and it is safe to use without any
+additional copies.
+
+```python
+>>> # Acquire one frame
+>>> with Device.from_id(0) as cam:
+        stream = iter(cam)
+        frame = next(frame)
+
+>>> frame
+<Frame width=640, height=480, format=MJPEG, frame_nb=0, timestamp=48851.219369>
+>>> frame.width, frame.height, frame.pixel_format
+(640, 480, <PixelFormat.MJPEG: 1196444237>)
+
+>>> frame.format
+Format(width=640, height=480, pixel_format=<PixelFormat.MJPEG: 1196444237>, size=614989, bytes_per_line=0)
+
+>>> len(frame.data)
+61424
+
+>>> frame.data is bytes(frame)
+True
+
+>>> frame.array
+array([255, 216, 255, ...,   0,   0,   0], shape=(61424,), dtype=uint8)
 ```
 
 ## Information
@@ -146,7 +249,7 @@ Getting information about the device:
 >>> cam.info.card
 'Integrated_Webcam_HD: Integrate'
 
->>> cam.info.capabilities
+>>> cam.info.device_capabilities
 <Capability.STREAMING|EXT_PIX_FORMAT|VIDEO_CAPTURE: 69206017>
 
 >>> cam.info.formats
@@ -157,32 +260,50 @@ Getting information about the device:
 
 >>> cam.get_format(BufferType.VIDEO_CAPTURE)
 Format(width=640, height=480, pixelformat=<PixelFormat.MJPEG: 1196444237>}
+```
 
+## Controls
+
+Device controls can be accessed on the `controls` member of the `Device` object.
+This object works like a dict. The keys can be control name or control id. The value is
+a control object containing the appropiate fields dependent on the type of control
+
+Show list of available controls:
+
+```python
 >>> for ctrl in cam.controls.values(): print(ctrl)
 <IntegerControl brightness min=0 max=255 step=1 default=128 value=128>
 <IntegerControl contrast min=0 max=255 step=1 default=32 value=32>
 <IntegerControl saturation min=0 max=100 step=1 default=64 value=64>
 <IntegerControl hue min=-180 max=180 step=1 default=0 value=0>
-<BooleanControl white_balance_automatic default=True value=True>
-<IntegerControl gamma min=90 max=150 step=1 default=120 value=120>
-<MenuControl power_line_frequency default=1 value=1>
-<IntegerControl white_balance_temperature min=2800 max=6500 step=1 default=4000 value=4000 flags=inactive>
-<IntegerControl sharpness min=0 max=7 step=1 default=2 value=2>
-<IntegerControl backlight_compensation min=0 max=2 step=1 default=1 value=1>
-<MenuControl auto_exposure default=3 value=3>
-<IntegerControl exposure_time_absolute min=4 max=1250 step=1 default=156 value=156 flags=inactive>
+...
 <BooleanControl exposure_dynamic_framerate default=False value=False>
+```
 
+Access a control with python dict syntax by control name:
+
+```python
 >>> cam.controls["saturation"]
 <IntegerControl saturation min=0 max=100 step=1 default=64 value=64>
+```
 
->>> cam.controls["saturation"].id
+Retrieve control information:
+
+```python
+>>> saturation = cam.controls["saturation"]
+>>> saturation.id
 9963778
+
 >>> cam.controls[9963778]
 <IntegerControl saturation min=0 max=100 step=1 default=64 value=64>
 
->>> cam.controls.brightness
-<IntegerControl brightness min=0 max=255 step=1 default=128 value=128>
+>>> saturation.flags
+<ControlFlag.SLIDER: 32>
+```
+
+Access controls using object attribute syntax:
+
+```python
 >>> cam.controls.brightness.value = 64
 >>> cam.controls.brightness
 <IntegerControl brightness min=0 max=255 step=1 default=128 value=64>

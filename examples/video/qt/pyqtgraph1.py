@@ -1,12 +1,11 @@
 import contextlib
-import functools
 import logging
 
-from pyqtgraph import GraphicsLayout, GraphicsView, ImageItem, setConfigOption
+from pyqtgraph import GraphicsLayout, GraphicsView, setConfigOption
 from qtpy import QtWidgets
 
-from linuxpy.video.device import BufferType, Device, PixelFormat
-from linuxpy.video.qt import QCamera, QVideoControls
+from linuxpy.video.device import BufferType, PixelFormat, iter_video_capture_devices
+from linuxpy.video.qt import QCamera, QVideoControls, QVideoItem, QVideoStream
 
 
 def main():
@@ -32,7 +31,8 @@ def main():
     logging.basicConfig(level=args.log_level.upper(), format=fmt)
     app = QtWidgets.QApplication([])
     with contextlib.ExitStack() as stack:
-        devices = [stack.enter_context(Device.from_id(i)) for i in range(10, 24)]
+        idevices = iter_video_capture_devices()
+        devices = sorted((stack.enter_context(dev) for dev in idevices), key=lambda dev: dev.index)
         for device in devices:
             device.set_format(BufferType.VIDEO_CAPTURE, 640, 480, PixelFormat.RGB24)
             device.set_fps(BufferType.VIDEO_CAPTURE, 15)
@@ -53,21 +53,24 @@ def main():
         video_layout.addWidget(view)
 
         n = len(devices)
-        if n < 3:
-            cols = 1
-        elif n < 9:
+        if n < 5:
             cols = 2
-        elif n < 16:
+        elif n < 7:
             cols = 3
-        else:
+        elif n < 17:
             cols = 4
+        else:
+            cols = 5
         for i, camera in enumerate(cameras, start=1):
             controls = QVideoControls(camera)
             controls_layout.addWidget(controls)
             view_box = view_layout.addViewBox(name=f"Camera {camera.device.index}", lockAspect=True, invertY=True)
-            image_item = ImageItem()
+            # image_item = ImageItem()
+            # camera.frameChanged.connect(functools.partial(update_image, image_item))
+            image_item = QVideoItem()
+            image_item.stream = QVideoStream(camera)
+            image_item.stream.imageChanged.connect(image_item.on_image_changed)
             view_box.addItem(image_item)
-            camera.frameChanged.connect(functools.partial(update_image, image_item))
             if not i % cols:
                 view_layout.nextRow()
 
