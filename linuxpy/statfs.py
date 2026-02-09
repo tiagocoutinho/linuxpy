@@ -85,7 +85,7 @@ c.statvfs.restype = cint
 
 
 def get_statfs_raw(path) -> statfs:
-    if not isinstance(path, (bytes, ccharp)):
+    if not isinstance(path, bytes | ccharp):
         path = str(path).encode()
     result = statfs()
     c.statfs(path, pointer(result))
