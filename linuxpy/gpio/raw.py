@@ -195,6 +195,7 @@ gpiohandle_config._fields_ = [("flags", cuint), ("default_values", cchar * 64), 
 
 class gpiohandle_data(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 gpiohandle_data._fields_ = [("values", cchar * 64)]

@@ -2045,6 +2045,7 @@ v4l2_ctrl_h264_pps._fields_ = [
 
 class v4l2_ctrl_h264_scaling_matrix(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_ctrl_h264_scaling_matrix._fields_ = [("scaling_list_4x4", cchar * 16 * 6), ("scaling_list_8x8", cchar * 64 * 6)]
@@ -2075,6 +2076,7 @@ v4l2_ctrl_h264_pred_weights._fields_ = [
 
 class v4l2_h264_reference(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_h264_reference._fields_ = [("fields", u8), ("index", u8)]
@@ -2205,6 +2207,7 @@ v4l2_vp8_quantization._fields_ = [
 
 class v4l2_vp8_entropy(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_vp8_entropy._fields_ = [
@@ -2218,6 +2221,7 @@ v4l2_vp8_entropy._fields_ = [
 
 class v4l2_vp8_entropy_coder_state(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_vp8_entropy_coder_state._fields_ = [("range", u8), ("value", u8), ("bit_count", u8), ("padding", u8)]
@@ -2285,6 +2289,7 @@ v4l2_ctrl_mpeg2_picture._fields_ = [
 
 class v4l2_ctrl_mpeg2_quantisation(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_ctrl_mpeg2_quantisation._fields_ = [
@@ -2369,6 +2374,7 @@ v4l2_hevc_dpb_entry._fields_ = [
 
 class v4l2_hevc_pred_weight_table(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_hevc_pred_weight_table._fields_ = [
@@ -2447,6 +2453,7 @@ v4l2_ctrl_hevc_decode_params._fields_ = [
 
 class v4l2_ctrl_hevc_scaling_matrix(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_ctrl_hevc_scaling_matrix._fields_ = [
@@ -2482,6 +2489,7 @@ v4l2_ctrl_hdr10_mastering_display._fields_ = [
 
 class v4l2_vp9_loop_filter(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_vp9_loop_filter._fields_ = [
@@ -2496,6 +2504,7 @@ v4l2_vp9_loop_filter._fields_ = [
 
 class v4l2_vp9_quantization(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_vp9_quantization._fields_ = [
@@ -2554,6 +2563,7 @@ v4l2_ctrl_vp9_frame._fields_ = [
 
 class v4l2_vp9_mv_probs(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_vp9_mv_probs._fields_ = [
@@ -2571,6 +2581,7 @@ v4l2_vp9_mv_probs._fields_ = [
 
 class v4l2_ctrl_vp9_compressed_hdr(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_ctrl_vp9_compressed_hdr._fields_ = [
@@ -2649,6 +2660,7 @@ v4l2_av1_loop_restoration._fields_ = [
 
 class v4l2_av1_cdef(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_av1_cdef._fields_ = [
@@ -2675,6 +2687,7 @@ v4l2_av1_segmentation._fields_ = [
 
 class v4l2_av1_loop_filter(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_av1_loop_filter._fields_ = [
@@ -2689,6 +2702,7 @@ v4l2_av1_loop_filter._fields_ = [
 
 class v4l2_av1_quantization(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_av1_quantization._fields_ = [
@@ -3157,6 +3171,7 @@ v4l2_standard._fields_ = [
 
 class v4l2_bt_timings(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_bt_timings._fields_ = [
@@ -3185,6 +3200,7 @@ v4l2_bt_timings._fields_ = [
 
 class v4l2_dv_timings(Struct):
     _pack_ = True
+    _layout_="ms"
 
     class M1(Union):
         pass
@@ -3211,6 +3227,7 @@ v4l2_enum_dv_timings._fields_ = [
 
 class v4l2_bt_timings_cap(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_bt_timings_cap._fields_ = [
@@ -3285,9 +3302,11 @@ v4l2_control._fields_ = [("id", cuint), ("value", cint)]
 
 class v4l2_ext_control(Struct):
     _pack_ = True
+    _layout_="ms"
 
     class M1(Union):
         _pack_ = True
+        _layout_="ms"
 
     M1._fields_ = [
         ("value", cint),
@@ -3391,6 +3410,7 @@ v4l2_query_ext_ctrl._fields_ = [
 
 class v4l2_querymenu(Struct):
     _pack_ = True
+    _layout_="ms"
 
     class M1(Union):
         pass
@@ -3479,6 +3499,7 @@ v4l2_hw_freq_seek._fields_ = [
 
 class v4l2_rds_data(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_rds_data._fields_ = [("lsb", u8), ("msb", u8), ("block", u8)]
@@ -3630,6 +3651,7 @@ v4l2_sliced_vbi_data._fields_ = [
 
 class v4l2_mpeg_vbi_itv0_line(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_mpeg_vbi_itv0_line._fields_ = [("id", u8), ("data", cchar * 42)]
@@ -3637,6 +3659,7 @@ v4l2_mpeg_vbi_itv0_line._fields_ = [("id", u8), ("data", cchar * 42)]
 
 class v4l2_mpeg_vbi_itv0(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_mpeg_vbi_itv0._fields_ = [("linemask", cuint * 2), ("line", v4l2_mpeg_vbi_itv0_line * 35)]
@@ -3644,6 +3667,7 @@ v4l2_mpeg_vbi_itv0._fields_ = [("linemask", cuint * 2), ("line", v4l2_mpeg_vbi_i
 
 class v4l2_mpeg_vbi_ITV0(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_mpeg_vbi_ITV0._fields_ = [("line", v4l2_mpeg_vbi_itv0_line * 36)]
@@ -3651,9 +3675,11 @@ v4l2_mpeg_vbi_ITV0._fields_ = [("line", v4l2_mpeg_vbi_itv0_line * 36)]
 
 class v4l2_mpeg_vbi_fmt_ivtv(Struct):
     _pack_ = True
+    _layout_="ms"
 
     class M1(Union):
         _pack_ = True
+        _layout_="ms"
 
     M1._fields_ = [("itv0", v4l2_mpeg_vbi_itv0), ("ITV0", v4l2_mpeg_vbi_ITV0)]
 
@@ -3665,6 +3691,7 @@ v4l2_mpeg_vbi_fmt_ivtv._fields_ = [("magic", cchar * 4), ("m1", v4l2_mpeg_vbi_fm
 
 class v4l2_plane_pix_format(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_plane_pix_format._fields_ = [("sizeimage", cuint), ("bytesperline", cuint), ("reserved", u16 * 6)]
@@ -3672,9 +3699,11 @@ v4l2_plane_pix_format._fields_ = [("sizeimage", cuint), ("bytesperline", cuint),
 
 class v4l2_pix_format_mplane(Struct):
     _pack_ = True
+    _layout_="ms"
 
     class M1(Union):
         _pack_ = True
+        _layout_="ms"
 
     M1._fields_ = [("ycbcr_enc", u8), ("hsv_enc", u8)]
 
@@ -3699,6 +3728,7 @@ v4l2_pix_format_mplane._fields_ = [
 
 class v4l2_sdr_format(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_sdr_format._fields_ = [("pixelformat", cuint), ("buffersize", cuint), ("reserved", cchar * 24)]
@@ -3706,6 +3736,7 @@ v4l2_sdr_format._fields_ = [("pixelformat", cuint), ("buffersize", cuint), ("res
 
 class v4l2_meta_format(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_meta_format._fields_ = [
@@ -3748,6 +3779,7 @@ v4l2_streamparm._fields_ = [("type", cuint), ("parm", v4l2_streamparm.M1)]
 
 class v4l2_event_vsync(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_event_vsync._fields_ = [("field", u8)]
@@ -3829,6 +3861,7 @@ v4l2_event_subscription._fields_ = [("type", cuint), ("id", cuint), ("flags", cu
 
 class v4l2_dbg_match(Struct):
     _pack_ = True
+    _layout_="ms"
 
     class M1(Union):
         pass
@@ -3843,6 +3876,7 @@ v4l2_dbg_match._fields_ = [("type", cuint), ("m1", v4l2_dbg_match.M1)]
 
 class v4l2_dbg_register(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_dbg_register._fields_ = [("match", v4l2_dbg_match), ("size", cuint), ("reg", culonglong), ("val", culonglong)]
@@ -3850,6 +3884,7 @@ v4l2_dbg_register._fields_ = [("match", v4l2_dbg_match), ("size", cuint), ("reg"
 
 class v4l2_dbg_chip_info(Struct):
     _pack_ = True
+    _layout_="ms"
 
 
 v4l2_dbg_chip_info._fields_ = [
