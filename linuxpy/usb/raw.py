@@ -424,7 +424,7 @@ usbdevfs_ioctl._fields_ = [("ifno", cint), ("ioctl_code", cint), ("data", POINTE
 
 class usbdevfs_hub_portinfo(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usbdevfs_hub_portinfo._fields_ = [("nports", cchar), ("port", cchar * 127)]
@@ -446,7 +446,7 @@ usbdevfs_streams._fields_ = [("num_streams", cuint), ("num_eps", cuint), ("eps",
 
 class usb_ctrlrequest(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_ctrlrequest._fields_ = [("bRequestType", u8), ("bRequest", u8), ("wValue", u16), ("wIndex", u16), ("wLength", u16)]
@@ -454,7 +454,7 @@ usb_ctrlrequest._fields_ = [("bRequestType", u8), ("bRequest", u8), ("wValue", u
 
 class usb_descriptor_header(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_descriptor_header._fields_ = [("bLength", u8), ("bDescriptorType", u8)]
@@ -462,7 +462,7 @@ usb_descriptor_header._fields_ = [("bLength", u8), ("bDescriptorType", u8)]
 
 class usb_device_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_device_descriptor._fields_ = [
@@ -485,7 +485,7 @@ usb_device_descriptor._fields_ = [
 
 class usb_config_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_config_descriptor._fields_ = [
@@ -502,13 +502,13 @@ usb_config_descriptor._fields_ = [
 
 class usb_string_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
     class M1(Union):
         class M1(Struct):
             class M1(Struct):
                 _pack_ = True
-                _layout_="ms"
+                _layout_ = "ms"
 
             M1._fields_ = []
 
@@ -526,7 +526,7 @@ usb_string_descriptor._fields_ = [("bLength", u8), ("bDescriptorType", u8), ("m1
 
 class usb_interface_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_interface_descriptor._fields_ = [
@@ -544,7 +544,7 @@ usb_interface_descriptor._fields_ = [
 
 class usb_endpoint_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_endpoint_descriptor._fields_ = [
@@ -561,7 +561,7 @@ usb_endpoint_descriptor._fields_ = [
 
 class usb_ssp_isoc_ep_comp_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_ssp_isoc_ep_comp_descriptor._fields_ = [
@@ -574,7 +574,7 @@ usb_ssp_isoc_ep_comp_descriptor._fields_ = [
 
 class usb_ss_ep_comp_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_ss_ep_comp_descriptor._fields_ = [
@@ -588,7 +588,7 @@ usb_ss_ep_comp_descriptor._fields_ = [
 
 class usb_qualifier_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_qualifier_descriptor._fields_ = [
@@ -606,7 +606,7 @@ usb_qualifier_descriptor._fields_ = [
 
 class usb_otg_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_otg_descriptor._fields_ = [("bLength", u8), ("bDescriptorType", u8), ("bmAttributes", u8)]
@@ -614,7 +614,7 @@ usb_otg_descriptor._fields_ = [("bLength", u8), ("bDescriptorType", u8), ("bmAtt
 
 class usb_otg20_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_otg20_descriptor._fields_ = [("bLength", u8), ("bDescriptorType", u8), ("bmAttributes", u8), ("bcdOTG", u16)]
@@ -622,7 +622,7 @@ usb_otg20_descriptor._fields_ = [("bLength", u8), ("bDescriptorType", u8), ("bmA
 
 class usb_debug_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_debug_descriptor._fields_ = [
@@ -635,7 +635,7 @@ usb_debug_descriptor._fields_ = [
 
 class usb_interface_assoc_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_interface_assoc_descriptor._fields_ = [
@@ -652,7 +652,7 @@ usb_interface_assoc_descriptor._fields_ = [
 
 class usb_security_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_security_descriptor._fields_ = [
@@ -665,7 +665,7 @@ usb_security_descriptor._fields_ = [
 
 class usb_key_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_key_descriptor._fields_ = [
@@ -679,7 +679,7 @@ usb_key_descriptor._fields_ = [
 
 class usb_encryption_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_encryption_descriptor._fields_ = [
@@ -693,7 +693,7 @@ usb_encryption_descriptor._fields_ = [
 
 class usb_bos_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_bos_descriptor._fields_ = [("bLength", u8), ("bDescriptorType", u8), ("wTotalLength", u16), ("bNumDeviceCaps", u8)]
@@ -701,7 +701,7 @@ usb_bos_descriptor._fields_ = [("bLength", u8), ("bDescriptorType", u8), ("wTota
 
 class usb_dev_cap_header(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_dev_cap_header._fields_ = [("bLength", u8), ("bDescriptorType", u8), ("bDevCapabilityType", u8)]
@@ -709,7 +709,7 @@ usb_dev_cap_header._fields_ = [("bLength", u8), ("bDescriptorType", u8), ("bDevC
 
 class usb_wireless_cap_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_wireless_cap_descriptor._fields_ = [
@@ -727,7 +727,7 @@ usb_wireless_cap_descriptor._fields_ = [
 
 class usb_ext_cap_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_ext_cap_descriptor._fields_ = [
@@ -740,7 +740,7 @@ usb_ext_cap_descriptor._fields_ = [
 
 class usb_ss_cap_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_ss_cap_descriptor._fields_ = [
@@ -757,7 +757,7 @@ usb_ss_cap_descriptor._fields_ = [
 
 class usb_ss_container_id_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_ss_container_id_descriptor._fields_ = [
@@ -771,7 +771,7 @@ usb_ss_container_id_descriptor._fields_ = [
 
 class usb_plat_dev_cap_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_plat_dev_cap_descriptor._fields_ = [
@@ -786,13 +786,13 @@ usb_plat_dev_cap_descriptor._fields_ = [
 
 class usb_ssp_cap_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
     class M1(Union):
         class M1(Struct):
             class M1(Struct):
                 _pack_ = True
-                _layout_="ms"
+                _layout_ = "ms"
 
             M1._fields_ = []
 
@@ -819,7 +819,7 @@ usb_ssp_cap_descriptor._fields_ = [
 
 class usb_pd_cap_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_pd_cap_descriptor._fields_ = [
@@ -838,7 +838,7 @@ usb_pd_cap_descriptor._fields_ = [
 
 class usb_pd_cap_battery_info_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_pd_cap_battery_info_descriptor._fields_ = [
@@ -859,7 +859,7 @@ usb_pd_cap_battery_info_descriptor._fields_ = [
 
 class usb_pd_cap_consumer_port_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_pd_cap_consumer_port_descriptor._fields_ = [
@@ -879,7 +879,7 @@ usb_pd_cap_consumer_port_descriptor._fields_ = [
 
 class usb_pd_cap_provider_port_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_pd_cap_provider_port_descriptor._fields_ = [
@@ -896,7 +896,7 @@ usb_pd_cap_provider_port_descriptor._fields_ = [
 
 class usb_ptm_cap_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_ptm_cap_descriptor._fields_ = [("bLength", u8), ("bDescriptorType", u8), ("bDevCapabilityType", u8)]
@@ -904,7 +904,7 @@ usb_ptm_cap_descriptor._fields_ = [("bLength", u8), ("bDescriptorType", u8), ("b
 
 class usb_wireless_ep_comp_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_wireless_ep_comp_descriptor._fields_ = [
@@ -921,7 +921,7 @@ usb_wireless_ep_comp_descriptor._fields_ = [
 
 class usb_handshake(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_handshake._fields_ = [
@@ -937,7 +937,7 @@ usb_handshake._fields_ = [
 
 class usb_connection_context(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_connection_context._fields_ = [("CHID", cchar * 16), ("CDID", cchar * 16), ("CK", cchar * 16)]
@@ -945,7 +945,7 @@ usb_connection_context._fields_ = [("CHID", cchar * 16), ("CDID", cchar * 16), (
 
 class usb_set_sel_req(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_set_sel_req._fields_ = [("u1_sel", u8), ("u1_pel", u8), ("u2_sel", u16), ("u2_pel", u16)]
@@ -953,7 +953,7 @@ usb_set_sel_req._fields_ = [("u1_sel", u8), ("u1_pel", u8), ("u2_sel", u16), ("u
 
 class usb_port_status(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_port_status._fields_ = [("wPortStatus", u16), ("wPortChange", u16), ("dwExtPortStatus", cuint)]
@@ -961,7 +961,7 @@ usb_port_status._fields_ = [("wPortStatus", u16), ("wPortChange", u16), ("dwExtP
 
 class usb_hub_status(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 usb_hub_status._fields_ = [("wHubStatus", u16), ("wHubChange", u16)]
@@ -969,21 +969,21 @@ usb_hub_status._fields_ = [("wHubStatus", u16), ("wHubChange", u16)]
 
 class usb_hub_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
     class M1(Union):
         _pack_ = True
-        _layout_="ms"
+        _layout_ = "ms"
 
         class M1(Struct):
             _pack_ = True
-            _layout_="ms"
+            _layout_ = "ms"
 
         M1._fields_ = [("DeviceRemovable", cchar * 4), ("PortPwrCtrlMask", cchar * 4)]
 
         class M2(Struct):
             _pack_ = True
-            _layout_="ms"
+            _layout_ = "ms"
 
         M2._fields_ = [("bHubHdrDecLat", u8), ("wHubDelay", u16), ("DeviceRemovable", u16)]
 
@@ -1003,7 +1003,7 @@ usb_hub_descriptor._fields_ = [
 
 class uvc_descriptor_header(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 uvc_descriptor_header._fields_ = [("bLength", u8), ("bDescriptorType", u8), ("bDescriptorSubType", u8)]
@@ -1011,7 +1011,7 @@ uvc_descriptor_header._fields_ = [("bLength", u8), ("bDescriptorType", u8), ("bD
 
 class uvc_header_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 uvc_header_descriptor._fields_ = [
@@ -1028,7 +1028,7 @@ uvc_header_descriptor._fields_ = [
 
 class uvc_input_terminal_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 uvc_input_terminal_descriptor._fields_ = [
@@ -1044,7 +1044,7 @@ uvc_input_terminal_descriptor._fields_ = [
 
 class uvc_output_terminal_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 uvc_output_terminal_descriptor._fields_ = [
@@ -1061,7 +1061,7 @@ uvc_output_terminal_descriptor._fields_ = [
 
 class uvc_camera_terminal_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 uvc_camera_terminal_descriptor._fields_ = [
@@ -1082,7 +1082,7 @@ uvc_camera_terminal_descriptor._fields_ = [
 
 class uvc_selector_unit_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 uvc_selector_unit_descriptor._fields_ = [
@@ -1098,7 +1098,7 @@ uvc_selector_unit_descriptor._fields_ = [
 
 class uvc_processing_unit_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 uvc_processing_unit_descriptor._fields_ = [
@@ -1117,7 +1117,7 @@ uvc_processing_unit_descriptor._fields_ = [
 
 class uvc_extension_unit_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 uvc_extension_unit_descriptor._fields_ = [
@@ -1137,7 +1137,7 @@ uvc_extension_unit_descriptor._fields_ = [
 
 class uvc_control_endpoint_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 uvc_control_endpoint_descriptor._fields_ = [
@@ -1150,7 +1150,7 @@ uvc_control_endpoint_descriptor._fields_ = [
 
 class uvc_input_header_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 uvc_input_header_descriptor._fields_ = [
@@ -1172,7 +1172,7 @@ uvc_input_header_descriptor._fields_ = [
 
 class uvc_output_header_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 uvc_output_header_descriptor._fields_ = [
@@ -1190,7 +1190,7 @@ uvc_output_header_descriptor._fields_ = [
 
 class uvc_color_matching_descriptor(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 uvc_color_matching_descriptor._fields_ = [
@@ -1205,7 +1205,7 @@ uvc_color_matching_descriptor._fields_ = [
 
 class uvc_streaming_control(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 uvc_streaming_control._fields_ = [
@@ -1230,7 +1230,7 @@ uvc_streaming_control._fields_ = [
 
 class uvc_format_uncompressed(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 uvc_format_uncompressed._fields_ = [
@@ -1251,7 +1251,7 @@ uvc_format_uncompressed._fields_ = [
 
 class uvc_frame_uncompressed(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 uvc_frame_uncompressed._fields_ = [
@@ -1273,7 +1273,7 @@ uvc_frame_uncompressed._fields_ = [
 
 class uvc_format_mjpeg(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 uvc_format_mjpeg._fields_ = [
@@ -1293,7 +1293,7 @@ uvc_format_mjpeg._fields_ = [
 
 class uvc_frame_mjpeg(Struct):
     _pack_ = True
-    _layout_="ms"
+    _layout_ = "ms"
 
 
 uvc_frame_mjpeg._fields_ = [
