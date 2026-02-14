@@ -222,6 +222,7 @@ class snd_timer_id(Struct):
 
 class snd_seq_addr(Struct):
     _pack_ = True
+    _layout_ = "ms"
 
 
 snd_seq_addr._fields_ = [("client", u8), ("port", u8)]
@@ -229,6 +230,7 @@ snd_seq_addr._fields_ = [("client", u8), ("port", u8)]
 
 class snd_seq_connect(Struct):
     _pack_ = True
+    _layout_ = "ms"
 
 
 snd_seq_connect._fields_ = [("sender", snd_seq_addr), ("dest", snd_seq_addr)]
@@ -263,6 +265,7 @@ snd_seq_ev_ctrl._fields_ = [
 
 class snd_seq_ev_raw8(Struct):
     _pack_ = True
+    _layout_ = "ms"
 
 
 snd_seq_ev_raw8._fields_ = [("d", cchar * 12)]
@@ -277,6 +280,7 @@ snd_seq_ev_raw32._fields_ = [("d", cuint * 3)]
 
 class snd_seq_ev_ext(Struct):
     _pack_ = True
+    _layout_ = "ms"
 
 
 snd_seq_ev_ext._fields_ = [("len", cuint), ("ptr", cvoidp)]
@@ -326,6 +330,7 @@ snd_seq_ev_queue_control._fields_ = [
 
 class snd_seq_ev_quote(Struct):
     _pack_ = True
+    _layout_ = "ms"
 
 
 class snd_seq_event(Struct):
@@ -391,6 +396,7 @@ snd_seq_system_info._fields_ = [
 
 class snd_seq_running_info(Struct):
     _pack_ = True
+    _layout_ = "ms"
 
 
 snd_seq_running_info._fields_ = [

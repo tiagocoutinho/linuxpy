@@ -312,7 +312,7 @@ class Version:
             return cls.from_number(value)
         elif isinstance(value, str):
             return cls.from_str(value)
-        elif isinstance(value, (tuple, list)):
+        elif isinstance(value, tuple | list):
             return cls.from_tuple(value)
         raise ValueError("Comparison with non-Version object")
 

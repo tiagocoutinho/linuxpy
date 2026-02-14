@@ -41,7 +41,7 @@ def show_control_status(device: str) -> None:
             print(f"\n{control_class.name.decode().title()}\n")
 
             for ctrl in controls:
-                print("0x%08x:" % ctrl.id, ctrl)
+                print(f"0x{ctrl.id:08x}:", ctrl)
                 if isinstance(ctrl, MenuControl):
                     for key, value in ctrl.items():
                         print(11 * " ", f" +-- {key}: {value}")
@@ -92,7 +92,7 @@ def set_controls(device: str, controls: list, clipping: bool) -> None:
             else:
                 success = True
 
-            result = "%-5s" % ("OK" if success else "ERROR")
+            result = "{:<5}".format("OK" if success else "ERROR")
 
             if success:
                 print(f"{result} {control}: {value_old} -> {value_new}\n")
@@ -118,7 +118,7 @@ def reset_controls(device: str, controls: list) -> None:
             else:
                 success = True
 
-            result = "%-5s" % ("OK" if success else "ERROR")
+            result = "{:<5}".format("OK" if success else "ERROR")
 
             if success:
                 print(f"{result} {control} reset to {ctrl.default}\n")

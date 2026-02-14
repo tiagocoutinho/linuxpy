@@ -236,7 +236,7 @@ def parse_config_lines(lines: Union[Collection, int]) -> list[dict]:
         lines = [lines]
     if isinstance(lines, dict):
         return [{**cfg, "line": line} for line, cfg in lines.items()]
-    if isinstance(lines, (list, tuple)):
+    if isinstance(lines, list | tuple):
         return [parse_config_line(line) for line in lines]
     raise TypeError("lines must be an int, a sequence of int or dict or dict")
 
