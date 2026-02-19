@@ -35,13 +35,13 @@ $ pip install linuxpy
 To run the examples you'll need:
 
 ```console
-$ pip install linuxpy[examples]
+$ pip install linuxpy --group=examples
 ```
 
 To develop, run tests, build package, lint, etc you'll need:
 
 ```console
-$ pip install linuxpy[dev]
+$ pip install linuxpy --group=dev
 ```
 
 ## Subsystems
