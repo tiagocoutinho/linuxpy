@@ -15,7 +15,7 @@ MEM_INFO_PATH: Path = PROC_PATH / "meminfo"
 MODULES_PATH: Path = PROC_PATH / "modules"
 STAT_PATH: Path = PROC_PATH / "stat"
 NET_PATH: Path = PROC_PATH / "net"
-DEV_PATH: Path = NET_PATH / "dev"
+NET_DEV_PATH: Path = NET_PATH / "dev"
 WIRELESS_PATH: Path = NET_PATH / "wireless"
 NETSTAT_PATH = NET_PATH / "netstat"
 SNMP_PATH = NET_PATH / "snmp"
@@ -134,113 +134,115 @@ def stat():
     return dict(iter_stat())
 
 
-def iter_dev():
-    """
-    Iterate over network devices. Each item represents the information about one of
-    the network devices in the system.
-    """
-    with DEV_PATH.open() as fobj:
-        lines = fobj.readlines()
-    # Skip the header lines (usually first 2 lines)
-    for line in lines[2:]:
-        fields = line.strip().split()
-        if not fields:
-            continue
-        yield {
-            "interface": fields[0].rstrip(":"),
-            "receive": {
-                "bytes": int(fields[1]),
-                "packets": int(fields[2]),
-                "errs": int(fields[3]),
-                "drop": int(fields[4]),
-                "fifo": int(fields[5]),
-                "frame": int(fields[6]),
-                "compressed": int(fields[7]),
-                "multicast": int(fields[8]),
-            },
-            "transmit": {
-                "bytes": int(fields[9]),
-                "packets": int(fields[10]),
-                "errs": int(fields[11]),
-                "drop": int(fields[12]),
-                "fifo": int(fields[13]),
-                "colls": int(fields[14]),
-                "carrier": int(fields[15]),
-                "compressed": int(fields[16]),
-            },
-        }
+class net:
+    @staticmethod
+    def iter_devices():
+        """
+        Iterate over network devices. Each item represents the information about one of
+        the network devices in the system.
+        """
+        with NET_DEV_PATH.open() as fobj:
+            lines = fobj.readlines()
+        # Skip the header lines (usually first 2 lines)
+        for line in lines[2:]:
+            fields = line.strip().split()
+            if not fields:
+                continue
+            yield {
+                "interface": fields[0].rstrip(":"),
+                "receive": {
+                    "bytes": int(fields[1]),
+                    "packets": int(fields[2]),
+                    "errs": int(fields[3]),
+                    "drop": int(fields[4]),
+                    "fifo": int(fields[5]),
+                    "frame": int(fields[6]),
+                    "compressed": int(fields[7]),
+                    "multicast": int(fields[8]),
+                },
+                "transmit": {
+                    "bytes": int(fields[9]),
+                    "packets": int(fields[10]),
+                    "errs": int(fields[11]),
+                    "drop": int(fields[12]),
+                    "fifo": int(fields[13]),
+                    "colls": int(fields[14]),
+                    "carrier": int(fields[15]),
+                    "compressed": int(fields[16]),
+                },
+            }
 
+    @staticmethod
+    def devices():
+        """
+        Network devices info as a sequence of dictionaries, each with information about one of
+        the system network devices.
+        """
+        return tuple(net.iter_devices())
 
-def dev():
-    """
-    Network devices info as a sequence of dictionaries, each with information about one of
-    the system network devices.
-    """
-    return tuple(iter_dev())
+    @staticmethod
+    def iter_wireless():
+        """
+        Iterate over wireless network devices. Each item represents the information about one of
+        the wireless network devices in the system.
+        """
+        with WIRELESS_PATH.open() as fobj:
+            lines = fobj.readlines()
+        # Skip the header lines (usually first 2 lines)
+        for line in lines[2:]:
+            fields = line.strip().split()
+            if not fields:
+                continue
+            yield {
+                "interface": fields[0].rstrip(":"),
+                "status": int(fields[1], 16),
+                "quality": {
+                    "link": int(fields[2].rstrip(".")),
+                    "level": int(fields[3].rstrip(".")),
+                    "noise": int(fields[4].rstrip(".")),
+                },
+                "discarded": {
+                    "nwid": int(fields[5]),
+                    "crypt": int(fields[6]),
+                    "misc": int(fields[7]),
+                },
+            }
 
+    @staticmethod
+    def wireless():
+        """
+        Wireless netowrk devices info as a sequence of dictionaries, each with information about one of
+        the system wireless network devices.
+        """
+        return tuple(net.iter_wireless())
 
-def iter_wireless():
-    """
-    Iterate over wireless network devices. Each item represents the information about one of
-    the wireless network devices in the system.
-    """
-    with WIRELESS_PATH.open() as fobj:
-        lines = fobj.readlines()
-    # Skip the header lines (usually first 2 lines)
-    for line in lines[2:]:
-        fields = line.strip().split()
-        if not fields:
-            continue
-        yield {
-            "interface": fields[0].rstrip(":"),
-            "status": int(fields[1], 16),
-            "quality": {
-                "link": int(fields[2].rstrip(".")),
-                "level": int(fields[3].rstrip(".")),
-                "noise": int(fields[4].rstrip(".")),
-            },
-            "discarded": {
-                "nwid": int(fields[5]),
-                "crypt": int(fields[6]),
-                "misc": int(fields[7]),
-            },
-        }
+    @staticmethod
+    def iter_netstat():
+        """
+        Iterate over network statistics.
+        """
+        return _iter_read_kv(NETSTAT_PATH)
 
+    @staticmethod
+    def netstat():
+        """
+        Network statistics.
+        """
+        return dict(net.iter_netstat())
 
-def wireless():
-    """
-    Wireless netowrk devices info as a sequence of dictionaries, each with information about one of
-    the system wireless network devices.
-    """
-    return tuple(iter_wireless())
+    @staticmethod
+    def iter_snmp():
+        """
+        Iterate over SNMP statistics.
+        """
+        return _iter_read_kv(SNMP_PATH)
 
-
-def iter_netstat():
-    """
-    Iterate over network statistics.
-    """
-    return _iter_read_kv(NETSTAT_PATH)
-
-
-def netstat():
-    """
-    Network statistics.
-    """
-    return dict(iter_netstat())
-
-
-def iter_snmp():
-    """
-    Iterate over SNMP statistics.
-    """
-    return _iter_read_kv(SNMP_PATH)
-
-
-def snmp():
-    """
-    SNMP statistics.
-    """
-    return dict(iter_snmp())
+    @staticmethod
+    def snmp():
+        """
+        SNMP statistics.
+        """
+        return dict(net.iter_snmp())
 
 
 def iter_pids():
