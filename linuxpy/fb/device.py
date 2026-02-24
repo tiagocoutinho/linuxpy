@@ -52,11 +52,13 @@ def _translate_fix_fix_screen_info(screeninfo: raw.fb_fix_screeninfo):
 
 
 def get_fix_screen_info(fd) -> FixScreenInfo:
+    """Get fixed screen information"""
     info = get_raw_fix_screen_info(fd)
     return _translate_fix_fix_screen_info(info)
 
 
 def get_raw_var_screen_info(fd) -> raw.fb_var_screeninfo:
+    """Get variable screen information"""
     return ioctl(fd, raw.IOC.GET_VSCREENINFO, raw.fb_var_screeninfo())
 
 
@@ -65,10 +67,17 @@ def get_raw_colormap(fd):
 
 
 class Device(BaseDevice):
+    """Frame buffer device"""
+
     PREFIX = "/dev/fb"
 
     def get_fix_screen_info(self):
+        """Get fixed screen information"""
         return get_fix_screen_info(self)
+
+    def get_raw_var_screen_info(self):
+        """Get variable screen information"""
+        return get_raw_var_screen_info(self)
 
 
 def iter_files(path: PathLike = "/dev") -> Iterable[Path]:
