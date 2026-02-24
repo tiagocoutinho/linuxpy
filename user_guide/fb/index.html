@@ -12,31 +12,31 @@
         <meta name="author" content="Tiago Coutinho">
       
       
-        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/user_guide/">
+        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/user_guide/fb/">
       
       
-        <link rel="prev" href="..">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="fb/">
+        <link rel="next" href="../gpio/">
       
       
         
       
       
-      <link rel="icon" href="../img/favicon.ico">
+      <link rel="icon" href="../../img/favicon.ico">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
-        <title>User guide - LinuxPy</title>
+        <title>📺 Frame buffer - LinuxPy</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -55,11 +55,11 @@
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../css/termynal.css">
+      <link rel="stylesheet" href="../../css/termynal.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#user-guide" class="md-skip">
+        <a href="#frame-buffer" class="md-skip">
           Skip to content
         </a>
       
@@ -96,9 +96,9 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="LinuxPy" class="md-header__button md-logo" aria-label="LinuxPy" data-md-component="logo">
+    <a href="../.." title="LinuxPy" class="md-header__button md-logo" aria-label="LinuxPy" data-md-component="logo">
       
-  <img src="../img/logo-128x128.png" alt="logo">
+  <img src="../../img/logo-128x128.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              User guide
+              📺 Frame buffer
             
           </span>
         </div>
@@ -202,7 +202,7 @@
   
   
     <li class="md-tabs__item">
-      <a href=".." class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         
   
   
@@ -225,7 +225,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+        <a href="../" class="md-tabs__link">
           
   
   
@@ -247,7 +247,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../api/" class="md-tabs__link">
+        <a href="../../api/" class="md-tabs__link">
           
   
   
@@ -267,7 +267,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../develop/" class="md-tabs__link">
+      <a href="../../develop/" class="md-tabs__link">
         
   
   
@@ -286,7 +286,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../coverage/" class="md-tabs__link">
+      <a href="../../coverage/" class="md-tabs__link">
         
   
   
@@ -321,9 +321,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="LinuxPy" class="md-nav__button md-logo" aria-label="LinuxPy" data-md-component="logo">
+    <a href="../.." title="LinuxPy" class="md-nav__button md-logo" aria-label="LinuxPy" data-md-component="logo">
       
-  <img src="../img/logo-128x128.png" alt="logo">
+  <img src="../../img/logo-128x128.png" alt="logo">
 
     </a>
     LinuxPy
@@ -350,7 +350,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -417,7 +417,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="./" class="md-nav__link md-nav__link--active">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -435,7 +435,7 @@
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_2" id="__nav_2_label" tabindex="">
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
@@ -458,10 +458,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="fb/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -477,6 +486,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -489,7 +499,7 @@
   
   
     <li class="md-nav__item">
-      <a href="gpio/" class="md-nav__link">
+      <a href="../gpio/" class="md-nav__link">
         
   
   
@@ -517,7 +527,7 @@
   
   
     <li class="md-nav__item">
-      <a href="input/" class="md-nav__link">
+      <a href="../input/" class="md-nav__link">
         
   
   
@@ -545,7 +555,7 @@
   
   
     <li class="md-nav__item">
-      <a href="led/" class="md-nav__link">
+      <a href="../led/" class="md-nav__link">
         
   
   
@@ -573,7 +583,7 @@
   
   
     <li class="md-nav__item">
-      <a href="midi/" class="md-nav__link">
+      <a href="../midi/" class="md-nav__link">
         
   
   
@@ -601,7 +611,7 @@
   
   
     <li class="md-nav__item">
-      <a href="thermal/" class="md-nav__link">
+      <a href="../thermal/" class="md-nav__link">
         
   
   
@@ -629,7 +639,7 @@
   
   
     <li class="md-nav__item">
-      <a href="video/" class="md-nav__link">
+      <a href="../video/" class="md-nav__link">
         
   
   
@@ -703,7 +713,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../api/" class="md-nav__link ">
+            <a href="../../api/" class="md-nav__link ">
               
   
   
@@ -747,7 +757,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/fb/" class="md-nav__link">
+      <a href="../../api/fb/" class="md-nav__link">
         
   
   
@@ -775,7 +785,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/gpio/" class="md-nav__link">
+      <a href="../../api/gpio/" class="md-nav__link">
         
   
   
@@ -803,7 +813,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/input/" class="md-nav__link">
+      <a href="../../api/input/" class="md-nav__link">
         
   
   
@@ -831,7 +841,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/led/" class="md-nav__link">
+      <a href="../../api/led/" class="md-nav__link">
         
   
   
@@ -859,7 +869,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/midi/" class="md-nav__link">
+      <a href="../../api/midi/" class="md-nav__link">
         
   
   
@@ -887,7 +897,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/proc/" class="md-nav__link">
+      <a href="../../api/proc/" class="md-nav__link">
         
   
   
@@ -915,7 +925,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/thermal/" class="md-nav__link">
+      <a href="../../api/thermal/" class="md-nav__link">
         
   
   
@@ -943,7 +953,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/video/" class="md-nav__link">
+      <a href="../../api/video/" class="md-nav__link">
         
   
   
@@ -1027,7 +1037,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/device/" class="md-nav__link">
+      <a href="../../api/device/" class="md-nav__link">
         
   
   
@@ -1055,7 +1065,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/util/" class="md-nav__link">
+      <a href="../../api/util/" class="md-nav__link">
         
   
   
@@ -1098,7 +1108,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../develop/" class="md-nav__link">
+      <a href="../../develop/" class="md-nav__link">
         
   
   
@@ -1125,7 +1135,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../coverage/" class="md-nav__link">
+      <a href="../../coverage/" class="md-nav__link">
         
   
   
@@ -1188,7 +1198,7 @@
   
   
     <li class="md-path__item">
-      <a href=".." class="md-path__link">
+      <a href="../.." class="md-path__link">
         
   <span class="md-ellipsis">
     Linuxpy
@@ -1206,7 +1216,7 @@
     
     
       <li class="md-path__item">
-        <a href="./" class="md-path__link">
+        <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
     User guide
@@ -1228,20 +1238,30 @@
 
 
 
-<h1 id="user-guide">User guide<a class="headerlink" href="#user-guide" title="Permanent link">&para;</a></h1>
-<p>This tutorial shows you how to use LinuxPy with most of its features.</p>
-<div class="termy" data-ty-macos data-ty-typedelay="60">
-  <span data-ty="input" data-ty-prompt="" data-ty-delay="500">GREETINGS PROFESSOR FALKEN.</span>
-  <span data-ty="input" data-ty-prompt="" data-ty-delay="0">SHALL WE PLAY A GAME?</span>
-  <span data-ty="input" data-ty-prompt="" data-ty-delay="2000"></span>
-  <span data-ty="input" data-ty-prompt="" data-ty-delay="0">Love to. How about Global Thermonuclear War?</span>
-  <span data-ty="input" data-ty-prompt="" data-ty-delay="500"></span>
-  <span data-ty="input" data-ty-prompt="" data-ty-delay="0">WOULDN'T YOU PREFER A GOOD GAME OF CHESS?</span>
-  <span data-ty="input" data-ty-prompt="" data-ty-delay="2000"></span>
-  <span data-ty="input" data-ty-prompt="" data-ty-delay="0">Later. Let's play Global Thermonuclear War.</span>
-  <span data-ty="input" data-ty-prompt="" data-ty-delay="500"></span>
-  <span data-ty="input" data-ty-prompt="" data-ty-delay="0">FINE.</span>
-
+<h1 id="frame-buffer">📺 Frame buffer<a class="headerlink" href="#frame-buffer" title="Permanent link">&para;</a></h1>
+<p>Human friendly interface to linux frame buffer.</p>
+<p>Without further ado:</p>
+<div class="termy" data-ty-macos>
+  <span data-ty="input" data-ty-prompt="$">python</span>
+  <span data-ty="input" data-ty-prompt=">>>">from linuxpy.fb.device import find</span>
+  <span data-ty="input" data-ty-prompt=">>>">with find() as fb:</span>
+  <span data-ty="input" data-ty-prompt="...">    print(fb.get_fix_screen_info())</span>
+  <span data-ty>
+  FixScreenInfo(name='i915drmfb',
+                memory_start=0,
+                memory_size=33177600,
+                type=Type.PACKED_PIXELS: 0,
+                type_aux=Text.MDA: 0,
+                visual=Visual.TRUECOLOR: 2,
+                x_pan_step=1,
+                y_pan_step=1,
+                y_wrap_step=0,
+                line_size=15360,
+                mmap_start=0,
+                mmap_size=0,
+                acceleration=Acceleration.NONE: 0,
+                capabilities=Capability: 0)
+  </span>
 </div>
 
 
@@ -1298,12 +1318,12 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.indexes", "content.tooltips", "navigation.path", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.tabs"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.indexes", "content.tooltips", "navigation.path", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
-        <script src="../js/termynal.js"></script>
+        <script src="../../js/termynal.js"></script>
       
     
   </body>

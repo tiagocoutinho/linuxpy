@@ -2,82 +2,90 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/develop/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/api/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/api/device/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
+    </url>
+    <url>
+         <loc>https://tiagocoutinho.github.io/linuxpy/api/fb/</loc>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/api/gpio/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/api/input/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/api/led/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/api/midi/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/api/proc/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/api/thermal/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/api/util/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/api/video/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/user_guide/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
+    </url>
+    <url>
+         <loc>https://tiagocoutinho.github.io/linuxpy/user_guide/fb/</loc>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/user_guide/gpio/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/user_guide/input/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/user_guide/led/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/user_guide/midi/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/user_guide/thermal/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/user_guide/video/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
     <url>
          <loc>https://tiagocoutinho.github.io/linuxpy/coverage/</loc>
-         <lastmod>2026-02-19</lastmod>
+         <lastmod>2026-02-24</lastmod>
     </url>
 </urlset>

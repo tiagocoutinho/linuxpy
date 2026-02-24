@@ -12,13 +12,13 @@
         <meta name="author" content="Tiago Coutinho">
       
       
-        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/api/device/">
+        <link rel="canonical" href="https://tiagocoutinho.github.io/linuxpy/api/fb/">
       
       
-        <link rel="prev" href="../video/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../util/">
+        <link rel="next" href="../gpio/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Device - LinuxPy</title>
+        <title>📺 Frame buffer - LinuxPy</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#device" class="md-skip">
+        <a href="#frame-buffer" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Device
+              📺 Frame buffer
             
           </span>
         </div>
@@ -744,10 +744,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../fb/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    📺 Frame buffer
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -763,6 +790,126 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#linuxpy.fb.device" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;device
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" device">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.fb.device.Device" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Device
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" Device">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.fb.device.Device.get_fix_screen_info" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_fix_screen_info
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.fb.device.Device.get_raw_var_screen_info" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_raw_var_screen_info
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.fb.device.get_fix_screen_info" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;get_fix_screen_info
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.fb.device.get_raw_var_screen_info" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;get_raw_var_screen_info
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.fb.device.iter_files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linuxpy.fb.device.iter_devices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_devices
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -968,10 +1115,8 @@
                 
   
   
-    
   
   
-  
     
     
       
@@ -986,11 +1131,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_10" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_10" >
         
           
           <label class="md-nav__link" for="__nav_3_10" id="__nav_3_10_label" tabindex="0">
@@ -1011,7 +1156,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_10_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_10_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_10">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1026,37 +1171,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Device
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../device/" class="md-nav__link">
         
   
   
@@ -1072,209 +1190,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#linuxpy.device" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;device
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" device">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.ReentrantOpen" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ReentrantOpen
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" ReentrantOpen">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.ReentrantOpen.open" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;open
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.ReentrantOpen.close" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;close
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.BaseDevice" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;BaseDevice
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" BaseDevice">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.BaseDevice.closed" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;closed
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.BaseDevice.is_blocking" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;is_blocking
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.BaseDevice.from_id" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;from_id
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.BaseDevice.open" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;open
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.BaseDevice.close" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;close
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.BaseDevice.fileno" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;fileno
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.BaseDevice.set_blocking" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set_blocking
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.device_number" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;device_number
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.is_device_file" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;is_device_file
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.iter_device_files" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_device_files
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1404,7 +1319,7 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#linuxpy.device" class="md-nav__link">
+  <a href="#linuxpy.fb.device" class="md-nav__link">
     <span class="md-ellipsis">
       
         <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;device
@@ -1416,22 +1331,22 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#linuxpy.device.ReentrantOpen" class="md-nav__link">
+  <a href="#linuxpy.fb.device.Device" class="md-nav__link">
     <span class="md-ellipsis">
       
-        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ReentrantOpen
+        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Device
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" ReentrantOpen">
+    <nav class="md-nav" aria-label=" Device">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#linuxpy.device.ReentrantOpen.open" class="md-nav__link">
+  <a href="#linuxpy.fb.device.Device.get_fix_screen_info" class="md-nav__link">
     <span class="md-ellipsis">
       
-        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;open
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_fix_screen_info
       
     </span>
   </a>
@@ -1439,10 +1354,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.device.ReentrantOpen.close" class="md-nav__link">
+  <a href="#linuxpy.fb.device.Device.get_raw_var_screen_info" class="md-nav__link">
     <span class="md-ellipsis">
       
-        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;close
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_raw_var_screen_info
       
     </span>
   </a>
@@ -1455,22 +1370,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.device.BaseDevice" class="md-nav__link">
+  <a href="#linuxpy.fb.device.get_fix_screen_info" class="md-nav__link">
     <span class="md-ellipsis">
       
-        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;BaseDevice
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" BaseDevice">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.BaseDevice.closed" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;closed
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;get_fix_screen_info
       
     </span>
   </a>
@@ -1478,10 +1381,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.device.BaseDevice.is_blocking" class="md-nav__link">
+  <a href="#linuxpy.fb.device.get_raw_var_screen_info" class="md-nav__link">
     <span class="md-ellipsis">
       
-        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;is_blocking
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;get_raw_var_screen_info
       
     </span>
   </a>
@@ -1489,10 +1392,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.device.BaseDevice.from_id" class="md-nav__link">
+  <a href="#linuxpy.fb.device.iter_files" class="md-nav__link">
     <span class="md-ellipsis">
       
-        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;from_id
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_files
       
     </span>
   </a>
@@ -1500,81 +1403,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#linuxpy.device.BaseDevice.open" class="md-nav__link">
+  <a href="#linuxpy.fb.device.iter_devices" class="md-nav__link">
     <span class="md-ellipsis">
       
-        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;open
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.BaseDevice.close" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;close
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.BaseDevice.fileno" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;fileno
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.BaseDevice.set_blocking" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set_blocking
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.device_number" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;device_number
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.is_device_file" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;is_device_file
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linuxpy.device.iter_device_files" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_device_files
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;iter_devices
       
     </span>
   </a>
@@ -1641,24 +1473,6 @@
   
 
       
-        
-  
-  
-    
-    
-      <li class="md-path__item">
-        <a href="./" class="md-path__link">
-          
-  <span class="md-ellipsis">
-    Internal
-  </span>
-
-        </a>
-      </li>
-    
-  
-
-      
     </ol>
   </nav>
 
@@ -1669,18 +1483,18 @@
 
 
 
-<h1 id="device">Device<a class="headerlink" href="#device" title="Permanent link">&para;</a></h1>
+<h1 id="frame-buffer">📺 Frame buffer<a class="headerlink" href="#frame-buffer" title="Permanent link">&para;</a></h1>
 
 
 <div class="doc doc-object doc-module">
 
 
 
-<h2 id="linuxpy.device" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>linuxpy.device</code>
+<h2 id="linuxpy.fb.device" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>linuxpy.fb.device</code>
 
 
-<a href="#linuxpy.device" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#linuxpy.fb.device" class="headerlink" title="Permanent link">&para;</a></h2>
 
     <div class="doc doc-contents first">
 
@@ -1707,19 +1521,19 @@
 
 
 
-<h3 id="linuxpy.device.ReentrantOpen" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class=" language-python"><span class="n">ReentrantOpen</span><span class="p">()</span></code>
+<h3 id="linuxpy.fb.device.Device" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class=" language-python"><span class="n">Device</span><span class="p">(</span><span class="n">name_or_file</span><span class="p">,</span> <span class="n">read_write</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">io</span><span class="o">=</span><span class="n">IO</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
-<a href="#linuxpy.device.ReentrantOpen" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.fb.device.Device" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
     <div class="doc doc-contents ">
             <p class="doc doc-class-bases">
-              Bases: <code><span title="contextlib.AbstractContextManager">AbstractContextManager</span></code></p>
+              Bases: <code><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;              &lt;code class=&quot; language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;BaseDevice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name_or_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;read_write&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;io&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IO&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;blocking&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt; (&lt;code&gt;linuxpy.device.BaseDevice&lt;/code&gt;)" href="../device/#linuxpy.device.BaseDevice">BaseDevice</a></code></p>
 
 
 
-        <p>Base for a reusable, reentrant (but not thread safe) open/close context manager</p>
+        <p>Frame buffer device</p>
 
 
 
@@ -1745,15 +1559,15 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="linuxpy.device.ReentrantOpen.open" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="nb">open</span><span class="p">()</span></code>
+<h4 id="linuxpy.fb.device.Device.get_fix_screen_info" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="n">get_fix_screen_info</span><span class="p">()</span></code>
 
-<a href="#linuxpy.device.ReentrantOpen.open" class="headerlink" title="Permanent link">&para;</a></h4>
+<a href="#linuxpy.fb.device.Device.get_fix_screen_info" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Mandatory override for concrete sub-class</p>
+        <p>Get fixed screen information</p>
 
 
     </div>
@@ -1763,202 +1577,15 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="linuxpy.device.ReentrantOpen.close" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="n">close</span><span class="p">()</span></code>
+<h4 id="linuxpy.fb.device.Device.get_raw_var_screen_info" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="n">get_raw_var_screen_info</span><span class="p">()</span></code>
 
-<a href="#linuxpy.device.ReentrantOpen.close" class="headerlink" title="Permanent link">&para;</a></h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Mandatory override for concrete sub-class</p>
-
-
-    </div>
-
-</div>
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-class">
-
-
-
-<h3 id="linuxpy.device.BaseDevice" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class=" language-python"><span class="n">BaseDevice</span><span class="p">(</span><span class="n">name_or_file</span><span class="p">,</span> <span class="n">read_write</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">io</span><span class="o">=</span><span class="n">IO</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
-
-<a href="#linuxpy.device.BaseDevice" class="headerlink" title="Permanent link">&para;</a></h3>
-
-
-    <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;              &lt;code class=&quot; language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;ReentrantOpen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt; (&lt;code&gt;linuxpy.device.ReentrantOpen&lt;/code&gt;)" href="#linuxpy.device.ReentrantOpen">ReentrantOpen</a></code></p>
-
-
-
-        <p>Base class for a reentrant device</p>
-
-
-
-
-
-
-
-
-
-
-
-<div class="doc doc-children">
-
-
-
-
-
-
-
-<div class="doc doc-object doc-attribute">
-
-
-
-<h4 id="linuxpy.device.BaseDevice.closed" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class=" language-python"><span class="n">closed</span><span class="p">:</span> <span class="nb">bool</span></code>
-
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-property"><code>property</code></small>
-  </span>
-
-<a href="#linuxpy.device.BaseDevice.closed" class="headerlink" title="Permanent link">&para;</a></h4>
+<a href="#linuxpy.fb.device.Device.get_raw_var_screen_info" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>True if the stream is closed. Always succeeds</p>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-attribute">
-
-
-
-<h4 id="linuxpy.device.BaseDevice.is_blocking" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class=" language-python"><span class="n">is_blocking</span><span class="p">:</span> <span class="nb">bool</span></code>
-
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-property"><code>property</code></small>
-  </span>
-
-<a href="#linuxpy.device.BaseDevice.is_blocking" class="headerlink" title="Permanent link">&para;</a></h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>True if the underlying OS is opened in blocking mode.
-Raises error if device is not opened.</p>
-
-    </div>
-
-</div>
-
-
-
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="linuxpy.device.BaseDevice.from_id" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="n">from_id</span><span class="p">(</span><span class="n">did</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
-
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
-  </span>
-
-<a href="#linuxpy.device.BaseDevice.from_id" class="headerlink" title="Permanent link">&para;</a></h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Create a new Device from the given id</p>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="linuxpy.device.BaseDevice.open" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="nb">open</span><span class="p">()</span></code>
-
-<a href="#linuxpy.device.BaseDevice.open" class="headerlink" title="Permanent link">&para;</a></h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Open the device if not already open. Triggers _on_open after the underlying OS open has succeeded</p>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="linuxpy.device.BaseDevice.close" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="n">close</span><span class="p">()</span></code>
-
-<a href="#linuxpy.device.BaseDevice.close" class="headerlink" title="Permanent link">&para;</a></h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Closes the device if not already closed. Triggers _on_close before the underlying OS close has succeeded</p>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="linuxpy.device.BaseDevice.fileno" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="n">fileno</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span></code>
-
-<a href="#linuxpy.device.BaseDevice.fileno" class="headerlink" title="Permanent link">&para;</a></h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Return the underlying file descriptor (an integer) of the stream if it exists</p>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="linuxpy.device.BaseDevice.set_blocking" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="n">set_blocking</span><span class="p">(</span><span class="n">yes_no</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span></code>
-
-<a href="#linuxpy.device.BaseDevice.set_blocking" class="headerlink" title="Permanent link">&para;</a></h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Turns on/off blocking mode.
-Raises error if device is not opened.</p>
+        <p>Get variable screen information</p>
 
 
     </div>
@@ -1977,15 +1604,15 @@ Raises error if device is not opened.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="linuxpy.device.device_number" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">device_number</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></code>
+<h3 id="linuxpy.fb.device.get_fix_screen_info" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">get_fix_screen_info</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FixScreenInfo</span></code>
 
-<a href="#linuxpy.device.device_number" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.fb.device.get_fix_screen_info" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
     <div class="doc doc-contents ">
 
-        <p>Retrieves device number from a path like. Example: gives 12 for /dev/video12</p>
+        <p>Get fixed screen information</p>
 
 
     </div>
@@ -1995,15 +1622,15 @@ Raises error if device is not opened.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="linuxpy.device.is_device_file" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">is_device_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span><span class="p">,</span> <span class="n">read_write</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span></code>
+<h3 id="linuxpy.fb.device.get_raw_var_screen_info" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">get_raw_var_screen_info</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">raw</span><span class="o">.</span><span class="n">fb_var_screeninfo</span></code>
 
-<a href="#linuxpy.device.is_device_file" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.fb.device.get_raw_var_screen_info" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
     <div class="doc doc-contents ">
 
-        <p>Check if path like is a readable (and, optionally, writable) character device.</p>
+        <p>Get variable screen information</p>
 
 
     </div>
@@ -2013,15 +1640,33 @@ Raises error if device is not opened.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="linuxpy.device.iter_device_files" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">iter_device_files</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span> <span class="o">=</span> <span class="s1">&#39;/dev&#39;</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span></code>
+<h3 id="linuxpy.fb.device.iter_files" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">iter_files</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span> <span class="o">=</span> <span class="s1">&#39;/dev&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span></code>
 
-<a href="#linuxpy.device.iter_device_files" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#linuxpy.fb.device.iter_files" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
     <div class="doc doc-contents ">
 
-        <p>Iterable of accessible (read &amp; write) char device files under the given path</p>
+        <p>Returns an iterator over all frame buffer files</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="linuxpy.fb.device.iter_devices" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class=" language-python"><span class="n">iter_devices</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span> <span class="o">=</span> <span class="s1">&#39;/dev&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Device</span><span class="p">]</span></code>
+
+<a href="#linuxpy.fb.device.iter_devices" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Returns an iterator over all frame buffer devices</p>
 
 
     </div>
