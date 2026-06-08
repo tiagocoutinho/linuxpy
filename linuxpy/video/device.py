@@ -1115,7 +1115,7 @@ class Controls(dict):
     def keys(self):
         self._init_if_needed()
         return super().keys()
-    
+
     def values(self):
         self._init_if_needed()
         return super().values()
