@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1627,11 +1627,11 @@
     <span class="n">info</span> <span class="o">=</span> <span class="n">gpio</span><span class="o">.</span><span class="n">get_info</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">lines</span><span class="p">))</span>
     <span class="n">l0</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;L0: </span><span class="si">{</span><span class="n">l0</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> </span><span class="si">{</span><span class="n">l0</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"L0: </span><span class="si">{</span><span class="n">l0</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> </span><span class="si">{</span><span class="n">l0</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># output should look somethig like:</span>
 <span class="c1"># gpiochip0 INT3450:00 32</span>
-<span class="c1"># L0: &#39;&#39; INPUT</span>
+<span class="c1"># L0: '' INPUT</span>
 </code></pre></div>
 <p>The example above also shows how to obtain information about the gpio device
 including up to date information about line usage.</p>
@@ -1644,7 +1644,7 @@ using <code>find</code>:</p>
     <span class="n">info</span> <span class="o">=</span> <span class="n">gpio</span><span class="o">.</span><span class="n">get_info</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">lines</span><span class="p">))</span>
     <span class="n">l0</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;L0: </span><span class="si">{</span><span class="n">l0</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> </span><span class="si">{</span><span class="n">l0</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"L0: </span><span class="si">{</span><span class="n">l0</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> </span><span class="si">{</span><span class="n">l0</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="working-with-lines-request">Working with lines: Request<a class="headerlink" href="#working-with-lines-request" title="Permanent link">&para;</a></h2>
 <p>Lines need to be requested before working with them.
@@ -1670,7 +1670,7 @@ It can have different forms:</p>
 <h3 id="list-of-line-numbers-or-line-configurations">list of line numbers or line configurations<a class="headerlink" href="#list-of-line-numbers-or-line-configurations" title="Permanent link">&para;</a></h3>
 <p>Example:</p>
 <div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
-    <span class="k">with</span> <span class="n">gpio</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;line&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;direction&quot;</span><span class="p">:</span> <span class="s2">&quot;output&quot;</span><span class="p">})</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">gpio</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="p">{</span><span class="s2">"line"</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">"direction"</span><span class="p">:</span> <span class="s2">"output"</span><span class="p">})</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
         <span class="o">...</span>
 </code></pre></div>
 <p>Reserves line 5 with default configuration and line 6 as output.</p>
@@ -1687,18 +1687,18 @@ It can have different forms:</p>
 </ul>
 <p>Example:</p>
 <div class="highlight"><pre><span></span><code><span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;myself&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;lines&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;line&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;direction&quot;</span><span class="p">:</span> <span class="s2">&quot;output&quot;</span><span class="p">}],</span>
+    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"myself"</span><span class="p">,</span>
+    <span class="s2">"lines"</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="p">{</span><span class="s2">"line"</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">"direction"</span><span class="p">:</span> <span class="s2">"output"</span><span class="p">}],</span>
 <span class="p">}</span>
 
 <span class="c1"># the same above with line config map:</span>
 
 <span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;myself&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;lines&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"myself"</span><span class="p">,</span>
+    <span class="s2">"lines"</span><span class="p">:</span> <span class="p">{</span>
         <span class="mi">5</span><span class="p">:</span> <span class="p">{},</span>
-        <span class="mi">6</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;direction&quot;</span><span class="p">:</span> <span class="s2">&quot;output&quot;</span><span class="p">},</span>
-    <span class="p">}</span>
+        <span class="mi">6</span><span class="p">:</span> <span class="p">{</span><span class="s2">"direction"</span><span class="p">:</span> <span class="s2">"output"</span><span class="p">},</span>
+    <span class="p">},</span>
 <span class="p">}</span>
 
 <span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
@@ -1712,10 +1712,7 @@ It can have different forms:</p>
 <p>Example:
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">linuxpy.gpio.device</span><span class="w"> </span><span class="kn">import</span> <span class="n">CLine</span>
 
-<span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;myself&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;lines&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">CLine</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">CLine</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">)]</span>
-<span class="p">}</span>
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"myself"</span><span class="p">,</span> <span class="s2">"lines"</span><span class="p">:</span> <span class="p">[</span><span class="n">CLine</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">CLine</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s2">"output"</span><span class="p">)]}</span>
 
 <span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
     <span class="k">with</span> <span class="n">gpio</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">config</span><span class="p">)</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
@@ -1829,7 +1826,7 @@ written as:</p>
 <div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
     <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> #</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">sequence</span><span class="si">}</span><span class="s2"> detected for line </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> #</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">sequence</span><span class="si">}</span><span class="s2"> detected for line </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">line</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <p>Reading one event is easy:</p>
 <div class="highlight"><pre><span></span><code><span class="n">event</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span>
@@ -1843,7 +1840,7 @@ written as:</p>
     <span class="k">with</span> <span class="n">find</span><span class="p">()</span> <span class="k">as</span> <span class="n">gpio</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">device</span><span class="o">.</span><span class="n">request</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span> <span class="k">as</span> <span class="n">lines</span><span class="p">:</span>
             <span class="k">async</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> #</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">sequence</span><span class="si">}</span><span class="s2"> detected for line </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> #</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">sequence</span><span class="si">}</span><span class="s2"> detected for line </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">line</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 
 <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
@@ -1945,7 +1942,7 @@ listen for events. So the above example can also be written as:</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.indexes", "content.tooltips", "navigation.path", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="../../js/termynal.js"></script>
       

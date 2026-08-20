@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1368,14 +1368,14 @@
 <h2 id="system-information">System information<a class="headerlink" href="#system-information" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="err">$</span> <span class="n">python</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">linuxpy.midi.device</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequencer</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">seq</span> <span class="o">=</span> <span class="n">Sequencer</span><span class="p">(</span><span class="s2">&quot;a midi client&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">seq</span> <span class="o">=</span> <span class="n">Sequencer</span><span class="p">(</span><span class="s2">"a midi client"</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">seq</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="n">seq</span><span class="o">.</span><span class="n">version</span>
 <span class="mf">1.0.2</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="n">seq</span><span class="o">.</span><span class="n">client_info</span>
-<span class="n">snd_seq_client_info</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">b</span><span class="s1">&#39;a midi client&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">multicast_filter</span><span class="o">=</span><span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">event_filter</span><span class="o">=</span><span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">num_ports</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">event_lost</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">card</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="mi">1288570</span><span class="p">)</span>
+<span class="n">snd_seq_client_info</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">b</span><span class="s1">'a midi client'</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">multicast_filter</span><span class="o">=</span><span class="sa">b</span><span class="s1">''</span><span class="p">,</span> <span class="n">event_filter</span><span class="o">=</span><span class="sa">b</span><span class="s1">''</span><span class="p">,</span> <span class="n">num_ports</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">event_lost</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">card</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="mi">1288570</span><span class="p">)</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="n">seq</span><span class="o">.</span><span class="n">running_mode</span>
 <span class="n">snd_seq_running_info</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">big_endian</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">cpu_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -1394,7 +1394,7 @@
 <span class="o">...</span>     <span class="k">async</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">seq</span><span class="p">:</span>
 <span class="o">...</span>         <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
  <span class="mi">14</span><span class="p">:</span><span class="mi">0</span>   <span class="n">Note</span> <span class="n">on</span>              <span class="n">channel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">note</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">off_velocity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span>
- <span class="mi">14</span><span class="p">:</span><span class="mi">0</span>   <span class="n">Clock</span>                <span class="n">queue</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="sa">b</span><span class="s1">&#39;&#39;</span>
+ <span class="mi">14</span><span class="p">:</span><span class="mi">0</span>   <span class="n">Clock</span>                <span class="n">queue</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="sa">b</span><span class="s1">''</span>
  <span class="mi">14</span><span class="p">:</span><span class="mi">0</span>   <span class="n">System</span> <span class="n">exclusive</span>     <span class="n">F0</span> <span class="mi">61</span> <span class="mi">62</span> <span class="mi">63</span> <span class="n">F7</span>
  <span class="mi">14</span><span class="p">:</span><span class="mi">0</span>   <span class="n">Note</span> <span class="n">off</span>             <span class="n">channel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">note</span><span class="o">=</span><span class="mi">55</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">off_velocity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span>
 </code></pre></div>
@@ -1488,7 +1488,7 @@ and dumping MIDI sequencer events:</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.indexes", "content.tooltips", "navigation.path", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="../../js/termynal.js"></script>
       

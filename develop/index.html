@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1337,18 +1337,18 @@ groups if they don't exist):</p>
 <p>(reboot if necessary for those changes to take effect)</p>
 <p>Change the udev rules so these groups have access to the devices used by tests:</p>
 <p>Create a new rules file (ex: <code>/etc/udev/rules.d/80-device.rules</code>):</p>
-<div class="highlight"><pre><span></span><code>KERNEL==&quot;event[0-9]*&quot;, SUBSYSTEM==&quot;input&quot;, GROUP=&quot;input&quot;, MODE:=&quot;0660&quot;
-KERNEL==&quot;uinput&quot;, SUBSYSTEM==&quot;misc&quot;, GROUP=&quot;input&quot;, MODE:=&quot;0660&quot;
+<div class="highlight"><pre><span></span><code>KERNEL=="event[0-9]*", SUBSYSTEM=="input", GROUP="input", MODE:="0660"
+KERNEL=="uinput", SUBSYSTEM=="misc", GROUP="input", MODE:="0660"
 
-SUBSYSTEM==&quot;video4linux&quot;, GROUP=&quot;video&quot;, MODE:=&quot;0660&quot;
+SUBSYSTEM=="video4linux", GROUP="video", MODE:="0660"
 
-KERNEL==&quot;uleds&quot;, GROUP=&quot;input&quot;, MODE:=&quot;0660&quot;
-SUBSYSTEM==&quot;leds&quot;, ACTION==&quot;add&quot;, RUN+=&quot;/bin/chmod -R g=u,o=u /sys%p&quot;
-SUBSYSTEM==&quot;leds&quot;, ACTION==&quot;change&quot;, ENV{TRIGGER}!=&quot;none&quot;, RUN+=&quot;/bin/chmod -R g=u,o=u /sys%p&quot;
+KERNEL=="uleds", GROUP="input", MODE:="0660"
+SUBSYSTEM=="leds", ACTION=="add", RUN+="/bin/chmod -R g=u,o=u /sys%p"
+SUBSYSTEM=="leds", ACTION=="change", ENV{TRIGGER}!="none", RUN+="/bin/chmod -R g=u,o=u /sys%p"
 
-KERNEL==&quot;gpiochip[0-9]*&quot;, SUBSYSTEM==&quot;gpio&quot;, GROUP=&quot;input&quot;, MODE=&quot;0660&quot;
-ACTION==&quot;add&quot;, SUBSYSTEM==&quot;configfs&quot;, KERNEL==&quot;gpio-sim&quot;, RUN+=&quot;/bin/chmod 775 /sys/kernel/config/gpio-sim/%k&quot;
-ACTION==&quot;add&quot;, SUBSYSTEM==&quot;configfs&quot;, KERNEL==&quot;gpio-sim&quot;, RUN+=&quot;/bin/chown root:input /sys/kernel/config/gpio-sim/%k&quot;
+KERNEL=="gpiochip[0-9]*", SUBSYSTEM=="gpio", GROUP="input", MODE="0660"
+ACTION=="add", SUBSYSTEM=="configfs", KERNEL=="gpio-sim", RUN+="/bin/chmod 775 /sys/kernel/config/gpio-sim/%k"
+ACTION=="add", SUBSYSTEM=="configfs", KERNEL=="gpio-sim", RUN+="/bin/chown root:input /sys/kernel/config/gpio-sim/%k"
 </code></pre></div>
 <p>Reload the rules:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>sudo<span class="w"> </span>udevadm<span class="w"> </span>control<span class="w"> </span>--reload-rules
@@ -1420,7 +1420,7 @@ ACTION==&quot;add&quot;, SUBSYSTEM==&quot;configfs&quot;, KERNEL==&quot;gpio-sim
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.indexes", "content.tooltips", "navigation.path", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.tabs"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="../js/termynal.js"></script>
       

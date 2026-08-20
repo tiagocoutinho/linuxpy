@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -2503,27 +2503,27 @@
     <div class="doc doc-contents first">
 
         <p>Human friendly interface to linux MIDI subsystem.</p>
-<p>The heart of linuxpy MIDI library is the <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;              &lt;code class=&quot; language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Sequencer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;linuxpy client&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="#linuxpy.midi.device.Sequencer"><code>Sequencer</code></a>
+<p>The heart of linuxpy MIDI library is the <a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-class&quot;&gt;&lt;/code&gt;              &lt;code class=&quot; language-python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Sequencer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#x27;linuxpy client&#x27;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;" href="#linuxpy.midi.device.Sequencer"><code>Sequencer</code></a>
 class.
 Usually you need only one instance of Sequencer for your application.
 The recommended way is to use it within a context manager like:</p>
-<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">Sequencer</span><span class="p">(</span><span class="s2">&quot;My MIDI App&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">midi</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MIDI version: </span><span class="si">{</span><span class="n">midi</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">Sequencer</span><span class="p">(</span><span class="s2">"My MIDI App"</span><span class="p">)</span> <span class="k">as</span> <span class="n">midi</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"MIDI version: </span><span class="si">{</span><span class="n">midi</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <p>which is roughly equivalent to:</p>
-<div class="highlight"><pre><span></span><code><span class="n">midi</span> <span class="o">=</span> <span class="n">Sequencer</span><span class="p">(</span><span class="s2">&quot;My MIDI App&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">midi</span> <span class="o">=</span> <span class="n">Sequencer</span><span class="p">(</span><span class="s2">"My MIDI App"</span><span class="p">)</span>
 <span class="n">midi</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MIDI version: </span><span class="si">{</span><span class="n">midi</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"MIDI version: </span><span class="si">{</span><span class="n">midi</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="k">finally</span><span class="p">:</span>
     <span class="n">midi</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </code></pre></div>
 <p>Here's a real world example:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">linuxpy.midi.device</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequencer</span>
 
-<span class="k">with</span> <span class="n">Sequencer</span><span class="p">(</span><span class="s2">&quot;My MIDI App&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">midi</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I&#39;m client </span><span class="si">{</span><span class="n">midi</span><span class="o">.</span><span class="n">client_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MIDI version: </span><span class="si">{</span><span class="n">midi</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">Sequencer</span><span class="p">(</span><span class="s2">"My MIDI App"</span><span class="p">)</span> <span class="k">as</span> <span class="n">midi</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"I'm client </span><span class="si">{</span><span class="n">midi</span><span class="o">.</span><span class="n">client_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"MIDI version: </span><span class="si">{</span><span class="n">midi</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">port</span> <span class="o">=</span> <span class="n">midi</span><span class="o">.</span><span class="n">create_port</span><span class="p">()</span>
     <span class="n">port</span><span class="o">.</span><span class="n">connect_from</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">midi</span><span class="p">:</span>
@@ -2585,7 +2585,7 @@ The recommended way is to use it within a context manager like:</p>
 
 
 <h3 id="linuxpy.midi.device.Sequencer" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class=" language-python"><span class="n">Sequencer</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;linuxpy client&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>              <code class=" language-python"><span class="n">Sequencer</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'linuxpy client'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
 <a href="#linuxpy.midi.device.Sequencer" class="headerlink" title="Permanent link">&para;</a></h3>
 
@@ -2599,9 +2599,9 @@ The recommended way is to use it within a context manager like:</p>
         <p>Central MIDI class.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">linuxpy.midi.device</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequencer</span>
 
-<span class="k">with</span> <span class="n">Sequencer</span><span class="p">(</span><span class="s2">&quot;My MIDI App&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">midi</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I&#39;m client </span><span class="si">{</span><span class="n">midi</span><span class="o">.</span><span class="n">client_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MIDI version: </span><span class="si">{</span><span class="n">midi</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">Sequencer</span><span class="p">(</span><span class="s2">"My MIDI App"</span><span class="p">)</span> <span class="k">as</span> <span class="n">midi</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"I'm client </span><span class="si">{</span><span class="n">midi</span><span class="o">.</span><span class="n">client_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"MIDI version: </span><span class="si">{</span><span class="n">midi</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">port</span> <span class="o">=</span> <span class="n">midi</span><span class="o">.</span><span class="n">create_port</span><span class="p">()</span>
     <span class="n">port</span><span class="o">.</span><span class="n">connect_from</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">midi</span><span class="p">:</span>
@@ -2915,7 +2915,7 @@ It returns new Port object each time</p>
 
 
 <h4 id="linuxpy.midi.device.Sequencer.create_port" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="n">create_port</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;linuxpy port&#39;</span><span class="p">,</span> <span class="n">capabilities</span><span class="p">:</span> <span class="n">PortCapability</span> <span class="o">=</span> <span class="n">INPUT_OUTPUT</span><span class="p">,</span> <span class="n">port_type</span><span class="p">:</span> <span class="n">PortType</span> <span class="o">=</span> <span class="n">PortType</span><span class="o">.</span><span class="n">MIDI_GENERIC</span> <span class="o">|</span> <span class="n">PortType</span><span class="o">.</span><span class="n">APPLICATION</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Port</span></code>
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class=" language-python"><span class="n">create_port</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'linuxpy port'</span><span class="p">,</span> <span class="n">capabilities</span><span class="p">:</span> <span class="n">PortCapability</span> <span class="o">=</span> <span class="n">INPUT_OUTPUT</span><span class="p">,</span> <span class="n">port_type</span><span class="p">:</span> <span class="n">PortType</span> <span class="o">=</span> <span class="n">PortType</span><span class="o">.</span><span class="n">MIDI_GENERIC</span> <span class="o">|</span> <span class="n">PortType</span><span class="o">.</span><span class="n">APPLICATION</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Port</span></code>
 
 <a href="#linuxpy.midi.device.Sequencer.create_port" class="headerlink" title="Permanent link">&para;</a></h4>
 
@@ -3106,7 +3106,7 @@ a "note on" event.</p>
 a case insensitive string matching the event type (ex: "noteon", "NOTEON",
 "note-on" or "note on").</p>
 <p>The following example sends "note on" with velocity 45 on port 0 of client 14:</p>
-<div class="highlight"><pre><span></span><code><span class="n">midi</span><span class="o">.</span><span class="n">send</span><span class="p">((</span><span class="mi">14</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;note on&quot;</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">midi</span><span class="o">.</span><span class="n">send</span><span class="p">((</span><span class="mi">14</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">"note on"</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
 </code></pre></div>
 
 
@@ -3552,7 +3552,7 @@ originating from this port will be sent to the destination port.</p>
     <span class="n">port</span> <span class="o">=</span> <span class="n">midi</span><span class="o">.</span><span class="n">create_port</span><span class="p">()</span>
     <span class="c1"># Assume 14:0 is Midi Through</span>
     <span class="n">port</span><span class="o">.</span><span class="n">connect_to</span><span class="p">((</span><span class="mi">14</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-    <span class="n">port</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">&quot;note on&quot;</span><span class="p">,</span> <span class="n">note</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">port</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">"note on"</span><span class="p">,</span> <span class="n">note</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </code></pre></div>
 
 
@@ -3615,7 +3615,7 @@ Use kwargs to pass specific event arguments like velocity in a
 a case insensitive string matching the event type (ex: "noteon", "NOTEON",
 "note-on" or "note on").</p>
 <p>The following example sends "note on" on note 42, with velocity 45:</p>
-<div class="highlight"><pre><span></span><code><span class="n">port</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">&quot;note on&quot;</span><span class="p">,</span> <span class="n">note</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">port</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">"note on"</span><span class="p">,</span> <span class="n">note</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
 </code></pre></div>
 
 
@@ -3840,7 +3840,7 @@ a case insensitive string matching the event type (ex: "noteon", "NOTEON",
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.indexes", "content.tooltips", "navigation.path", "content.code.annotate", "content.code.copy", "content.code.select", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="../../js/termynal.js"></script>
       
