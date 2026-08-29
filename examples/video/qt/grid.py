@@ -3,7 +3,7 @@ import logging
 
 from qtpy import QtWidgets
 
-from linuxpy.video.device import Device
+from linuxpy.video.device import iter_video_capture_devices
 from linuxpy.video.qt import QCamera, QVideoWidget
 
 try:
@@ -41,27 +41,30 @@ def main():
     layout = QtWidgets.QGridLayout(grid)
     grid.setLayout(layout)
 
-    COLUMNS, ROWS = 6, 3
-    qcameras = set()
-    for row in range(ROWS):
-        for column in range(COLUMNS):
-            dev_id = column + row * COLUMNS
-            if dev_id > 15:
-                break
-            dev_id += 10
-            device = Device.from_id(dev_id)
-            device.open()
-            qcamera = QCamera(device)
-            widget = QVideoWidget(qcamera)
-            layout.addWidget(widget, row, column)
-            qcameras.add(qcamera)
+    devices = sorted(iter_video_capture_devices(), key=lambda d: d.index)
+    n = len(devices)
+    if n < 5:
+        cols = 2
+    elif n < 7:
+        cols = 3
+    elif n < 17:
+        cols = 4
+    else:
+        cols = 5
 
-    d0 = Device.from_id(0)
-    d0.open()
-    qcamera = QCamera(d0)
-    qcameras.add(qcamera)
-    widget = QVideoWidget(qcamera)
-    layout.addWidget(widget)
+    row, col = 0, 0
+    qcameras = set()
+    for device in devices:
+        device.open()
+        qcamera = QCamera(device)
+        widget = QVideoWidget(qcamera)
+        layout.addWidget(widget, row, col)
+        qcameras.add(qcamera)
+        if col < cols - 1:
+            col += 1
+        else:
+            col = 0
+            row += 1
     window.show()
     app.exec()
 
