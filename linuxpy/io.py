@@ -4,13 +4,25 @@
 # Copyright (c) 2023 Tiago Coutinho
 # Distributed under the GPLv3 license. See LICENSE for more info.
 
+import typing
 import functools
 import importlib
 import os
+import io
 import select
 
+StrOrBytesPath: typing.TypeAlias = str | bytes | os.PathLike[str] | os.PathLike[bytes]
 
-def fopen(path, rw=False, binary=True, blocking=False, close_on_exec=True):
+FileDescriptorOrPath: typing.TypeAlias = int | StrOrBytesPath
+
+
+def fopen(
+        path: StrOrBytesPath,
+        rw: bool = False,
+        binary: bool = True,
+        blocking: bool = False,
+        close_on_exec: bool = True
+    ) -> io.FileIO | io.TextIOWrapper:
     def opener(path, flags):
         if not blocking:
             flags |= os.O_NONBLOCK
@@ -39,7 +51,7 @@ class IO:
 
 
 class GeventModule:
-    def __init__(self, name):
+    def __init__(self, name: str):
         self.name = name
         self._module = None
 
@@ -49,7 +61,7 @@ class GeventModule:
             self._module = importlib.import_module(f"gevent.{self.name}")
         return self._module
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str):
         attr = getattr(self.module, name)
         setattr(self, name, attr)
         return attr
@@ -57,7 +69,7 @@ class GeventModule:
 
 class GeventIO:
     @staticmethod
-    def open(path, rw=False, blocking=False):
+    def open(path: FileDescriptorOrPath, rw: bool = False, blocking: bool = False):
         mode = "rb+" if rw else "rb"
         import gevent.fileobject
 
